@@ -549,9 +549,13 @@ html.sheet-on body{background:#000}
 
 <script>
 /* Supabase: Project URL ва anon key. Холӣ бошад — реҷаи намуна (demo). */
-const OTPN=8;
+const OTPN=8,RESEND_SEC=60;
 const SB_URL="https://hxtpmwxglfuabdvaeapj.supabase.co",SB_KEY="sb_publishable_hnpY6mKTu9ahVxjIbcKvkQ_gjv0tb39";
 let sb=null;
+async function sbSend(e){const c=await sbLoad();
+ if(c){const{error}=await c.auth.signInWithOtp({email:e,options:{shouldCreateUser:true}});
+  if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хато: "+error.message;return""}
+ return SB_URL?"Интернет нест ё сервер ҷавоб намедиҳад":""}
 function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(sb)return r(sb);
  const t=document.createElement("script");t.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
  t.onload=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};t.onerror=()=>r(null);document.head.appendChild(t)})}
@@ -1028,7 +1032,7 @@ function login(){
  <button class="btn" id="send">Гирифтани рамз</button><button class="btn-t" data-go="home">Аввал дидан, бе бақайдгирӣ</button>${demo?'<p class="hint"><span class="demo">Реҷаи намуна: сервер ҳанӯз пайваст нест</span></p>':''}`;
  const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
  <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
- <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
+ <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
  <div class="gopts"><button class="gopt" data-g="girl"><span class="gart"><svg viewBox="0 0 100 100">${ROSE_ART}</svg></span><b>Духтар</b></button><button class="gopt" data-g="boy"><span class="gart"><svg viewBox="0 0 100 100">${GLOVE_ART}</svg></span><b>Писар</b></button></div>`;
@@ -1207,11 +1211,9 @@ function bind(){
  if(send)send.onclick=async()=>{const e=document.getElementById("email").value.trim().toLowerCase();
   if(!okMail(e)){toast("Почтаро дуруст нависед, масалан nom@gmail.com");return}
   S.email=e;send.disabled=true;send.textContent="Фиристода истодааст…";
-  const c=await sbLoad();
-  if(c){const{error}=await c.auth.signInWithOtp({email:e,options:{shouldCreateUser:true}});
-   if(error){send.disabled=false;send.textContent="Гирифтани рамз";toast(/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хато: "+error.message);return}}
-  else if(SB_URL){send.disabled=false;send.textContent="Гирифтани рамз";toast("Интернет нест ё сервер ҷавоб намедиҳад");return}
-  S.step="code";render();document.getElementById("c0").focus()};
+  const err=await sbSend(e);
+  if(err){send.disabled=false;send.textContent="Гирифтани рамз";toast(err);return}
+  S.resendAt=Date.now()+RESEND_SEC*1000;S.step="code";render();document.getElementById("c0").focus()};
  const cs=Array.from({length:OTPN},(_,i)=>i).map(i=>document.getElementById("c"+i));
  if(cs[0])cs.forEach((c,i)=>{c.oninput=()=>{let v=c.value.replace(/\D/g,"");
    if(v.length>1){v.split("").slice(0,OTPN-i).forEach((d,j)=>cs[i+j].value=d);(cs[Math.min(i+v.length,OTPN-1)]).focus();return}
@@ -1228,8 +1230,18 @@ function bind(){
  $$("[data-g]",b=>b.onclick=async()=>{const n=(document.getElementById("uname").value||"").trim();
   if(!n){toast("Номатонро нависед");return}
   S.gender=b.dataset.g;S.uname=n;
-  const c=await sbLoad();if(c){const{error}=await c.auth.updateUser({data:{gender:S.gender,name:n}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав")}
+  const c=await sbLoad();if(c){
+   try{const{data:nm,error:ne}=await c.rpc("claim_name",{p_name:n});if(!ne&&nm){if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm}}catch(_){}
+   const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав")}
   S.step="email";go("home")});
+ const rs=document.getElementById("resend");if(rs){
+  const tick=()=>{if(!rs.isConnected)return clearInterval(S.rsT);const left=Math.ceil(((S.resendAt||0)-Date.now())/1000);
+   rs.disabled=left>0;rs.textContent=left>0?"Рамзи нав ("+left+" сония)":"Рамз наомад? Аз нав фиристед"};
+  clearInterval(S.rsT);S.rsT=setInterval(tick,500);tick();
+  rs.onclick=async()=>{rs.disabled=true;rs.textContent="Фиристода истодааст…";
+   const err=await sbSend(S.email);
+   if(err){toast(err);S.resendAt=0;tick();return}
+   S.resendAt=Date.now()+RESEND_SEC*1000;cs.forEach(c=>c.value="");cs[0].focus();toast("Рамзи нав фиристода шуд");tick()}}
  const back=document.getElementById("back");if(back)back.onclick=()=>{S.step="email";render()};
 }
 const h=location.hash.slice(1);if(["login","home","lib","goal","comm","me"].includes(h))S.view=h;
