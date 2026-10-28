@@ -554,7 +554,7 @@ const SB_URL="https://hxtpmwxglfuabdvaeapj.supabase.co",SB_KEY="sb_publishable_h
 let sb=null;
 async function sbSend(e){const c=await sbLoad();
  if(c){const{error}=await c.auth.signInWithOtp({email:e,options:{shouldCreateUser:true}});
-  if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хато: "+error.message;return""}
+  if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хатоги рӯй дод. Баъдтар аз нав кӯшиш кунед";return""}
  return SB_URL?"Интернет нест ё сервер ҷавоб намедиҳад":""}
 function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(sb)return r(sb);
  const t=document.createElement("script");t.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
