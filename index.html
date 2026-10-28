@@ -1362,6 +1362,14 @@ if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
  if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else if(S.view==="login"){S.step="gender";render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
+window.__back=()=>{const q=sel=>{const e=document.querySelector(sel);if(e){e.click();return true}return false};
+ if(S.sheet){closeSheet();return true}
+ if(S.view==="read")return q("[data-closeread]");
+ if(S.view==="audio")return q("[data-apmin]");
+ if(S.view==="book")return q("[data-back]");
+ if(S.search)return q("[data-closesearch]");
+ if(S.view!=="home"&&S.view!=="login"){go("home");return true}
+ return false};
 sbLoad().then(()=>syncServer());markHave();
 applyTheme();matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",applyTheme);
 render();
