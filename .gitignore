@@ -3,3 +3,5 @@
 .env
 node_modules/
 *.apk
+apk/src/build/
+apk/ks/
