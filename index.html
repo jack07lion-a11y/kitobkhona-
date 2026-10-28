@@ -1032,7 +1032,7 @@ function login(){
  <button class="btn" id="send">Гирифтани рамз</button><button class="btn-t" data-go="home">Аввал дидан, бе бақайдгирӣ</button>${demo?'<p class="hint"><span class="demo">Реҷаи намуна: сервер ҳанӯз пайваст нест</span></p>':''}`;
  const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
  <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
- <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
+ <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
  <div class="gopts"><button class="gopt" data-g="girl"><span class="gart"><svg viewBox="0 0 100 100">${ROSE_ART}</svg></span><b>Духтар</b></button><button class="gopt" data-g="boy"><span class="gart"><svg viewBox="0 0 100 100">${GLOVE_ART}</svg></span><b>Писар</b></button></div>`;
@@ -1215,9 +1215,15 @@ function bind(){
   if(err){send.disabled=false;send.textContent="Гирифтани рамз";toast(err);return}
   S.resendAt=Date.now()+RESEND_SEC*1000;S.step="code";render();document.getElementById("c0").focus()};
  const cs=Array.from({length:OTPN},(_,i)=>i).map(i=>document.getElementById("c"+i));
+ const autoGo=()=>{if(cs.every(x=>x.value))document.getElementById("verify").click()};
+ const pc=document.getElementById("pastecode");if(pc)pc.onclick=async()=>{
+  try{const d=(await navigator.clipboard.readText()).replace(/\D/g,"").slice(0,OTPN);
+   if(d.length!==OTPN){toast("Дар нусха рамзи "+OTPN+"-рақама нест");return}
+   d.split("").forEach((x,i)=>cs[i].value=x);autoGo()}
+  catch(_){toast("Иҷозат дода нашуд. Катакчаро дарозмуддат пахш карда гузоред")}};
  if(cs[0])cs.forEach((c,i)=>{c.oninput=()=>{let v=c.value.replace(/\D/g,"");
-   if(v.length>1){v.split("").slice(0,OTPN-i).forEach((d,j)=>cs[i+j].value=d);(cs[Math.min(i+v.length,OTPN-1)]).focus();return}
-   c.value=v;if(v&&cs[i+1])cs[i+1].focus()};c.onkeydown=e=>{if(e.key==="Backspace"&&!c.value&&cs[i-1])cs[i-1].focus()}});
+   if(v.length>1){v.split("").slice(0,OTPN-i).forEach((d,j)=>cs[i+j].value=d);(cs[Math.min(i+v.length,OTPN-1)]).focus();autoGo();return}
+   c.value=v;if(v&&cs[i+1])cs[i+1].focus();autoGo()};c.onkeydown=e=>{if(e.key==="Backspace"&&!c.value&&cs[i-1])cs[i-1].focus()}});
  const ver=document.getElementById("verify");if(ver)ver.onclick=async()=>{const t=cs.map(c=>c.value).join("");
   if(t.length!==OTPN){toast("Ҳар "+OTPN+" рақамро нависед");return}
   ver.disabled=true;ver.textContent="Тафтиш…";
