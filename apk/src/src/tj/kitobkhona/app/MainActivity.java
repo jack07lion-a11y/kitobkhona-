@@ -7,12 +7,16 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.util.Base64;
 import android.view.Window;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 public class MainActivity extends Activity {
     private WebView web;
@@ -46,6 +50,23 @@ public class MainActivity extends Activity {
                 return true;
             }
         });
+        web.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public String asset(String path) {
+                try {
+                    if (path == null || !path.startsWith("books/") || path.contains("..")) return "";
+                    InputStream in = getAssets().open(path);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] buf = new byte[16384];
+                    int n;
+                    while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+                    in.close();
+                    return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP);
+                } catch (Exception e) {
+                    return "";
+                }
+            }
+        }, "KitobAndroid");
         setContentView(web);
         if (state != null) web.restoreState(state);
         else web.loadUrl("file:///android_asset/index.html");
