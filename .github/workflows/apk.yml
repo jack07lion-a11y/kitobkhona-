@@ -36,7 +36,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp apk/src/build/kitobkhona.apk kitobkhona-${{ github.run_number }}.apk
-          gh release create "apk-${{ github.run_number }}" kitobkhona-${{ github.run_number }}.apk \
+          N=${{ github.run_number }}
+          cp apk/src/build/kitobkhona.apk kitobkhona-$N.apk
+          zip -q kitobkhona-$N.zip kitobkhona-$N.apk
+          gh release create "apk-$N" kitobkhona-$N.apk kitobkhona-$N.zip \
             --draft --prerelease --title "Китобхона APK #${{ github.run_number }}" \
             --notes "Санҷишӣ APK. Китоб: Ёддоштҳо. Нусха ${{ github.sha }}"
