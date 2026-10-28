@@ -567,26 +567,22 @@ function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(s
  t.onload=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};t.onerror=()=>r(null);document.head.appendChild(t)})}
 const escH=v=>String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const okMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
-const BOOKS=[
- {id:1,t:"Шоҳнома",a:"Абулқосим Фирдавсӣ",c:"classic",col:["#7a2e1f","#4a1a12"],audio:true,p:34},
- {id:2,t:"Гулистон",a:"Саъдии Шерозӣ",c:"classic",col:["#1f5a4a","#0f3d2e"],audio:true},
- {id:3,t:"Рубоиёт",a:"Умари Хайём",c:"classic",col:["#3c2f6b","#231a45"],audio:true},
- {id:4,t:"Девон",a:"Ҳофизи Шерозӣ",c:"classic",col:["#8a5a14","#5a3a0a"],audio:false},
- {id:5,t:"Ёддоштҳо",a:"Садриддин Айнӣ",c:"classic",col:["#2c4a63","#1a2f40"],audio:true},
- {id:6,t:"Баҳористон",a:"Абдураҳмони Ҷомӣ",c:"classic",col:["#5c6b1f","#3a4410"],audio:false},
- {id:7,t:"Сафарнома",a:"Носири Хусрав",c:"classic",col:["#6b2f4a","#45192e"],audio:false},
- {id:8,t:"Афсонаҳои халқии тоҷикӣ",a:"Маҷмӯа",c:"kids",col:["#c0632a","#8a3f15"],audio:true},
- {id:9,t:"Алифбои хурдсолон",a:"Барои 5–7 сола",c:"kids",col:["#2a8a6b","#17604a"],audio:true},
- {id:10,t:"Ҳикояҳо барои кӯдакон",a:"Мирсаид Миршакар",c:"kids",col:["#3a6fb0","#234c80"],audio:true},
- {id:11,t:"Тестҳои ММТ: Забони тоҷикӣ",a:"Барои довталабон",c:"exam",col:["#24443a","#122a22"],audio:false},
- {id:12,t:"Тестҳои ММТ: Математика",a:"Барои довталабон",c:"exam",col:["#3b3b3b","#1f1f1f"],audio:false},
- {id:13,t:"Таърихи халқи тоҷик",a:"Омодагӣ ба имтиҳон",c:"exam",col:["#6b4a1f","#45300f"],audio:true},
- {id:14,t:"Математика, синфи 5",a:"Китоби дарсӣ",c:"text",col:["#1f4f7a","#123352"],audio:false},
- {id:15,t:"Забони модарӣ, синфи 3",a:"Китоби дарсӣ",c:"text",col:["#7a1f3a","#521226"],audio:true},
- {id:16,t:"Физика, синфи 7",a:"Китоби дарсӣ",c:"text",col:["#2f6b5c","#1a463c"],audio:false},
-];
+const BOOKS=[];
 const BASE_N=BOOKS.length;
-const CHIPS=[["all","Ҳама"],["exam","Омодагӣ ба ММТ"],["text","Мактаб"],["audio","Аудио дар роҳ"]];
+const GENRES=[
+ ["fiction","Адабиёти бадеӣ","Роман, ҳикоя ва повест",'<path d="M4 5c3-1.500 6-1.500 8 0v14c-2-1.500-5-1.500-8 0zM20 5c-3-1.500-6-1.500-8 0v14c2-1.500 5-1.500 8 0z"/>'],
+ ["poetry","Шеър ва достон","Ғазал, рубоӣ, достон",'<path d="M5 20c4-1 8-5 11-13M9 14h6M12 11h6"/>'],
+ ["classic","Классикаи тоҷик","Рӯдакӣ, Фирдавсӣ, Ҷомӣ, Айнӣ",'<path d="M3 9l9-5 9 5-9 5zM7 11.500V16c3 2 7 2 10 0v-4.500"/>'],
+ ["science","Илмӣ-оммавӣ","Илм ба забони содда",'<circle cx="12" cy="12" r="2"/><path d="M12 4c5 0 8 8 0 16M12 4c-5 0-8 8 0 16M4 12c0-5 16-5 16 0M4 12c0 5 16 5 16 0"/>'],
+ ["history","Таърих","Таърихи тоҷикон ва ҷаҳон",'<path d="M5 4h12v16H5zM9 8h4M9 12h4M9 16h2"/>'],
+ ["religion","Динӣ-маърифатӣ","Китобҳои динӣ ва маънавӣ",'<path d="M12 3c2 3 5 4 5 8a5 5 0 01-10 0c0-4 3-5 5-8zM8 21h8"/>'],
+ ["kids","Барои кӯдакон","Афсона, ҳикоя, алифбо",'<circle cx="12" cy="9" r="4"/><path d="M5 21c1-4 4-6 7-6s6 2 7 6"/>'],
+ ["text","Китобҳои дарсӣ","Аз синф ба синф",'<path d="M3 9l9-5 9 5-9 5zM7 11.500V16c3 2 7 2 10 0v-4.500M21 9v6"/>'],
+ ["exam","Омодагӣ ба ММТ","Тест ва маводҳои имтиҳон",'<path d="M6 3h9l4 4v14H6zM15 3v4h4M9.500 14l2 2 3.500-4"/>'],
+ ["self","Рушди шахсӣ","Равоншиносӣ ва малака",'<path d="M12 3l2.500 5.500L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.500-.5z"/>'],
+ ["bio","Тарҷумаи ҳол","Зиндагии шахсони бузург",'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.500 4.500-6.500 8-6.500s7 2 8 6.500"/>'],
+];
+const CHIPS=[["all","Ҳама"],["audio","Аудио дар роҳ"],...GENRES.map(g=>[g[0],g[1]])];
 const P=(d,sw=1.8)=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const FILL=d=>`<svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${d}</svg>`;
 const I={
@@ -674,7 +670,6 @@ const LOGO=`<svg viewBox="0 0 100 100"><defs>
 <path d="M5 89Q28 81 49 94M95 89Q72 81 51 94" fill="none" stroke="#4fd391" stroke-width="2.600" stroke-linecap="round"/></g></svg>`;
 
 
-[3,5,11,13].forEach(i=>BOOKS.find(x=>x.id===i).prem=true);
 const PARAS=[
  "Ин матни намуна аст. Дар нусхаи аслӣ дар ин ҷо матни пурраи китоб меистад. Мо онро танҳо барои санҷидани экрани хондан гузоштем.",
  "Китоб дӯсти беминнати инсон аст. Ҳар саҳифае, ки мехонем, ба мо як ҷаҳони нав мекушояд. Хонандаи доно аз ҳар сатр як дарс мегирад ва онро дар зиндагӣ ба кор мебарад.",
@@ -688,7 +683,7 @@ function chapters(b){return CHN.map((n,i)=>({n,ps:[0,1,2,3,4].map(j=>PARAS[(i*2+
 function tracks(b){const n=3+b.id%3;return Array.from({length:n},(_,i)=>({n:i?`Боби ${i}`:"Сарсухан",d:150+(b.id*37+i*53)%420}))}
 const bk=id=>BOOKS.find(x=>x.id===id);
 const ADM_COLS=[["#24443a","#122a22","Сабз"],["#7a2e1f","#4a1a12","Сурх"],["#3c2f6b","#231a45","Бунафш"],["#2c4a63","#1a2f40","Кабуд"],["#8a5a14","#5a3a0a","Зарди тира"],["#6b2f4a","#45192e","Гулобӣ"],["#3b3b3b","#1f1f1f","Хокистарӣ"]];
-const ADM_CATS=[["classic","Классикаи тоҷик"],["kids","Барои кӯдакон"],["exam","Омодагӣ ба ММТ"],["text","Мактаб"]];
+const ADM_CATS=GENRES.map(g=>[g[0],g[1]]);
 const VBADGE='<span class="vbadge" title="Админ" aria-label="Админ"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8cf0"/><path d="M12 5.2l1.8 4 4.4.5-3.3 3 .9 4.3L12 14.800 8.200 17l.9-4.300-3.300-3 4.400-.5z" fill="#fff"/></svg></span>';
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
  BOOKS.length=BASE_N;data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true}));
@@ -708,6 +703,7 @@ function gi(){return S.gender==="boy"?GLOVE:TAB[2][2]}
 let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0,search:false,recent:[],prog:{},confirmOut:false,pref:{fs:19,th:"white",ff:"serif"},pages:{},marks:{},mode:{},aprog:{},apos:{},dl:{},dlBook:{},premium:false,sheet:null,tocTab:0,au:null};
 const app=document.getElementById("app");
 try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
+if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;
 function save(){try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
 const esc=s=>s.replace(/"/g,"&quot;");
 
@@ -735,49 +731,15 @@ const A={
  cloud:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="#fff" fill-opacity=".9"><circle r="6"/><circle cx="8" cy="2" r="7"/><circle cx="17" cy="3" r="5"/><rect x="-6" y="3" width="28" height="6" rx="3"/></g>`,
  atom:(x,y,s,c)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke="${c}" stroke-width="1.600"><ellipse rx="26" ry="9"/><ellipse rx="26" ry="9" transform="rotate(60)"/><ellipse rx="26" ry="9" transform="rotate(120)"/><circle r="4" fill="${c}" stroke="none"/></g>`,
 };
-const ARTS={
- 1:id=>A.bg(id,"#2a0b08","#b8431f")+A.stars(18,11,50)+A.sun(50,92,17,"#ffcf6b")+A.mtn("#6b1d12",112,36,0)+A.mtn("#3a100a",128,30,6)+A.crown(50,52,1.15,"#ffd36b")+`<path d="M22 100l56 30M78 100L22 130" stroke="#ffd36b" stroke-width="2.400" stroke-linecap="round" opacity=".9"/>`,
- 2:id=>A.bg(id,"#0c3f33","#7dd0a1")+A.sun(78,30,8,"#fff1b0")+A.arch(22,150,34,92,"#0a3a2d","#1a6a52")+A.arch(80,150,30,80,"#0a3a2d","#1a6a52")+A.cyp(52,150,72,"#0a3a2d")+A.rose(34,118,.9)+A.rose(62,126,.8)+A.rose(48,106,.6),
- 3:id=>A.bg(id,"#0f0d33","#4d3c96")+A.stars(34,7,95)+A.moon(id,72,34,13)+A.dune("#1b1650",118,10)+A.dune("#0f0c33",132,6)+A.goblet(40,92,1.35,"#f4c84a"),
- 4:id=>A.bg(id,"#3d1237","#e8809a")+A.stars(14,5,45)+`<path d="M0 124C26 108 60 118 100 96" stroke="#3b1a14" stroke-width="3" fill="none"/>`+A.rose(32,102,1.3)+A.rose(70,92,.9)+A.bird(52,62,.55,"#2d1b4e","#6f4aa6","#f4c84a"),
- 5:id=>A.bg(id,"#233f58","#f6b46a")+A.sun(66,86,15,"#fff0b0")+A.mtn("#4a3a52",118,10,0)+A.minaret(30,150,7,70,"#1c2635")+A.dome(56,150,22,34,"#1c2635")+A.minaret(80,150,6,54,"#1c2635")+A.dune("#141b27",136,3),
- 6:id=>A.bg(id,"#bfe6c9","#6fb35d")+A.sun(24,28,9,"#fff1a8")+A.arch(70,150,40,76,"#2f7a4d","#b9e3b0")+A.cyp(22,150,70,"#1d5a39")+A.cyp(92,150,56,"#1d5a39")+[[18,128],[34,136],[50,130],[62,140],[78,132],[86,142]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="3" fill="${["#ff7aa2","#ffd36b","#fff","#ff9a5a","#ff7aa2","#fff"][i]}"/>`).join(""),
- 7:id=>A.bg(id,"#4a1d3c","#ffab5e")+A.sun(50,86,18,"#ffe9a8")+A.dune("#8a3b3a",104,5)+A.dune("#5a2230",116,7)+A.camel(14,112,1,"#2a0f1e")+A.camel(50,118,.9,"#2a0f1e")+A.camel(80,112,.85,"#2a0f1e")+A.dune("#2a0f1e",134,4),
- 8:id=>A.bg(id,"#a8431a","#ffd68a")+A.stars(22,3,60)+A.bird(50,56,.9,"#e8452e","#ffb347","#2bb0a6")+A.mtn("#7a2a12",132,22,0),
- 9:id=>A.bg(id,"#18755a","#7be0b0")+A.letter("А",26,70,38,"#ffd36b",-10)+A.letter("Б",62,60,34,"#ff7aa2",8)+A.letter("В",44,108,40,"#8fd3ff",-4)+A.cloud(78,28,1)+A.sun(18,26,7,"#fff1a8"),
- 10:id=>A.bg(id,"#2f64a8","#a5d6ff")+A.sun(78,30,10,"#fff1a8")+A.cloud(26,34,1.1)+A.kite(38,74,1.2,"#ff7aa2","#ffd36b")+`<path d="M0 126Q30 100 60 122T100 112V150H0z" fill="#3aa26a"/><path d="M0 138Q40 118 100 134V150H0z" fill="#27804f"/>`,
- 11:id=>A.bg(id,"#0f3232","#2b9a8f")+A.letter("Қ",22,52,34,"#ffffff22")+A.letter("Ҳ",74,70,38,"#ffffff22")+A.letter("Ғ",36,104,34,"#ffffff22")+A.cap(50,66,1.15,"#f6f1e4","#ffd36b")+`<circle cx="76" cy="36" r="9" fill="#ffd36b"/><path d="M72 36l3 3 6-7" stroke="#0f3232" stroke-width="2.200" fill="none" stroke-linecap="round"/>`,
- 12:id=>A.bg(id,"#161a2c","#3a4fa8")+A.letter("π",26,62,30,"#7be0ff")+A.letter("Σ",74,52,28,"#ffd36b")+A.letter("x²",56,104,26,"#ff8fb0")+`<path d="M18 120l24-26 24 26z" fill="none" stroke="#7be0ff" stroke-width="1.600"/><circle cx="76" cy="100" r="10" fill="none" stroke="#ffd36b" stroke-width="1.600"/>`,
- 13:id=>A.bg(id,"#4b3015","#e1a85e")+A.sun(72,42,10,"#fff0b0")+A.mtn("#7a5424",108,26,0)+A.dome(50,138,40,52,"#2a1a0a")+A.minaret(18,138,5,46,"#2a1a0a")+A.minaret(84,138,5,40,"#2a1a0a")+A.crown(50,38,.8,"#ffd36b"),
- 14:id=>A.bg(id,"#17476f","#75c0f2")+A.letter("5",50,96,64,"#ffd36b")+`<path d="M12 130l16-26 16 26z" fill="#ff7aa2"/><circle cx="76" cy="114" r="12" fill="#7be0b0"/><rect x="62" y="22" width="22" height="22" rx="3" fill="#fff" fill-opacity=".85" transform="rotate(12 73 33)"/>`,
- 15:id=>A.bg(id,"#6d1633","#f08aa0")+A.letter("3",50,98,64,"#fff0b0")+A.book(30,52,1.1,"#fff","#ffe4ea")+A.letter("Ӯ",74,48,22,"#ffffff66")+`<path d="M60 120l26-24 6 6-26 24z" fill="#ffd36b"/>`,
- 16:id=>A.bg(id,"#0b3340","#2cb6cd")+A.stars(20,9,100)+A.atom(50,76,1.25,"#fff")+`<path d="M60 112l-8 14h8l-6 16 16-20h-9l7-10z" fill="#ffd36b"/>`,
-};
+const ARTS={};
 function cover(b){
  return `<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
 }
 
 function book(b){return `<button class="book" data-book="${b.id}" aria-label="${b.t}, ${b.a}">${cover(b)}</button>`}
-const DESC={
- 1:"Достони бузурги Абулқосим Фирдавсӣ дар бораи подшоҳон ва паҳлавонони Эрон ва Турон. Рустам, Суҳроб ва Сиёвуш қаҳрамонони ин китобанд.",
- 2:"Ҳикояҳои пандомӯзи Саъдӣ бо наср ва назм дар бораи ахлоқ, дӯстӣ ва хирад.",
- 3:"Рубоиёти Умари Хайём дар бораи ҳаёт, вақт ва маънои зиндагӣ.",
- 4:"Ғазалҳои Ҳофизи Шерозӣ дар бораи ишқ, зебоӣ ва ҳикмат.",
- 5:"Ёддоштҳои Садриддин Айнӣ дар бораи Бухорои қадим ва зиндагии мардуми он замон.",
- 6:"Ҳикояҳо ва пандҳои Абдураҳмони Ҷомӣ, ки ба тарзи «Гулистон» навишта шудааст.",
- 7:"Сафари ҳафтсолаи Носири Хусрав ба Макка, Миср ва дигар кишварҳо.",
- 8:"Афсонаҳои халқии тоҷикӣ барои кӯдакон ва калонсолон.",
- 9:"Ҳарфҳои тоҷикӣ бо расм ва шеърҳои хурд барои кӯдакони 5–7 сола.",
- 10:"Ҳикояҳо ва шеърҳои кӯтоҳу шавқовар барои кӯдакон.",
- 11:"Саволҳои тестӣ ва шарҳи ҷавобҳо барои омодагӣ ба имтиҳони ММТ аз забони тоҷикӣ.",
- 12:"Масъалаҳо ва тестҳои математика барои омодагӣ ба имтиҳони ММТ.",
- 13:"Таърихи халқи тоҷик аз замонҳои қадим то имрӯз барои омодагӣ ба имтиҳон.",
- 14:"Китоби дарсии математика барои синфи 5.",
- 15:"Китоби дарсии забони модарӣ барои синфи 3.",
- 16:"Китоби дарсии физика барои синфи 7.",
-};
+const DESC={};
 const CATN={classic:"Классика",kids:"Барои кӯдакон",exam:"Омодагӣ ба ММТ",text:"Мактаб"};
-const AGE={classic:"12+",kids:"0+",exam:"14+",text:"6+"};
+const AGE={kids:"0+",text:"6+",exam:"14+"};
 function openDetail(id){if(S.view!=="book"){S.prev=S.view;S.prevSearch=S.search}S.bookId=id;S.view="book";render();window.scrollTo(0,0)}
 function detail(){
  const b=BOOKS.find(x=>x.id===S.bookId);const pr=S.prog[b.id]||0;
@@ -797,7 +759,7 @@ function detail(){
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
     <div><span>${P('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',1.8)}Гӯянда</span><b>${b.audio?"—":"Танҳо матн"}</b></div>
-    <div><span>${P('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',1.8)}Синну сол</span><b class="age">${AGE[b.c]}</b></div></div></div>
+    <div><span>${P('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',1.8)}Синну сол</span><b class="age">${AGE[b.c]||"12+"}</b></div></div></div>
    <div class="sec"><div class="sec-h"><h2 class="bd-h">Аз рӯи китоб савол диҳед</h2><span class="demo">Ёрдамчӣ</span></div>
     ${qs.map(q=>`<button class="bd-q" data-toast="Ёрдамчии китоб — қадами оянда"><span class="sp">${P(spark)}</span><span class="qt">${q}</span>${P(I.chev).replace('class="ico"','class="chev"')}</button>`).join("")}</div>
    <div class="sec"><h2 class="bd-h">Фикри шумо дар бораи китоб?</h2>
@@ -975,7 +937,7 @@ function sheetHTML(){
   <div class="sh-form">
    <label class="field" for="a_t"><input id="a_t" placeholder="Номи китоб" maxlength="120" value="${escH(a.t||"")}" style="padding-left:6px"></label>
    <label class="field" for="a_a"><input id="a_a" placeholder="Муаллиф" maxlength="120" value="${escH(a.a||"")}" style="padding-left:6px"></label>
-   <select id="a_c" aria-label="Бахш">${ADM_CATS.map(([k,n])=>`<option value="${k}" ${(a.c||"classic")===k?"selected":""}>${n}</option>`).join("")}</select>
+   <select id="a_c" aria-label="Бахш">${ADM_CATS.map(([k,n])=>`<option value="${k}" ${(a.c||"fiction")===k?"selected":""}>${n}</option>`).join("")}</select>
    <select id="a_col" aria-label="Ранги муқова">${ADM_COLS.map((x,i)=>`<option value="${i}" ${i===ci?"selected":""}>Муқова: ${x[2]}</option>`).join("")}</select>
    <textarea id="a_d" placeholder="Тавсифи кӯтоҳ" maxlength="600">${escH(a.desc||"")}</textarea>
    <label class="chk"><input type="checkbox" id="a_au" ${a.audio?"checked":""}>Аудио низ дорад</label>
@@ -988,9 +950,10 @@ function sheetHTML(){
 }
 function skel(){return `<div class="skel-w">${[38,70,52,88,40,64,0,30,76,48,58].map(w=>w?`<span class="sk" style="width:${w}%"></span>`:`<span style="height:8px"></span>`).join("")}</div>`}
 function wheelHTML(){
- if(!S.recent.length)return `<div class="wheel one" id="wheel"><div class="wpad t"></div><div class="witem wempty"><span class="round" style="width:60px;height:60px">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div class="wi"><b>Ҳоло китоб нахондаед</b><span class="a">Хонданро ҳозир оғоз кунед</span><button class="readbtn" data-read="2">${P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}Китобро хонед</button></div></div><div class="wpad b"></div></div>`;
- const one=S.recent.length===1;
- return `<div class="car ${one?"one":""}" id="wheel">${S.recent.map(id=>{const b=BOOKS.find(x=>x.id===id);const au=S.mode[id]==="audio";const pr=(au?S.aprog[id]:S.prog[id])||0;return `<div class="witem"><div style="width:60px;flex:none">${cover(b)}</div><div class="wi"><b>${b.t}</b><span class="a">${b.a}</span><div class="pbar"><i style="width:${pr}%"></i></div><button class="readbtn" ${au?"data-listen":"data-read"}="${id}">${au?P(I.head,2.2):P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}${au?"Гӯш кардан":"Идома додан"} <small>(${pr}%)</small></button></div></div>`}).join("")}</div>${one?"":`<div class="cdots" aria-hidden="true">${S.recent.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`}`;
+ const RC=S.recent.filter(id=>bk(id));
+ if(!RC.length)return `<div class="wheel one" id="wheel"><div class="wpad t"></div><div class="witem wempty"><span class="round" style="width:60px;height:60px">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div class="wi"><b>Ҳоло китоб нахондаед</b><span class="a">Хонданро ҳозир оғоз кунед</span><button class="readbtn" data-read="2">${P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}Китобро хонед</button></div></div><div class="wpad b"></div></div>`;
+ const one=RC.length===1;
+ return `<div class="car ${one?"one":""}" id="wheel">${RC.map(id=>{const b=BOOKS.find(x=>x.id===id);const au=S.mode[id]==="audio";const pr=(au?S.aprog[id]:S.prog[id])||0;return `<div class="witem"><div style="width:60px;flex:none">${cover(b)}</div><div class="wi"><b>${b.t}</b><span class="a">${b.a}</span><div class="pbar"><i style="width:${pr}%"></i></div><button class="readbtn" ${au?"data-listen":"data-read"}="${id}">${au?P(I.head,2.2):P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}${au?"Гӯш кардан":"Идома додан"} <small>(${pr}%)</small></button></div></div>`}).join("")}</div>${one?"":`<div class="cdots" aria-hidden="true">${S.recent.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`}`;
 }
 function setupWheel(){
  const w=document.getElementById("wheel");if(!w)return;
@@ -1094,10 +1057,11 @@ function home(){
    <div class="sec-h" style="margin-bottom:-6px"><h2>Охирин хондаам</h2><span class="demo">${S.recent.length}/10</span></div>
    ${wheelHTML()}
    <div class="chips">${CHIPS.map(([k,n])=>`<button class="chip ${k==="all"?"on":""}" data-chip2="${k}">${n}</button>`).join("")}</div>
-   <div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${[1,6,3,4,0,2].map(i=>book(BOOKS[i])).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(2,10).map(book).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${[["classic","Классикаи тоҷик"],["kids","Барои кӯдакон"],["exam","Омодагӣ ба ММТ"],["text","Китобҳои дарсӣ"]].map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter(x=>x.c==="classic").map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${x.a}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${x.a}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
+   ${BOOKS.length?"":`<div class="empty-card"><span class="round">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div><b>Китобҳо ба зудӣ илова мешаванд</b><span>Китобхона ҳоло пурра карда мешавад</span></div></div>`}
+   <div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice(0,8).map(book).join("")}</div></div>
+   <div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>
+   <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${GENRES.filter(g=>BOOKS.some(x=>x.c===g[0])).map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
+   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${x.a}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${x.a}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
    <div class="sec"><div class="sec-h"><h2>Навтарин</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice().reverse().slice(0,8).map(book).join("")}</div></div>
    ${S.premium?"":`<button class="ppill ${S.au?"up":""}" data-paywall>${CROWN}Премиум ${P(I.chev,2.4)}</button>`}
   </section>${tabs()}`;
@@ -1137,13 +1101,9 @@ function me(){
   </div></section>${tabs()}`;
 }
 
-const CATS=[
- ["audio","Аудио дар роҳ","Дар нақлиёт ва кор гӯш кунед",'<path d="M4 15v-3a8 8 0 0116 0v3M4 15a2 2 0 012-2h1v6H6a2 2 0 01-2-2zM20 15a2 2 0 00-2-2h-1v6h1a2 2 0 002-2z"/>'],
- ["exam","Омодагӣ ба ММТ","Тест ва маводҳо ба забони тоҷикӣ",'<path d="M6 3h9l4 4v14H6zM15 3v4h4M9.500 14l2 2 3.500-4"/>'],
- ["text","Мактаб","Китобҳои дарсӣ аз синф ба синф",'<path d="M3 9l9-5 9 5-9 5zM7 11.500V16c3 2 7 2 10 0v-4.500M21 9v6"/>'],
-];
+const CATS=[["audio","Аудио дар роҳ","Дар нақлиёт ва кор гӯш кунед",'<path d="M4 15v-3a8 8 0 0116 0v3M4 15a2 2 0 012-2h1v6H6a2 2 0 01-2-2zM20 15a2 2 0 00-2-2h-1v6h1a2 2 0 002-2z"/>'],...GENRES];
 function comm(){
- const cnt={audio:BOOKS.filter(b=>b.audio).length,exam:BOOKS.filter(b=>b.c==="exam").length,text:BOOKS.filter(b=>b.c==="text").length,classic:BOOKS.filter(b=>b.c==="classic").length,kids:BOOKS.filter(b=>b.c==="kids").length};
+ const cnt={audio:BOOKS.filter(b=>b.audio).length};GENRES.forEach(g=>cnt[g[0]]=BOOKS.filter(b=>b.c===g[0]).length);
  return `<section class="screen pad"><h1 class="title">Категория</h1>
   <div class="catlist">${CATS.map(([k,n,d,ic])=>`<button class="catrow" data-cat="${k}"><span class="cico">${P(ic,1.7)}</span><span class="txt"><b>${n}</b><span>${d}</span></span><span class="num">${cnt[k]}</span>${P(I.chev).replace('class="ico"','class="chev"')}</button>`).join("")}</div>
  </section>${tabs()}`;
