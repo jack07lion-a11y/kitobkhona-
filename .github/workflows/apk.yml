@@ -17,7 +17,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Калити санҷишӣ (кэш: ҳамон имзо барои навсозӣ)
+      - name: "Калити санҷишӣ (кэш, имзои ягона барои навсозӣ)"
         uses: actions/cache@v4
         with:
           path: apk/ks
@@ -27,16 +27,16 @@ jobs:
           VC: ${{ github.run_number }}
           VN: "0.1-test.${{ github.run_number }}"
         run: ./apk/build-ci.sh
-      - name: Нигоҳ доштан (Artifact)
+      - name: "Нигоҳ доштан (Artifact)"
         uses: actions/upload-artifact@v4
         with:
           name: kitobkhona-apk
           path: apk/src/build/kitobkhona.apk
-      - name: Лоиҳаи Release (танҳо барои шумо, пинҳон)
+      - name: "Release (пинҳон, танҳо барои шумо)"
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp apk/src/build/kitobkhona.apk kitobkhona-${{ github.run_number }}.apk
           gh release create "apk-${{ github.run_number }}" kitobkhona-${{ github.run_number }}.apk \
             --draft --prerelease --title "Китобхона APK #${{ github.run_number }}" \
-            --notes "Санҷишӣ APK. Дар ин китоб: Ёддоштҳо (Садриддин Айнӣ). Нусха: ${{ github.sha }}"
+            --notes "Санҷишӣ APK. Китоб: Ёддоштҳо. Нусха ${{ github.sha }}"
