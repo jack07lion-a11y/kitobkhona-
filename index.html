@@ -601,7 +601,9 @@ function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(s
  t.onload=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};t.onerror=()=>r(null);document.head.appendChild(t)})}
 const escH=v=>String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const okMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
-const BOOKS=[];
+const BOOKS=[
+ {id:900001,t:"Ёддоштҳо",a:"Садриддин Айнӣ",c:"fiction",col:["#1f4f7a","#123352"],audio:false,desc:"Хотираҳои Садриддин Айнӣ дар бораи кӯдакӣ, деҳа ва замони худ. 142 боб дар 4 қисм.",local:true,src:"books/yoddoshtho/book.json.gz",size:"0,8 МБ",cover:"books/yoddoshtho/cover.jpg"}
+];
 const BASE_N=BOOKS.length;
 const GENRES=[
  ["fiction","Адабиёти бадеӣ","Роман, ҳикоя ва повест",'<path d="M4 5c3-1.500 6-1.500 8 0v14c-2-1.500-5-1.500-8 0zM20 5c-3-1.500-6-1.500-8 0v14c2-1.500 5-1.500 8 0z"/>'],
@@ -731,11 +733,15 @@ const TX={};
 function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
 function blocksHTML(bl){return bl.map(x=>x[0]==="p"?`<p>${escH(x[1])}</p>`:x[0]==="v"?`<div class="rd-v">${(x[1]||[]).map(escH).join("<br>")}</div>`:x[0]==="sub"?`<p class="rd-sub">${escH(x[1])}</p>`:x[0]==="s"?`<p class="rd-sep">* * *</p>`:"").join("")}
 async function gunzipJSON(blob){const st=blob.stream().pipeThrough(new DecompressionStream("gzip"));return JSON.parse(await new Response(st).text())}
-async function loadText(b){if(TX[b.id])return true;const key="https://kitob.local/"+b.tp;
+const bpath=b=>b&&(b.tp||b.src);
+async function haveBook(b){try{return !!(await (await caches.open("kitob-books")).match("https://kitob.local/"+bpath(b)))}catch(_){return false}}
+async function markHave(){let ch=false;for(const b of BOOKS)if(b.src){const h=await haveBook(b);if(h!==!!b.have){b.have=h;ch=true}}if(ch&&S.view!=="login"&&S.view!=="read")render()}
+async function loadText(b){if(TX[b.id])return true;const key="https://kitob.local/"+bpath(b);
  try{const cache=await caches.open("kitob-books");let res=await cache.match(key);
+  if(!res&&b.src){const rs=await fetch(b.src);if(!rs.ok)return false;res=new Response(await rs.blob());await cache.put(key,res.clone())}
   if(!res){const c=await sbLoad();if(!c)return false;const{data,error}=await c.storage.from("books").download(b.tp);if(error||!data)return false;
    res=new Response(data);await cache.put(key,res.clone())}
-  TX[b.id]=await gunzipJSON(await res.blob());return true}catch(_){return false}}
+  TX[b.id]=await gunzipJSON(await res.blob());b.have=true;return true}catch(_){return false}}
 const GENRE_ALIAS={"адабиёт":"fiction","адабиёти бадеӣ":"fiction","шеър":"poetry","таърих":"history"};
 function genreOf(n){const k=String(n||"").trim().toLowerCase();if(GENRE_ALIAS[k])return GENRE_ALIAS[k];const g=GENRES.find(x=>x[1].toLowerCase()===k||x[0]===k);return g?g[0]:"fiction"}
 function loadJSZip(){return window.JSZip?Promise.resolve(window.JSZip):new Promise((ok,no)=>{const t=document.createElement("script");t.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";t.onload=()=>ok(window.JSZip);t.onerror=no;document.head.appendChild(t)})}
@@ -816,12 +822,12 @@ function detail(){
  return `<section class="bd" style="--bc:${b.col[0]}">
   <div class="bd-top pad"><button class="bd-ic" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><span class="bd-tt">${b.t}</span>
    <button class="bd-ic" data-toast="Мубодила — қадами оянда" aria-label="Мубодила">${P('<path d="M14 5l7 7-7 7M21 12H10a7 7 0 00-7 7"/>',2)}</button>
-   <button class="bd-ic" data-dlbook="${b.id}" aria-label="Боргирифтан">${S.dlBook[b.id]?P(IC_OK,2.2):P(IC_DL,2)}</button>
+   <button class="bd-ic" data-dlbook="${b.id}" aria-label="Боргирифтан">${(S.dlBook[b.id]||b.have)?P(IC_OK,2.2):P(IC_DL,2)}</button>
    <button class="bd-ic" data-toast="Ба рафи ман илова шуд" aria-label="Нигоҳ доштан">${P('<path d="M6 3h12v18l-6-4-6 4z"/>',2)}</button></div>
   <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p></div>
   <div class="pad bd-body">
    <div class="bd-stats"><div><small>Рейтинг</small><b><span style="color:#f2a93b">${FILL(I.star)}</span>—</b></div><div><small>Давомнокӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${b.audio?"—":"Матн"}</b></div><div><small>Мехонанд</small><b><span style="color:var(--orange)">${P('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M16 4.500a3.500 3.500 0 010 7M18 14c2 .7 3.300 2.700 3.500 6"/>',2)}</span>0</b></div></div>
-   <div class="bd-act ${locked(b)?"sm":""}">${`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":"Хондан"}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`<i></i><button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
+   <div class="bd-act ${locked(b)?"sm":""}">${`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":(b.src&&!b.have?"Боргирӣ ва хондан":"Хондан")}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`<i></i><button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
    <p class="bd-desc">${DESC[b.id]||b.desc||""}</p>
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
@@ -837,8 +843,8 @@ function detail(){
   </div></section>`;
 }
 
-async function openBook(id){const b=bk(id);if(b&&b.tp&&!TX[id]){toast("Китоб боргирӣ мешавад…");if(!await loadText(b)){toast("Китоб боргирӣ нашуд. Интернетро санҷед");return}}openBook0(id)}
-const isTx=b=>!!(b&&b.tp&&TX[b.id]);
+async function openBook(id){const b=bk(id);if(b&&bpath(b)&&!TX[id]){toast(b.src&&!b.have?"Боргирӣ мешавад ("+b.size+")…":"Китоб кушода мешавад…");if(!await loadText(b)){toast("Китоб боргирӣ нашуд. Интернетро санҷед");return}}openBook0(id)}
+const isTx=b=>!!(b&&bpath(b)&&TX[b.id]);
 const mkey=id=>{const b=bk(id);return isTx(b)?(S.rdCh[id]||0)*1e5+(S.pages[id]||0):(S.pages[id]||0)};
 function mlabel(id,k){return isTx(bk(id))?`Боби ${Math.floor(k/1e5)+1}, саҳифаи ${k%1e5+1}`:`Саҳифаи ${k+1}`}
 function goChap(id,ci,p){S.rdCh[id]=ci;S.pages[id]=p;S.sheet=null;render()}
@@ -1273,7 +1279,9 @@ function bind(){
  $$("[data-ff]",b=>b.onclick=()=>{S.pref.ff=b.dataset.ff;render()});
  $$("[data-subscribe]",b=>b.onclick=()=>{S.premium=true;S.sheet=null;toast("Намуна: Премиум фаъол шуд");render()});
  $$("[data-paywall]",b=>b.onclick=()=>{S.payId=null;S.sheet="pay";render()});
- $$("[data-dlbook]",b=>b.onclick=()=>{const id=+b.dataset.dlbook;if(locked(bk(id))){S.payId=id;S.sheet="pay";render();return}S.dlBook[id]=!S.dlBook[id];toast(S.dlBook[id]?"Барои хондан бе интернет нигоҳ дошта шуд":"Аз хотираи телефон тоза шуд");render()});
+ $$("[data-dlbook]",b=>b.onclick=async()=>{const id=+b.dataset.dlbook,bb=bk(id);if(locked(bb)){S.payId=id;S.sheet="pay";render();return}
+  if(bb&&bb.src){if(bb.have){toast("Китоб аллакай дар телефон аст");return}toast("Боргирӣ мешавад ("+bb.size+")…");
+   if(await loadText(bb)){render();toast("Боргирӣ шуд. Акнун бе интернет ҳам мехонед")}else toast("Боргирӣ нашуд. Интернетро санҷед");return}S.dlBook[id]=!S.dlBook[id];toast(S.dlBook[id]?"Барои хондан бе интернет нигоҳ дошта шуд":"Аз хотираи телефон тоза шуд");render()});
  $$("[data-applay]",b=>b.onclick=()=>{const a=S.au;if(locked(bk(a.id))&&a.pos>=FREE_SEC){S.payId=a.id;S.sheet="pay";render();return}a.playing=!a.playing;render()});
  $$("[data-apspeed]",b=>b.onclick=()=>{const L=[1,1.25,1.5,2,0.75];S.au.speed=L[(L.indexOf(S.au.speed)+1)%L.length];render()});
  $$("[data-apskip]",b=>b.onclick=()=>{const a=S.au,t=tracks(bk(a.id))[a.ch];let p=a.pos+ +b.dataset.apskip;if(locked(bk(a.id)))p=Math.min(p,FREE_SEC);a.pos=Math.max(0,Math.min(t.d,p));aprog();tickUI()});
@@ -1348,7 +1356,7 @@ if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
  if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else if(S.view==="login"){S.step="gender";render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
-sbLoad().then(()=>syncServer());
+sbLoad().then(()=>syncServer());markHave();
 applyTheme();matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",applyTheme);
 render();
 </script>
