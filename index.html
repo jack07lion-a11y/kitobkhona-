@@ -1,4 +1,6 @@
 <title>Китобхона прототипи</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap&subset=cyrillic">
@@ -559,6 +561,27 @@ html.sheet-on body{background:#000}
 /* tab icon pop */
 @media (prefers-reduced-motion:no-preference){.tb-i.pop .ico{animation:tbpop .5s cubic-bezier(.34,1.56,.64,1)}@keyframes tbpop{30%{transform:scale(.82)}70%{transform:scale(1.1)}}}
 @media (prefers-reduced-motion:reduce){.behind,.behind-in{transform:none!important;animation:none!important}.toast{animation:none}}
+
+/* Мослашув: экрани хурд (то 360px) ва телефони ғелтондашуда */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media (max-width:380px){
+ .top{gap:6px}.round{width:40px;height:40px}.brand{font-size:19px;gap:5px}.brand svg{width:32px;height:32px}
+ .promo.hp{height:auto;min-height:128px;padding:16px}
+ .promo.hp h2{font-size:17px;max-width:80%}.promo p{font-size:13px;max-width:19ch}
+ .promo .art{width:96px;height:88px;right:-16px;top:34px}
+ .promo.hp .cta{height:36px;font-size:13px;padding:0 12px}
+ .banner2{flex-wrap:wrap;padding:16px}.banner2 .cta{width:100%}
+ .empty-card{flex-wrap:wrap}
+ .wheel .witem,.car .witem{height:auto;min-height:118px;flex-wrap:wrap;row-gap:8px}
+ .witem .wi{min-width:0}
+ .rd-flow .rd-v{margin-left:.6em}
+}
+@media (max-width:340px){
+ .brand em{display:none}.brand span{font-size:0}.brand span::after{content:"китоб";font-size:19px}
+}
+@media (max-height:480px) and (orientation:landscape){
+ .promo.hp{min-height:0}
+}
 </style>
 
 <div class="app" id="app"></div>
