@@ -229,6 +229,12 @@ h1,h2,h3,p{margin:0}
 .code input{width:100%;height:62px;text-align:center;font-size:26px;font-weight:800;border-radius:16px;border:2px solid transparent;background:var(--card);outline:0}
 .code input:focus{border-color:var(--orange)}
 .btn{height:56px;border-radius:18px;border:0;font-weight:800;font-size:17px;background:var(--orange);color:#fff;width:100%}
+.vbadge{display:inline-grid;vertical-align:-3px;margin-left:6px}
+.sh-form{display:flex;flex-direction:column;gap:12px;padding:4px 0 8px}
+.sh-form select,.sh-form textarea{width:100%;border:2px solid transparent;background:var(--card);border-radius:16px;padding:14px 16px;font-size:16px;font-weight:700;color:inherit;font-family:inherit}
+.sh-form textarea{min-height:90px;resize:vertical}
+.sh-form .chk{display:flex;gap:10px;align-items:center;font-weight:700}
+.sh-form .chk input{width:22px;height:22px}
 .btn-t{background:none;border:0;color:var(--orange);font-weight:700;padding:8px}
 .demo{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:var(--card);color:var(--muted);padding:3px 8px;border-radius:8px}
 
@@ -579,6 +585,7 @@ const BOOKS=[
  {id:15,t:"Забони модарӣ, синфи 3",a:"Китоби дарсӣ",c:"text",col:["#7a1f3a","#521226"],audio:true},
  {id:16,t:"Физика, синфи 7",a:"Китоби дарсӣ",c:"text",col:["#2f6b5c","#1a463c"],audio:false},
 ];
+const BASE_N=BOOKS.length;
 const CHIPS=[["all","Ҳама"],["exam","Омодагӣ ба ММТ"],["text","Мактаб"],["audio","Аудио дар роҳ"]];
 const P=(d,sw=1.8)=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const FILL=d=>`<svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${d}</svg>`;
@@ -680,6 +687,19 @@ const CHN=["Сарсухан","Боби якум","Боби дуюм","Боби 
 function chapters(b){return CHN.map((n,i)=>({n,ps:[0,1,2,3,4].map(j=>PARAS[(i*2+j)%PARAS.length])}))}
 function tracks(b){const n=3+b.id%3;return Array.from({length:n},(_,i)=>({n:i?`Боби ${i}`:"Сарсухан",d:150+(b.id*37+i*53)%420}))}
 const bk=id=>BOOKS.find(x=>x.id===id);
+const ADM_COLS=[["#24443a","#122a22","Сабз"],["#7a2e1f","#4a1a12","Сурх"],["#3c2f6b","#231a45","Бунафш"],["#2c4a63","#1a2f40","Кабуд"],["#8a5a14","#5a3a0a","Зарди тира"],["#6b2f4a","#45192e","Гулобӣ"],["#3b3b3b","#1f1f1f","Хокистарӣ"]];
+const ADM_CATS=[["classic","Классикаи тоҷик"],["kids","Барои кӯдакон"],["exam","Омодагӣ ба ММТ"],["text","Мактаб"]];
+const VBADGE='<span class="vbadge" title="Админ" aria-label="Админ"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8cf0"/><path d="M12 5.2l1.8 4 4.4.5-3.3 3 .9 4.3L12 14.800 8.200 17l.9-4.300-3.300-3 4.400-.5z" fill="#fff"/></svg></span>';
+async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
+ BOOKS.length=BASE_N;data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true}));
+ S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
+async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
+ const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":""}catch(_){}}
+async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);save();if(S.view!=="login")render()}
+function admHTML(){if(S.role!=="admin")return "";const mine=BOOKS.filter(x=>x.db);
+ return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
+  <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Дарҳол барои ҳама намоён мешавад</span></div><button class="pill" data-adm="new">Илова</button></div>
+  ${mine.map(b=>`<div class="plan"><span class="sh-cv" style="width:38px;flex:none">${cover(b)}</span><div><b>${escH(b.t)}</b><span>${escH(b.a)}</span></div><button class="pill" data-adm="edit" data-id="${b.id}">Таҳрир</button></div>`).join("")}</div>`}
 const fmt=s=>{s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
 const FREE_PAGES=3,FREE_SEC=60;
 const locked=b=>!!(b&&b.prem&&!S.premium);
@@ -773,7 +793,7 @@ function detail(){
   <div class="pad bd-body">
    <div class="bd-stats"><div><small>Рейтинг</small><b><span style="color:#f2a93b">${FILL(I.star)}</span>—</b></div><div><small>Давомнокӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${b.audio?"—":"Матн"}</b></div><div><small>Мехонанд</small><b><span style="color:var(--orange)">${P('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M16 4.500a3.500 3.500 0 010 7M18 14c2 .7 3.300 2.700 3.500 6"/>',2)}</span>0</b></div></div>
    <div class="bd-act ${locked(b)?"sm":""}">${`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":"Хондан"}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`<i></i><button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
-   <p class="bd-desc">${DESC[b.id]||""}</p>
+   <p class="bd-desc">${DESC[b.id]||b.desc||""}</p>
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
     <div><span>${P('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',1.8)}Гӯянда</span><b>${b.audio?"—":"Танҳо матн"}</b></div>
@@ -950,6 +970,18 @@ function sheetHTML(){
  if(S.sheet==="atoc"&&S.au){const b=bk(S.au.id),tr=tracks(b),d=S.dl[b.id]||[];
   h=`<div class="sh-head"><b class="sh-t">Мундариҷа</b>${X}</div><div class="sh-list">${tr.map((t,i)=>`<div class="sh-row ${S.au.ch===i?"cur":""}"><button class="sh-main" data-goat="${i}"><span>${S.au.ch===i?EQ:""}${t.n}</span><em>${fmt(t.d)} · ${Math.max(1,Math.round(t.d/60))} мб</em></button><button class="dlb ${d.includes(i)?"done":""}" data-dlt="${i}" id="dlt${i}" aria-label="${d.includes(i)?"Боргирифта шуд":"Боргирифтан"}">${d.includes(i)?P(IC_OK,2.4):P(IC_DL,2)}</button></div>`).join("")}</div>
   <button class="pay-later full" data-dlall>${P(IC_DL,2)}${d.length===tr.length?"Ҳама боргирифта шуд":"Пурра боргирифтан"}</button>`}
+ if(S.sheet==="adm"){const a=S.adm||{},ci=Math.max(0,ADM_COLS.findIndex(x=>x[0]===(a.col||[])[0]));
+  h=`<div class="sh-head"><b class="sh-t">${a.id?"Таҳрири китоб":"Китоби нав"}</b>${X}</div>
+  <div class="sh-form">
+   <label class="field" for="a_t"><input id="a_t" placeholder="Номи китоб" maxlength="120" value="${escH(a.t||"")}" style="padding-left:6px"></label>
+   <label class="field" for="a_a"><input id="a_a" placeholder="Муаллиф" maxlength="120" value="${escH(a.a||"")}" style="padding-left:6px"></label>
+   <select id="a_c" aria-label="Бахш">${ADM_CATS.map(([k,n])=>`<option value="${k}" ${(a.c||"classic")===k?"selected":""}>${n}</option>`).join("")}</select>
+   <select id="a_col" aria-label="Ранги муқова">${ADM_COLS.map((x,i)=>`<option value="${i}" ${i===ci?"selected":""}>Муқова: ${x[2]}</option>`).join("")}</select>
+   <textarea id="a_d" placeholder="Тавсифи кӯтоҳ" maxlength="600">${escH(a.desc||"")}</textarea>
+   <label class="chk"><input type="checkbox" id="a_au" ${a.audio?"checked":""}>Аудио низ дорад</label>
+   <button class="btn" data-admsave>Захира кардан</button>
+   ${a.id?'<button class="btn-t" data-admdel style="color:#d33">Нест кардани китоб</button>':""}
+  </div>`}
  if(!h){S.sheet=null;return ""}
  const still=lastSheet===S.sheet?"still":"";lastSheet=S.sheet;
  return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""}" role="dialog" aria-modal="true">${h}</div>`;
@@ -1086,8 +1118,8 @@ function me(){
   <div class="pcover"><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
   <div class="pad" style="position:relative;display:flex;flex-direction:column;gap:20px;padding-top:0">
    <div class="prow"><div class="av">${P('<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/>',1.8).replace('class="ico"','class="ico" style="width:52px;height:52px"')}</div><div class="btns"><button class="pill" data-toast="Таҳрири профил — қадами оянда">Таҳрири профил</button></div></div>
-   <div><h1 class="name">${escH(S.uname||"Номи шумо")}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>
-    <div class="meta2"><span>${P(I.brief,1.8)}Ҳисоби ройгон</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
+   <div><h1 class="name">${escH(S.uname||"Номи шумо")}${S.role==="admin"?VBADGE:""}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>
+    <div class="meta2"><span>${P(I.brief,1.8)}${S.role==="admin"?"Админи Китобхона":"Ҳисоби ройгон"}</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
    <div class="banner2"><svg class="ico" style="width:40px;height:40px" viewBox="0 0 24 24" fill="#fff" fill-opacity=".9"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg><div><b>Китобхона Премиум</b><span>Имкониятҳои махсусро кашф кунед</span></div><button class="cta" data-toast="Харид — қадами оянда">Премиум ›</button></div>
    <div class="stats">
     <div class="stat"><small>${S.gender==="boy"?"Дастпӯшакҳои дониш":"Садбаргҳои дониш"}</small><b><span style="color:var(--orange);display:inline-grid">${P(gi(),1.8)}</span>0</b></div>
@@ -1095,6 +1127,7 @@ function me(){
     <div class="stat"><small>Рейтинги Озмун</small><b><span style="color:#e0a820">${P(I.trophy,2)}</span>0</b></div>
     <div class="stat"><small>7 рӯзи охир</small><b><span style="color:#6a63e0">${P(I.cal,2)}</span>0 дақ</b></div>
    </div>
+   ${admHTML()}
    <div class="sec"><div class="sec-h"><h2>Ҷинс</h2></div><div class="plan"><span class="gart sm"><svg viewBox="0 0 100 100">${art()}</svg></span><div><b>${S.gender==="boy"?"Писар":S.gender==="girl"?"Духтар":"Интихоб нашудааст"}</b><span>${S.gender?"Ҷинсро иваз кардан мумкин нест. Фақат аз ҳисоб баромада, аз нав сабти ном кунед.":"Ҷинс ҳангоми сабти ном интихоб мешавад."}</span></div></div>
     ${S.confirmOut?`<div class="empty-card" style="flex-direction:column;align-items:stretch"><b>Аз ҳисоб мебароед?</b><span>Ҷинс ва ҷамъоварӣ нест мешавад. Бозгашт аз нав сабти ном аст.</span><div style="display:flex;gap:10px"><button class="pill" style="flex:1;background:var(--orange);color:#fff" data-logout-yes>Ҳа, мебароям</button><button class="pill" style="flex:1" data-logout-no>Бекор</button></div></div>`:`<button class="pill" style="width:100%;height:48px;justify-content:center" data-logout>Аз ҳисоб баромадан</button>`}</div>
       <div class="sec"><div class="sec-h"><h2>Тарифҳо</h2></div>
@@ -1167,7 +1200,21 @@ function bind(){
  $$("[data-read]",b=>b.onclick=()=>openBook(+b.dataset.read));
  $$("[data-logout]",b=>b.onclick=()=>{S.confirmOut=true;render()});
  $$("[data-logout-no]",b=>b.onclick=()=>{S.confirmOut=false;render()});
- $$("[data-logout-yes]",b=>b.onclick=()=>{S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";sbLoad().then(c=>c&&c.auth.signOut());go("login")});
+ $$("[data-adm]",b=>b.onclick=e=>{e.stopPropagation();S.adm=b.dataset.adm==="edit"?{...bk(+b.dataset.id)}:{};S.sheet="adm";render()});
+ const asave=document.querySelector("[data-admsave]");if(asave)asave.onclick=async()=>{
+  const v=id=>document.getElementById(id),t=v("a_t").value.trim(),a=v("a_a").value.trim();
+  if(!t||!a){toast("Ном ва муаллифро нависед");return}
+  const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
+  const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim()};
+  asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
+  const{error}=S.adm&&S.adm.id?await c.from("books").update(row).eq("id",S.adm.id):await c.from("books").insert(row);
+  if(error){asave.disabled=false;toast("Захира нашуд. Ҳуқуқи админ лозим аст ё интернет нест");return}
+  await loadBooks(c);S.sheet=null;S.adm=null;render();toast("Захира шуд")};
+ const adel=document.querySelector("[data-admdel]");if(adel)adel.onclick=async()=>{
+  if(!confirm("Китоб ба тамом нест мешавад. Давом медиҳед?"))return;
+  const c=await sbLoad();if(!c)return;const{error}=await c.from("books").delete().eq("id",S.adm.id);
+  if(error){toast("Нест нашуд");return}await loadBooks(c);S.sheet=null;S.adm=null;render();toast("Нест шуд")};
+ $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";sbLoad().then(c=>c&&c.auth.signOut());go("login")});
  $$("[data-listen]",b=>b.onclick=()=>openAudio(+b.dataset.listen));
  $$("[data-closeread]",b=>b.onclick=()=>nav(()=>{S.view=S.rdPrev||"home";S.sheet=null;render();window.scrollTo(0,0)},"down"));
  $$("[data-sheet]",b=>b.onclick=e=>{e.stopPropagation();S.sheet=b.dataset.sheet;if(S.sheet==="toc")S.tocTab=0;render()});
@@ -1230,7 +1277,7 @@ function bind(){
   const c=await sbLoad();
   if(c){const{data,error}=await c.auth.verifyOtp({email:S.email,token:t,type:"email"});
    if(error){ver.disabled=false;ver.textContent="Тасдиқ кардан";toast("Рамз нодуруст ё кӯҳна аст");return}
-   const m=data.user?.user_metadata||{};S.uid=data.user?.id||"";
+   const m=data.user?.user_metadata||{};S.uid=data.user?.id||"";syncServer();
    if(m.gender){S.gender=m.gender;S.uname=m.name||"";S.step="email";go("home");return}}
   S.step="gender";render()};
  $$("[data-g]",b=>b.onclick=async()=>{const n=(document.getElementById("uname").value||"").trim();
@@ -1238,7 +1285,7 @@ function bind(){
   S.gender=b.dataset.g;S.uname=n;
   const c=await sbLoad();if(c){
    try{const{data:nm,error:ne}=await c.rpc("claim_name",{p_name:n});if(!ne&&nm){if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm}}catch(_){}
-   const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав")}
+   const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав");await syncServer()}
   S.step="email";go("home")});
  const rs=document.getElementById("resend");if(rs){
   const tick=()=>{if(!rs.isConnected)return clearInterval(S.rsT);const left=Math.ceil(((S.resendAt||0)-Date.now())/1000);
@@ -1258,6 +1305,7 @@ if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
  if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else if(S.view==="login"){S.step="gender";render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
+sbLoad().then(()=>syncServer());
 applyTheme();matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",applyTheme);
 render();
 </script>
