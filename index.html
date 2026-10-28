@@ -549,6 +549,7 @@ html.sheet-on body{background:#000}
 
 <script>
 /* Supabase: Project URL ва anon key. Холӣ бошад — реҷаи намуна (demo). */
+const OTPN=8;
 const SB_URL="https://hxtpmwxglfuabdvaeapj.supabase.co",SB_KEY="sb_publishable_hnpY6mKTu9ahVxjIbcKvkQ_gjv0tb39";
 let sb=null;
 function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(sb)return r(sb);
@@ -1022,11 +1023,11 @@ function syncTabs(){
 
 function login(){
  const demo=!SB_URL||!SB_KEY;
- const email=`<h2>Ворид шавед</h2><p class="hint">Почтаи электронии худро нависед. Мо рамзи 6-рақама мефиристем, парол лозим нест.</p>
+ const email=`<h2>Ворид шавед</h2><p class="hint">Почтаи электронии худро нависед. Мо рамзи ${OTPN}-рақама мефиристем, парол лозим нест.</p>
  <label class="field" for="email"><input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="nom@gmail.com" value="${escH(S.email||"")}" style="padding-left:18px"></label>
  <button class="btn" id="send">Гирифтани рамз</button><button class="btn-t" data-go="home">Аввал дидан, бе бақайдгирӣ</button>${demo?'<p class="hint"><span class="demo">Реҷаи намуна: сервер ҳанӯз пайваст нест</span></p>':''}`;
- const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи 6-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар 6 рақам</span>':''}</p>
- <div class="code">${[0,1,2,3,4,5].map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:6}" aria-label="Рақами ${i+1}">`).join("")}</div>
+ const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
+ <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
@@ -1211,12 +1212,12 @@ function bind(){
    if(error){send.disabled=false;send.textContent="Гирифтани рамз";toast(/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хато: "+error.message);return}}
   else if(SB_URL){send.disabled=false;send.textContent="Гирифтани рамз";toast("Интернет нест ё сервер ҷавоб намедиҳад");return}
   S.step="code";render();document.getElementById("c0").focus()};
- const cs=[0,1,2,3,4,5].map(i=>document.getElementById("c"+i));
+ const cs=Array.from({length:OTPN},(_,i)=>i).map(i=>document.getElementById("c"+i));
  if(cs[0])cs.forEach((c,i)=>{c.oninput=()=>{let v=c.value.replace(/\D/g,"");
-   if(v.length>1){v.split("").slice(0,6-i).forEach((d,j)=>cs[i+j].value=d);(cs[Math.min(i+v.length,5)]).focus();return}
+   if(v.length>1){v.split("").slice(0,OTPN-i).forEach((d,j)=>cs[i+j].value=d);(cs[Math.min(i+v.length,OTPN-1)]).focus();return}
    c.value=v;if(v&&cs[i+1])cs[i+1].focus()};c.onkeydown=e=>{if(e.key==="Backspace"&&!c.value&&cs[i-1])cs[i-1].focus()}});
  const ver=document.getElementById("verify");if(ver)ver.onclick=async()=>{const t=cs.map(c=>c.value).join("");
-  if(t.length!==6){toast("Ҳар 6 рақамро нависед");return}
+  if(t.length!==OTPN){toast("Ҳар "+OTPN+" рақамро нависед");return}
   ver.disabled=true;ver.textContent="Тафтиш…";
   const c=await sbLoad();
   if(c){const{data,error}=await c.auth.verifyOtp({email:S.email,token:t,type:"email"});
