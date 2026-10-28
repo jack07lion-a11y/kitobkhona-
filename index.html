@@ -229,6 +229,17 @@ h1,h2,h3,p{margin:0}
 .code input{width:100%;height:62px;text-align:center;font-size:26px;font-weight:800;border-radius:16px;border:2px solid transparent;background:var(--card);outline:0}
 .code input:focus{border-color:var(--orange)}
 .btn{height:56px;border-radius:18px;border:0;font-weight:800;font-size:17px;background:var(--orange);color:#fff;width:100%}
+.cover.img{background:#222}
+.cover.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover.img::before{content:"";position:absolute;inset:0 auto 0 0;width:9%;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.12) 55%,rgba(0,0,0,.08));pointer-events:none}
+.cover.img::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(115deg,rgba(255,255,255,.14),transparent 40%);pointer-events:none}
+.book .cover.img{transform:perspective(700px) rotateY(-7deg);transform-origin:left center;box-shadow:6px 8px 18px rgba(0,0,0,.35);transition:transform .25s}
+.book:active .cover.img{transform:perspective(700px) rotateY(-2deg) scale(.98)}
+.rd-flow .rd-part{text-indent:0;text-align:center;font-family:var(--font);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin:12% 0 0}
+.rd-flow .rd-sub{text-indent:0;text-align:center;font-weight:700;letter-spacing:.06em;margin:1em 0 .4em}
+.rd-flow .rd-v{margin:0 0 .8em 1.4em;text-align:left}
+.rd-flow .rd-sep{text-indent:0;text-align:center;letter-spacing:.5em;margin:1em 0}
+.hidden-tag{font-size:11px;font-weight:800;color:#d33}
 .vbadge{display:inline-grid;vertical-align:-3px;margin-left:6px}
 .sh-form{display:flex;flex-direction:column;gap:12px;padding:4px 0 8px}
 .sh-form select,.sh-form textarea{width:100%;border:2px solid transparent;background:var(--card);border-radius:16px;padding:14px 16px;font-size:16px;font-weight:700;color:inherit;font-family:inherit}
@@ -261,7 +272,7 @@ h1,h2,h3,p{margin:0}
 .rd-ic.on svg{fill:currentColor}
 .rd-ch{flex:1;min-width:0;text-align:center;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--pgmut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rd-view{position:relative;flex:1;margin:4px 24px 0;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}
-.rd-flow{height:100%;column-fill:auto;font-family:var(--ff);font-size:var(--fs);line-height:1.62;text-align:justify;hyphens:auto;will-change:transform}
+.rd-flow{height:100%;column-fill:auto;font-family:var(--ff);font-size:var(--fs);line-height:var(--lh,1.62);text-align:justify;hyphens:auto;will-change:transform}
 .rd-flow p{margin:0 0 .7em;text-indent:1.4em}
 .rd-flow .rd-note{text-indent:0;text-align:center;font-family:var(--font);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-top:22%}
 .rd-title{font-family:var(--ff);font-size:1.7em;line-height:1.2;text-align:center;margin:.5em 0 .3em}
@@ -686,15 +697,48 @@ const ADM_COLS=[["#24443a","#122a22","Сабз"],["#7a2e1f","#4a1a12","Сурх"
 const ADM_CATS=GENRES.map(g=>[g[0],g[1]]);
 const VBADGE='<span class="vbadge" title="Админ" aria-label="Админ"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8cf0"/><path d="M12 5.2l1.8 4 4.4.5-3.3 3 .9 4.3L12 14.800 8.200 17l.9-4.300-3.300-3 4.400-.5z" fill="#fff"/></svg></span>';
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
- BOOKS.length=BASE_N;data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true}));
+ const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
+ if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
+ BOOKS.length=BASE_N;data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":""}catch(_){}}
 async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);save();if(S.view!=="login")render()}
+const TX={};
+function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
+function blocksHTML(bl){return bl.map(x=>x[0]==="p"?`<p>${escH(x[1])}</p>`:x[0]==="v"?`<div class="rd-v">${(x[1]||[]).map(escH).join("<br>")}</div>`:x[0]==="sub"?`<p class="rd-sub">${escH(x[1])}</p>`:x[0]==="s"?`<p class="rd-sep">* * *</p>`:"").join("")}
+async function gunzipJSON(blob){const st=blob.stream().pipeThrough(new DecompressionStream("gzip"));return JSON.parse(await new Response(st).text())}
+async function loadText(b){if(TX[b.id])return true;const key="https://kitob.local/"+b.tp;
+ try{const cache=await caches.open("kitob-books");let res=await cache.match(key);
+  if(!res){const c=await sbLoad();if(!c)return false;const{data,error}=await c.storage.from("books").download(b.tp);if(error||!data)return false;
+   res=new Response(data);await cache.put(key,res.clone())}
+  TX[b.id]=await gunzipJSON(await res.blob());return true}catch(_){return false}}
+const GENRE_ALIAS={"адабиёт":"fiction","адабиёти бадеӣ":"fiction","шеър":"poetry","таърих":"history"};
+function genreOf(n){const k=String(n||"").trim().toLowerCase();if(GENRE_ALIAS[k])return GENRE_ALIAS[k];const g=GENRES.find(x=>x[1].toLowerCase()===k||x[0]===k);return g?g[0]:"fiction"}
+function loadJSZip(){return window.JSZip?Promise.resolve(window.JSZip):new Promise((ok,no)=>{const t=document.createElement("script");t.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";t.onload=()=>ok(window.JSZip);t.onerror=no;document.head.appendChild(t)})}
+async function gzipBlob(text){return await new Response(new Blob([text]).stream().pipeThrough(new CompressionStream("gzip"))).blob()}
+async function importZip(file){
+ const JSZip=await loadJSZip(),z=await JSZip.loadAsync(file);
+ const jf=z.file("book.json")||z.file(/(^|\/)book\.json$/)[0];if(!jf)throw new Error("Дар zip файли book.json нест");
+ const raw=await jf.async("string"),d=JSON.parse(raw);
+ if(!d.title||!d.author||!Array.isArray(d.parts))throw new Error("Сохтори book.json нодуруст аст");
+ const slug=String(d.id||d.title).toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||("k"+Date.now());
+ const c=await sbLoad();if(!c)throw new Error("Интернет нест");
+ const st=c.storage.from("books"),tp=slug+"/book.json.gz";
+ let e=(await st.upload(tp,await gzipBlob(raw),{upsert:true,contentType:"application/gzip"})).error;if(e)throw new Error("Матн бор нашуд: "+e.message);
+ let cvp=null;const cf=d.cover&&z.file(d.cover);
+ if(cf){cvp=slug+"/"+d.cover.split("/").pop();e=(await st.upload(cvp,await cf.async("blob"),{upsert:true,contentType:/\.png$/i.test(cvp)?"image/png":"image/jpeg"})).error;if(e)throw new Error("Муқова бор нашуд: "+e.message)}
+ const row={t:d.title,a:d.author,c:genreOf(d.category),slug,text_path:tp,cover_path:cvp};
+ const{data:ex}=await c.from("books").select("id").eq("slug",slug).maybeSingle();
+ const res=ex?await c.from("books").update(row).eq("id",ex.id):await c.from("books").insert({...row,published:false});
+ if(res.error)throw new Error("Дар база сабт нашуд: "+res.error.message);
+ try{(await caches.open("kitob-books")).delete("https://kitob.local/"+tp)}catch(_){}
+ await loadBooks(c);return d.title}
 function admHTML(){if(S.role!=="admin")return "";const mine=BOOKS.filter(x=>x.db);
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
-  <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Дарҳол барои ҳама намоён мешавад</span></div><button class="pill" data-adm="new">Илова</button></div>
-  ${mine.map(b=>`<div class="plan"><span class="sh-cv" style="width:38px;flex:none">${cover(b)}</span><div><b>${escH(b.t)}</b><span>${escH(b.a)}</span></div><button class="pill" data-adm="edit" data-id="${b.id}">Таҳрир</button></div>`).join("")}</div>`}
+  <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Танҳо ном ва муаллиф, бе матн</span></div><button class="pill" data-adm="new">Илова</button></div>
+  <div class="plan"><span class="round">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}</span><div><b>Бастаи китоб (zip)</b><span>Матн ва муқова. Аввал пинҳон бор мешавад</span></div><label class="pill" for="admzip">Интихоб</label><input type="file" id="admzip" accept=".zip,application/zip" hidden></div>
+  ${mine.map(b=>`<div class="plan"><span class="sh-cv" style="width:38px;flex:none">${cover(b)}</span><div><b>${escH(b.t)}</b><span>${escH(b.a)}${b.pub?"":' · <i class="hidden-tag">Пинҳон</i>'}</span></div><button class="pill" data-adm="edit" data-id="${b.id}">Таҳрир</button></div>`).join("")}</div>`}
 const fmt=s=>{s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
 const FREE_PAGES=3,FREE_SEC=60;
 const locked=b=>!!(b&&b.prem&&!S.premium);
@@ -703,7 +747,7 @@ function gi(){return S.gender==="boy"?GLOVE:TAB[2][2]}
 let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0,search:false,recent:[],prog:{},confirmOut:false,pref:{fs:19,th:"white",ff:"serif"},pages:{},marks:{},mode:{},aprog:{},apos:{},dl:{},dlBook:{},premium:false,sheet:null,tocTab:0,au:null};
 const app=document.getElementById("app");
 try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
-if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;
+if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;if(!S.rdCh)S.rdCh={};if(!S.pref.lh)S.pref.lh=1.6;
 function save(){try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
 const esc=s=>s.replace(/"/g,"&quot;");
 
@@ -733,7 +777,7 @@ const A={
 };
 const ARTS={};
 function cover(b){
- return `<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
+ return b.cover?`<div class="cover art img"><img src="${escH(b.cover)}" alt="" loading="lazy">${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}</div>`:`<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
 }
 
 function book(b){return `<button class="book" data-book="${b.id}" aria-label="${b.t}, ${b.a}">${cover(b)}</button>`}
@@ -770,7 +814,12 @@ function detail(){
   </div></section>`;
 }
 
-function openBook(id){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="read";if(S.view!=="read")S.rdPrev=S.view;S.rdId=id;S.sheet=null;S.view="read";render();window.scrollTo(0,0)}
+async function openBook(id){const b=bk(id);if(b&&b.tp&&!TX[id]){toast("Китоб боргирӣ мешавад…");if(!await loadText(b)){toast("Китоб боргирӣ нашуд. Интернетро санҷед");return}}openBook0(id)}
+const isTx=b=>!!(b&&b.tp&&TX[b.id]);
+const mkey=id=>{const b=bk(id);return isTx(b)?(S.rdCh[id]||0)*1e5+(S.pages[id]||0):(S.pages[id]||0)};
+function mlabel(id,k){return isTx(bk(id))?`Боби ${Math.floor(k/1e5)+1}, саҳифаи ${k%1e5+1}`:`Саҳифаи ${k+1}`}
+function goChap(id,ci,p){S.rdCh[id]=ci;S.pages[id]=p;S.sheet=null;render()}
+function openBook0(id){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="read";if(S.view!=="read")S.rdPrev=S.view;S.rdId=id;S.sheet=null;S.view="read";render();window.scrollTo(0,0)}
 function openAudio(id){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="audio";
  if(!S.au||S.au.id!==id){if(S.au)S.apos[S.au.id]={ch:S.au.ch,pos:S.au.pos};const sv=S.apos[id]||{ch:0,pos:0};S.au={id,ch:sv.ch,pos:sv.pos,playing:true,speed:S.au?S.au.speed:1,sleep:0,sleepSet:0}}else S.au.playing=true;
  if(S.view!=="audio")S.apPrev=S.view;S.sheet=null;S.view="audio";render();window.scrollTo(0,0)}
@@ -781,11 +830,13 @@ const F10=P('<path d="M19.5 12A7.5 7.5 0 1112 4.5h3.5"/><path d="M13 1.5l3 3-3 3
 const TIMER=P('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/>',1.8),EQ=P('<path d="M5 10v4M9 7v10M13 9v6M17 6v12"/>',2.2);
 
 function reader(){
- const b=bk(S.rdId),chs=chapters(b),f=S.pref;
- return `<section class="rd t-${f.th}" style="--fs:${f.fs}px;--ff:${f.ff==="serif"?'"Lora",Georgia,serif':'var(--font)'}">
+ const b=bk(S.rdId),f=S.pref,tc=isTx(b)?txChapters(b):null,ci=tc?Math.min(S.rdCh[b.id]||0,tc.length-1):0,chs=tc?null:chapters(b);
+ const body=tc?`${tc[ci].part?`<p class="rd-part">${escH(tc[ci].part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(tc[ci].n)}</h2>${blocksHTML(tc[ci].bl)}`
+  :`<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${b.t}</h1><p class="rd-au">${b.a}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${c.n}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`;
+ return `<section class="rd t-${f.th}" style="--lh:${f.lh||1.6};--fs:${f.fs}px;--ff:${f.ff==="serif"?'\'Lora\',Georgia,serif':'var(--font)'}">
   <div class="rd-top"><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button><span class="rd-ch" id="rdch">${b.t}</span>
    <button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic x" data-closeread aria-label="Пӯшидан">${P(IC_X,2.2)}</button></div>
-  <div class="rd-view" id="rdview"><div class="rd-flow" id="rdflow"><p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${b.t}</h1><p class="rd-au">${b.a}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${c.n}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}</div><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div></div>
+  <div class="rd-view" id="rdview"><div class="rd-flow" id="rdflow">${body}</div><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div></div>
   <div class="rd-foot"><span id="rdnum" class="rd-pg">1 / 1</span><div class="rd-prog"><i id="rdbar"></i></div><button class="rd-fabb" data-sheet="set" aria-label="Танзимоти хондан">${P('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',2)}</button></div>
  </section>`;
 }
@@ -821,15 +872,18 @@ function setTop(p,x,ms){const t=RD.top;RD.tf.style.transform=`translateX(${-p*RD
 function hideTop(){const t=RD.top;t.style.transition="none";t.style.visibility="hidden";t.style.transform="none"}
 function showPage(p){
  const R=RD;S.pages[R.b.id]=p;
- const pr=Math.round((p+1)/R.total*100);S.prog[R.b.id]=pr;
+ const tc=isTx(R.b)?txChapters(R.b):null,ci=tc?(S.rdCh[R.b.id]||0):0;
+ const pr=tc?Math.round((ci+(p+1)/R.total)/tc.length*100):Math.round((p+1)/R.total*100);S.prog[R.b.id]=pr;
  let ch=-1;R.heads.forEach((h,i)=>{if(p>=h)ch=i});
  const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
- set("rdch",ch<0?R.b.t:CHN[ch]);set("rdbadge",p+1);set("rdnum",`${p+1} / ${R.total}`);
+ set("rdch",tc?tc[ci].n:ch<0?R.b.t:CHN[ch]);set("rdbadge",p+1);set("rdnum",tc?`Боби ${ci+1}/${tc.length} · ${p+1}/${R.total}`:`${p+1} / ${R.total}`);
  const bar=document.getElementById("rdbar");if(bar)bar.style.width=pr+"%";
- const m=document.getElementById("rdmark");if(m)m.classList.toggle("on",(S.marks[R.b.id]||[]).includes(p));
+ const m=document.getElementById("rdmark");if(m)m.classList.toggle("on",(S.marks[R.b.id]||[]).includes(mkey(R.b.id)));
  save();
 }
-function canGo(d,act){const p=(S.pages[RD.b.id]||0)+d;
+function canGo(d,act){const p=(S.pages[RD.b.id]||0)+d,id=RD.b.id,tc=isTx(RD.b)?txChapters(RD.b):null,ci=S.rdCh[id]||0;
+ if(tc&&p<0){if(ci>0&&act)goChap(id,ci-1,1e9);return false}
+ if(tc&&p>=RD.total){if(ci<tc.length-1){if(act)goChap(id,ci+1,0)}else if(act)toast("Китоб тамом шуд!");return false}
  if(p<0)return false;
  if(locked(RD.b)&&p>=FREE_PAGES){if(act){S.payId=RD.b.id;S.sheet="pay";render()}return false}
  if(p>=RD.total){if(act)toast("Китоб тамом шуд! +5 мукофот (намуна)");return false}
@@ -900,14 +954,15 @@ function applyTheme(){const t=S.theme||"auto",r=document.documentElement;if(t===
 function sheetHTML(){
  if(!S.sheet){lastSheet=null;return ""}
  const X=`<button class="sh-x" data-shclose aria-label="Пӯшидан">${P(IC_X,2)}</button>`;let h="";
- if(S.sheet==="toc"){const b=bk(S.rdId),mk=(S.marks[b.id]||[]).slice().sort((x,y)=>x-y);
+ if(S.sheet==="toc"){const b=bk(S.rdId),mk=(S.marks[b.id]||[]).slice().sort((x,y)=>x-y),tcs=isTx(b)?txChapters(b):null;
   h=`<div class="sh-head"><div class="sh-cv">${cover(b)}</div><div><b>${b.t}</b><span>${b.a}</span></div>${X}</div>
   <div class="seg">${["Бобҳо","Хатчӯбҳо","Қайдҳо"].map((n,i)=>`<button class="${S.tocTab===i?"on":""}" data-toct="${i}">${n}</button>`).join("")}</div>
-  ${S.tocTab===0?`<div class="sh-list">${CHN.map((n,i)=>`<button class="sh-row" data-goch="${i}"><span>${n}</span><em><span data-chp="${i}">–</span>-саҳифа</em></button>`).join("")}</div>`
-   :S.tocTab===1?(mk.length?`<div class="sh-list">${mk.map(p=>`<button class="sh-row" data-gopg="${p}"><span>${P(IC_MARK)}Саҳифаи ${p+1}</span><em>Гузаштан ›</em></button>`).join("")}</div>`:`<p class="sh-empty">Ҳоло хатчӯб нест. Дар боло тугмаи ${P(IC_MARK)} -ро пахш кунед.</p>`)
+  ${S.tocTab===0?(tcs?`<div class="sh-list">${tcs.map((c,i)=>`${c.part?`<p class="sh-empty" style="text-align:left;margin:10px 4px 2px">${escH(c.part)}</p>`:""}<button class="sh-row" data-gotch="${i}"><span>${escH(c.n)}</span><em>${(S.rdCh[b.id]||0)===i?"Ҳозир":""}</em></button>`).join("")}</div>`:`<div class="sh-list">${CHN.map((n,i)=>`<button class="sh-row" data-goch="${i}"><span>${n}</span><em><span data-chp="${i}">–</span>-саҳифа</em></button>`).join("")}</div>`)
+   :S.tocTab===1?(mk.length?`<div class="sh-list">${mk.map(p=>`<button class="sh-row" data-gopg="${p}"><span>${P(IC_MARK)}${mlabel(b.id,p)}</span><em>Гузаштан ›</em></button>`).join("")}</div>`:`<p class="sh-empty">Ҳоло хатчӯб нест. Дар боло тугмаи ${P(IC_MARK)} -ро пахш кунед.</p>`)
    :`<p class="sh-empty">Қайдҳо дар қадами оянда: матнро ҷудо карда, қайд менависед.</p>`}`}
  if(S.sheet==="set"){const f=S.pref;
   h=`<div class="sh-head"><b class="sh-t">Танзимоти хондан</b>${X}</div>
+  <div class="set-row"><span>Фосилаи сатрҳо</span><div class="stepper"><button data-lh="-1" aria-label="Зичтар">−</button><b>${(f.lh||1.6).toFixed(1)}</b><button data-lh="1" aria-label="Кушодатар">+</button></div></div>
   <div class="set-row"><span>Андозаи ҳарф</span><div class="stepper"><button data-fs="-1" aria-label="Хурдтар">A−</button><b>${f.fs}</b><button data-fs="1" aria-label="Калонтар">A+</button></div></div>
   <div class="set-row"><span>Ранги саҳифа</span><div class="sw">${[["white","Сафед"],["sepia","Зардча"],["dark","Торик"]].map(([k,n])=>`<button class="swb t-${k} ${f.th===k?"on":""}" data-th="${k}" aria-label="${n}">Аа</button>`).join("")}</div></div>
   <div class="set-row" style="border:0"><span>Ҳуруф</span><div class="seg sm">${[["serif","Китобӣ"],["sans","Оддӣ"]].map(([k,n])=>`<button class="${f.ff===k?"on":""}" data-ff="${k}">${n}</button>`).join("")}</div></div>`}
@@ -941,6 +996,7 @@ function sheetHTML(){
    <select id="a_col" aria-label="Ранги муқова">${ADM_COLS.map((x,i)=>`<option value="${i}" ${i===ci?"selected":""}>Муқова: ${x[2]}</option>`).join("")}</select>
    <textarea id="a_d" placeholder="Тавсифи кӯтоҳ" maxlength="600">${escH(a.desc||"")}</textarea>
    <label class="chk"><input type="checkbox" id="a_au" ${a.audio?"checked":""}>Аудио низ дорад</label>
+   <label class="chk"><input type="checkbox" id="a_pub" ${a.id&&!a.pub?"":"checked"}>Барои ҳама намоён (нашр)</label>
    <button class="btn" data-admsave>Захира кардан</button>
    ${a.id?'<button class="btn-t" data-admdel style="color:#d33">Нест кардани китоб</button>':""}
   </div>`}
@@ -1058,11 +1114,11 @@ function home(){
    ${wheelHTML()}
    <div class="chips">${CHIPS.map(([k,n])=>`<button class="chip ${k==="all"?"on":""}" data-chip2="${k}">${n}</button>`).join("")}</div>
    ${BOOKS.length?"":`<div class="empty-card"><span class="round">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div><b>Китобҳо ба зудӣ илова мешаванд</b><span>Китобхона ҳоло пурра карда мешавад</span></div></div>`}
-   <div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice(0,8).map(book).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>
+   ${BOOKS.length?`<div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice(0,8).map(book).join("")}</div></div>`:""}
+   ${BOOKS.some(x=>x.audio)?`<div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>`:""}
    <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${GENRES.filter(g=>BOOKS.some(x=>x.c===g[0])).map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
    <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${x.a}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${x.a}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Навтарин</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice().reverse().slice(0,8).map(book).join("")}</div></div>
+   ${BOOKS.length>8?`<div class="sec"><div class="sec-h"><h2>Навтарин</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice().reverse().slice(0,8).map(book).join("")}</div></div>`:""}
    ${S.premium?"":`<button class="ppill ${S.au?"up":""}" data-paywall>${CROWN}Премиум ${P(I.chev,2.4)}</button>`}
   </section>${tabs()}`;
 }
@@ -1120,7 +1176,7 @@ function goal(){
 function soon(ic,t,p){return `<section class="screen pad"><h1 class="title">${t}</h1><div class="soon"><span class="big">${P(ic,1.8)}</span><h2>Дар қадами оянда</h2><p>${p}</p></div></section>${tabs()}`}
 
 function render(fq){
- if((S.view==="audio"&&!S.au)||(S.view==="read"&&!S.rdId))S.view="home";
+ if((S.view==="audio"&&!(S.au&&bk(S.au.id)))||(S.view==="read"&&!bk(S.rdId))||(S.view==="book"&&!bk(S.bookId)))S.view="home";
  const v=S.view;
  app.innerHTML=(v==="read"?reader(): v==="audio"?player(): v==="book"?detail(): v==="login"?login(): v==="home"?home(): v==="lib"?lib(): v==="me"?me():
   v==="goal"?goal(): comm())+sheetHTML();
@@ -1161,11 +1217,13 @@ function bind(){
  $$("[data-logout]",b=>b.onclick=()=>{S.confirmOut=true;render()});
  $$("[data-logout-no]",b=>b.onclick=()=>{S.confirmOut=false;render()});
  $$("[data-adm]",b=>b.onclick=e=>{e.stopPropagation();S.adm=b.dataset.adm==="edit"?{...bk(+b.dataset.id)}:{};S.sheet="adm";render()});
+ const az=document.getElementById("admzip");if(az)az.onchange=async()=>{const f=az.files&&az.files[0];if(!f)return;
+  toast("Бор шуда истодааст… сабр кунед");try{const t=await importZip(f);render();toast("«"+t+"» бор шуд (пинҳон)")}catch(e){toast(e.message||"Хато рӯй дод")}az.value=""};
  const asave=document.querySelector("[data-admsave]");if(asave)asave.onclick=async()=>{
   const v=id=>document.getElementById(id),t=v("a_t").value.trim(),a=v("a_a").value.trim();
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
-  const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim()};
+  const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked};
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const{error}=S.adm&&S.adm.id?await c.from("books").update(row).eq("id",S.adm.id):await c.from("books").insert(row);
   if(error){asave.disabled=false;toast("Захира нашуд. Ҳуқуқи админ лозим аст ё интернет нест");return}
@@ -1182,7 +1240,9 @@ function bind(){
  $$("[data-toct]",b=>b.onclick=()=>{S.tocTab=+b.dataset.toct;render()});
  const jump=p=>{const id=S.rdId;if(locked(bk(id))&&p>=FREE_PAGES){S.payId=id;S.sheet="pay";render();return}S.pages[id]=p;S.sheet=null;render()};
  $$("[data-goch]",b=>b.onclick=()=>jump(RD?RD.heads[+b.dataset.goch]:0));
- $$("[data-gopg]",b=>b.onclick=()=>jump(+b.dataset.gopg));
+ $$("[data-gopg]",b=>b.onclick=()=>{const k=+b.dataset.gopg,id=S.rdId;if(isTx(bk(id)))goChap(id,Math.floor(k/1e5),k%1e5);else jump(k)});
+ $$("[data-gotch]",b=>b.onclick=()=>goChap(S.rdId,+b.dataset.gotch,0));
+ $$("[data-lh]",b=>b.onclick=()=>{S.pref.lh=Math.round(Math.max(1.2,Math.min(2.2,(S.pref.lh||1.6)+ +b.dataset.lh*.1))*10)/10;render()});
  $$("[data-fs]",b=>b.onclick=()=>{S.pref.fs=Math.max(14,Math.min(28,S.pref.fs+ +b.dataset.fs));render()});
  $$("[data-theme-set]",b=>b.onclick=()=>{const k=b.dataset.themeSet;if(k===(S.theme||"auto"))return;
   nav(()=>{S.theme=k;S.pref.th=k==="paper"?"sepia":k==="dark"?"dark":k==="light"?"white":(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"white");applyTheme();render()},"fade")});
@@ -1203,7 +1263,7 @@ function bind(){
  $$("[data-mpclose]",b=>b.onclick=()=>{S.apos[S.au.id]={ch:S.au.ch,pos:S.au.pos};S.au=null;render()});
  $$("[data-author]",b=>b.onclick=()=>{S.q=b.dataset.author;S.chip="all";openSearch()});
  const sk=document.getElementById("apseek");if(sk){sk.oninput=()=>{sk.dataset.drag=1;const a=S.au;let p=+sk.value;if(locked(bk(a.id))&&p>FREE_SEC){p=FREE_SEC;sk.value=p}a.pos=p;aprog();tickUI()};sk.onchange=()=>{delete sk.dataset.drag}}
- const mk=document.getElementById("rdmark");if(mk)mk.onclick=()=>{const id=S.rdId,p=S.pages[id]||0,a=S.marks[id]||[],had=a.includes(p);S.marks[id]=had?a.filter(x=>x!==p):[...a,p];mk.classList.toggle("on",!had);toast(had?"Хатчӯб бардошта шуд":"Хатчӯб гузошта шуд");save()};
+ const mk=document.getElementById("rdmark");if(mk)mk.onclick=()=>{const id=S.rdId,p=mkey(id),a=S.marks[id]||[],had=a.includes(p);S.marks[id]=had?a.filter(x=>x!==p):[...a,p];mk.classList.toggle("on",!had);toast(had?"Хатчӯб бардошта шуд":"Хатчӯб гузошта шуд");save()};
  setupReader();
  setupSheet();
  setupWheel();
