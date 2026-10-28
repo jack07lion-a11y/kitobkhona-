@@ -3,6 +3,9 @@ package tj.kitobkhona.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +14,8 @@ import android.util.Base64;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -19,7 +24,27 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 public class MainActivity extends Activity {
+    private static final String HOST = "jack07lion-a11y.github.io";
+    private static final String SITE = "https://" + HOST + "/kitobkhona-/";
+    private static final String ASSET = "file:///android_asset/index.html";
     private WebView web;
+    private boolean fellBack = false;
+
+    private boolean online() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            return ni != null && ni.isConnected();
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    private void fallback(WebView v) {
+        if (fellBack) return;
+        fellBack = true;
+        v.loadUrl(ASSET);
+    }
 
     @Override
     protected void onCreate(Bundle state) {
@@ -42,12 +67,25 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setTextZoom(100);
+        s.setCacheMode(online() ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_CACHE_ELSE_NETWORK);
         web.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
-                if ("file".equals(req.getUrl().getScheme())) return false;
-                try { startActivity(new Intent(Intent.ACTION_VIEW, req.getUrl())); } catch (Exception ignored) { }
+                Uri u = req.getUrl();
+                if ("file".equals(u.getScheme())) return false;
+                if ("https".equals(u.getScheme()) && HOST.equals(u.getHost())) return false;
+                try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
                 return true;
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError err) {
+                if (req.isForMainFrame() && req.getUrl().toString().startsWith(SITE)) fallback(view);
+            }
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest req, WebResourceResponse res) {
+                if (req.isForMainFrame() && req.getUrl().toString().startsWith(SITE) && res.getStatusCode() >= 400) fallback(view);
             }
         });
         web.addJavascriptInterface(new Object() {
@@ -69,7 +107,7 @@ public class MainActivity extends Activity {
         }, "KitobAndroid");
         setContentView(web);
         if (state != null) web.restoreState(state);
-        else web.loadUrl("file:///android_asset/index.html");
+        else web.loadUrl(SITE);
     }
 
     @Override
