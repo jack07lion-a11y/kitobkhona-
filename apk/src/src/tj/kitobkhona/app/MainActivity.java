@@ -90,6 +90,15 @@ public class MainActivity extends Activity {
         });
         web.addJavascriptInterface(new Object() {
             @JavascriptInterface
+            public String version() {
+                try {
+                    return String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                } catch (Exception e) {
+                    return "0";
+                }
+            }
+
+            @JavascriptInterface
             public String asset(String path) {
                 try {
                     if (path == null || !path.startsWith("books/") || path.contains("..")) return "";
