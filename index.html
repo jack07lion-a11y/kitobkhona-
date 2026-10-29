@@ -1,6 +1,6 @@
 <title>Китобхона прототипи</title>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap&subset=cyrillic">
@@ -404,8 +404,9 @@ h1,h2,h3,p{margin:0}
 /* ---------- v11: iOS-like motion ---------- */
 .rd-view{margin:4px 0 0!important}
 .rd-flow{padding:0 24px;box-sizing:border-box}
-.rd-tsheet{position:absolute;inset:0;background:var(--pg);visibility:hidden;will-change:transform;overflow:hidden;box-shadow:10px 0 28px rgba(0,0,0,.16),1px 0 0 rgba(0,0,0,.06)}
-.t-dark .rd-tsheet{box-shadow:10px 0 28px rgba(0,0,0,.6),1px 0 0 rgba(255,255,255,.05)}
+.rd-tsheet{position:absolute;inset:0;background:var(--pg);visibility:hidden;will-change:transform;overflow:hidden;box-shadow:-12px 0 28px rgba(0,0,0,.16),-1px 0 0 rgba(0,0,0,.06)}
+.rd-dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.t-dark .rd-tsheet{box-shadow:-12px 0 28px rgba(0,0,0,.6),-1px 0 0 rgba(255,255,255,.05)}
 .rd-tsheet .rd-flow{height:100%;will-change:transform}
 .sheet{animation:sheetup .5s cubic-bezier(.32,.72,0,1);touch-action:pan-y}
 .sh-bg{animation:fade .35s ease;transition:opacity .3s ease}
@@ -564,6 +565,7 @@ html.sheet-on body{background:#000}
 
 /* Мослашув: экрани хурд (то 360px) ва телефони ғелтондашуда */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{touch-action:pan-x pan-y}
 @media (max-width:380px){
  .top{gap:6px}.round{width:40px;height:40px}.brand{font-size:19px;gap:5px}.brand svg{width:32px;height:32px}
  .promo.hp{height:auto;min-height:128px;padding:16px}
@@ -872,7 +874,7 @@ function reader(){
  return `<section class="rd t-${f.th}" style="--lh:${f.lh||1.6};--fs:${f.fs}px;--ff:${f.ff==="serif"?'\'Lora\',Georgia,serif':'var(--font)'}">
   <div class="rd-top"><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button><span class="rd-ch" id="rdch">${b.t}</span>
    <button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic x" data-closeread aria-label="Пӯшидан">${P(IC_X,2.2)}</button></div>
-  <div class="rd-view" id="rdview"><div class="rd-flow" id="rdflow">${body}</div><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div></div>
+  <div class="rd-view" id="rdview"><div class="rd-flow" id="rdflow">${body}</div><i class="rd-dim" id="rddim"></i><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div></div>
   <div class="rd-foot"><span id="rdnum" class="rd-pg">1 / 1</span><div class="rd-prog"><i id="rdbar"></i></div><button class="rd-fabb" data-sheet="set" aria-label="Танзимоти хондан">${P('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',2)}</button></div>
  </section>`;
 }
@@ -890,20 +892,42 @@ function setupReader(){
  placeBase(p);hideTop();showPage(p);
  document.querySelectorAll("[data-chp]").forEach(el=>el.textContent=heads[+el.dataset.chp]+1);
  let g=null;
- v.onpointerdown=e=>{if(RD.busy||S.sheet||e.button>0)return;g={x0:e.clientX,y0:e.clientY,t:performance.now(),dx:0,dir:0,vx:0,lx:e.clientX,lt:performance.now()};try{v.setPointerCapture(e.pointerId)}catch(_){}};
- v.onpointermove=e=>{if(!g)return;const dx=e.clientX-g.x0,now=performance.now();g.vx=(e.clientX-g.lx)/Math.max(1,now-g.lt);g.lx=e.clientX;g.lt=now;g.dx=dx;
-  if(!g.dir){if(Math.abs(dx)<8||Math.abs(dx)<Math.abs(e.clientY-g.y0))return;g.dir=dx<0?1:-1;if(!canGo(g.dir,false)){g.dir=2;return}const p0=S.pages[b.id]||0;g.p=p0;if(g.dir===1){placeBase(p0+1);setTop(p0,0,0)}else setTop(p0-1,-W,0)}
-  if(g.dir===1)setTop(g.p,Math.min(0,dx),0);else if(g.dir===-1)setTop(g.p-1,Math.min(0,-W+dx),0);else if(g.dir===2)RD.f.style.transform=`translateX(${-(S.pages[b.id]||0)*W+dx*.18}px)`};
+ const dim=o=>{const e=document.getElementById("rddim");if(e)e.style.opacity=o},P0=()=>S.pages[b.id]||0;
+ const RES=x=>x<.8?x:Math.min(.96,.8+(x-.8)*.35); // оғирлик: охирида бармоқ қарши мекунад, то қўйилмагунча саҳифа ўтмайди
+ const prep=d=>{const p0=P0();if(d>0){placeBase(p0,0);setTop(p0+1,W,0)}else{placeBase(p0-1,-.24*W);setTop(p0,0,0)}};
+ const frame=(d,pr)=>{const p0=P0();
+  if(d>0){setTop(p0+1,(1-pr)*W,0);placeBase(p0,-pr*.24*W);dim(pr*.3)}
+  else{setTop(p0,pr*W,0);placeBase(p0-1,-(1-pr)*.24*W);dim((1-pr)*.3)}};
+ const unprep=()=>{hideTop();dim(0);placeBase(P0(),0)};
+ v.onpointerdown=e=>{if(RD.busy||S.sheet||e.button>0)return;g={x0:e.clientX,y0:e.clientY,t:performance.now(),dx:0,dir:0,lock:"",vx:0,p:0,lx:e.clientX,lt:performance.now()};try{v.setPointerCapture(e.pointerId)}catch(_){}};
+ v.onpointermove=e=>{if(!g)return;const dx=e.clientX-g.x0,dy=e.clientY-g.y0,now=performance.now();
+  g.vx=.7*g.vx+.3*((e.clientX-g.lx)/Math.max(1,now-g.lt));g.lx=e.clientX;g.lt=now;g.dx=dx;
+  if(!g.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;g.lock=Math.abs(dx)>=Math.abs(dy)*1.2?"h":"v"}
+  if(g.lock!=="h")return;
+  const d=dx<0?1:-1;
+  if(Math.abs(dx)>1&&d!==g.dir&&!(g.dir===2&&d===g.side)){ // аввалин ҳаракат ё бармоқ ба тарафи муқобил гузашт
+   if(g.dir===1||g.dir===-1)unprep();else RD.f.style.transform=`translateX(${-P0()*W}px)`;
+   if(canGo(d,false)){g.dir=d;prep(d)}else{g.dir=2;g.side=d}}
+  if(g.dir===1||g.dir===-1){g.p=RES(Math.min(1,Math.abs(dx)/(W*.95)));frame(g.dir,g.p)}
+  else if(g.dir===2)RD.f.style.transform=`translateX(${-P0()*W+dx*.18}px)`};
  v.onpointerup=v.onpointercancel=e=>{if(!g)return;const G0=g;g=null;
-  if(!G0.dir){if(e.type==="pointerup"){const r=v.getBoundingClientRect();turn(e.clientX-r.left<r.width/3?-1:1)}return}
-  if(G0.dir===2){RD.f.style.transition=`transform .35s ${EASE}`;placeBase(S.pages[b.id]||0);setTimeout(()=>RD&&(RD.f.style.transition="none"),360);canGo(G0.dx<0?1:-1,true);return}
-  const done=G0.dir===1?(G0.dx<-W*.22||G0.vx<-.35):(G0.dx>W*.22||G0.vx>.35),p0=G0.p;
-  const rest=done?(G0.dir===1?W+40-Math.abs(G0.dx):W-G0.dx):Math.abs(G0.dx),ms=Math.max(220,Math.min(420,rest*1.1));
-  RD.busy=true;
-  if(G0.dir===1){setTop(p0,done?-W-40:0,ms);setTimeout(()=>{if(!RD)return;if(!done)placeBase(p0);hideTop();RD.busy=false;if(done)showPage(p0+1)},ms)}
-  else{setTop(p0-1,done?0:-W-40,ms);setTimeout(()=>{if(!RD)return;if(done)placeBase(p0-1);hideTop();RD.busy=false;if(done)showPage(p0-1)},ms)}};
+  if(!G0.lock){if(e.type==="pointerup"&&performance.now()-G0.t<280){const r=v.getBoundingClientRect();turn(e.clientX-r.left<r.width/3?-1:1)}return}
+  if(G0.lock!=="h"||!G0.dir)return;
+  if(G0.dir===2){RD.f.style.transition=`transform .35s ${EASE}`;placeBase(P0());setTimeout(()=>RD&&(RD.f.style.transition="none"),360);canGo(G0.dx<0?1:-1,true);return}
+  const d=G0.dir,pr=G0.p,toward=d>0?G0.vx<0:G0.vx>0,speed=Math.abs(G0.vx);
+  finishTurn(d,pr,pr>.4||(toward&&speed>.5&&pr>.06),speed)};
 }
-function placeBase(p){RD.f.style.transform=`translateX(${-p*RD.W}px)`}
+function finishTurn(d,from,done,speed){
+ const R=RD,W=R.W,p0=S.pages[R.b.id]||0,to=done?1:0,dur=Math.max(180,Math.min(380,Math.abs(to-from)*W/Math.max(.9,speed||0)));
+ R.busy=true;const t0=performance.now(),dimEl=document.getElementById("rddim");
+ const fr=pr=>{const q=pr;if(d>0){setTop(p0+1,(1-q)*W,0);placeBase(p0,-q*.24*W);if(dimEl)dimEl.style.opacity=q*.3}else{setTop(p0,q*W,0);placeBase(p0-1,-(1-q)*.24*W);if(dimEl)dimEl.style.opacity=(1-q)*.3}};
+ const step=now=>{if(RD!==R)return;const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);fr(from+(to-from)*e);
+  if(k<1){requestAnimationFrame(step);return}
+  hideTop();if(dimEl)dimEl.style.opacity=0;
+  if(done)placeBase(p0+d,0);else placeBase(p0,0);
+  R.busy=false;if(done)showPage(p0+d)};
+ requestAnimationFrame(step)}
+function placeBase(p,dx){RD.f.style.transform=`translateX(${-p*RD.W+(dx||0)}px)`}
 function setTop(p,x,ms){const t=RD.top;RD.tf.style.transform=`translateX(${-p*RD.W}px)`;t.style.transition=ms?`transform ${ms}ms ${EASE}`:"none";t.style.visibility="visible";t.style.transform=`translate3d(${x}px,0,0)`}
 function hideTop(){const t=RD.top;t.style.transition="none";t.style.visibility="hidden";t.style.transform="none"}
 function showPage(p){
@@ -925,10 +949,9 @@ function canGo(d,act){const p=(S.pages[RD.b.id]||0)+d,id=RD.b.id,tc=isTx(RD.b)?t
  if(p>=RD.total){if(act)toast("Китоб тамом шуд! +5 мукофот (намуна)");return false}
  return true}
 function turn(d){if(!RD||S.sheet||RD.busy)return;if(!canGo(d,true))return;
- const p0=S.pages[RD.b.id]||0,W=RD.W,ms=420;RD.busy=true;
- if(d>0){placeBase(p0+1);setTop(p0,0,0);void RD.top.offsetWidth;setTop(p0,-W-40,ms)}
- else{setTop(p0-1,-W-40,0);void RD.top.offsetWidth;setTop(p0-1,0,ms)}
- setTimeout(()=>{if(!RD)return;if(d<0)placeBase(p0-1);hideTop();RD.busy=false;showPage(p0+d)},ms)}
+ const W=RD.W,p0=S.pages[RD.b.id]||0;
+ if(d>0){placeBase(p0,0);setTop(p0+1,W,0)}else{placeBase(p0-1,-.24*W);setTop(p0,0,0)}
+ void RD.top.offsetWidth;finishTurn(d,0,true,.9)}
 
 function player(){
  const a=S.au,b=bk(a.id),tr=tracks(b),t=tr[a.ch],lk=locked(b),done=(S.dl[b.id]||[]).length===tr.length;
@@ -1366,6 +1389,7 @@ if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
  if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else if(S.view==="login"){S.step="gender";render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
+["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 window.__back=()=>{const q=sel=>{const e=document.querySelector(sel);if(e){e.click();return true}return false};
  if(S.sheet){closeSheet();return true}
  if(S.view==="read")return q("[data-closeread]");
