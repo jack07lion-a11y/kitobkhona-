@@ -174,6 +174,7 @@ h1,h2,h3,p{margin:0}
 .bd-tt{flex:1;min-width:0;color:#fff;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.9}
 .bd-hero{margin-top:-62px;padding-top:70px;padding-bottom:18px;text-align:center;background:linear-gradient(180deg,color-mix(in srgb,var(--bc) 85%,#000) 0,color-mix(in srgb,var(--bc) 35%,var(--bg)) 55%,var(--bg) 100%);display:flex;flex-direction:column;align-items:center;gap:8px}
 .bd-cover{width:min(56vw,220px)}.bd-cover .cover{box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.bd-cover .cover.img{transform:perspective(900px) rotateY(-15deg);transform-origin:left center;box-shadow:1px 0 0 #f4eedf,2px 0 0 #cfc6ae,3px 0 0 #f4eedf,4px 0 0 #c2b9a2,5px 0 0 #f4eedf,6px 0 0 #bdb49c,22px 26px 42px rgba(0,0,0,.55);margin-left:6px}
 .bd-hero h1{font-size:26px;font-weight:800;margin-top:12px;text-wrap:balance}
 .bd-au{color:var(--muted);font-weight:600;font-size:17px}
 .bd-body{display:flex;flex-direction:column;gap:22px}
@@ -231,11 +232,13 @@ h1,h2,h3,p{margin:0}
 .code input{width:100%;height:62px;text-align:center;font-size:26px;font-weight:800;border-radius:16px;border:2px solid transparent;background:var(--card);outline:0}
 .code input:focus{border-color:var(--orange)}
 .btn{height:56px;border-radius:18px;border:0;font-weight:800;font-size:17px;background:var(--orange);color:#fff;width:100%}
-.cover.img{background:#222}
+.cover.img{background:#222;border-radius:3px 8px 8px 3px;
+ box-shadow:1px 0 0 #f4eedf,2px 0 0 #cfc6ae,3px 0 0 #f4eedf,4px 0 0 #c2b9a2,7px 10px 18px rgba(0,0,0,.38)}
+.cover.img::after{border-radius:3px 8px 8px 3px}
 .cover.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.cover.img::before{content:"";position:absolute;inset:0 auto 0 0;width:9%;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.12) 55%,rgba(0,0,0,.08));pointer-events:none}
+.cover.img::before{content:"";position:absolute;inset:0 auto 0 0;width:10%;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.32) 0,rgba(255,255,255,.22) 3.5%,rgba(0,0,0,.22) 6.5%,rgba(255,255,255,.06) 9%,transparent);pointer-events:none}
 .cover.img::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(115deg,rgba(255,255,255,.14),transparent 40%);pointer-events:none}
-.book .cover.img{transform:perspective(700px) rotateY(-7deg);transform-origin:left center;box-shadow:6px 8px 18px rgba(0,0,0,.35);transition:transform .25s}
+.book .cover.img{transform:perspective(700px) rotateY(-7deg);transform-origin:left center;transition:transform .25s}
 .book:active .cover.img{transform:perspective(700px) rotateY(-2deg) scale(.98)}
 .rd-flow .rd-part{text-indent:0;text-align:center;font-family:var(--font);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin:12% 0 0}
 .rd-flow .rd-sub{text-indent:0;text-align:center;font-weight:700;letter-spacing:.06em;margin:1em 0 .4em}
@@ -722,6 +725,14 @@ const bk=id=>BOOKS.find(x=>x.id===id);
 const ADM_COLS=[["#24443a","#122a22","Сабз"],["#7a2e1f","#4a1a12","Сурх"],["#3c2f6b","#231a45","Бунафш"],["#2c4a63","#1a2f40","Кабуд"],["#8a5a14","#5a3a0a","Зарди тира"],["#6b2f4a","#45192e","Гулобӣ"],["#3b3b3b","#1f1f1f","Хокистарӣ"]];
 const ADM_CATS=GENRES.map(g=>[g[0],g[1]]);
 const VBADGE='<span class="vbadge" title="Админ" aria-label="Админ"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8cf0"/><path d="M12 5.2l1.8 4 4.4.5-3.3 3 .9 4.3L12 14.800 8.200 17l.9-4.300-3.300-3 4.400-.5z" fill="#fff"/></svg></span>';
+function shrinkImage(file,maxW,maxH){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();
+ im.onload=()=>{const k=Math.min(1,maxW/im.naturalWidth,maxH/im.naturalHeight),w=Math.round(im.naturalWidth*k),h=Math.round(im.naturalHeight*k),cv=document.createElement("canvas");
+  cv.width=w;cv.height=h;cv.getContext("2d").drawImage(im,0,0,w,h);URL.revokeObjectURL(u);cv.toBlob(b=>b?ok(b):no(new Error("Расм кор накард")),"image/jpeg",.86)};
+ im.onerror=()=>{URL.revokeObjectURL(u);no(new Error("Расмро кушода натавонистам"))};im.src=u})}
+async function uploadCover(c,id,slug,file){
+ const sl=slug||("b"+id),path=sl+"/cover-"+Date.now()+".jpg",blob=await shrinkImage(file,800,1200);
+ let e=(await c.storage.from("books").upload(path,blob,{upsert:true,contentType:"image/jpeg"})).error;if(e)throw new Error("Муқова бор нашуд: "+e.message);
+ e=(await c.from("books").update({cover_path:path,slug:sl}).eq("id",id)).error;if(e)throw new Error("Муқова сабт нашуд: "+e.message)}
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
  const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
@@ -1033,6 +1044,8 @@ function sheetHTML(){
    <textarea id="a_d" placeholder="Тавсифи кӯтоҳ" maxlength="600">${escH(a.desc||"")}</textarea>
    <label class="chk"><input type="checkbox" id="a_au" ${a.audio?"checked":""}>Аудио низ дорад</label>
    <label class="chk"><input type="checkbox" id="a_pub" ${a.id&&!a.pub?"":"checked"}>Барои ҳама намоён (нашр)</label>
+   <label class="chk" for="a_cv" style="flex-wrap:wrap"><span class="pill" style="pointer-events:none">Муқова (расм)</span><span id="a_cvn" style="color:var(--muted);font-size:13px">${a.cover?"Ҳоло муқова ҳаст. Иваз кардан мумкин":"Расм интихоб кунед (JPG ё PNG, 2:3)"}</span></label>
+   <input type="file" id="a_cv" accept="image/*" hidden>
    <button class="btn" data-admsave>Захира кардан</button>
    ${a.id?'<button class="btn-t" data-admdel style="color:#d33">Нест кардани китоб</button>':""}
   </div>`}
@@ -1258,14 +1271,19 @@ function bind(){
    try{await importZip(fs[i]);ok++}catch(e){bad.push(fs[i].name+": "+(e.message||"хато"))}}
   az.value="";render();
   toast(bad.length?ok+" бор шуд, "+bad.length+" нашуд. "+bad[0]:ok+" китоб бор шуд (пинҳон)")};
+ const acv=document.getElementById("a_cv");if(acv)acv.onchange=()=>{const f=acv.files&&acv.files[0],n=document.getElementById("a_cvn");if(f&&n)n.textContent="Интихоб шуд: "+f.name};
  const asave=document.querySelector("[data-admsave]");if(asave)asave.onclick=async()=>{
   const v=id=>document.getElementById(id),t=v("a_t").value.trim(),a=v("a_a").value.trim();
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
   const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked};
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
-  const{error}=S.adm&&S.adm.id?await c.from("books").update(row).eq("id",S.adm.id):await c.from("books").insert(row);
+  const cvf=v("a_cv").files&&v("a_cv").files[0];
+  let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null;
+  if(bid)({error}=await c.from("books").update(row).eq("id",bid));
+  else{const rs=await c.from("books").insert(row).select("id,slug").single();error=rs.error;if(rs.data){bid=rs.data.id;bslug=rs.data.slug}}
   if(error){asave.disabled=false;toast("Захира нашуд. Ҳуқуқи админ лозим аст ё интернет нест");return}
+  if(cvf&&bid){try{await uploadCover(c,bid,bslug,cvf)}catch(e){asave.disabled=false;toast(e.message||"Муқова бор нашуд");return}}
   await loadBooks(c);S.sheet=null;S.adm=null;render();toast("Захира шуд")};
  const adel=document.querySelector("[data-admdel]");if(adel)adel.onclick=async()=>{
   if(!confirm("Китоб ба тамом нест мешавад. Давом медиҳед?"))return;
