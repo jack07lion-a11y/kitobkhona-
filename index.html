@@ -73,8 +73,8 @@ h1,h2,h3,p{margin:0}
 .shelf::-webkit-scrollbar{display:none}
 .book{background:none;border:0;padding:0;text-align:left;display:flex;flex-direction:column;gap:8px;min-width:0}
 .shelf .book{width:158px;flex:none}
-.book .t{font-weight:800;font-size:14.5px;line-height:1.25}
-.book .a{color:var(--muted);font-weight:600;font-size:12.5px;margin-top:-5px}
+.book .t{font-weight:800;font-size:14.5px;line-height:1.25;text-align:center;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-wrap:balance}
+.book .a{color:var(--muted);font-weight:600;font-size:12.5px;margin-top:-5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px}
 
 /* covers */
@@ -600,6 +600,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .fmt button+button{border-left:1.5px solid var(--line)}
 .fmt .ico,.fmt svg{width:25px;height:25px}
 .fmt .pr{color:#e9a227}
+
+.fmt.sm{margin:2px auto 0;border-width:1.3px;border-radius:15px;display:flex;width:max-content;max-width:100%}
+.fmt.sm>span{display:grid;place-items:center;width:34px;height:24px;color:var(--muted)}
+.fmt.sm>span+span{border-left:1.3px solid var(--line)}
+.fmt.sm svg,.fmt.sm .ico{width:15px;height:15px}
+.fmt.sm .pr{color:#e9a227}
 </style>
 
 <div class="app" id="app"></div>
@@ -796,11 +802,11 @@ async function importZip(file){
  if(res.error)throw new Error("Дар база сабт нашуд: "+res.error.message);
  try{(await caches.open("kitob-books")).delete("https://kitob.local/"+tp)}catch(_){}
  await loadBooks(c);return d.title}
-function fmtPill(b){const bits=[];
- if(b.ebook!==false)bits.push(`<button data-fmt="Шакли электронӣ: китобро дар барнома мехонед" aria-label="Шакли электронӣ">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',1.9)}</button>`);
- if(b.audio)bits.push(`<button data-fmt="Аудиокитоб: китобро гӯш мекунед" aria-label="Аудиокитоб">${P(I.head,1.9)}</button>`);
- if(b.prem)bits.push(`<button class="pr" data-fmt="Премиум: пурра хондан бо обуна" aria-label="Премиум">${CROWN}</button>`);
- return bits.length?`<div class="fmt" role="group" aria-label="Шаклҳои китоб">${bits.join("")}</div>`:""}
+function fmtPill(b,mini){const bits=[],T=mini?"span":"button",at=(txt,lab)=>mini?"":` data-fmt="${txt}" aria-label="${lab}"`,sz=mini?1.9:1.9;
+ if(b.ebook!==false)bits.push(`<${T}${at("Шакли электронӣ: китобро дар барнома мехонед","Шакли электронӣ")}>${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',sz)}</${T}>`);
+ if(b.audio)bits.push(`<${T}${at("Аудиокитоб: китобро гӯш мекунед","Аудиокитоб")}>${P(I.head,sz)}</${T}>`);
+ if(b.prem)bits.push(`<${T} class="pr"${at("Премиум: пурра хондан бо обуна","Премиум")}>${CROWN}</${T}>`);
+ return bits.length?`<div class="fmt${mini?" sm":""}"${mini?"":' role="group" aria-label="Шаклҳои китоб"'}>${bits.join("")}</div>`:""}
 function admHTML(){if(S.role!=="admin")return "";const mine=BOOKS.filter(x=>x.db);
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
   <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Танҳо ном ва муаллиф, бе матн</span></div><button class="pill" data-adm="new">Илова</button></div>
@@ -847,7 +853,7 @@ function cover(b){
  return b.cover?`<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front"><img src="${escH(b.cover)}" alt="" loading="lazy">${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`:`<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
 }
 
-function book(b){return `<button class="book" data-book="${b.id}" aria-label="${b.t}, ${b.a}">${cover(b)}</button>`}
+function book(b){return `<button class="book" data-book="${b.id}" aria-label="${escH(b.t)}, ${escH(b.a)}">${cover(b)}<span class="t">${escH(b.t)}</span><span class="a">${escH(b.a)}</span>${fmtPill(b,true)}</button>`}
 const DESC={};
 const CATN={classic:"Классика",kids:"Барои кӯдакон",exam:"Омодагӣ ба ММТ",text:"Мактаб"};
 const AGE={kids:"0+",text:"6+",exam:"14+"};
