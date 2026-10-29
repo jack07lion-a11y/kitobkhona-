@@ -726,10 +726,11 @@ async function loadBooks(c){try{const{data,error}=await c.from("books").select("
  const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
  BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
+S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":""}catch(_){}}
-async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);save();if(S.view!=="login")render()}
+async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);save();await markHave();if(S.view!=="login")render()}
 const TX={};
 function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
 function blocksHTML(bl){return bl.map(x=>x[0]==="p"?`<p>${escH(x[1])}</p>`:x[0]==="v"?`<div class="rd-v">${(x[1]||[]).map(escH).join("<br>")}</div>`:x[0]==="sub"?`<p class="rd-sub">${escH(x[1])}</p>`:x[0]==="s"?`<p class="rd-sep">* * *</p>`:"").join("")}
@@ -739,7 +740,7 @@ const cacheOK=()=>typeof caches!=="undefined";
 async function cacheGet(k){try{if(!cacheOK())return null;return await (await caches.open("kitob-books")).match(k)}catch(_){return null}}
 async function cachePut(k,r){try{if(cacheOK())await (await caches.open("kitob-books")).put(k,r)}catch(_){}}
 async function haveBook(b){if(S.hv&&S.hv[b.id])return true;return !!(await cacheGet("https://kitob.local/"+bpath(b)))}
-async function markHave(){let ch=false;for(const b of BOOKS)if(b.src){const h=await haveBook(b);if(h!==!!b.have){b.have=h;ch=true}}if(ch&&S.view!=="login"&&S.view!=="read")render()}
+async function markHave(){let ch=false;for(const b of BOOKS)if(bpath(b)){const h=await haveBook(b);if(h!==!!b.have){b.have=h;ch=true}}if(ch&&S.view!=="login"&&S.view!=="read")render()}
 async function readAsset(b){
  if(window.KitobAndroid){const bin=atob(window.KitobAndroid.asset(b.src)),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u])}
  const rs=await fetch(b.src);if(!rs.ok)throw new Error("asset");return await rs.blob()}
@@ -782,7 +783,7 @@ function gi(){return S.gender==="boy"?GLOVE:TAB[2][2]}
 let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0,search:false,recent:[],prog:{},confirmOut:false,pref:{fs:19,th:"white",ff:"serif"},pages:{},marks:{},mode:{},aprog:{},apos:{},dl:{},dlBook:{},premium:false,sheet:null,tocTab:0,au:null};
 const app=document.getElementById("app");
 try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
-if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;if(!S.rdCh)S.rdCh={};if(!S.pref.lh)S.pref.lh=1.6;
+if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;if(!S.rdCh)S.rdCh={};if(Array.isArray(S.bkCache))S.bkCache.forEach(b=>{if(b&&b.id&&!BOOKS.some(x=>x.id===b.id))BOOKS.push(b)});if(!S.pref.lh)S.pref.lh=1.6;
 function save(){try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
 const esc=s=>s.replace(/"/g,"&quot;");
 
@@ -833,7 +834,7 @@ function detail(){
   <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p></div>
   <div class="pad bd-body">
    <div class="bd-stats"><div><small>Рейтинг</small><b><span style="color:#f2a93b">${FILL(I.star)}</span>—</b></div><div><small>Давомнокӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${b.audio?"—":"Матн"}</b></div><div><small>Мехонанд</small><b><span style="color:var(--orange)">${P('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M16 4.500a3.500 3.500 0 010 7M18 14c2 .7 3.300 2.700 3.500 6"/>',2)}</span>0</b></div></div>
-   <div class="bd-act ${locked(b)?"sm":""}">${`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":(b.src&&!b.have?"Боргирӣ ва хондан":"Хондан")}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`<i></i><button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
+   <div class="bd-act ${locked(b)?"sm":""}">${`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":(bpath(b)&&!b.have?"Боргирӣ ва хондан":"Хондан")}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`<i></i><button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
    <p class="bd-desc">${DESC[b.id]||b.desc||""}</p>
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
@@ -849,7 +850,7 @@ function detail(){
   </div></section>`;
 }
 
-async function openBook(id){const b=bk(id);if(b&&bpath(b)&&!TX[id]){toast(b.src&&!b.have?"Боргирӣ мешавад ("+b.size+")…":"Китоб кушода мешавад…");if(!await loadText(b)){toast("Китоб боргирӣ нашуд. Интернетро санҷед");return}}openBook0(id)}
+async function openBook(id){const b=bk(id);if(b&&bpath(b)&&!TX[id]){toast(bpath(b)&&!b.have?"Боргирӣ мешавад"+(b.size?" ("+b.size+")":"")+"…":"Китоб кушода мешавад…");if(!await loadText(b)){toast("Китоб боргирӣ нашуд. Интернетро санҷед");return}}openBook0(id)}
 const isTx=b=>!!(b&&bpath(b)&&TX[b.id]);
 const mkey=id=>{const b=bk(id);return isTx(b)?(S.rdCh[id]||0)*1e5+(S.pages[id]||0):(S.pages[id]||0)};
 function mlabel(id,k){return isTx(bk(id))?`Боби ${Math.floor(k/1e5)+1}, саҳифаи ${k%1e5+1}`:`Саҳифаи ${k+1}`}
@@ -1270,7 +1271,7 @@ function bind(){
   if(!confirm("Китоб ба тамом нест мешавад. Давом медиҳед?"))return;
   const c=await sbLoad();if(!c)return;const{error}=await c.from("books").delete().eq("id",S.adm.id);
   if(error){toast("Нест нашуд");return}await loadBooks(c);S.sheet=null;S.adm=null;render();toast("Нест шуд")};
- $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";sbLoad().then(c=>c&&c.auth.signOut());go("login")});
+ $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.bkCache=[];for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].db)BOOKS.splice(i,1);S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";sbLoad().then(c=>c&&c.auth.signOut());go("login")});
  $$("[data-listen]",b=>b.onclick=()=>openAudio(+b.dataset.listen));
  $$("[data-closeread]",b=>b.onclick=()=>nav(()=>{S.view=S.rdPrev||"home";S.sheet=null;render();window.scrollTo(0,0)},"down"));
  $$("[data-sheet]",b=>b.onclick=e=>{e.stopPropagation();S.sheet=b.dataset.sheet;if(S.sheet==="toc")S.tocTab=0;render()});
@@ -1289,7 +1290,7 @@ function bind(){
  $$("[data-subscribe]",b=>b.onclick=()=>{S.premium=true;S.sheet=null;toast("Намуна: Премиум фаъол шуд");render()});
  $$("[data-paywall]",b=>b.onclick=()=>{S.payId=null;S.sheet="pay";render()});
  $$("[data-dlbook]",b=>b.onclick=async()=>{const id=+b.dataset.dlbook,bb=bk(id);if(locked(bb)){S.payId=id;S.sheet="pay";render();return}
-  if(bb&&bb.src){if(bb.have){toast("Китоб аллакай дар телефон аст");return}toast("Боргирӣ мешавад ("+bb.size+")…");
+  if(bb&&bpath(bb)){if(bb.have){toast("Китоб аллакай дар телефон аст");return}toast("Боргирӣ мешавад"+(bb.size?" ("+bb.size+")":"")+"…");
    if(await loadText(bb)){render();toast("Боргирӣ шуд. Акнун бе интернет ҳам мехонед")}else toast("Боргирӣ нашуд. Интернетро санҷед");return}S.dlBook[id]=!S.dlBook[id];toast(S.dlBook[id]?"Барои хондан бе интернет нигоҳ дошта шуд":"Аз хотираи телефон тоза шуд");render()});
  $$("[data-applay]",b=>b.onclick=()=>{const a=S.au;if(locked(bk(a.id))&&a.pos>=FREE_SEC){S.payId=a.id;S.sheet="pay";render();return}a.playing=!a.playing;render()});
  $$("[data-apspeed]",b=>b.onclick=()=>{const L=[1,1.25,1.5,2,0.75];S.au.speed=L[(L.indexOf(S.au.speed)+1)%L.length];render()});
