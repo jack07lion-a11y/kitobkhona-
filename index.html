@@ -593,6 +593,13 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .b3d .f-left{inset:0;width:var(--T);left:calc(50% - var(--T)/2);background:var(--cvc,#3a2f24);transform:rotateY(-90deg) translateZ(50cqw)}
 .book:active .b3d-in{transform:translateX(9cqw) rotateY(-24deg) scale(.88)}
 .bd-cover .cover.b3d{--ry:-31deg}
+
+/* Белгиҳои шакл дар зери муаллиф: электронӣ, аудио, премиум */
+.fmt{display:inline-flex;align-items:center;margin:16px auto 0;border:1.5px solid var(--line);border-radius:26px;background:color-mix(in srgb,var(--bg) 55%,transparent);overflow:hidden}
+.fmt button{appearance:none;border:0;background:none;width:70px;height:46px;display:grid;place-items:center;color:var(--muted);padding:0}
+.fmt button+button{border-left:1.5px solid var(--line)}
+.fmt .ico,.fmt svg{width:25px;height:25px}
+.fmt .pr{color:#e9a227}
 </style>
 
 <div class="app" id="app"></div>
@@ -744,7 +751,7 @@ async function uploadCover(c,id,slug,file){
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
  const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
- BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
+ BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
 S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
@@ -789,6 +796,11 @@ async function importZip(file){
  if(res.error)throw new Error("Дар база сабт нашуд: "+res.error.message);
  try{(await caches.open("kitob-books")).delete("https://kitob.local/"+tp)}catch(_){}
  await loadBooks(c);return d.title}
+function fmtPill(b){const bits=[];
+ if(b.ebook!==false)bits.push(`<button data-fmt="Шакли электронӣ: китобро дар барнома мехонед" aria-label="Шакли электронӣ">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',1.9)}</button>`);
+ if(b.audio)bits.push(`<button data-fmt="Аудиокитоб: китобро гӯш мекунед" aria-label="Аудиокитоб">${P(I.head,1.9)}</button>`);
+ if(b.prem)bits.push(`<button class="pr" data-fmt="Премиум: пурра хондан бо обуна" aria-label="Премиум">${CROWN}</button>`);
+ return bits.length?`<div class="fmt" role="group" aria-label="Шаклҳои китоб">${bits.join("")}</div>`:""}
 function admHTML(){if(S.role!=="admin")return "";const mine=BOOKS.filter(x=>x.db);
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
   <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Танҳо ном ва муаллиф, бе матн</span></div><button class="pill" data-adm="new">Илова</button></div>
@@ -850,10 +862,10 @@ function detail(){
    <button class="bd-ic" data-toast="Мубодила — қадами оянда" aria-label="Мубодила">${P('<path d="M14 5l7 7-7 7M21 12H10a7 7 0 00-7 7"/>',2)}</button>
    <button class="bd-ic" data-dlbook="${b.id}" aria-label="Боргирифтан">${(S.dlBook[b.id]||b.have)?P(IC_OK,2.2):P(IC_DL,2)}</button>
    <button class="bd-ic" data-toast="Ба рафи ман илова шуд" aria-label="Нигоҳ доштан">${P('<path d="M6 3h12v18l-6-4-6 4z"/>',2)}</button></div>
-  <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p></div>
+  <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p>${fmtPill(b)}</div>
   <div class="pad bd-body">
    <div class="bd-stats"><div><small>Рейтинг</small><b><span style="color:#f2a93b">${FILL(I.star)}</span>—</b></div><div><small>Давомнокӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${b.audio?"—":"Матн"}</b></div><div><small>Мехонанд</small><b><span style="color:var(--orange)">${P('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M16 4.500a3.500 3.500 0 010 7M18 14c2 .7 3.300 2.700 3.500 6"/>',2)}</span>0</b></div></div>
-   <div class="bd-act ${locked(b)?"sm":""}">${`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":(bpath(b)&&!b.have?"Боргирӣ ва хондан":"Хондан")}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`<i></i><button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
+   <div class="bd-act ${locked(b)?"sm":""}">${b.ebook===false?"":`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}${locked(b)?"Парча хондан":(bpath(b)&&!b.have?"Боргирӣ ва хондан":"Хондан")}${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`${b.ebook===false?"":"<i></i>"}<button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}${locked(b)?"Парча гӯш кардан":"Гӯш кардан"}${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
    <p class="bd-desc">${DESC[b.id]||b.desc||""}</p>
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
@@ -1050,7 +1062,9 @@ function sheetHTML(){
    <select id="a_c" aria-label="Бахш">${ADM_CATS.map(([k,n])=>`<option value="${k}" ${(a.c||"fiction")===k?"selected":""}>${n}</option>`).join("")}</select>
    <select id="a_col" aria-label="Ранги муқова">${ADM_COLS.map((x,i)=>`<option value="${i}" ${i===ci?"selected":""}>Муқова: ${x[2]}</option>`).join("")}</select>
    <textarea id="a_d" placeholder="Тавсифи кӯтоҳ" maxlength="600">${escH(a.desc||"")}</textarea>
+   <label class="chk"><input type="checkbox" id="a_eb" ${a.ebook===false?"":"checked"}>Шакли электронӣ (матн) дорад</label>
    <label class="chk"><input type="checkbox" id="a_au" ${a.audio?"checked":""}>Аудио низ дорад</label>
+   <label class="chk"><input type="checkbox" id="a_pr" ${a.prem?"checked":""}>Премиум (пурра танҳо бо обуна)</label>
    <label class="chk"><input type="checkbox" id="a_pub" ${a.id&&!a.pub?"":"checked"}>Барои ҳама намоён (нашр)</label>
    <label class="chk" for="a_cv" style="flex-wrap:wrap"><span class="pill" style="pointer-events:none">Муқова (расм)</span><span id="a_cvn" style="color:var(--muted);font-size:13px">${a.cover?"Ҳоло муқова ҳаст. Иваз кардан мумкин":"Расм интихоб кунед (JPG ё PNG, 2:3)"}</span></label>
    <input type="file" id="a_cv" accept="image/*" hidden>
@@ -1274,6 +1288,7 @@ function bind(){
  $$("[data-logout]",b=>b.onclick=()=>{S.confirmOut=true;render()});
  $$("[data-logout-no]",b=>b.onclick=()=>{S.confirmOut=false;render()});
  $$("[data-adm]",b=>b.onclick=e=>{e.stopPropagation();S.adm=b.dataset.adm==="edit"?{...bk(+b.dataset.id)}:{};S.sheet="adm";render()});
+ $$("[data-fmt]",b=>b.onclick=()=>toast(b.dataset.fmt));
  const az=document.getElementById("admzip");if(az)az.onchange=async()=>{const fs=[...(az.files||[])];if(!fs.length)return;let ok=0,bad=[];
   for(let i=0;i<fs.length;i++){toast("Бор мешавад "+(i+1)+"/"+fs.length+"… "+fs[i].name);
    try{await importZip(fs[i]);ok++}catch(e){bad.push(fs[i].name+": "+(e.message||"хато"))}}
@@ -1284,15 +1299,17 @@ function bind(){
   const v=id=>document.getElementById(id),t=v("a_t").value.trim(),a=v("a_a").value.trim();
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
-  const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked};
+  const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked,ebook:v("a_eb").checked,premium:v("a_pr").checked};
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const cvf=v("a_cv").files&&v("a_cv").files[0];
-  let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null;
-  if(bid)({error}=await c.from("books").update(row).eq("id",bid));
-  else{const rs=await c.from("books").insert(row).select("id,slug").single();error=rs.error;if(rs.data){bid=rs.data.id;bslug=rs.data.slug}}
+  let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null,sqlMiss=false;
+  const save1=async rw=>{if(bid)return(await c.from("books").update(rw).eq("id",bid)).error;
+   const rs=await c.from("books").insert(rw).select("id,slug").single();if(rs.data){bid=rs.data.id;bslug=rs.data.slug}return rs.error};
+  error=await save1(row);
+  if(error&&/premium|ebook/i.test(error.message||"")){const{ebook,premium,...old}=row;error=await save1(old);if(!error)sqlMiss=true}
   if(error){asave.disabled=false;toast("Захира нашуд. Ҳуқуқи админ лозим аст ё интернет нест");return}
   if(cvf&&bid){try{await uploadCover(c,bid,bslug,cvf)}catch(e){asave.disabled=false;toast(e.message||"Муқова бор нашуд");return}}
-  await loadBooks(c);S.sheet=null;S.adm=null;render();toast("Захира шуд")};
+  await loadBooks(c);S.sheet=null;S.adm=null;render();toast(sqlMiss?"Захира шуд, лекин «Премиум/Электронӣ» нигоҳ дошта нашуд. Аввал SQL-ро иҷро кунед":"Захира шуд")};
  const adel=document.querySelector("[data-admdel]");if(adel)adel.onclick=async()=>{
   if(!confirm("Китоб ба тамом нест мешавад. Давом медиҳед?"))return;
   const c=await sbLoad();if(!c)return;const{error}=await c.from("books").delete().eq("id",S.adm.id);
