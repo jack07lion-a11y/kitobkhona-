@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebResourceRequest;
@@ -29,6 +30,8 @@ public class MainActivity extends Activity {
     private static final String ASSET = "file:///android_asset/index.html";
     private WebView web;
     private boolean fellBack = false;
+    private ValueCallback<Uri[]> fileCb;
+    private static final int PICK = 7;
 
     private boolean online() {
         try {
@@ -88,6 +91,25 @@ public class MainActivity extends Activity {
                 if (req.isForMainFrame() && req.getUrl().toString().startsWith(SITE) && res.getStatusCode() >= 400) fallback(view);
             }
         });
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView v, ValueCallback<Uri[]> cb, FileChooserParams p) {
+                if (fileCb != null) fileCb.onReceiveValue(null);
+                fileCb = cb;
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("*/*");
+                if (p.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE) i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                try {
+                    startActivityForResult(Intent.createChooser(i, "Файл интихоб кунед"), PICK);
+                } catch (Exception e) {
+                    fileCb = null;
+                    cb.onReceiveValue(null);
+                    return false;
+                }
+                return true;
+            }
+        });
         web.addJavascriptInterface(new Object() {
             @JavascriptInterface
             public String version() {
@@ -117,6 +139,24 @@ public class MainActivity extends Activity {
         setContentView(web);
         if (state != null) web.restoreState(state);
         else web.loadUrl(SITE);
+    }
+
+    @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        super.onActivityResult(req, res, data);
+        if (req != PICK || fileCb == null) return;
+        Uri[] out = null;
+        if (res == RESULT_OK && data != null) {
+            if (data.getClipData() != null) {
+                int n = data.getClipData().getItemCount();
+                out = new Uri[n];
+                for (int k = 0; k < n; k++) out[k] = data.getClipData().getItemAt(k).getUri();
+            } else if (data.getData() != null) {
+                out = new Uri[]{data.getData()};
+            }
+        }
+        fileCb.onReceiveValue(out);
+        fileCb = null;
     }
 
     @Override
