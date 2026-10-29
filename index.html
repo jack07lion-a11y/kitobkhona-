@@ -174,7 +174,6 @@ h1,h2,h3,p{margin:0}
 .bd-tt{flex:1;min-width:0;color:#fff;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.9}
 .bd-hero{margin-top:-62px;padding-top:70px;padding-bottom:18px;text-align:center;background:linear-gradient(180deg,color-mix(in srgb,var(--bc) 85%,#000) 0,color-mix(in srgb,var(--bc) 35%,var(--bg)) 55%,var(--bg) 100%);display:flex;flex-direction:column;align-items:center;gap:8px}
 .bd-cover{width:min(56vw,220px)}.bd-cover .cover{box-shadow:0 18px 40px rgba(0,0,0,.45)}
-.bd-cover .cover.img{transform:perspective(900px) rotateY(-15deg);transform-origin:left center;box-shadow:1px 0 0 #f4eedf,2px 0 0 #cfc6ae,3px 0 0 #f4eedf,4px 0 0 #c2b9a2,5px 0 0 #f4eedf,6px 0 0 #bdb49c,22px 26px 42px rgba(0,0,0,.55);margin-left:6px}
 .bd-hero h1{font-size:26px;font-weight:800;margin-top:12px;text-wrap:balance}
 .bd-au{color:var(--muted);font-weight:600;font-size:17px}
 .bd-body{display:flex;flex-direction:column;gap:22px}
@@ -232,14 +231,6 @@ h1,h2,h3,p{margin:0}
 .code input{width:100%;height:62px;text-align:center;font-size:26px;font-weight:800;border-radius:16px;border:2px solid transparent;background:var(--card);outline:0}
 .code input:focus{border-color:var(--orange)}
 .btn{height:56px;border-radius:18px;border:0;font-weight:800;font-size:17px;background:var(--orange);color:#fff;width:100%}
-.cover.img{background:#222;border-radius:3px 8px 8px 3px;
- box-shadow:1px 0 0 #f4eedf,2px 0 0 #cfc6ae,3px 0 0 #f4eedf,4px 0 0 #c2b9a2,7px 10px 18px rgba(0,0,0,.38)}
-.cover.img::after{border-radius:3px 8px 8px 3px}
-.cover.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.cover.img::before{content:"";position:absolute;inset:0 auto 0 0;width:10%;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.32) 0,rgba(255,255,255,.22) 3.5%,rgba(0,0,0,.22) 6.5%,rgba(255,255,255,.06) 9%,transparent);pointer-events:none}
-.cover.img::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(115deg,rgba(255,255,255,.14),transparent 40%);pointer-events:none}
-.book .cover.img{transform:perspective(700px) rotateY(-7deg);transform-origin:left center;transition:transform .25s}
-.book:active .cover.img{transform:perspective(700px) rotateY(-2deg) scale(.98)}
 .rd-flow .rd-part{text-indent:0;text-align:center;font-family:var(--font);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin:12% 0 0}
 .rd-flow .rd-sub{text-indent:0;text-align:center;font-weight:700;letter-spacing:.06em;margin:1em 0 .4em}
 .rd-flow .rd-v{margin:0 0 .8em 1.4em;text-align:left}
@@ -585,6 +576,23 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media (max-height:480px) and (orientation:landscape){
  .promo.hp{min-height:0}
 }
+
+/* Китоби ғафс (3D): муқоваи рӯ, варақҳо дар тарафи рост, муқоваи пушт. Макети «ҳақиқӣ» китоб. */
+.cover.b3d{overflow:visible;background:none;box-shadow:none;border-radius:0;perspective:1000px;--T:30cqw;--ry:-31deg;filter:drop-shadow(9px 12px 11px rgba(0,0,0,.38))}
+.cover.b3d::after{display:none}
+.b3d-in{position:absolute;inset:0;transform-style:preserve-3d;transform:translateX(9cqw) rotateY(var(--ry)) scale(.9);transition:transform .25s}
+.b3d .f{position:absolute;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.b3d .f-front{inset:0;border-radius:2px 5px 5px 2px;overflow:hidden;background:#222;transform:translateZ(calc(var(--T)/2))}
+.b3d .f-front img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.b3d .f-front::before{content:"";position:absolute;inset:0 auto 0 0;width:9%;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.34) 0,rgba(255,255,255,.2) 3.5%,rgba(0,0,0,.2) 6.5%,rgba(255,255,255,.05) 9%,transparent);pointer-events:none}
+.b3d .f-front::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(115deg,rgba(255,255,255,.16),transparent 42%,rgba(0,0,0,.1));pointer-events:none}
+.b3d .f-back{inset:0;border-radius:2px 5px 5px 2px;background:var(--cvc,#3a2f24);transform:translateZ(calc(var(--T)/-2)) rotateY(180deg)}
+.b3d .f-right{top:1.8%;bottom:1.8%;left:calc(50% - var(--T)/2);width:var(--T);background:
+ linear-gradient(90deg,rgba(0,0,0,.28),transparent 12%,transparent 88%,rgba(0,0,0,.2)),
+ repeating-linear-gradient(90deg,#faf6ec 0 .5cqw,#d9d1bb .5cqw 1cqw);transform:rotateY(90deg) translateZ(calc(50cqw - 1.2cqw))}
+.b3d .f-left{inset:0;width:var(--T);left:calc(50% - var(--T)/2);background:var(--cvc,#3a2f24);transform:rotateY(-90deg) translateZ(50cqw)}
+.book:active .b3d-in{transform:translateX(9cqw) rotateY(-24deg) scale(.88)}
+.bd-cover .cover.b3d{--ry:-31deg}
 </style>
 
 <div class="app" id="app"></div>
@@ -824,7 +832,7 @@ const A={
 };
 const ARTS={};
 function cover(b){
- return b.cover?`<div class="cover art img"><img src="${escH(b.cover)}" alt="" loading="lazy">${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}</div>`:`<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
+ return b.cover?`<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front"><img src="${escH(b.cover)}" alt="" loading="lazy">${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`:`<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
 }
 
 function book(b){return `<button class="book" data-book="${b.id}" aria-label="${b.t}, ${b.a}">${cover(b)}</button>`}
