@@ -52,3 +52,7 @@ grant insert, update, delete on public.books to authenticated;
 
 -- Бахши китоб (жанр) чекловсиз: жанрҳои нав дар иловада илова мешаванд
 alter table public.books drop constraint if exists books_c_check;
+
+-- Шаклҳои китоб: электронӣ (матн) ва премиум
+alter table public.books add column if not exists ebook boolean not null default true;
+alter table public.books add column if not exists premium boolean not null default false;
