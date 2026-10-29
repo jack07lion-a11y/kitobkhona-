@@ -823,7 +823,7 @@ const FREE_PAGES=3,FREE_SEC=60;
 const locked=b=>!!(b&&b.prem&&!S.premium);
 const IC_DL='<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',IC_OK='<path d="M5 12.5l4.5 4.5L19 7"/>',IC_X='<path d="M6 6l12 12M18 6L6 18"/>',IC_MARK='<path d="M6 3h12v18l-6-4-6 4z"/>';
 function gi(){return S.gender==="boy"?GLOVE:TAB[2][2]}
-let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0,search:false,recent:[],prog:{},confirmOut:false,pref:{fs:19,th:"white",ff:"serif"},pages:{},marks:{},mode:{},aprog:{},apos:{},dl:{},dlBook:{},premium:false,sheet:null,tocTab:0,au:null};
+let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0,search:false,recent:[],prog:{},confirmOut:false,pref:{fs:19,th:"sepia",ff:"serif"},pages:{},marks:{},mode:{},aprog:{},apos:{},dl:{},dlBook:{},premium:false,sheet:null,tocTab:0,au:null};
 const app=document.getElementById("app");
 try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.upd=null;S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
 if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;if(!S.rdCh)S.rdCh={};if(Array.isArray(S.bkCache))S.bkCache.forEach(b=>{if(b&&b.id&&!BOOKS.some(x=>x.id===b.id))BOOKS.push(b)});if(!S.pref.lh)S.pref.lh=1.6;
@@ -1047,7 +1047,7 @@ function setupSheet(){const sh=document.querySelector(".sheet");if(!sh)return;le
  sh.onpointerup=sh.onpointercancel=()=>{if(!g)return;const G0=g;g=null;if(G0.dy<6)return;
   if(G0.dy>110||G0.vy>.5)closeSheet();else{sh.style.transition=`transform .35s ${EASE}`;sh.style.transform="translateY(0)";const sec=app.firstElementChild;if(sec&&sec.classList.contains("behind")){sec.style.transition="";sec.style.transform=""}}}}
 const THEMES=[["auto","Худкор"],["light","Рӯшан"],["paper","Коғазӣ"],["dark","Торик"]];
-function applyTheme(){const t=S.theme||"auto",r=document.documentElement;if(t==="auto")r.removeAttribute("data-theme");else r.dataset.theme=t;
+function applyTheme(){const t=S.theme||"paper",r=document.documentElement;if(t==="auto")r.removeAttribute("data-theme");else r.dataset.theme=t;
  const dark=t==="dark"||(t==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
  let m=document.querySelector('meta[name="theme-color"]');if(!m){m=document.createElement("meta");m.name="theme-color";document.head.appendChild(m)}
  m.content=dark?"#131211":t==="paper"?"#f7f1e3":"#ffffff"}
@@ -1070,7 +1070,7 @@ function sheetHTML(){
   const F=[["ҶХ","Ҷасурбек Холиқулов Эгамбердиев","Ғоя ва маҳсулот","#0b7d57","#63d48f"],["УҶ","Умаров Ҷумъаназар","Маълумот ба зудӣ илова мешавад","#c47a12","#f5b53c"]];
   h=`<div class="sh-head"><b class="sh-t fnd-t">Founders</b>${X}</div>
   <div class="fnd">${F.map(([i,n,d,c1,c2])=>`<div class="fnd-c"><span translate="no" class="fnd-av" style="background:linear-gradient(135deg,${c1},${c2})">${i}</span><b>${n}</b><em>Founder</em><span>${d}</span></div>`).join("")}</div>`}
- if(S.sheet==="app"){const t=S.theme||"auto";
+ if(S.sheet==="app"){const t=S.theme||"paper";
   h=`<div class="sh-head"><b class="sh-t">Танзимот</b>${X}</div>
   <p class="set-cap">Намуди барнома</p>
   <div class="thg" role="radiogroup" aria-label="Намуди барнома">${THEMES.map(([k,n])=>`<button class="thb ${t===k?"on":""}" data-theme-set="${k}" role="radio" aria-checked="${t===k}"><span class="thp thp-${k}"><i></i><i></i><i></i></span>${n}</button>`).join("")}</div>
@@ -1364,7 +1364,7 @@ function bind(){
  $$("[data-gotch]",b=>b.onclick=()=>goChap(S.rdId,+b.dataset.gotch,0));
  $$("[data-lh]",b=>b.onclick=()=>{S.pref.lh=Math.round(Math.max(1.2,Math.min(2.2,(S.pref.lh||1.6)+ +b.dataset.lh*.1))*10)/10;render()});
  $$("[data-fs]",b=>b.onclick=()=>{S.pref.fs=Math.max(14,Math.min(28,S.pref.fs+ +b.dataset.fs));render()});
- $$("[data-theme-set]",b=>b.onclick=()=>{const k=b.dataset.themeSet;if(k===(S.theme||"auto"))return;
+ $$("[data-theme-set]",b=>b.onclick=()=>{const k=b.dataset.themeSet;if(k===(S.theme||"paper"))return;
   nav(()=>{S.theme=k;S.pref.th=k==="paper"?"sepia":k==="dark"?"dark":k==="light"?"white":(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"white");applyTheme();render()},"fade")});
  $$("[data-updno]",b=>b.onclick=()=>{S.updNo=S.upd&&S.upd.v;render()});
  $$("[data-lang]",b=>b.onclick=()=>{I18N.set(b.dataset.lang);S.sheet="app";render();toast("Забон иваз шуд")});
