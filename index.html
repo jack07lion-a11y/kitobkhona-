@@ -603,9 +603,9 @@ const escH=v=>String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const okMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
 const IN_APK=!!window.KitobAndroid;
 const BOOKS=IN_APK?[
- {id:900001,t:"Ёддоштҳо",a:"Садриддин Айнӣ",c:"fiction",col:["#1f4f7a","#123352"],audio:false,desc:"Хотираҳои Садриддин Айнӣ дар бораи кӯдакӣ, деҳа ва замони худ. 142 боб дар 4 қисм.",local:true,src:"books/yoddoshtho/book.json.gz",size:"0,8 МБ",cover:"books/yoddoshtho/cover.jpg"}
+ {id:900001,slug:"sadriddin-ayni-yoddoshtho",t:"Ёддоштҳо",a:"Садриддин Айнӣ",c:"fiction",col:["#1f4f7a","#123352"],audio:false,desc:"Хотираҳои Садриддин Айнӣ дар бораи кӯдакӣ, деҳа ва замони худ. 142 боб дар 4 қисм.",local:true,src:"books/yoddoshtho/book.json.gz",size:"0,8 МБ",cover:"books/yoddoshtho/cover.jpg"}
 ]:[];
-const BASE_N=BOOKS.length;
+const LOCALS=BOOKS.slice();
 const GENRES=[
  ["fiction","Адабиёти бадеӣ","Роман, ҳикоя ва повест",'<path d="M4 5c3-1.500 6-1.500 8 0v14c-2-1.500-5-1.500-8 0zM20 5c-3-1.500-6-1.500-8 0v14c2-1.500 5-1.500 8 0z"/>'],
  ["poetry","Шеър ва достон","Ғазал, рубоӣ, достон",'<path d="M5 20c4-1 8-5 11-13M9 14h6M12 11h6"/>'],
@@ -725,7 +725,7 @@ const VBADGE='<span class="vbadge" title="Админ" aria-label="Админ"><s
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
  const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
- BOOKS.length=BASE_N;data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
+ BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":""}catch(_){}}
@@ -772,7 +772,7 @@ async function importZip(file){
 function admHTML(){if(S.role!=="admin")return "";const mine=BOOKS.filter(x=>x.db);
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
   <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Танҳо ном ва муаллиф, бе матн</span></div><button class="pill" data-adm="new">Илова</button></div>
-  <div class="plan"><span class="round">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}</span><div><b>Бастаи китоб (zip)</b><span>Матн ва муқова. Аввал пинҳон бор мешавад</span></div><label class="pill" for="admzip">Интихоб</label><input type="file" id="admzip" accept=".zip,application/zip" hidden></div>
+  <div class="plan"><span class="round">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}</span><div><b>Бастаи китоб (zip)</b><span>Якчанд китобро якбора интихоб кунед. Аввал пинҳон бор мешавад</span></div><label class="pill" for="admzip">Интихоб</label><input type="file" id="admzip" accept=".zip,application/zip" multiple hidden></div>
   ${mine.map(b=>`<div class="plan"><span class="sh-cv" style="width:38px;flex:none">${cover(b)}</span><div><b>${escH(b.t)}</b><span>${escH(b.a)}${b.pub?"":' · <i class="hidden-tag">Пинҳон</i>'}</span></div><button class="pill" data-adm="edit" data-id="${b.id}">Таҳрир</button></div>`).join("")}</div>`}
 const fmt=s=>{s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
 const FREE_PAGES=3,FREE_SEC=60;
@@ -1252,8 +1252,11 @@ function bind(){
  $$("[data-logout]",b=>b.onclick=()=>{S.confirmOut=true;render()});
  $$("[data-logout-no]",b=>b.onclick=()=>{S.confirmOut=false;render()});
  $$("[data-adm]",b=>b.onclick=e=>{e.stopPropagation();S.adm=b.dataset.adm==="edit"?{...bk(+b.dataset.id)}:{};S.sheet="adm";render()});
- const az=document.getElementById("admzip");if(az)az.onchange=async()=>{const f=az.files&&az.files[0];if(!f)return;
-  toast("Бор шуда истодааст… сабр кунед");try{const t=await importZip(f);render();toast("«"+t+"» бор шуд (пинҳон)")}catch(e){toast(e.message||"Хато рӯй дод")}az.value=""};
+ const az=document.getElementById("admzip");if(az)az.onchange=async()=>{const fs=[...(az.files||[])];if(!fs.length)return;let ok=0,bad=[];
+  for(let i=0;i<fs.length;i++){toast("Бор мешавад "+(i+1)+"/"+fs.length+"… "+fs[i].name);
+   try{await importZip(fs[i]);ok++}catch(e){bad.push(fs[i].name+": "+(e.message||"хато"))}}
+  az.value="";render();
+  toast(bad.length?ok+" бор шуд, "+bad.length+" нашуд. "+bad[0]:ok+" китоб бор шуд (пинҳон)")};
  const asave=document.querySelector("[data-admsave]");if(asave)asave.onclick=async()=>{
   const v=id=>document.getElementById(id),t=v("a_t").value.trim(),a=v("a_a").value.trim();
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
