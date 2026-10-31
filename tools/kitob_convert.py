@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Китобхона: китобро (Word, PDF, EPUB, FB2, TXT) ба бастаи zip табдил медиҳад.
 
-Натиҷа: <slug>.zip, ки дар дохилаш book.json (+ cover.jpg) аст. Онро дар барнома
+Натиҷа: <slug>.kitob ва <slug>.zip (ҳамон мундариҷа), ки дар дохилаш book.json (+ cover.jpg) аст. Онро дар барнома
 Account → Идоракунӣ → «Бастаи китоб (zip)» бор кунед. Матни китоб ҳеҷ гоҳ тағйир
 намеёбад: фақат фосилаҳо тоза мешаванд ва сохтор (боб, шеър) муайян мешавад.
 
@@ -451,8 +451,12 @@ def build(args):
         z.writestr("book.json", json.dumps(book, ensure_ascii=False, separators=(",", ":")))
         if cover_bytes:
             z.writestr("cover.jpg", cover_bytes)
+    # Android zip-ро худаш мекушояд ва интихоб намегузорад: ҳамон мундариҷа бо пасванди .kitob (интихоб мешавад)
+    kpath = out / f"{slug}.kitob"
+    kpath.write_bytes(zpath.read_bytes())
     chs, paras, chars, warns = report(book)
-    print(f"✔ {zpath}  ({zpath.stat().st_size // 1024} КБ)")
+    print(f"✔ {kpath}  ({kpath.stat().st_size // 1024} КБ)  ← ин файлро ба Android/iPhone фиристед")
+    print(f"✔ {zpath}  (ҳамон, бо пасванди .zip)")
     print(f"  Ном: {book['title']} | Муаллиф: {book['author']} | Бахш: {cat}")
     print(f"  Қисм: {len(book['parts'])}, боб: {chs}, сархат: {paras}, ҳарф: {chars}, муқова: {'ҳа' if cover_bytes else 'не'}")
     for w in warns:
