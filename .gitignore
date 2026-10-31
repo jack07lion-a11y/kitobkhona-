@@ -5,3 +5,4 @@ node_modules/
 *.apk
 apk/src/build/
 apk/ks/
+apk/src/assets/fonts/
