@@ -22,7 +22,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import org.json.JSONObject;
+import android.app.PendingIntent;
+import android.content.pm.PackageInstaller;
+import android.provider.Settings;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.io.InputStream;
 
 public class MainActivity extends Activity {
@@ -31,6 +40,7 @@ public class MainActivity extends Activity {
     private static final String ASSET = "file:///android_asset/index.html";
     private WebView web;
     private boolean fellBack = false;
+    private volatile boolean updBusy = false;
     private ValueCallback<Uri[]> fileCb;
     private static final int PICK = 7;
 
@@ -153,6 +163,88 @@ public class MainActivity extends Activity {
             }
 
             @JavascriptInterface
+            public void downloadUpdate(final String url) {
+                if (url == null || !url.startsWith("https://github.com/jack07lion-a11y/kitobkhona-/releases/") || updBusy) return;
+                updBusy = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpURLConnection c = null;
+                        try {
+                            c = (HttpURLConnection) new URL(url).openConnection();
+                            c.setConnectTimeout(15000);
+                            c.setReadTimeout(30000);
+                            c.connect();
+                            int total = c.getContentLength();
+                            File f = new File(getCacheDir(), "update.apk");
+                            InputStream in = c.getInputStream();
+                            FileOutputStream out = new FileOutputStream(f);
+                            byte[] buf = new byte[32768];
+                            int n, last = -1;
+                            long got = 0;
+                            while ((n = in.read(buf)) > 0) {
+                                out.write(buf, 0, n);
+                                got += n;
+                                if (total > 0) {
+                                    int p = (int) Math.min(99, got * 100 / total);
+                                    if (p != last) {
+                                        last = p;
+                                        jsUpd(p, "down");
+                                    }
+                                }
+                            }
+                            out.close();
+                            in.close();
+                            jsUpd(100, "ready");
+                        } catch (Exception e) {
+                            jsUpd(-1, "err");
+                        } finally {
+                            updBusy = false;
+                            if (c != null) c.disconnect();
+                        }
+                    }
+                }).start();
+            }
+
+            @JavascriptInterface
+            public String installUpdate() {
+                File f = new File(getCacheDir(), "update.apk");
+                if (!f.exists()) return "nofile";
+                if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName())));
+                            } catch (Exception ignored) { }
+                        }
+                    });
+                    return "perm";
+                }
+                try {
+                    PackageInstaller pi = getPackageManager().getPackageInstaller();
+                    PackageInstaller.SessionParams sp = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+                    int id = pi.createSession(sp);
+                    PackageInstaller.Session s = pi.openSession(id);
+                    OutputStream os = s.openWrite("kitobkhona", 0, f.length());
+                    InputStream is = new FileInputStream(f);
+                    byte[] buf = new byte[32768];
+                    int n;
+                    while ((n = is.read(buf)) > 0) os.write(buf, 0, n);
+                    s.fsync(os);
+                    os.close();
+                    is.close();
+                    Intent it = new Intent(MainActivity.this, InstallReceiver.class).setAction("tj.kitobkhona.app.INSTALLED");
+                    PendingIntent pend = PendingIntent.getBroadcast(MainActivity.this, id, it, PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0));
+                    s.commit(pend.getIntentSender());
+                    s.close();
+                    return "ok";
+                } catch (Exception e) {
+                    return "err";
+                }
+            }
+
+            @JavascriptInterface
             public String version() {
                 try {
                     return String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
@@ -198,6 +290,15 @@ public class MainActivity extends Activity {
         }
         fileCb.onReceiveValue(out);
         fileCb = null;
+    }
+
+    private void jsUpd(final int p, final String st) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (web != null) web.evaluateJavascript("window.__upd&&window.__upd(" + p + ",'" + st + "')", null);
+            }
+        });
     }
 
     @Override
