@@ -131,6 +131,7 @@ public class MainActivity extends Activity {
                     android.content.SharedPreferences.Editor e = Notify.sp(MainActivity.this).edit();
                     e.putBoolean("remind", o.optBoolean("remind", true));
                     e.putBoolean("congrats", o.optBoolean("congrats", true));
+                    e.putInt("hour", o.optInt("hour", 20));
                     e.putString("role", o.optString("role", ""));
                     e.putString("title", o.optString("title", "Китобхона"));
                     e.putString("remind_text", o.optString("remindText", "Имрӯз ҳатто 1 дақиқа китоб нахондед!"));

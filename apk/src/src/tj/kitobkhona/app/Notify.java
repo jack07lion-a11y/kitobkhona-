@@ -17,7 +17,6 @@ public class Notify {
     static final String CH = "reading";
     static final int ID_READ = 101, ID_REMIND = 102;
     static final String ACT_READ = "tj.kitobkhona.app.READ", ACT_REMIND = "tj.kitobkhona.app.REMIND";
-    static final int REMIND_HOUR = 20;
 
     static SharedPreferences sp(Context c) {
         return c.getSharedPreferences("kk", Context.MODE_PRIVATE);
@@ -53,11 +52,11 @@ public class Notify {
         if (am != null) am.cancel(pi(c, act, code));
     }
 
-    /** Соати 20:00-и навбатӣ (имрӯз агар нагузашта бошад, вагарна пагоҳ). */
-    static long nextRemind(long now) {
+    /** Соати ёдоварии навбатӣ (пешфарз 20:00; имрӯз агар нагузашта бошад, вагарна пагоҳ). */
+    static long nextRemind(Context c, long now) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(now);
-        cal.set(Calendar.HOUR_OF_DAY, REMIND_HOUR);
+        cal.set(Calendar.HOUR_OF_DAY, Math.max(9, Math.min(21, sp(c).getInt("hour", 20))));
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -70,7 +69,7 @@ public class Notify {
             cancel(c, ACT_REMIND, 2);
             return;
         }
-        schedule(c, ACT_REMIND, 2, nextRemind(System.currentTimeMillis()));
+        schedule(c, ACT_REMIND, 2, nextRemind(c, System.currentTimeMillis()));
     }
 
     static String today() {
