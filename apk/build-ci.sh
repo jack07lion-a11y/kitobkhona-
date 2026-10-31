@@ -6,7 +6,13 @@ SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
 BT="$SDK/build-tools/$(ls "$SDK/build-tools" | sort -V | tail -1)"
 AJ="$SDK/platforms/android-34/android.jar"
 [ -f "$AJ" ] || AJ="$SDK/platforms/$(ls "$SDK/platforms" | sort -V | tail -1)/android.jar"
-KS="${KS:-$PWD/../ks/kitobkhona-test.jks}"; PASS=kitob2026
+# Калити асосӣ: apk/ks.enc (рамзгузоришуда), парол: GitHub Secret KS_PASS. Агар нест, калити кӯҳнаи санҷишӣ (муваққатӣ).
+if [ -n "${KS_PASS:-}" ] && [ -f "$PWD/../ks/kitobkhona.jks" ]; then
+  KS="$PWD/../ks/kitobkhona.jks"; PASS="$KS_PASS"
+else
+  KS="${KS:-$PWD/../ks/kitobkhona-test.jks}"; PASS=kitob2026
+  echo "ЭҲТИЁТ: калити кӯҳнаи санҷишӣ истифода шуд (docs/kalit.md-ро бинед)"
+fi
 mkdir -p "$(dirname "$KS")"
 [ -f "$KS" ] || keytool -genkeypair -keystore "$KS" -storepass $PASS -keypass $PASS -alias kitobkhona -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Kitobkhona Test, C=TJ"
 # ҳамеша аз index.html-и асосӣ мегирем
