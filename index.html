@@ -3,14 +3,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap&subset=cyrillic">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap&subset=cyrillic">
 <style>
 /* Layout: white phone app, rounded soft-grey cards, orange accent, 5-tab bottom bar (Mutolaa-style structure, Tajik copy) */
 :root{
   --orange:#13a56d; --orange-2:#63d48f; --orange-3:#0b7d57; --orange-soft:#e1f6ea;
   --bg:#ffffff; --card:#f6f6f4; --ink:#1c1b19; --muted:#8a8782; --line:#ececE8; --skel:#ededeb;
   --indigo:#4a4fb5; --indigo-2:#8a8fe0;
-  --font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="paper"]){
   --orange-soft:#12302a; --bg:#131211; --card:#1f1d1b; --ink:#f2efe9; --muted:#9a968f; --line:#2a2826; --skel:#26241f; color-scheme:dark}}
@@ -975,8 +975,8 @@ function openAudio(id){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S
  if(S.view!=="audio")S.apPrev=S.view;S.sheet=null;S.view="audio";render();window.scrollTo(0,0)}
 function openSearch(){S.view="home";S.search=true;S.loading=true;render(true);setTimeout(()=>{S.loading=false;if(S.search&&S.view==="home")render(true)},500)}
 const PLAY=FILL('<path d="M7 4.5v15l12.5-7.5z"/>'),PAUSE=FILL('<rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/>');
-const B10=P('<path d="M4.5 12a7.5 7.5 0 107.5-7.5H8.5"/><path d="M11 1.5L8 4.5l3 3"/><text x="12.2" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Manrope,sans-serif">10</text>',1.7);
-const F10=P('<path d="M19.5 12A7.5 7.5 0 1112 4.5h3.5"/><path d="M13 1.5l3 3-3 3"/><text x="11.8" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Manrope,sans-serif">10</text>',1.7);
+const B10=P('<path d="M4.5 12a7.5 7.5 0 107.5-7.5H8.5"/><path d="M11 1.5L8 4.5l3 3"/><text x="12.2" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
+const F10=P('<path d="M19.5 12A7.5 7.5 0 1112 4.5h3.5"/><path d="M13 1.5l3 3-3 3"/><text x="11.8" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
 const TIMER=P('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/>',1.8),EQ=P('<path d="M5 10v4M9 7v10M13 9v6M17 6v12"/>',2.2);
 
 function reader(){
