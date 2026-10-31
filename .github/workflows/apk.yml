@@ -17,15 +17,25 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: "Калити санҷишӣ (кэш, имзои ягона барои навсозӣ)"
+      - name: "Калити кӯҳнаи санҷишӣ (кэш; фақат то он ки apk/ks.enc пайдо шавад)"
+        if: hashFiles('apk/ks.enc') == ''
         uses: actions/cache@v4
         with:
           path: apk/ks
           key: kitob-ks-v1
+      - name: "Калити асосӣ (аз apk/ks.enc бо парол KS_PASS)"
+        if: hashFiles('apk/ks.enc') != ''
+        env:
+          KS_PASS: ${{ secrets.KS_PASS }}
+        run: |
+          [ -n "$KS_PASS" ] || { echo "KS_PASS дар Secrets нест"; exit 1; }
+          mkdir -p apk/ks
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in apk/ks.enc -out apk/ks/kitobkhona.jks -pass env:KS_PASS
       - name: Йиғиш
         env:
           VC: ${{ github.run_number }}
           VN: "0.1-test.${{ github.run_number }}"
+          KS_PASS: ${{ secrets.KS_PASS }}
         run: ./apk/build-ci.sh
       - name: "Нигоҳ доштан (Artifact)"
         uses: actions/upload-artifact@v4
