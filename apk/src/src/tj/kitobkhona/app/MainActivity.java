@@ -21,6 +21,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -112,6 +113,45 @@ public class MainActivity extends Activity {
         });
         web.addJavascriptInterface(new Object() {
             @JavascriptInterface
+            public void askNotify() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 11);
+                        }
+                    }
+                });
+            }
+
+            @JavascriptInterface
+            public void config(String json) {
+                try {
+                    JSONObject o = new JSONObject(json);
+                    android.content.SharedPreferences.Editor e = Notify.sp(MainActivity.this).edit();
+                    e.putBoolean("remind", o.optBoolean("remind", true));
+                    e.putBoolean("congrats", o.optBoolean("congrats", true));
+                    e.putString("role", o.optString("role", ""));
+                    e.putString("title", o.optString("title", "Китобхона"));
+                    e.putString("remind_text", o.optString("remindText", "Имрӯз ҳатто 1 дақиқа китоб нахондед!"));
+                    e.putString("tpl", o.optString("tpl", "Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!"));
+                    e.apply();
+                    Notify.scheduleDaily(MainActivity.this);
+                } catch (Exception ignored) { }
+            }
+
+            @JavascriptInterface
+            public void leave(int todayMin, int sessionSec) {
+                long now = System.currentTimeMillis();
+                android.content.SharedPreferences s = Notify.sp(MainActivity.this);
+                if (now - s.getLong("leave_at", 0) < 3000) return;
+                s.edit().putLong("leave_at", now).putString("read_day", Notify.today()).putInt("read_min", Math.max(0, todayMin)).apply();
+                if (sessionSec >= 60 && todayMin >= 1 && s.getBoolean("congrats", true)) {
+                    Notify.schedule(MainActivity.this, Notify.ACT_READ, 1, now + 5000);
+                }
+            }
+
+            @JavascriptInterface
             public String version() {
                 try {
                     return String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
@@ -157,6 +197,20 @@ public class MainActivity extends Activity {
         }
         fileCb.onReceiveValue(out);
         fileCb = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Notify.sp(this).edit().putBoolean("fg", true).apply();
+        Notify.enter(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Notify.sp(this).edit().putBoolean("fg", false).apply();
+        if (web != null) web.evaluateJavascript("window.__leave&&window.__leave()", null);
     }
 
     @Override
