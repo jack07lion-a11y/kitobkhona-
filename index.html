@@ -958,7 +958,9 @@ const A={
 };
 const ARTS={};
 function cover(b){
- return b.cover?`<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front"><img src="${escH(b.cover)}" alt="" loading="lazy">${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`:`<div class="cover art"><svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg>${b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:""}${b.prem?`<span class="prb">${CROWN}</span>`:""}<div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div></div>`;
+ const au=b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:"";
+ const face=b.cover?`<img src="${escH(b.cover)}" alt="" loading="lazy">`:`<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div>`;
+ return `<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front">${face}${au}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`;
 }
 
 function book(b){return `<button class="book" data-book="${b.id}" aria-label="${escH(b.t)}, ${escH(b.a)}">${cover(b)}<span class="t">${escH(b.t)}</span><span class="a">${escH(b.a)}</span>${fmtPill(b,true)}</button>`}
