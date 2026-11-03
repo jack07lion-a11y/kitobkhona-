@@ -31,6 +31,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.net.URL;
 import java.io.InputStream;
 
@@ -40,6 +42,7 @@ public class MainActivity extends Activity {
     private static final String ASSET = "file:///android_asset/index.html";
     private WebView web;
     private boolean fellBack = false;
+    private boolean shellChecked = false;
     private volatile boolean updBusy = false;
     private ValueCallback<Uri[]> fileCb;
     private static final int PICK = 7;
@@ -64,7 +67,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        int bg = night ? Color.parseColor("#131211") : Color.WHITE;
+        int bg = night ? Color.parseColor("#131211") : Color.parseColor("#F7F1E3");
         Window w = getWindow();
         w.setStatusBarColor(bg);
         w.setNavigationBarColor(bg);
@@ -73,7 +76,8 @@ public class MainActivity extends Activity {
         }
 
         web = new WebView(this);
-        web.setBackgroundColor(bg);
+        // бе ранг: то ҳангоми боркунӣ расми сплэши Android (логотип) намоён бошад
+        web.setBackgroundColor(Color.TRANSPARENT);
         web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
@@ -90,6 +94,39 @@ public class MainActivity extends Activity {
                 if ("https".equals(u.getScheme()) && HOST.equals(u.getHost())) return false;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
                 return true;
+            }
+
+            /** Оғози фавтӣ: саҳифа ва шрифтҳоро аз телефон медиҳем (интернет интизор нест); нусхаи нав дар пасзамина мефарояд. */
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest req) {
+                try {
+                    Uri u = req.getUrl();
+                    if ("https".equals(u.getScheme()) && HOST.equals(u.getHost()) && "GET".equals(req.getMethod())) {
+                        String p = u.getPath();
+                        String base = "/kitobkhona-/";
+                        if (p != null && p.startsWith(base)) {
+                            String rel = p.substring(base.length());
+                            if (rel.length() == 0 || rel.equals("index.html")) {
+                                File f = new File(getFilesDir(), "shell/index.html");
+                                InputStream in = f.exists() ? new FileInputStream(f) : getAssets().open("index.html");
+                                return localResp("text/html", in);
+                            }
+                            if ((rel.startsWith("fonts/") || rel.startsWith("lib/")) && !rel.contains("..")) {
+                                String mime = rel.endsWith(".woff2") ? "font/woff2" : "application/javascript";
+                                return localResp(mime, getAssets().open(rel));
+                            }
+                        }
+                    }
+                } catch (Exception ignored) { }
+                return super.shouldInterceptRequest(view, req);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (!shellChecked) {
+                    shellChecked = true;
+                    refreshShell();
+                }
             }
 
             @Override
@@ -299,6 +336,54 @@ public class MainActivity extends Activity {
                 if (web != null) web.evaluateJavascript("window.__upd&&window.__upd(" + p + ",'" + st + "')", null);
             }
         });
+    }
+
+    private WebResourceResponse localResp(String mime, InputStream in) {
+        WebResourceResponse r = new WebResourceResponse(mime, "utf-8", in);
+        Map<String, String> h = new HashMap<String, String>();
+        h.put("Cache-Control", "no-store");
+        r.setResponseHeaders(h);
+        return r;
+    }
+
+    /** Нусхаи нави саҳифаро аз сайт мефарорем ва барои оғози оянда нигоҳ медорем. */
+    private void refreshShell() {
+        if (!online()) return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection c = null;
+                try {
+                    c = (HttpURLConnection) new URL(SITE + "index.html?nc=" + System.currentTimeMillis()).openConnection();
+                    c.setConnectTimeout(15000);
+                    c.setReadTimeout(30000);
+                    c.setRequestProperty("Cache-Control", "no-cache");
+                    if (c.getResponseCode() != 200) return;
+                    InputStream in = c.getInputStream();
+                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                    byte[] buf = new byte[32768];
+                    int n;
+                    while ((n = in.read(buf)) > 0) {
+                        bo.write(buf, 0, n);
+                        if (bo.size() > 4 * 1024 * 1024) return;
+                    }
+                    in.close();
+                    byte[] data = bo.toByteArray();
+                    String s = new String(data, "UTF-8");
+                    if (data.length < 50000 || !s.contains("kitob10") || !s.contains("</script>")) return;
+                    File dir = new File(getFilesDir(), "shell");
+                    dir.mkdirs();
+                    File tmp = new File(dir, "index.html.tmp");
+                    FileOutputStream out = new FileOutputStream(tmp);
+                    out.write(data);
+                    out.close();
+                    tmp.renameTo(new File(dir, "index.html"));
+                } catch (Exception ignored) {
+                } finally {
+                    if (c != null) c.disconnect();
+                }
+            }
+        }).start();
     }
 
     @Override

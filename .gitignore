@@ -6,3 +6,4 @@ node_modules/
 apk/src/build/
 apk/ks/
 apk/src/assets/fonts/
+apk/src/assets/lib/

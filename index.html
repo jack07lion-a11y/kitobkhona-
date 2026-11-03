@@ -3,6 +3,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
+/* ---- Сплэш (ҳаракати кушодан): оғози барнома ---- */
+#spl{position:fixed;inset:0;z-index:2147483000;background:var(--bg,#f7f1e3);display:flex;align-items:center;justify-content:center}
+.sp-c{display:flex;flex-direction:column;align-items:center;gap:8px;transform:translateY(-3vh)}
+.sp-logo{width:160px;height:160px;overflow:visible;opacity:0;animation:spIn .6s cubic-bezier(.2,.8,.2,1) .05s forwards}
+@keyframes spIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+.sp-halo{opacity:0;animation:spFade .9s ease .35s forwards,spPulse 2.2s ease-in-out 1.3s infinite alternate}
+@keyframes spFade{to{opacity:1}}@keyframes spPulse{to{opacity:.55}}
+.sp-sun{transform-box:fill-box;transform-origin:50% 100%;animation:spSun .85s cubic-bezier(.2,.9,.25,1.1) .12s both}
+@keyframes spSun{from{transform:translateY(20px) scale(.7);opacity:0}to{transform:none;opacity:1}}
+.sp-ray{stroke-dasharray:100;stroke-dashoffset:100;animation:spDraw .7s ease .45s forwards}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+.sp-land{animation:spLand .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes spLand{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.sp-name{display:flex;font:800 30px/1 var(--font,system-ui);letter-spacing:-.5px;color:var(--ink,#2e2619);transition:opacity .25s}
+.sp-name i{font-style:normal;display:inline-block;opacity:0;transform:translateY(10px);animation:spLetter .5s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.5s + var(--i)*.045s)}
+.sp-name .g{color:#14a06b}
+@keyframes spLetter{to{opacity:1;transform:none}}
+#spl-ring{position:fixed;z-index:2147483001;border-radius:50%;pointer-events:none;box-shadow:0 0 0 2.5px rgba(244,183,60,.9),0 0 36px 10px rgba(255,217,120,.55),inset 0 0 30px 6px rgba(255,217,120,.35)}
+@media (prefers-reduced-motion:reduce){.sp-logo,.sp-halo,.sp-sun,.sp-ray,.sp-land,.sp-name i{animation:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}}
+
 /* Шрифтҳо дар худи лоиҳа (бе интернет ҳам кор мекунанд; Inter ва Lora ҳарфҳои тоҷикиро доранд) */
 @font-face{font-family:'Inter';font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/inter-cyrillic-ext.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
 @font-face{font-family:'Inter';font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/inter-cyrillic.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
@@ -652,6 +672,26 @@ html,body{touch-action:pan-x pan-y}
 .fmt.sm .pr{color:#e9a227}
 </style>
 
+<script>window.__t0=performance.now();try{var __o=JSON.parse(localStorage.getItem("kitob10")||"null"),__t=(__o&&__o.theme)||"paper";if(__t!=="auto")document.documentElement.dataset.theme=__t}catch(e){}setTimeout(function(){var e=document.getElementById("spl");e&&e.remove()},9000)</script>
+<div id="spl" aria-hidden="true"><div class="sp-c"><svg class="sp-logo" viewBox="0 0 100 100"><defs>
+<linearGradient id="sgl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#075a42"/><stop offset="1" stop-color="#2fb583"/></linearGradient>
+<linearGradient id="sgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14a06b"/><stop offset="1" stop-color="#93e6b8"/></linearGradient>
+<radialGradient id="sgs" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#ffe49a"/><stop offset="1" stop-color="#f2a928"/></radialGradient>
+<radialGradient id="sgh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd978" stop-opacity=".55"/><stop offset="1" stop-color="#ffd978" stop-opacity="0"/></radialGradient>
+<clipPath id="scl"><path d="M5 78V47L21 17l11 18 8-8 10 20v37Q28 70 5 78z"/></clipPath>
+<clipPath id="scr"><path d="M95 78V47L79 17 68 35l-8-8-10 20v37q22-8 45 0z"/></clipPath>
+</defs>
+<circle class="sp-halo" cx="50" cy="40" r="26" fill="url(#sgh)"/>
+<g stroke="#f4b73c" stroke-width="2.200" stroke-linecap="round"><path class="sp-ray" pathLength="100" d="M50 17v-5M37 22l-3-4M63 22l3-4M28 33h-5M72 33h5"/></g>
+<circle class="sp-sun" cx="50" cy="42" r="12" fill="url(#sgs)"/>
+<g class="sp-land"><g transform="translate(0 12.400) scale(1 .86)"><path d="M5 78V47L21 17l11 18 8-8 10 20v37Q28 70 5 78z" fill="url(#sgl)"/>
+<path d="M95 78V47L79 17 68 35l-8-8-10 20v37q22-8 45 0z" fill="url(#sgr)"/>
+<g clip-path="url(#scl)"><path d="M21 17l11 18-7 14 6 36H50V47L40 27l-8 8z" fill="#03402c" fill-opacity=".38"/><path d="M5 47l16-30-5 22-6 14z" fill="#fff" fill-opacity=".08"/></g>
+<g clip-path="url(#scr)"><path d="M79 17L68 35l7 14-6 36H50V47l10-20 8 8z" fill="#0a7a52" fill-opacity=".42"/><path d="M95 47L79 17l5 22 6 14z" fill="#fff" fill-opacity=".14"/></g>
+<path clip-path="url(#scl)" d="M21 17l-8 13 4-2 4 5 3-6 4 3 3-3-3-5z" fill="#fff" fill-opacity=".95"/><path clip-path="url(#scr)" d="M79 17l8 13-4-2-4 5-3-6-4 3-3-3 3-5z" fill="#fff" fill-opacity=".95"/>
+<path d="M50 47v37" stroke="#fff" stroke-opacity=".55" stroke-width="1.600"/>
+<path d="M5 83Q28 75 49 88M95 83Q72 75 51 88" fill="none" stroke="#0b7d57" stroke-width="2.600" stroke-linecap="round"/>
+<path d="M5 89Q28 81 49 94M95 89Q72 81 51 94" fill="none" stroke="#4fd391" stroke-width="2.600" stroke-linecap="round"/></g></g></svg><div class="sp-name" translate="no"><i style="--i:0">к</i><i style="--i:1">и</i><i style="--i:2">т</i><i style="--i:3">о</i><i style="--i:4">б</i><i class="g" style="--i:5">х</i><i class="g" style="--i:6">о</i><i class="g" style="--i:7">н</i><i class="g" style="--i:8">а</i></div></div></div>
 <div class="app" id="app"></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -665,8 +705,9 @@ async function sbSend(e){const c=await sbLoad();
   if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хатоги рӯй дод. Баъдтар аз нав кӯшиш кунед";return""}
  return SB_URL?"Интернет нест ё сервер ҷавоб намедиҳад":""}
 function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(sb)return r(sb);
- const t=document.createElement("script");t.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
- t.onload=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};t.onerror=()=>r(null);document.head.appendChild(t)})}
+ const mk=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};
+ const load=(src,fail)=>{const t=document.createElement("script");t.src=src;t.onload=mk;t.onerror=fail;document.head.appendChild(t)};
+ load("lib/supabase.min.js",()=>load("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js",()=>r(null)))})}
 const escH=v=>String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const okMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
 const IN_APK=!!window.KitobAndroid;
@@ -848,7 +889,7 @@ async function loadText(b,onP){if(TX[b.id])return true;const key="https://kitob.
   TX[b.id]=await gunzipJSON(blob);b.have=true;if(b.src){S.hv=S.hv||{};S.hv[b.id]=true;save()}return true}catch(_){return false}}
 const GENRE_ALIAS={"адабиёт":"fiction","адабиёти бадеӣ":"fiction","шеър":"poetry","таърих":"history"};
 function genreOf(n){const k=String(n||"").trim().toLowerCase();if(GENRE_ALIAS[k])return GENRE_ALIAS[k];const g=GENRES.find(x=>x[1].toLowerCase()===k||x[0]===k);return g?g[0]:"fiction"}
-function loadJSZip(){return window.JSZip?Promise.resolve(window.JSZip):new Promise((ok,no)=>{const t=document.createElement("script");t.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";t.onload=()=>ok(window.JSZip);t.onerror=no;document.head.appendChild(t)})}
+function loadJSZip(){return window.JSZip?Promise.resolve(window.JSZip):new Promise((ok,no)=>{const t=document.createElement("script");t.src="lib/jszip.min.js";t.onload=()=>ok(window.JSZip);t.onerror=()=>{const u=document.createElement("script");u.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";u.onload=()=>ok(window.JSZip);u.onerror=no;document.head.appendChild(u)};document.head.appendChild(t)})}
 async function gzipBlob(text){return await new Response(new Blob([text]).stream().pipeThrough(new CompressionStream("gzip"))).blob()}
 async function importZip(file,imgs){
  let z=null,raw;
@@ -1744,6 +1785,18 @@ async function loadRelAdmin(){if(S.role!=="admin")return;const[,b]=await Promise
 const relNew=()=>!!(S.rb&&S.rb.v>((S.rel&&S.rel.version)||0));
 render();
 I18N.start();
+/* ---- Сплэш: аз нур баромадан (дойраи ҳаракатшаванда) то кушодани барнома ---- */
+(function(){const el=document.getElementById("spl");if(!el)return;const MIN=1500;let done=false;
+ function go(){if(done)return;done=true;const sun=el.querySelector(".sp-sun"),nm=el.querySelector(".sp-name"),r=sun.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,
+  mx=Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy))*1.08;nm.style.opacity="0";
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){el.style.transition="opacity .25s";el.style.opacity="0";setTimeout(()=>el.remove(),300);return}
+  const ring=document.createElement("div");ring.id="spl-ring";document.body.appendChild(ring);const t0=performance.now(),D=750;
+  (function f(now){const k=Math.min(1,(now-t0)/D),e=1-Math.pow(1-k,3),rad=e*mx;
+   el.style.webkitMaskImage=el.style.maskImage=`radial-gradient(circle at ${cx}px ${cy}px,transparent ${rad}px,#000 ${rad+1.5}px)`;
+   ring.style.cssText=`left:${cx-rad}px;top:${cy-rad}px;width:${rad*2}px;height:${rad*2}px;opacity:${1-k*k}`;
+   if(k<1)requestAnimationFrame(f);else{el.remove();ring.remove()}})(t0)}
+ setTimeout(go,Math.max(0,MIN-(performance.now()-(window.__t0||0))))})();
+
 pushNotifyCfg();setTimeout(()=>{const A=window.KitobAndroid;if(A&&A.askNotify&&S.view!=="login"&&!S.askedN){S.askedN=1;save();try{A.askNotify()}catch(_){}}},3500);
 if(/[?&]doira\b/.test(location.search)&&S.role==="admin")cxEditOn();
 checkUpdate();
