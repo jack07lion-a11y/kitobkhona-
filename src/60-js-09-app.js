@@ -259,6 +259,7 @@ function bind(){
  const sk=document.getElementById("apseek");if(sk){sk.oninput=()=>{sk.dataset.drag=1;const a=S.au;let p=+sk.value;if(locked(bk(a.id))&&p>FREE_SEC){p=FREE_SEC;sk.value=p}a.pos=p;aprog();tickUI()};sk.onchange=()=>{delete sk.dataset.drag}}
  const mk=document.getElementById("rdmark");if(mk)mk.onclick=()=>{const id=S.rdId,p=mkey(id),a=S.marks[id]||[],had=a.includes(p);S.marks[id]=had?a.filter(x=>x!==p):[...a,p];mk.classList.toggle("on",!had);toast(had?"Хатчӯб бардошта шуд":"Хатчӯб гузошта шуд");save()};
  bindFeedback();
+ bindWebPub();
  bindMake();
  setupReader();
  setupSheet();

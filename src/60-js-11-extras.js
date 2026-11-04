@@ -27,7 +27,7 @@ function checkUpdate(){const A=window.KitobAndroid;if(!A||!navigator.onLine)retu
  return loadRelease().then(r=>{if(!r||!(r.version>cur)||!/^https:\/\/github\.com\/jack07lion-a11y\/kitobkhona-\/releases\//.test(r.url||""))return false;S.upd={v:r.version,url:r.url};render();return true})}
 async function loadBuilds(){try{const r=await fetch("https://api.github.com/repos/jack07lion-a11y/kitobkhona-/releases?per_page=15");if(!r.ok)return null;const j=await r.json();let best=null;
  for(const x of j){const m=/^apk-(\d+)$/.exec(x.tag_name||"");if(!m||x.draft)continue;const a=(x.assets||[]).find(y=>/\.apk$/.test(y.name));if(!a)continue;const v=+m[1];if(!best||v>best.v)best={v,url:a.browser_download_url,date:x.published_at||x.created_at}}return best}catch(_){return null}}
-async function loadRelAdmin(){if(!canPerm("release"))return;const[,b]=await Promise.all([loadRelease(),loadBuilds()]);S.rb=b;S.rbDone=true;if(S.view==="me"&&(S.sheet==="admrel"||!S.sheet))render()}
+async function loadRelAdmin(){if(!canPerm("release"))return;S.webLast=await webLatest();const[,b]=await Promise.all([loadRelease(),loadBuilds()]);S.rb=b;S.rbDone=true;if(S.view==="me"&&(S.sheet==="admrel"||!S.sheet))render()}
 const relNew=()=>!!(S.rb&&S.rb.v>((S.rel&&S.rel.version)||0));
 render();
 I18N.start();
@@ -59,6 +59,7 @@ async function doRefresh(){
  try{await checkUpdate()}catch(_){}
  if(await checkShell(false))return["Интерфейс нав мешавад…"];
  const out=[];if(S.upd)out.push("Навсозии барнома ҳаст (версияи "+S.upd.v+")");
+ if(wuDue()){out.push("Навсозии нав тайёр аст");webUpdCheck()}
  if(BOOKS.length>nb)out.push("Китобҳои нав: "+(BOOKS.length-nb));
  const nw=await loadNewsOnce();if(nw){const seen=+(localStorage.getItem("kitob_news")||0);if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)localStorage.setItem("kitob_news",String(nw.id))}
  return out.length?out:["Ҳама чиз нав аст"]}
@@ -94,5 +95,5 @@ async function doRefresh(){
  addEventListener("touchend",end,{passive:true});addEventListener("touchcancel",end,{passive:true});
 })();
 try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Интерфейс нав шуд"))}}catch(_){}
-afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck()});
+afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck();webUpdCheck()});
 afterSplash(checkUpdate);

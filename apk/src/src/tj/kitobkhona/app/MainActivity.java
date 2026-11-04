@@ -28,6 +28,8 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.WindowManager;
 import java.util.Arrays;
+import android.os.Handler;
+import android.os.Looper;
 import android.app.PendingIntent;
 import android.content.pm.PackageInstaller;
 import android.provider.Settings;
@@ -202,7 +204,8 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 if (!shellChecked) {
                     shellChecked = true;
-                    refreshShell();
+                    // корбари оддӣ: саҳифа худ аз худ навсозӣ намешавад (танҳо баъди «Навсозӣ»); админ/ёрдамчӣ: худкор
+                    if (Notify.sp(MainActivity.this).getBoolean("shell_auto", false)) refreshShell(false);
                 }
             }
 
@@ -369,6 +372,35 @@ public class MainActivity extends Activity {
                 String c = sp.getString("crash", "");
                 if (c.length() > 0) sp.edit().remove("crash").apply();
                 return c;
+            }
+
+            // ---------- Навсозии саҳифа (веб қисми) ----------
+            @JavascriptInterface
+            public void setShellAuto(boolean on) {
+                Notify.sp(MainActivity.this).edit().putBoolean("shell_auto", on).apply();
+            }
+
+            @JavascriptInterface
+            public void updateShell() {
+                refreshShell(true);
+            }
+
+            @JavascriptInterface
+            public void restartApp() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            finishAndRemoveTask();
+                        } catch (Exception ignored) { }
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                            }
+                        }, 350);
+                    }
+                });
             }
 
             // ---------- Аудио дар паси экран ----------
@@ -584,25 +616,51 @@ public class MainActivity extends Activity {
     }
 
     /** Нусхаи нави саҳифаро аз сайт мефарорем ва барои оғози оянда нигоҳ медорем. */
-    private void refreshShell() {
-        if (!online()) return;
+    private volatile boolean shellBusy = false;
+
+    private void jsShell(final int p, final String st) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (web != null) web.evaluateJavascript("window.__shellP&&window.__shellP(" + p + ",'" + st + "')", null);
+            }
+        });
+    }
+
+    /** Нусхаи нави саҳифаро аз сайт мефарорем. report=true: ба JS фоиз ва натиҷаро мегӯем. */
+    private void refreshShell(final boolean report) {
+        if (shellBusy) return;
+        if (!online()) {
+            if (report) jsShell(-1, "err");
+            return;
+        }
+        shellBusy = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpURLConnection c = null;
+                boolean ok = false;
                 try {
                     c = (HttpURLConnection) new URL(SITE + "index.html?nc=" + System.currentTimeMillis()).openConnection();
                     c.setConnectTimeout(15000);
                     c.setReadTimeout(30000);
                     c.setRequestProperty("Cache-Control", "no-cache");
                     if (c.getResponseCode() != 200) return;
+                    int total = c.getContentLength();
                     InputStream in = c.getInputStream();
                     ByteArrayOutputStream bo = new ByteArrayOutputStream();
                     byte[] buf = new byte[32768];
-                    int n;
+                    int n, last = -1;
                     while ((n = in.read(buf)) > 0) {
                         bo.write(buf, 0, n);
-                        if (bo.size() > 4 * 1024 * 1024) return;
+                        if (bo.size() > 6 * 1024 * 1024) return;
+                        if (report && total > 0) {
+                            int pc = (int) Math.min(95, bo.size() * 95L / total);
+                            if (pc != last) {
+                                last = pc;
+                                jsShell(pc, "down");
+                            }
+                        }
                     }
                     in.close();
                     byte[] data = bo.toByteArray();
@@ -614,25 +672,31 @@ public class MainActivity extends Activity {
                     File dir = new File(getFilesDir(), "shell");
                     dir.mkdirs();
                     File cur = new File(dir, "index.html"), prev = new File(dir, "index.prev.html");
+                    boolean same = false;
                     if (cur.exists()) {
                         try {
-                            if (sig.equals(sizeSig(cur))) return; // айнан ҳамон
+                            same = sig.equals(sizeSig(cur));
                         } catch (Exception ignored) { }
                     }
-                    File tmp = new File(dir, "index.html.tmp");
-                    FileOutputStream out = new FileOutputStream(tmp);
-                    out.write(data);
-                    out.close();
-                    // нусхаи тасдиқшудаи ҳозираро барои бозгашт нигоҳ медорем
-                    if (cur.exists() && "ok".equals(sp.getString("shell_state", "ok"))) {
-                        prev.delete();
-                        cur.renameTo(prev);
+                    if (!same) {
+                        File tmp = new File(dir, "index.html.tmp");
+                        FileOutputStream out = new FileOutputStream(tmp);
+                        out.write(data);
+                        out.close();
+                        // нусхаи тасдиқшудаи ҳозираро барои бозгашт нигоҳ медорем
+                        if (cur.exists() && "ok".equals(sp.getString("shell_state", "ok"))) {
+                            prev.delete();
+                            cur.renameTo(prev);
+                        }
+                        tmp.renameTo(cur);
+                        sp.edit().putString("shell_state", "trial").putInt("shell_fails", 0).apply();
                     }
-                    tmp.renameTo(cur);
-                    sp.edit().putString("shell_state", "trial").putInt("shell_fails", 0).apply();
+                    ok = true;
                 } catch (Exception ignored) {
                 } finally {
                     if (c != null) c.disconnect();
+                    shellBusy = false;
+                    if (report) jsShell(ok ? 100 : -1, ok ? "ready" : "err");
                 }
             }
         }).start();
