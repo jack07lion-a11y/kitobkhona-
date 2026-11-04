@@ -69,11 +69,9 @@ public class MainActivity extends Activity {
         boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         int bg = night ? Color.parseColor("#131211") : Color.parseColor("#F7F1E3");
         Window w = getWindow();
-        w.setStatusBarColor(bg);
-        w.setNavigationBarColor(bg);
-        if (!night && Build.VERSION.SDK_INT >= 26) {
-            w.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+        // то охири сплэш: рангҳои тира (мисли сплэш); баъд splashDone() онҳоро ба рангҳои барнома мегардонад
+        w.setStatusBarColor(Color.parseColor("#07211A"));
+        w.setNavigationBarColor(Color.parseColor("#07211A"));
 
         web = new WebView(this);
         // бе ранг: то ҳангоми боркунӣ расми сплэши Android (логотип) намоён бошад
@@ -279,6 +277,23 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
                     return "err";
                 }
+            }
+
+            @JavascriptInterface
+            public void splashDone() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean n = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+                        int c = n ? Color.parseColor("#131211") : Color.parseColor("#F7F1E3");
+                        Window ww = getWindow();
+                        ww.setStatusBarColor(c);
+                        ww.setNavigationBarColor(c);
+                        if (!n && Build.VERSION.SDK_INT >= 26) {
+                            ww.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+                        }
+                    }
+                });
             }
 
             @JavascriptInterface
