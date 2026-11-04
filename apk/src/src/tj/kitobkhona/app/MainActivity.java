@@ -22,6 +22,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import org.json.JSONObject;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.view.WindowManager;
+import java.util.Arrays;
 import android.app.PendingIntent;
 import android.content.pm.PackageInstaller;
 import android.provider.Settings;
@@ -47,6 +53,66 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileCb;
     private static final int PICK = 7;
 
+    /** Саҳифаи асосӣ: нусхаи навшуда (агар кор кунад); агар 2 бор оғоз нашуд — бозгашт ба нусхаи пештара ё ба нусхаи худи APK. */
+    private InputStream shellIndex() throws Exception {
+        android.content.SharedPreferences s = Notify.sp(this);
+        File dir = new File(getFilesDir(), "shell");
+        File cur = new File(dir, "index.html"), prev = new File(dir, "index.prev.html");
+        if (cur.exists() && "trial".equals(s.getString("shell_state", "ok"))) {
+            int fails = s.getInt("shell_fails", 0);
+            if (fails >= 2) {
+                try {
+                    byte[] d = readAll(new FileInputStream(cur));
+                    s.edit().putString("shell_bad", d.length + ":" + Arrays.hashCode(d)).apply();
+                } catch (Exception ignored) { }
+                cur.delete();
+                s.edit().putString("shell_state", "ok").putInt("shell_fails", 0).putBoolean("shell_rolled", true).apply();
+            } else {
+                s.edit().putInt("shell_fails", fails + 1).apply();
+            }
+        }
+        if (cur.exists()) return new FileInputStream(cur);
+        if (prev.exists()) return new FileInputStream(prev);
+        return getAssets().open("index.html");
+    }
+
+    private static byte[] readAll(InputStream in) throws Exception {
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        byte[] buf = new byte[32768];
+        int n;
+        while ((n = in.read(buf)) > 0) bo.write(buf, 0, n);
+        in.close();
+        return bo.toByteArray();
+    }
+
+    /** Ҳавола: https://…/kitobkhona-/?b=ID ё kitobkhona://book/ID */
+    private String deepUrl(Intent in) {
+        try {
+            Uri d = in == null ? null : in.getData();
+            if (d == null) return SITE;
+            if ("kitobkhona".equals(d.getScheme())) {
+                String id = d.getLastPathSegment();
+                if (id != null && id.matches("[A-Za-z0-9_-]{1,80}")) return SITE + "?b=" + id;
+                return SITE;
+            }
+            if ("https".equals(d.getScheme()) && HOST.equals(d.getHost()) && d.getPath() != null && d.getPath().startsWith("/kitobkhona-")) {
+                String q = d.getEncodedQuery();
+                return q == null ? SITE : SITE + "?" + q;
+            }
+        } catch (Exception ignored) { }
+        return SITE;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        try {
+            String b = Uri.parse(deepUrl(intent)).getQueryParameter("b");
+            if (b != null && web != null) web.evaluateJavascript("window.__deep&&window.__deep(" + JSONObject.quote(b) + ")", null);
+        } catch (Exception ignored) { }
+    }
+
     private boolean online() {
         try {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -66,6 +132,21 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
+        // хатогиро сабт мекунем (баъд JS ба сервер мефиристад)
+        final Thread.UncaughtExceptionHandler old = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                try {
+                    java.io.StringWriter sw = new java.io.StringWriter();
+                    e.printStackTrace(new java.io.PrintWriter(sw));
+                    String txt = sw.toString();
+                    if (txt.length() > 4000) txt = txt.substring(0, 4000);
+                    Notify.sp(MainActivity.this).edit().putString("crash", txt).putLong("crash_at", System.currentTimeMillis()).commit();
+                } catch (Throwable ignored) { }
+                if (old != null) old.uncaughtException(t, e);
+            }
+        });
         boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         int bg = night ? Color.parseColor("#131211") : Color.parseColor("#F7F1E3");
         Window w = getWindow();
@@ -105,9 +186,7 @@ public class MainActivity extends Activity {
                         if (p != null && p.startsWith(base)) {
                             String rel = p.substring(base.length());
                             if (rel.length() == 0 || rel.equals("index.html")) {
-                                File f = new File(getFilesDir(), "shell/index.html");
-                                InputStream in = f.exists() ? new FileInputStream(f) : getAssets().open("index.html");
-                                return localResp("text/html", in);
+                                return localResp("text/html", shellIndex());
                             }
                             if ((rel.startsWith("fonts/") || rel.startsWith("lib/") || rel.startsWith("avatars/") || rel.startsWith("logos/")) && !rel.contains("..")) {
                                 String mime = rel.endsWith(".woff2") ? "font/woff2" : rel.endsWith(".webp") ? "image/webp" : "application/javascript";
@@ -180,10 +259,147 @@ public class MainActivity extends Activity {
                     e.putString("role", o.optString("role", ""));
                     e.putString("title", o.optString("title", "Китобхона"));
                     e.putString("remind_text", o.optString("remindText", "Имрӯз ҳатто 1 дақиқа китоб нахондед!"));
+                    if (o.has("sbUrl")) e.putString("sb_url", o.optString("sbUrl", ""));
+                    if (o.has("sbKey")) e.putString("sb_key", o.optString("sbKey", ""));
+                    if (o.has("news")) e.putBoolean("news_on", o.optBoolean("news", true));
                     e.putString("tpl", o.optString("tpl", "Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!"));
                     e.apply();
                     Notify.scheduleDaily(MainActivity.this);
+                    NewsJob.schedule(MainActivity.this);
                 } catch (Exception ignored) { }
+            }
+
+            // ---------- Дарвозаҳои умумӣ (JS: window.KitobAndroid.*) ----------
+            @JavascriptInterface
+            public void share(final String text) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Intent i = new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text == null ? "" : text);
+                            startActivity(Intent.createChooser(i, "Мубодила"));
+                        } catch (Exception ignored) { }
+                    }
+                });
+            }
+
+            @JavascriptInterface
+            public void openUrl(final String url) {
+                if (url == null || !(url.startsWith("https://") || url.startsWith("http://"))) return;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                        } catch (Exception ignored) { }
+                    }
+                });
+            }
+
+            @JavascriptInterface
+            public void copy(final String text) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                            cm.setPrimaryClip(ClipData.newPlainText("Китобхона", text == null ? "" : text));
+                        } catch (Exception ignored) { }
+                    }
+                });
+            }
+
+            @JavascriptInterface
+            public String deviceInfo() {
+                try {
+                    JSONObject o = new JSONObject();
+                    o.put("brand", Build.BRAND).put("model", Build.MODEL).put("android", Build.VERSION.RELEASE).put("sdk", Build.VERSION.SDK_INT);
+                    o.put("app", version()).put("shell", Notify.sp(MainActivity.this).getString("shell_state", "ok"));
+                    o.put("rolled", Notify.sp(MainActivity.this).getBoolean("shell_rolled", false));
+                    return o.toString();
+                } catch (Exception e) {
+                    return "{}";
+                }
+            }
+
+            @JavascriptInterface
+            public void keepAwake(final boolean on) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    }
+                });
+            }
+
+            @JavascriptInterface
+            public void statusBar(final String hex, final boolean darkIcons) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            int c = Color.parseColor(hex);
+                            Window ww = getWindow();
+                            ww.setStatusBarColor(c);
+                            ww.setNavigationBarColor(c);
+                            int fl = 0;
+                            if (darkIcons && Build.VERSION.SDK_INT >= 26) fl = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                            ww.getDecorView().setSystemUiVisibility(fl);
+                        } catch (Exception ignored) { }
+                    }
+                });
+            }
+
+            @JavascriptInterface
+            public void haptic(int ms) {
+                try {
+                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    if (v == null) return;
+                    int d = Math.max(1, Math.min(200, ms));
+                    if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createOneShot(d, VibrationEffect.DEFAULT_AMPLITUDE));
+                    else v.vibrate(d);
+                } catch (Exception ignored) { }
+            }
+
+            /** Хатои охирини «афтидан» (агар бошад) ва тоза кардан. */
+            @JavascriptInterface
+            public String takeCrash() {
+                android.content.SharedPreferences sp = Notify.sp(MainActivity.this);
+                String c = sp.getString("crash", "");
+                if (c.length() > 0) sp.edit().remove("crash").apply();
+                return c;
+            }
+
+            // ---------- Аудио дар паси экран ----------
+            @JavascriptInterface
+            public void audioLoad(String url, String title, String artist, int posMs) {
+                AudioService.cmd(MainActivity.this, AudioService.A_LOAD, url, title, artist, posMs);
+            }
+
+            @JavascriptInterface
+            public void audioPlay() {
+                AudioService.cmd(MainActivity.this, AudioService.A_PLAY, null, null, null, 0);
+            }
+
+            @JavascriptInterface
+            public void audioPause() {
+                AudioService.cmd(MainActivity.this, AudioService.A_PAUSE, null, null, null, 0);
+            }
+
+            @JavascriptInterface
+            public void audioSeek(int ms) {
+                AudioService.cmd(MainActivity.this, AudioService.A_SEEK, null, null, null, ms);
+            }
+
+            @JavascriptInterface
+            public void audioStop() {
+                AudioService.cmd(MainActivity.this, AudioService.A_STOP, null, null, null, 0);
+            }
+
+            @JavascriptInterface
+            public String audioState() {
+                return AudioService.state();
             }
 
             @JavascriptInterface
@@ -281,6 +497,7 @@ public class MainActivity extends Activity {
 
             @JavascriptInterface
             public void splashDone() {
+                Notify.sp(MainActivity.this).edit().putString("shell_state", "ok").putInt("shell_fails", 0).apply();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -323,7 +540,7 @@ public class MainActivity extends Activity {
         }, "KitobAndroid");
         setContentView(web);
         if (state != null) web.restoreState(state);
-        else web.loadUrl(SITE);
+        else web.loadUrl(deepUrl(getIntent()));
     }
 
     @Override
@@ -361,6 +578,11 @@ public class MainActivity extends Activity {
         return r;
     }
 
+    private static String sizeSig(File f) throws Exception {
+        byte[] d = readAll(new FileInputStream(f));
+        return d.length + ":" + Arrays.hashCode(d);
+    }
+
     /** Нусхаи нави саҳифаро аз сайт мефарорем ва барои оғози оянда нигоҳ медорем. */
     private void refreshShell() {
         if (!online()) return;
@@ -386,13 +608,28 @@ public class MainActivity extends Activity {
                     byte[] data = bo.toByteArray();
                     String s = new String(data, "UTF-8");
                     if (data.length < 50000 || !s.contains("kitob10") || !s.contains("</script>")) return;
+                    android.content.SharedPreferences sp = Notify.sp(MainActivity.this);
+                    String sig = data.length + ":" + Arrays.hashCode(data);
+                    if (sig.equals(sp.getString("shell_bad", ""))) return; // ин нусха пештар кор накард
                     File dir = new File(getFilesDir(), "shell");
                     dir.mkdirs();
+                    File cur = new File(dir, "index.html"), prev = new File(dir, "index.prev.html");
+                    if (cur.exists()) {
+                        try {
+                            if (sig.equals(sizeSig(cur))) return; // айнан ҳамон
+                        } catch (Exception ignored) { }
+                    }
                     File tmp = new File(dir, "index.html.tmp");
                     FileOutputStream out = new FileOutputStream(tmp);
                     out.write(data);
                     out.close();
-                    tmp.renameTo(new File(dir, "index.html"));
+                    // нусхаи тасдиқшудаи ҳозираро барои бозгашт нигоҳ медорем
+                    if (cur.exists() && "ok".equals(sp.getString("shell_state", "ok"))) {
+                        prev.delete();
+                        cur.renameTo(prev);
+                    }
+                    tmp.renameTo(cur);
+                    sp.edit().putString("shell_state", "trial").putInt("shell_fails", 0).apply();
                 } catch (Exception ignored) {
                 } finally {
                     if (c != null) c.disconnect();

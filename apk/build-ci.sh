@@ -4,8 +4,11 @@ set -euo pipefail
 cd "$(dirname "$0")/src"
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
 BT="$SDK/build-tools/$(ls "$SDK/build-tools" | sort -V | tail -1)"
-AJ="$SDK/platforms/android-34/android.jar"
+# targetSdk 35 (Play талаб мекунад) агар платформа бошад; вагарна 34
+if [ -f "$SDK/platforms/android-35/android.jar" ]; then AJ="$SDK/platforms/android-35/android.jar"; TSDK=35
+else AJ="$SDK/platforms/android-34/android.jar"; TSDK=34; fi
 [ -f "$AJ" ] || AJ="$SDK/platforms/$(ls "$SDK/platforms" | sort -V | tail -1)/android.jar"
+echo "targetSdk=$TSDK"
 # Калити асосӣ: apk/ks.enc (рамзгузоришуда), парол: GitHub Secret KS_PASS. Агар нест, калити кӯҳнаи санҷишӣ (муваққатӣ).
 if [ -n "${KS_PASS:-}" ] && [ -f "$PWD/../ks/kitobkhona.jks" ]; then
   KS="$PWD/../ks/kitobkhona.jks"; PASS="$KS_PASS"
@@ -21,9 +24,10 @@ rm -rf assets/fonts && cp -r ../../fonts assets/fonts
 rm -rf assets/lib && cp -r ../../lib assets/lib
 mkdir -p assets/avatars && cp ../../avatars/*.webp assets/avatars/
 mkdir -p assets/logos && cp ../../logos/khirad*.webp assets/logos/
+if [ "$TSDK" = "35" ]; then mkdir -p res/values-v35 res/values-night-v35 && cp ../res-v35/styles.xml res/values-v35/styles.xml && cp ../res-v35/styles-night.xml res/values-night-v35/styles.xml; fi
 rm -rf build && mkdir -p build/gen build/obj
 "$BT/aapt2" compile --dir res -o build/res.zip
-"$BT/aapt2" link -o build/base.apk -I "$AJ" --manifest AndroidManifest.xml -A assets --java build/gen build/res.zip --min-sdk-version 24 --target-sdk-version 34 --version-code "${VC:-1}" --version-name "${VN:-0.1-test}"
+"$BT/aapt2" link -o build/base.apk -I "$AJ" --manifest AndroidManifest.xml -A assets --java build/gen build/res.zip --min-sdk-version 24 --target-sdk-version $TSDK --version-code "${VC:-1}" --version-name "${VN:-0.1-test}"
 javac -nowarn -Xlint:none -source 8 -target 8 -bootclasspath "$AJ" -classpath "$AJ" -d build/obj $(find src build/gen -name '*.java')
 "$BT/d8" --min-api 24 --lib "$AJ" --output build $(find build/obj -name '*.class')
 cp build/base.apk build/unsigned.apk && (cd build && zip -q unsigned.apk classes.dex)
