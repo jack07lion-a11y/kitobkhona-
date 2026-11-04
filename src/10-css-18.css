@@ -1,0 +1,12 @@
+/* ---------- навсозӣ бо кашидан ---------- */
+html{overscroll-behavior-y:contain}
+.ptr{position:fixed;left:0;right:0;top:0;height:0;z-index:30;pointer-events:none}
+.ptr-c{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);margin-left:-20px;width:40px;height:40px;border-radius:50%;background:var(--bg);box-shadow:0 2px 12px rgba(0,0,0,.16);display:grid;place-items:center;opacity:0}
+.ptr-r{display:grid;place-items:center;width:100%;height:100%}
+.ptr-c svg{width:30px;height:30px;transform:rotate(-90deg)}
+.ptr-bg{fill:none;stroke:var(--line);stroke-width:3.5}
+.ptr-ar{fill:none;stroke:var(--orange);stroke-width:3.5;stroke-linecap:round}
+.ptr.spin .ptr-r{animation:ptrs .85s linear infinite}
+@keyframes ptrs{to{transform:rotate(360deg)}}
+.ptr-m{position:absolute;left:18px;right:18px;top:calc(env(safe-area-inset-top,0px) + 26px);text-align:center;font:800 14px var(--font);color:var(--ink);opacity:0;transition:opacity .25s}
+@media (prefers-reduced-motion:reduce){.ptr.spin .ptr-r{animation-duration:1.7s}}

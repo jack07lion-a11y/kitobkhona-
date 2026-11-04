@@ -1,0 +1,37 @@
+/* ---- Сплэш «Хат»: логотип чизилади, рангга тўлади ва дар сарлавҳа менишинад. Танҳо transform/opacity ва чизиш ---- */
+#spl{position:fixed;inset:0;z-index:2147483000;background:linear-gradient(180deg,#07211a,#0b2f24);overflow:hidden;--w:min(54vw,250px);contain:strict}
+#spl .sx-fly{position:absolute;left:50%;top:40%;width:var(--w);height:var(--w);margin:calc(var(--w)/-2) 0 0 calc(var(--w)/-2);will-change:transform,opacity}
+#spl .sx-fill,#spl .sx-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible;display:block}
+#spl .sx-fill{opacity:0}
+#spl .sx-line path{fill:none;stroke:#f4b73c;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:100}
+#spl .sx-name{position:absolute;left:0;right:0;top:calc(40% + var(--w)/2 + 22px);display:flex;justify-content:center;font:800 clamp(28px,8.6vw,40px)/1 var(--font,Inter,system-ui,sans-serif);letter-spacing:-.02em;color:#e9f4ee}
+#spl .sx-name i{font-style:normal;display:inline-block;opacity:0;will-change:transform,opacity}
+#spl .sx-name .g{color:#2fd093}
+#spl.go{animation:sxOut .42s ease both 1.95s}
+#spl.go .sx-line path{animation:sxDraw .72s cubic-bezier(.4,0,.2,1) both;animation-delay:calc(.1s + var(--i)*.1s)}
+#spl.go .sx-line{animation:sxLineOut .45s ease both 1.2s}
+#spl.go .sx-fill{animation:sxFill .6s ease both .95s}
+#spl.go .sx-name{animation:sxNameOut .25s ease both 1.8s}
+#spl.go .sx-name i{animation:sxLetter .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(1.35s + var(--i)*.04s)}
+#spl.go .sx-fly{animation:sxDock .62s cubic-bezier(.65,0,.25,1) both 1.72s}
+@keyframes sxDraw{to{stroke-dashoffset:0}}
+@keyframes sxFill{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+@keyframes sxLineOut{to{opacity:0}}
+@keyframes sxLetter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes sxNameOut{to{opacity:0}}
+@keyframes sxDock{to{transform:translate(var(--dx,0px),var(--dy,0px)) scale(var(--ds,.8))}}
+@keyframes sxOut{to{opacity:0}}
+#spl.lite.go,#spl.lite.go *{animation-duration:.01s!important;animation-delay:0s!important}
+@media (prefers-reduced-motion:reduce){#spl.go,#spl.go *{animation-duration:.01s!important;animation-delay:0s!important}}
+
+/* Шрифтҳо дар худи лоиҳа (бе интернет ҳам кор мекунанд; Inter ва Lora ҳарфҳои тоҷикиро доранд) */
+@font-face{font-family:'Inter';font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/inter-cyrillic-ext.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/inter-cyrillic.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500 800;font-display:swap;src:url(fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Lora';font-style:italic;font-weight:400 600;font-display:swap;src:url(fonts/lora-i-cyrillic-ext.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Lora';font-style:italic;font-weight:400 600;font-display:swap;src:url(fonts/lora-i-cyrillic.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Lora';font-style:italic;font-weight:400 600;font-display:swap;src:url(fonts/lora-i-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Lora';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/lora-cyrillic-ext.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Lora';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/lora-cyrillic.woff2) format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Lora';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/lora-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+

@@ -1,0 +1,44 @@
+/* ---------- v2 нақшаи зебо ---------- */
+.sheet.tall{height:88vh;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.sheet.tall .rds-res{flex:1;max-height:none;padding-bottom:8px}
+.rds-in{background:var(--card);box-shadow:inset 0 0 0 1.5px transparent;transition:box-shadow .2s}
+.rds-in:focus-within{box-shadow:inset 0 0 0 1.5px var(--orange)}
+.rds-row{position:relative;background:var(--card);border:0;border-radius:14px;margin:0 0 8px;padding:11px 34px 11px 14px;animation:rdIn .32s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*28ms)}
+.rds-row:active{transform:scale(.985);background:var(--line)}
+.rds-ch{position:absolute;right:12px;top:50%;width:16px;height:16px;margin-top:-8px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rds-pg{color:var(--muted);font-weight:700}
+@keyframes rdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fsw{position:relative;flex:1;height:34px;margin-top:22px}
+.fsw .rd-scr{position:absolute;inset:0;width:100%;margin:0;z-index:2;background:none}
+.fsw .rd-scr::-webkit-slider-runnable-track{height:4px;background:linear-gradient(90deg,var(--orange) var(--p,0%),rgba(127,127,127,.25) var(--p,0%))}
+.fsw .rd-scr::-webkit-slider-thumb{width:24px;height:24px;margin-top:-10px;transition:transform .15s}
+.fsw .rd-scr:active::-webkit-slider-thumb{transform:scale(1.18)}
+.fsd{position:absolute;left:12px;right:12px;top:15px;display:flex;justify-content:space-between;pointer-events:none;z-index:1}
+.fsd u{width:9px;height:9px;border-radius:50%;background:rgba(127,127,127,.4);margin:-4px -4px 0;text-decoration:none}
+.fsw output{position:absolute;top:-30px;transform:translateX(-50%);margin-left:0;min-width:30px;height:24px;line-height:24px;text-align:center;border-radius:8px;background:var(--orange);color:#fff;font-size:12.5px;font-weight:800;transition:left .12s;pointer-events:none}
+.fsw output::after{content:"";position:absolute;left:50%;bottom:-4px;margin-left:-4px;border:4px solid transparent;border-top-color:var(--orange);border-bottom:0}
+.fsr{gap:12px}
+.seg.sm button{display:flex;align-items:center;justify-content:center;gap:6px}
+.seg.sm button .ico{width:17px;height:17px}
+.toc-r>span{gap:11px}
+.toc-i{width:30px;height:30px;padding:6px;border-radius:9px;background:var(--orange-soft);stroke:var(--orange);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sh-list .sh-row{animation:rdIn .3s cubic-bezier(.2,.8,.2,1) both}
+.rd-bub{position:absolute;bottom:62px;transform:translateX(-50%) scale(.6);min-width:44px;height:30px;line-height:30px;padding:0 10px;text-align:center;border-radius:10px;background:var(--pgink);color:var(--pg);font:800 13px var(--font);font-variant-numeric:tabular-nums;opacity:0;pointer-events:none;transition:opacity .15s,transform .18s cubic-bezier(.34,1.56,.64,1)}
+.rd-bub.on{opacity:1;transform:translateX(-50%) scale(1)}
+.rd-foot .rd-scr{transition:none}
+.rd-scr::-webkit-slider-thumb{transition:transform .15s}
+.rd-scr:active::-webkit-slider-thumb{transform:scale(1.25)}
+.rd-ic{transition:transform .12s,background .15s}
+.rd-ic:active{transform:scale(.88);background:var(--pgcard)}
+#rdmark.on svg{animation:bmk .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bmk{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:none}}
+.rd.ui .rd-top,.rd.ui .rd-foot{box-shadow:0 1px 0 rgba(0,0,0,.05),0 6px 22px rgba(0,0,0,.07)}
+.rd-top{backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);background:color-mix(in srgb,var(--pg) 90%,transparent)}
+.rd-foot,.rd-sbar{backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);background:color-mix(in srgb,var(--pg) 90%,transparent)}
+.rd-sbar{animation:rdUp .26s cubic-bezier(.32,.72,0,1)}
+@keyframes rdUp{from{transform:translateY(100%)}to{transform:none}}
+mark.rd-hit{transition:background .25s}
+mark.rd-hit.cur{animation:hitp .8s ease-out}
+@keyframes hitp{0%{box-shadow:0 0 0 0 rgba(244,183,60,.8)}100%{box-shadow:0 0 0 12px rgba(244,183,60,0)}}
+@media (prefers-reduced-motion:reduce){.rds-row,.sh-list .sh-row,mark.rd-hit.cur,.rd-sbar,#rdmark.on svg{animation:none!important}}
+

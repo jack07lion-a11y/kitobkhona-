@@ -1,0 +1,16 @@
+/* ---------- тарошидани сурат ---------- */
+.crp{position:fixed;inset:0;z-index:2147482000;background:#101010;color:#fff;display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);gap:12px;animation:rdIn .25s ease both}
+.crp-t{font-weight:800;font-size:17px}
+.crp-s{position:relative;flex:1;width:100%;max-width:460px;overflow:hidden;touch-action:none;border-radius:14px;background:#1b1b1b}
+.crp-s img{position:absolute;left:50%;top:50%;max-width:none;transform-origin:center;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.crp-f{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 200vmax rgba(0,0,0,.62);border:2px solid rgba(255,255,255,.92);pointer-events:none;box-sizing:border-box}
+.crp-f.rnd{border-radius:50%}
+.crp-h{margin:0;font-size:12.5px;color:#bbb;text-align:center;font-weight:600}
+.crp .rd-scr{width:100%;max-width:420px;margin:0;flex:none;height:36px}
+.crp .pill{color:#222}
+.crp .rd-scr::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--orange) var(--p,0%),rgba(255,255,255,.25) var(--p,0%))}
+.crp-b{display:flex;gap:10px;width:100%;max-width:420px}.crp-b .pill{flex:1;justify-content:center;height:48px}
+.pe-as{background:var(--card);border-radius:14px;padding:10px 12px;margin:0 0 10px;display:flex;flex-direction:column;gap:8px}
+.pe-as small{font-weight:800;color:var(--muted);font-size:12px}
+.pe-as .seg{margin:0;width:100%}
+

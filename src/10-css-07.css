@@ -1,0 +1,22 @@
+/* ---------- v14: paper theme + app settings ---------- */
+:root[data-theme="paper"]{--orange-soft:#e3eed6;--bg:#f7f1e3;--card:#eee5d0;--ink:#2e2619;--muted:#8a7d66;--line:#e4d8bd;--skel:#e8dec6;color-scheme:light;
+ --tbbg:rgba(247,241,227,.74);--tbpill:rgba(70,50,20,.08);--tblens:rgba(251,247,237,.94);--tbedge:rgba(255,255,255,.6);--tbsh:0 10px 34px rgba(70,50,20,.16)}
+.set-cap{margin:2px 0 10px;font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.thg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.thb{border:2px solid transparent;border-radius:18px;background:var(--card);padding:8px 6px 9px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:12.5px;font-weight:800;min-height:44px;transition:border-color .2s,transform .2s cubic-bezier(.32,.72,0,1)}
+.thb:active{transform:scale(.95)}
+.thb.on{border-color:var(--orange)}
+.thp{width:100%;max-width:62px;aspect-ratio:4/5;border-radius:11px;display:flex;flex-direction:column;gap:5px;padding:10px 8px;box-shadow:inset 0 0 0 1px rgba(128,128,128,.28)}
+.thp i{display:block;height:5px;border-radius:3px;background:var(--l)}
+.thp i:first-child{width:55%;background:#13a56d}.thp i:nth-child(2){width:90%}.thp i:nth-child(3){width:70%}
+.thp-light{background:#fff;--l:#d9d7d2}
+.thp-paper{background:#f7f1e3;--l:#d8c9a6}
+.thp-dark{background:#1b1a18;--l:#4a4741}
+.thp-auto{background:linear-gradient(135deg,#fff 50%,#1b1a18 50%);--l:#8f8c86}
+.upd{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:12px 12px 12px 14px;border-radius:18px;background:var(--card,#f5f5f3);border:1.5px solid #19a06a}
+.upd>div{flex:1;min-width:0}.upd b{display:block;font-size:15px}.upd span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.upd-go{flex:none;background:#19a06a;color:#fff;font-weight:700;font-size:14px;padding:10px 16px;border-radius:14px;text-decoration:none}
+.upd-bar{display:block;height:5px;border-radius:99px;background:var(--line);margin-top:8px;overflow:hidden}.upd-bar::after{content:"";display:block;height:100%;width:var(--p,0%);background:#19a06a;transition:width .2s}
+.upd-x{flex:none;border:0;background:none;color:var(--muted);width:28px;height:28px;padding:0}.upd-x .ico{width:18px;height:18px}
+.set-note{margin:10px 2px 6px;color:var(--muted);font-size:13px;min-height:18px}
+

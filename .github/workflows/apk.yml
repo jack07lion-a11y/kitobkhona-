@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: "index.html бо src/ мувофиқ аст?"
+        run: python3 tools/build.py --check
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

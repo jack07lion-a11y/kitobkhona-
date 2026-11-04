@@ -1,0 +1,8 @@
+/* ---------- v13 fixes ---------- */
+.rd-foot{padding:8px 16px 12px 24px;gap:14px}
+.rd-pg{text-align:left;min-width:48px}
+.rd-foot .rd-fabb{width:44px;height:44px;box-shadow:none;background:var(--pgcard);flex:none}
+.sec-h button{min-height:44px;min-width:44px;padding:0 4px;margin:-10px -4px -10px 0;display:inline-flex;align-items:center;justify-content:flex-end}
+.promo .cta{min-height:40px}
+@media (max-height:760px){.ap-cover{width:min(48vw,190px,28vh);margin:8px auto 12px}.ap-seek{margin-top:14px}.ap-ctl{margin:12px 0 14px}.ap-play{width:66px;height:66px}.ap-meta h1{font-size:20px}}
+
