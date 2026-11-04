@@ -1,0 +1,12 @@
+
+/* ---------- Китоб ясаш ---------- */
+.mk-file{display:flex;align-items:center;gap:10px;border:2px dashed var(--line);border-radius:16px;padding:16px;margin:8px 0;color:var(--muted);font-weight:700;cursor:pointer;word-break:break-all}
+.mk-file .ico{width:22px;height:22px;flex:none;color:var(--orange)}
+.mk-file.on{border-style:solid;border-color:var(--orange);color:var(--ink)}
+.mk-prog{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:14px 0 6px}
+.mk-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-2));border-radius:5px;transition:width .3s}
+.mk-st{margin:0;font-size:13px;font-weight:700;color:var(--muted)}
+.mk-err{color:#c0392b;font-weight:700;font-size:13.5px;margin:10px 0 0}
+.mk-res{background:var(--orange-soft);border-radius:14px;padding:12px 14px;margin:12px 0 0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.mk-res b{font-size:15px}.mk-res em{font-style:normal;color:#a15c00;font-weight:700}
+select.pe-i{appearance:auto}

@@ -250,6 +250,7 @@ const st=S.stats||{};
   ${S.rs&&S.rs.top&&S.rs.top.length?`<p class="set-note" translate="no">${S.rs.top.map((t,i)=>(i+1)+". "+escH(t.title)+" — "+fmtT(t.sec)).join("<br>")}</p>`:""}
   <div class="nrow"><div class="ntx"><b>Нусхаи захира (GitLab)</b><small>Охирин нав кардан: ${new Date(bkLast()).toLocaleDateString()} · ${bkDays()} рӯз пеш${bkDue()?" · НАВ КАРДАН ЛОЗИМ":""}</small></div><button class="pill" data-bkdone>Анҷом шуд</button></div>
   ${S.role==="admin"?`<div class="nrow"><div class="ntx"><b>Премиум дар барнома</b><small>Хомӯш: ҳамаи китобҳо ройгон, навиштаҳои Премиум пинҳон. Ҳеҷ чиз нест намешавад</small></div><button class="swt${PREM()?" on":""}" data-flag="premium" role="switch" aria-label="Премиум"></button></div>`:""}
+  ${row('<path d="M12 3v4M5 7h14v14H5zM9 12h6M9 16h4"/>',"Китоб ясаш","PDF, Word, EPUB → худкор ба барнома","admmake")}
   ${row('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',"Китобҳо","Китоби нав, zip, таҳрир","admbooks")}
   ${row('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>',"Хатоҳо ва пешниҳодҳо","Аз корбарон ва хатоҳои техникӣ","admrep")}
   ${S.role==="admin"?row(I.bell,"Хабар фиристодан","Огоҳинома ба ҳамаи APK-ҳо","admnews"):""}
