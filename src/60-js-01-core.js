@@ -244,7 +244,7 @@ function fmtPill(b,mini){const bits=[],T=mini?"span":"button",at=(txt,lab)=>mini
  if(b.audio)bits.push(`<${T}${at("Аудиокитоб: китобро гӯш мекунед","Аудиокитоб")}>${P(I.head,sz)}</${T}>`);
  if(b.prem&&PREM())bits.push(`<${T} class="pr"${at("Премиум: пурра хондан бо обуна","Премиум")}>${CROWN}</${T}>`);
  return bits.length?`<div class="fmt${mini?" sm":""}"${mini?"":' role="group" aria-label="Шаклҳои китоб"'}>${bits.join("")}</div>`:""}
-function updBanner(){const A=window.KitobAndroid,nat=!!(A&&A.downloadUpdate),st=S.updSt||"",x=`<button class="upd-x" data-updno aria-label="Пӯшидан">${P(IC_X,2.2)}</button>`;
+function updBanner(){return "";const A=window.KitobAndroid,nat=!!(A&&A.downloadUpdate),st=S.updSt||"",x=`<button class="upd-x" data-updno aria-label="Пӯшидан">${P(IC_X,2.2)}</button>`;
  if(nat&&st==="down")return `<div class="upd"><div><b>Навсозӣ</b><span class="upd-sub">Боргирӣ… ${S.updP||0}%</span><i class="upd-bar" style="--p:${S.updP||0}%"></i></div></div>`;
  if(nat&&st==="ready")return `<div class="upd"><div><b>Навсозӣ тайёр аст</b><span>Барномаро аз нав оғоз кунед. Android «Навсозӣ»-ро мепурсад, пахш кунед</span></div><button class="upd-go" data-upd-install>Аз нав оғоз кардан</button></div>`;
  const err=nat&&st==="err",go=nat?`<button class="upd-go" data-upd-go>${err?"Аз нав кӯшиш кардан":"Боргирӣ"}</button>`:`<a class="upd-go" href="${esc(S.upd.url)}">Боргирӣ</a>`;
