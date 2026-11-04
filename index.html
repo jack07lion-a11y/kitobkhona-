@@ -1040,7 +1040,9 @@ S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":data?.role==="subadmin"?"subadmin":""}catch(_){}}
-const PERMS=[["gender","Санҷиши ҷинси профил","Ёрдамчӣ дар таҳрири профил ҷинси духтар ё писарро санҷида метавонад"]];
+const PERMS=[["gender","Санҷиши ҷинси профил","Ёрдамчӣ дар таҳрири профил ҷинси духтар ё писарро санҷида метавонад"],
+ ["release","Нашри навсозии APK","Ёрдамчӣ навсозии иловаро нашр ва қатъ карда метавонад"],
+ ["notif","Огоҳиномаҳо","Ёрдамчӣ матн ва вақти ёдоварӣ ва табрикро таҳрир карда метавонад"]];
 const canPerm=k=>S.role==="admin"||(S.role==="subadmin"&&!!(S.perms||{})[k]);
 async function loadPerms(c){S.perms={};try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;const{data,error}=await c.from("profiles").select("perms").eq("id",u.id).maybeSingle();if(!error&&data&&data.perms&&typeof data.perms==="object")S.perms=data.perms}catch(_){}}
 async function loadFlags(c){try{const{data,error}=await c.from("app_flags").select("premium_on").eq("id",1).maybeSingle();if(!error&&data){const v=data.premium_on===true;if(S.flags.premium!==v){S.flags.premium=v;save();if(S.view!=="login")render()}}}catch(_){}}
@@ -1055,7 +1057,7 @@ async function setStaff(email,role){const c=await sbLoad();if(!c){toast("Инт�
   if(data==="ok"){toast(role==="subadmin"?"Ёрдамчии админ таъин шуд":"Ёрдамчӣ бардошта шуд");await loadStaff();return true}
   toast(data==="no_user"?"Бо ин почта ҳисоб ёфт нашуд. Бигӯед, ки аввал дар барнома дохил шавад":data==="no_profile"?"Ин шахс ҳоло ном сабт накардааст. Бигӯед, ки аввал дохил шуда, номашро нависад":data==="is_admin"?"Ин шахс админ аст":"Иҷозат дода нашуд");return false}
  catch(_){toast("Интернет нест ё сервер ҷавоб намедиҳад");return false}}
-async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();if(S.role==="admin"){loadStaff();loadRelAdmin();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
+async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
 const TX={};
 function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
 let RQ="",RQT="",HITS=[],HI=-1,HITCI=-1,HITK=-1,HC=0,HCI=0;
@@ -1137,7 +1139,7 @@ const st=S.stats||{};
   ${S.role==="admin"?`<div class="nrow"><div class="ntx"><b>Премиум дар барнома</b><small>Хомӯш: ҳамаи китобҳо ройгон, навиштаҳои Премиум пинҳон. Ҳеҷ чиз нест намешавад</small></div><button class="swt${PREM()?" on":""}" data-flag="premium" role="switch" aria-label="Премиум"></button></div>`:""}
   ${row('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',"Китобҳо","Китоби нав, zip, таҳрир","admbooks")}
   ${canNotif()?row(I.bell,"Огоҳиномаҳо","Ёдоварӣ ва табрик: матн, вақт, хомӯш кардан","admnotif"):""}
-  ${S.role==="admin"?row('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',"Навсозии APK"+(relNew()?'<i class="rel-dot"></i>':""),relNew()?"Версияи нав тайёр: нашр кардан мумкин":"Нашр ва қатъ кардани навсозии APK","admrel"):""}
+  ${canPerm("release")?row('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',"Навсозии APK"+(relNew()?'<i class="rel-dot"></i>':""),relNew()?"Версияи нав тайёр: нашр кардан мумкин":"Нашр ва қатъ кардани навсозии APK","admrel"):""}
   ${S.role==="admin"?row('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M17 8v6M14 11h6"/>',"Ёрдамчиёни админ","Таъин кардан ва бардоштан","admstaff"):""}</div>`}
 function admBooksHTML(X){const mine=BOOKS.filter(x=>x.db);
  return `<div class="sh-head"><b class="sh-t">Китобҳо</b>${X}</div>
@@ -2200,7 +2202,7 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 addEventListener("pagehide",rdLeave);window.__leave=rdLeave;
 const DEF_REMIND="Имрӯз ҳатто 1 дақиқа китоб нахондед!",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
 const cfgTxt=(o,d)=>(o&&o[I18N.lang])||I18N.tr(d);
-const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&!!(S.ncfg&&S.ncfg.sub_can_edit));
+const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&(canPerm("notif")||!!(S.ncfg&&S.ncfg.sub_can_edit)));
 function pushNotifyCfg(){const A=window.KitobAndroid;if(!A||!A.config)return;const c=S.ncfg||{};
  try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS)}))}catch(_){}}
 async function loadNotifCfg(){const c=await sbLoad();if(!c)return;
@@ -2216,7 +2218,7 @@ function checkUpdate(){const A=window.KitobAndroid;if(!A||!navigator.onLine)retu
  loadRelease().then(r=>{if(!r||!(r.version>cur)||!/^https:\/\/github\.com\/jack07lion-a11y\/kitobkhona-\/releases\//.test(r.url||""))return;S.upd={v:r.version,url:r.url};render()})}
 async function loadBuilds(){try{const r=await fetch("https://api.github.com/repos/jack07lion-a11y/kitobkhona-/releases?per_page=15");if(!r.ok)return null;const j=await r.json();let best=null;
  for(const x of j){const m=/^apk-(\d+)$/.exec(x.tag_name||"");if(!m||x.draft)continue;const a=(x.assets||[]).find(y=>/\.apk$/.test(y.name));if(!a)continue;const v=+m[1];if(!best||v>best.v)best={v,url:a.browser_download_url,date:x.published_at||x.created_at}}return best}catch(_){return null}}
-async function loadRelAdmin(){if(S.role!=="admin")return;const[,b]=await Promise.all([loadRelease(),loadBuilds()]);S.rb=b;S.rbDone=true;if(S.view==="me"&&(S.sheet==="admrel"||!S.sheet))render()}
+async function loadRelAdmin(){if(!canPerm("release"))return;const[,b]=await Promise.all([loadRelease(),loadBuilds()]);S.rb=b;S.rbDone=true;if(S.view==="me"&&(S.sheet==="admrel"||!S.sheet))render()}
 const relNew=()=>!!(S.rb&&S.rb.v>((S.rel&&S.rel.version)||0));
 render();
 I18N.start();
