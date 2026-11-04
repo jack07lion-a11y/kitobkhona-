@@ -1,0 +1,25 @@
+name: "Парол текшируви"
+
+# Фақат қўлда ишга тушади. Парол ҳеч қаерда чоп этилмайди: фақат «мос» ё «мос эмас».
+# Тартиб: Secrets → Actions → KS_PASS_CHECK = эсингиздаги парол → шу ишни Run → кейин KS_PASS_CHECK'ни ЎЧИРИНГ.
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Текшириш
+        env:
+          A: ${{ secrets.KS_PASS }}
+          B: ${{ secrets.KS_PASS_CHECK }}
+        run: |
+          if [ -z "$B" ]; then echo "KS_PASS_CHECK Secret'и йўқ. Аввал уни қўшинг."; exit 1; fi
+          if [ "$A" = "$B" ]; then echo "1) KS_PASS билан бир хил: МОС ✓"; else echo "1) KS_PASS билан бир хил: МОС ЭМАС ✗"; fi
+          if openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in apk/ks.enc -out /dev/null -pass env:B 2>/dev/null; then
+            echo "2) Калит файли (ks.enc) шу парол билан очилди: ҲА ✓"
+          else
+            echo "2) Калит файли (ks.enc) шу парол билан очилмади: ЙЎҚ ✗"
+          fi
+          echo "Энди KS_PASS_CHECK Secret'ини ўчиринг."
