@@ -28,6 +28,7 @@ function sheetHTML(){
   h=`<div class="sh-head"><b class="sh-t">Ҷустуҷӯ дар китоб</b>${X}</div>
   <label class="rds-in" for="rdsq">${P(I.search,2)}<input id="rdsq" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Калима ё ҳарфҳоро нависед…" value="${escH(RQT)}"></label>
   <p class="rds-cnt" id="rdscnt"></p><div class="rds-res" id="rdsres"></div>`}
+ if(S.sheet==="admrights")h=admRightsHTML(X);
  if(S.sheet==="admmake")h=admMakeHTML(X);
  if(S.sheet==="report")h=reportSheet(X);
  if(S.sheet==="admrep")h=admRepHTML(X);
@@ -97,7 +98,7 @@ function sheetHTML(){
   </div>`}
  if(!h){S.sheet=null;return ""}
  const still=lastSheet===S.sheet?"still":"";lastSheet=S.sheet;
- return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
+ return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
 }
 function skel(){return `<div class="skel-w">${[38,70,52,88,40,64,0,30,76,48,58].map(w=>w?`<span class="sk" style="width:${w}%"></span>`:`<span style="height:8px"></span>`).join("")}</div>`}
 function wheelHTML(){

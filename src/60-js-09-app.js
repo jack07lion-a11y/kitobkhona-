@@ -223,6 +223,8 @@ function bind(){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)){toast("Почтаро дуруст нависед, масалан nom@gmail.com");return}
   if(await setStaff(m,"subadmin")&&el)el.value=""});
  $$("[data-flag]",b=>b.onclick=async()=>{const on=!b.classList.contains("on");b.classList.toggle("on",on);try{const c=await sbLoad();const{error}=await c.rpc("set_flag",{p_key:b.dataset.flag,p_on:on});if(error){b.classList.toggle("on",!on);toast("Иҷозат дода нашуд. Аввал SQL-и омор ва премиумро иҷро кунед");return}S.flags.premium=on;save();render()}catch(_){b.classList.toggle("on",!on);toast("Интернет нест")}});
+ $$("[data-permall]",b=>b.onclick=async()=>{const[em,on]=b.dataset.permall.split("|"),o={};CAPS.forEach(x=>o[x[0]]=on==="1");
+  try{const c=await sbLoad();const{error}=await c.rpc("set_perms",{p_email:em,p:o});if(error){toast("Иҷозат дода нашуд. Аввал SQL-и ҳуқуқҳоро иҷро кунед");return}toast(on==="1"?"Ҳамаи ҳуқуқҳо дода шуд":"Ҳамаи ҳуқуқҳо гирифта шуд");const r=(S.staff||[]).find(x=>x.email===em);if(r)r.perms={...o};render()}catch(_){toast("Интернет нест")}});
  $$("[data-perm]",b=>b.onclick=async()=>{const on=!b.classList.contains("on");b.classList.toggle("on",on);try{const c=await sbLoad();const{error}=await c.rpc("set_perm",{p_email:b.dataset.pm,p_key:b.dataset.perm,p_on:on});if(error){b.classList.toggle("on",!on);toast("Иҷозат дода нашуд. Аввал SQL-и иҷозатҳоро иҷро кунед")}else loadStaff()}catch(_){b.classList.toggle("on",!on);toast("Интернет нест")}});
  $$("[data-asg]",b=>b.onclick=()=>{if(S.pe){S.pe.asG=b.dataset.asg||"";S.pe.pend=null;render()}});
  $$("[data-sa-del]",b=>b.onclick=async()=>{if(!confirm("Ин ёрдамчиро бардоред?"))return;await setStaff(b.dataset.saDel,"user")});
