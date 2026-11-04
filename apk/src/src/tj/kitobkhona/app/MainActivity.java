@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
                                 InputStream in = f.exists() ? new FileInputStream(f) : getAssets().open("index.html");
                                 return localResp("text/html", in);
                             }
-                            if ((rel.startsWith("fonts/") || rel.startsWith("lib/") || rel.startsWith("avatars/")) && !rel.contains("..")) {
+                            if ((rel.startsWith("fonts/") || rel.startsWith("lib/") || rel.startsWith("avatars/") || rel.startsWith("logos/")) && !rel.contains("..")) {
                                 String mime = rel.endsWith(".woff2") ? "font/woff2" : rel.endsWith(".webp") ? "image/webp" : "application/javascript";
                                 return localResp(mime, getAssets().open(rel));
                             }
