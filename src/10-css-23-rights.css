@@ -1,0 +1,12 @@
+
+/* ---------- ҳуқуқҳо ---------- */
+.sh-gear{border:0;background:var(--card);color:var(--ink);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;margin-left:auto;margin-right:8px}
+.sh-gear .ico{width:20px;height:20px}
+.sa-card{background:var(--card);border-radius:18px;padding:8px 12px 4px;margin:10px 0}
+.sa-card .plan{background:none;padding:6px 0}
+.sa-all{display:flex;gap:8px;margin:2px 0 6px;flex-wrap:wrap}
+.hq-h{margin:14px 0 6px;font-weight:800;font-size:15px}.hq-h small{font-weight:600;color:var(--muted);font-size:12px}
+.hq-r{display:flex;gap:10px;align-items:flex-start;padding:7px 2px;border-bottom:1px solid var(--line);font-weight:700;font-size:14px}
+.hq-r i{font-style:normal;font-weight:800;width:20px;flex:none}
+.hq-y{color:#0b9f5f}.hq-n{color:#d6453a}
+.hq-r small{font-weight:600;font-size:11.5px;opacity:.85}
