@@ -1,0 +1,23 @@
+name: Санҷиши феатурҳо
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "index.html бо src/ мувофиқ аст?"
+        run: python3 tools/build.py --check
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: "Playwright"
+        run: |
+          npm i --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: "Санҷиши ҳар феатур"
+        run: node tests/run.js

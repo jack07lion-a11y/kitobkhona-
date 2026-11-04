@@ -9,7 +9,7 @@
 ## Қоидалар
 - Supabase service_role калит ва базанинг паролини ҳеч қачон чатга ёки репозиторийга ёзма. Фақат Project URL ва anon калит хавфсиз.
 - APK калити (`*.jks`) репозиторийга тушмайди.
-- Сарчашма — папкаи `src/` (қисмҳо: `*.css`, `60-js-*.js`, `00-head.html`, `50-early.html`, `99-tail.html`). `index.html` — НАТИҶАИ СОХТА: ҳеҷ гоҳ худи он таҳрир намешавад. Баъди таҳрири `src/` ҳатман иҷро кун: `python3 tools/build.py`, ва `index.html`-ро ҳам commit кун (CI `--check`-ро месанҷад; build.py ҳамчунин `version.json` ва нишони `WEB_H`-ро месозад — ҳарду commit шаванд). Ванилла JS (`S` ҳолат, `render()`, `bind()`), localStorage калити `kitob10`.
+- Сарчашма — папкаи `src/` бо феатурҳо: `src/features/<ном>/` (`*.js`, `*.css`, `test.cjs`), `src/shell/`, тартиб дар `src/features.json`; тафсилот: `docs/arxitektura.md`. Баъди тағйир: `node tests/run.js` (Playwright). Ҷадвали тарҷума: `src/features/i18n/rows.json`. `index.html` — НАТИҶАИ СОХТА: ҳеҷ гоҳ худи он таҳрир намешавад. Баъди таҳрири `src/` ҳатман иҷро кун: `python3 tools/build.py`, ва `index.html`-ро ҳам commit кун (CI `--check`-ро месанҷад; build.py ҳамчунин `version.json` ва нишони `WEB_H`-ро месозад — ҳарду commit шаванд). Ванилла JS (`S` ҳолат, `render()`, `bind()`), localStorage калити `kitob10`.
 - Ҳамма матн тоҷикча кирилл.
 - Фойдаланувчи ўзбекча ёзса ҳам, иловадаги ҳамма матнни (тугма, хато, почта хати, жанр) ўзинг соф тоҷикчага тарҷума қил. Масалан «юлдуз» → «ситора». Ўзбекча сўз қолдирма.
 - Намуна китоб қўшма. Китоблар фақат админ орқали Supabase `books` жадвалига киради; `index.html` да китоб рўйхати бўш.

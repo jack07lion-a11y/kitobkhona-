@@ -1,0 +1,27 @@
+{
+ "shell": {
+  "head": "shell/head.html",
+  "early": "shell/early.html",
+  "tail": "shell/tail.html"
+ },
+ "features": [
+  "core",
+  "library",
+  "reader",
+  "player",
+  "contest",
+  "home",
+  "category",
+  "account",
+  "premium",
+  "stats",
+  "feedback",
+  "notifications",
+  "backup",
+  "maker",
+  "admin",
+  "update",
+  "i18n",
+  "boot"
+ ]
+}
