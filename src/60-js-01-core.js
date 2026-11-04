@@ -163,7 +163,7 @@ const ADMIN_ONLY=[["Ёрдамчиёнро таъин ва бардоштан","
 const capOn=(p,k)=>{const d=CAPS.find(x=>x[0]===k);if(!d)return false;const v=(p||{})[k];return v===undefined||v===null?d[3]:!!v};
 const canPerm=k=>S.role==="admin"||(S.role==="subadmin"&&capOn(S.perms,k));
 async function loadPerms(c){S.perms={};try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;const{data,error}=await c.from("profiles").select("perms").eq("id",u.id).maybeSingle();if(!error&&data&&data.perms&&typeof data.perms==="object")S.perms=data.perms}catch(_){}}
-async function loadFlags(c){try{const{data,error}=await c.from("app_flags").select("*").eq("id",1).maybeSingle();if(!error&&data){const v=data.premium_on===true,m=+data.min_native||0;let ch=false;if(S.flags.premium!==v){S.flags.premium=v;ch=true}if((S.flags.min||0)!==m){S.flags.min=m;ch=true}const bk=data.backup_at?+new Date(data.backup_at):0;if(bk&&(S.flags.bk||0)!==bk){S.flags.bk=bk;ch=true}if(ch){save();if(S.view!=="login")render()}}}catch(_){}checkMin()}
+async function loadFlags(c){try{const{data,error}=await c.from("app_flags").select("*").eq("id",1).maybeSingle();if(!error&&data){const v=data.premium_on===true,m=+data.min_native||0;let ch=false;if(S.flags.premium!==v){S.flags.premium=v;ch=true}if((S.flags.min||0)!==m){S.flags.min=m;ch=true}const bk=data.backup_at?+new Date(data.backup_at):0;if(bk&&(S.flags.bk||0)!==bk){S.flags.bk=bk;ch=true}const wp=data.web_pub||"";if((S.flags.webPub||"")!==wp){S.flags.webPub=wp;ch=true}if(ch){save();if(S.view!=="login")render()}}}catch(_){}checkMin();webUpdCheck()}
 async function loadStats(){if(S.role!=="admin"&&S.role!=="subadmin")return;try{const c=await sbLoad();if(!c)return;const{data,error}=await c.rpc("user_stats");if(error||!data)return;S.stats=data;
   const set=(k,v)=>{const e=document.getElementById("st_"+k);if(e)e.textContent=v};set("admin",data.admins);set("sub",data.subadmins);set("user",data.users);set("all",data.total);
   const{data:r}=await c.rpc("stats_summary");if(r){S.rs=r;set("dau",r.dau);set("wau",r.wau);set("mt",fmtT(r.sec_today));set("m7",fmtT(r.sec_7d))}}catch(_){}}
@@ -276,6 +276,7 @@ function admBooksHTML(X){const mine=BOOKS.filter(x=>x.db);
 function admRelHTML(X){const pub=(S.rel&&S.rel.version)||0,b=S.rb,newer=relNew();
  return `<div class="sh-head"><b class="sh-t">Навсозии APK</b>${X}</div>
   <p class="set-note" style="margin-top:0">Тағйироти сайт (рӯйхат, дизайн, тарҷума) ҳамеша худкор ба ҳама мерасад, бе баннер. Ин ҷо танҳо навсозии иловаи Android.</p>
+  ${admWebHTML()}
   ${S.role==="admin"?`<div class="nrow"><div class="ntx"><b>Версияи ҳадди ақал</b><small>Агар APK-и корбар аз ин кӯҳнатар бошад, барнома «навсозӣ кунед» мегӯяд. 0 — хомӯш</small></div><input id="minv" class="pe-i" style="width:76px;flex:none" inputmode="numeric" value="${(S.flags&&S.flags.min)||0}"><button class="pill" data-minv>Сабт</button></div>`:""}
   <div class="nrow"><div class="ntx"><b>Нашршуда</b><small>${pub?"#"+pub:"Қатъ шудааст"}</small></div></div>
   <div class="nrow"><div class="ntx"><b>Охирин сохташуда</b><small>${b?"#"+b.v+" · "+new Date(b.date).toLocaleDateString():(S.rbDone?"Ёфт нашуд":"Ҷустуҷӯ…")}</small></div></div>
