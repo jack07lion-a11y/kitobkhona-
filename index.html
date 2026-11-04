@@ -929,6 +929,8 @@ html{overscroll-behavior-y:contain}
 .mk-res{background:var(--orange-soft);border-radius:14px;padding:12px 14px;margin:12px 0 0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
 .mk-res b{font-size:15px}.mk-res em{font-style:normal;color:#a15c00;font-weight:700}
 select.pe-i{appearance:auto}
+.mk-err{background:#fdecea;border-radius:12px;padding:12px 14px;line-height:1.5}
+@media (prefers-color-scheme:dark){.mk-err{background:#3a1d1a;color:#ff9a8f}}
 </style>
 
 <script>window.__t0=performance.now();window.__after=[];window.afterSplash=function(f){if(window.__splDone)f();else window.__after.push(f)};try{var __o=JSON.parse(localStorage.getItem("kitob10")||"null"),__t=(__o&&__o.theme)||"paper";if(__t!=="auto")document.documentElement.dataset.theme=__t}catch(e){}setTimeout(function(){var e=document.getElementById("spl");e&&e.remove();if(!window.__splDone){window.__splDone=true;while(window.__after.length){try{window.__after.shift()()}catch(_){}}}},9000)</script>
@@ -2422,6 +2424,15 @@ const MK={
  DST:["a","b","v","g","d","e","yo","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","kh","ts","ch","sh","sh","","y","","e","yu","ya","gh","i","q","u","h","j"],
  slug(t){const m={};[...MK.SRC].forEach((c,i)=>{if(i<MK.DST.length)m[c]=MK.DST[i]});
   const o=[...String(t).toLowerCase()].map(c=>m[c]!==undefined?m[c]:c).join("").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");return o.slice(0,60)||"kitob"},
+ /** Матн сифатро месанҷад: тоҷикии кирилли ҳақиқӣми ё «чиқинди» (шрифти кӯҳна)? */
+ quality(text){const s=String(text),ns=s.replace(/\s+/g,"");
+  if(ns.length<30)return{ok:false,why:"short"};
+  let cyr=0,lat=0,sym=0;for(const ch of ns){if(ch>="\u0400"&&ch<="\u052f")cyr++;else if(/[A-Za-z]/.test(ch))lat++;else if(/[%&'*+<>=\[\]{}@#$^~|\\_]/.test(ch))sym++}
+  const letters=cyr+lat,symF=sym/ns.length,cyrF=letters?cyr/letters:0;
+  if(cyrF<.6||symF>.05)return{ok:false,why:"garbled",cyrF,symF};
+  return{ok:true,cyrF,symF}},
+ GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа чиқинди мешавад. «Китоб ясаш» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав ясаед.",
+ SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Китоб ясаш» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
  async docx(file){const z=await (await loadJSZip()).loadAsync(file);const W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
   const dx=await z.file("word/document.xml").async("string"),doc=new DOMParser().parseFromString(dx,"application/xml");
   const styles={};if(z.file("word/styles.xml")){const sx=new DOMParser().parseFromString(await z.file("word/styles.xml").async("string"),"application/xml");
@@ -2494,6 +2505,9 @@ const MK={
    for(const it of tc.items){if(it.str===undefined||!it.transform)continue;const y=it.transform[5],x=it.transform[4],h=Math.abs(it.transform[3])||it.height||10;let r=rows.find(r=>Math.abs(r.y-y)<h*.4);if(!r){r={y,h,items:[]};rows.push(r)}r.items.push({x,s:it.str,w:it.width||0})}
    rows.sort((a,b)=>b.y-a.y);
    pages.push(rows.map(r=>{r.items.sort((a,b)=>a.x-b.x);let s="",px=null;for(const i of r.items){if(px!==null&&i.x-px>r.h*.15&&!s.endsWith(" ")&&!i.s.startsWith(" "))s+=" ";s+=i.s;px=i.x+i.w}return{text:s,x:r.items[0]?r.items[0].x:0,h:r.h}}).filter(l=>MK.clean(l.text)));
+   if(n===Math.min(4,doc.numPages)){const smp=pages.flat().map(l=>l.text).join(" "),q=MK.quality(smp);
+    if(!q.ok&&q.why==="garbled")throw Object.assign(new Error(MK.GARBLED),{guard:true});
+    if(!q.ok&&q.why==="short"&&doc.numPages>=4&&smp.replace(/\s+/g,"").length<40)throw Object.assign(new Error(MK.SCAN),{guard:true})}
    if(prog&&(n%3===0||n===doc.numPages)){prog(n/doc.numPages);await new Promise(r=>setTimeout(r,0))}}
   const cnt={};for(const p of pages){const ls=p.map(l=>MK.clean(l.text));for(const x of [...ls.slice(0,2),...ls.slice(-2)])cnt[x]=(cnt[x]||0)+1}
   const rep=new Set(Object.keys(cnt).filter(x=>cnt[x]>Math.max(3,pages.length*.3)));
@@ -2535,7 +2549,9 @@ const MK={
   if(!author)throw new Error("Муаллифро нависед");
   const book={id:o.slug||MK.slug(title),title,author,category:(GENRES.find(g=>g[0]===o.category)||GENRES[0])[1],lang:"tg"};
   book.parts=MK.structure(r.items);const rep=MK.report(book);
-  if(!rep.chs||!rep.paras)throw Object.assign(new Error(rep.warns[0]||"Матн ёфт нашуд"),{rep});
+  if(!rep.chs||!rep.paras)throw Object.assign(new Error(MK.SCAN),{rep,guard:true});
+  const all=[];for(const pt of book.parts)for(const c of pt.chapters)for(const b of c.blocks)all.push(b[0]==="v"?b[1].join(" "):b[0]==="s"?"":b[1]);
+  const q=MK.quality(all.join(" "));if(!q.ok)throw Object.assign(new Error(q.why==="garbled"?MK.GARBLED:MK.SCAN),{rep,guard:true});
   let cv=o.cover||r.cover,cb=null;if(cv){cb=await MK.shrinkCover(cv);book.cover="cover.jpg"}
   P(.75,"Бастабандӣ (.kitob)…");const Z=await loadJSZip(),z=new Z();z.file("book.json",JSON.stringify(book));if(cb)z.file("cover.jpg",cb);
   const blob=await z.generateAsync({type:"blob",compression:"DEFLATE"});
@@ -2567,7 +2583,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
   const prog=(x,txt)=>{b.style.width=Math.round(x*100)+"%";s.textContent=Math.round(x*100)+"% · "+txt};
   try{prog(.02,"Оғоз…");const r=await MK.convert(d.file,{title:d.title,author:d.author,category:d.cat,cover:d.cover},prog);
    prog(.85,"Ба сервер фиристода мешавад…");await importZip(r.file,[]);prog(1,"Тайёр");d.res=r;d.busy=false;render();NATIVE.haptic(15)}
-  catch(e){d.busy=false;d.err=(e&&e.message)||"Хато";if(e&&e.rep&&e.rep.warns)d.err+=" "+e.rep.warns.join(" ");logErr("maker",d.err,e&&e.stack);render()}}}
+  catch(e){d.busy=false;d.err=(e&&e.message)||"Хато";if(!(e&&e.guard)){if(e&&e.rep&&e.rep.warns)d.err+=" "+e.rep.warns.join(" ");logErr("maker",d.err,e&&e.stack)}render()}}}
 /* ---------- Дақиқаҳои хондан ва огоҳиномаҳо (Android APK) ---------- */
 const RDG={sess:0,act:Date.now(),lt:0};
 const todayKey=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
