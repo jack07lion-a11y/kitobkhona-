@@ -20,6 +20,7 @@ cp ../../index.html assets/index.html
 rm -rf assets/fonts && cp -r ../../fonts assets/fonts
 rm -rf assets/lib && cp -r ../../lib assets/lib
 mkdir -p assets/avatars && cp ../../avatars/*.webp assets/avatars/
+mkdir -p assets/logos && cp ../../logos/khirad*.webp assets/logos/
 rm -rf build && mkdir -p build/gen build/obj
 "$BT/aapt2" compile --dir res -o build/res.zip
 "$BT/aapt2" link -o build/base.apk -I "$AJ" --manifest AndroidManifest.xml -A assets --java build/gen build/res.zip --min-sdk-version 24 --target-sdk-version 34 --version-code "${VC:-1}" --version-name "${VN:-0.1-test}"
