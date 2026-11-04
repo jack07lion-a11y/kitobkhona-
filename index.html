@@ -870,16 +870,16 @@ button.stat:active{transform:scale(.97)}
 .ci{width:22px;height:22px;object-fit:contain;vertical-align:-4px;margin-right:6px;-webkit-user-drag:none}
 .stat b .ci{width:26px;height:26px}
 .gart.sm .ci{width:100%;height:100%;margin:0;vertical-align:top}
-.kh-p{margin:6px 2px 8px;font-size:15.5px;line-height:1.62;color:var(--ink);font-weight:500}
-.c3{position:relative;width:100%;height:240px;perspective:900px;display:grid;place-items:center;margin:2px 0 0}
-.c3-t{width:170px;height:170px;transform-style:preserve-3d;transform:rotateX(62deg) rotateZ(-28deg);animation:c3f 4.4s ease-in-out infinite}
+.kh-p{margin:2px 2px 4px;font-size:13.5px;line-height:1.5;color:var(--ink);font-weight:500}
+.c3{position:relative;width:100%;height:150px;perspective:900px;display:grid;place-items:center;margin:0}
+.c3-t{width:118px;height:118px;transform-style:preserve-3d;transform:rotateX(62deg) rotateZ(-28deg);animation:c3f 4.4s ease-in-out infinite}
 .c3-s{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:c3r 9s linear infinite}
 .c3-f,.c3-b{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-user-drag:none}
 .c3-f{transform:translateZ(1.5px)}
 .c3-l{position:absolute;inset:3px;border-radius:50%;background:linear-gradient(120deg,#e07a0f,#ffc93c 45%,#d86d08);backface-visibility:visible}
-.c3-sh{position:absolute;left:50%;bottom:22px;width:150px;height:30px;margin-left:-75px;border-radius:50%;background:radial-gradient(closest-side,rgba(120,60,0,.28),transparent);filter:blur(2px);animation:c3h 4.4s ease-in-out infinite}
+.c3-sh{position:absolute;left:50%;bottom:8px;width:104px;height:20px;margin-left:-52px;border-radius:50%;background:radial-gradient(closest-side,rgba(120,60,0,.28),transparent);filter:blur(2px);animation:c3h 4.4s ease-in-out infinite}
 @keyframes c3r{to{transform:rotateZ(360deg)}}
-@keyframes c3f{0%,100%{transform:rotateX(62deg) rotateZ(-28deg) translateZ(8px)}50%{transform:rotateX(62deg) rotateZ(-28deg) translateZ(30px)}}
+@keyframes c3f{0%,100%{transform:rotateX(62deg) rotateZ(-28deg) translateZ(4px)}50%{transform:rotateX(62deg) rotateZ(-28deg) translateZ(18px)}}
 @keyframes c3h{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(.8);opacity:.6}}
 @media (prefers-reduced-motion:reduce){.c3-t,.c3-s,.c3-sh{animation:none}}
 </style>
@@ -1908,8 +1908,8 @@ function comm(){
 }
 const KH_TXT="Хирад — вожаи куҳани форсӣ-тоҷикӣ буда, маъноҳои «ақл», «ҳуш», «зеҳн», «идрок» ва «дарёфт»-ро ифода мекунад. Ин вожа дар адабиёти классикии форсу тоҷик ҷойгоҳи баланд дорад. Ҳаким Абулқосим Фирдавсӣ «Шоҳнома»-и худро бо байти машҳури «Ба номи Худованди ҷону хирад» оғоз намуда, дар бахши «Ситоиши хирад» ақлу хирадро ситоиш кардааст.";
 const COIN_I=`<img class="ci" src="logos/khirad-s.webp" alt="" draggable="false">`;
-function coin3d(){let l="";for(let i=0;i<16;i++)l+=`<i class="c3-l" style="transform:translateZ(${-i*1.1}px)"></i>`;
- return `<div class="c3" aria-hidden="true"><div class="c3-t"><div class="c3-s"><img class="c3-f" src="logos/khirad.webp" alt="" draggable="false">${l}<img class="c3-b" src="logos/khirad.webp" alt="" draggable="false" style="transform:translateZ(-18px) rotateY(180deg)"></div></div><span class="c3-sh"></span></div>`}
+function coin3d(){let l="";for(let i=0;i<16;i++)l+=`<i class="c3-l" style="transform:translateZ(${-i*.76}px)"></i>`;
+ return `<div class="c3" aria-hidden="true"><div class="c3-t"><div class="c3-s"><img class="c3-f" src="logos/khirad.webp" alt="" draggable="false">${l}<img class="c3-b" src="logos/khirad.webp" alt="" draggable="false" style="transform:translateZ(-12.5px) rotateY(180deg)"></div></div><span class="c3-sh"></span></div>`}
 function goal(){
  const b=S.gender==="boy";
  const cur="Тавозуни хирад";
