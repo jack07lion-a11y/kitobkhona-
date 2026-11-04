@@ -41,7 +41,7 @@ function detail(){
  const spark='<path d="M12 3l1.900 5.100L19 10l-5.100 1.900L12 17l-1.900-5.100L5 10l5.100-1.900zM19 15l.8 2.200L22 18l-2.200.8L19 21l-.8-2.200L16 18l2.200-.8z" fill="currentColor" stroke="none"/>';
  return `<section class="bd" style="--bc:${b.col[0]}">
   <div class="bd-top pad"><button class="bd-ic" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><span class="bd-tt">${b.t}</span>
-   <button class="bd-ic" data-toast="Мубодила — қадами оянда" aria-label="Мубодила">${P('<path d="M14 5l7 7-7 7M21 12H10a7 7 0 00-7 7"/>',2)}</button>
+   <button class="bd-ic" data-share="${b.id}" aria-label="Мубодила">${P('<path d="M14 5l7 7-7 7M21 12H10a7 7 0 00-7 7"/>',2)}</button>
    <button class="bd-ic" data-dlbook="${b.id}" aria-label="Боргирифтан">${(S.dlBook[b.id]||b.have)?P(IC_OK,2.2):P(IC_DL,2)}</button>
    <button class="bd-ic${S.lib.q.includes(b.id)?" on":""}" data-qtog="${b.id}" aria-label="Ба навбат">${P('<path d="M6 3h12v18l-6-4-6 4z"/>',2)}</button></div>
   <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p>${fmtPill(b)}</div>

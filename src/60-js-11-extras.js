@@ -5,15 +5,15 @@ const readMin=k=>Math.floor(((S.rsec||{})[k||todayKey()]||0)/60);
 const readTotal=()=>Math.floor(Object.values(S.rsec||{}).reduce((a,b)=>a+b,0)/60);
 const read7=()=>{let t=0;for(let i=0;i<7;i++){const d=new Date(Date.now()-i*864e5),k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");t+=(S.rsec||{})[k]||0}return Math.floor(t/60)};
 ["pointerdown","touchstart","scroll","keydown"].forEach(ev=>addEventListener(ev,()=>{RDG.act=Date.now()},{passive:true,capture:true}));
-setInterval(()=>{if(S.view==="read"&&document.visibilityState==="visible"&&Date.now()-RDG.act<120000){const k=todayKey();S.rsec=S.rsec||{};S.rsec[k]=(S.rsec[k]||0)+1;RDG.sess++;if(RDG.sess%15===0)save()}},1000);
-function rdLeave(){if(Date.now()-RDG.lt<3000)return;RDG.lt=Date.now();save();const A=window.KitobAndroid;if(A&&A.leave){try{A.leave(readMin(),RDG.sess)}catch(_){}}RDG.sess=0}
+setInterval(()=>{if(S.view==="read"&&document.visibilityState==="visible"&&Date.now()-RDG.act<120000){const k=todayKey();S.rsec=S.rsec||{};S.rsec[k]=(S.rsec[k]||0)+1;RDG.sess++;trackTick();if(RDG.sess%15===0)save()}},1000);
+function rdLeave(){flushRead();if(Date.now()-RDG.lt<3000)return;RDG.lt=Date.now();save();const A=window.KitobAndroid;if(A&&A.leave){try{A.leave(readMin(),RDG.sess)}catch(_){}}RDG.sess=0}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")rdLeave();else{RDG.sess=0;RDG.act=Date.now()}});
 addEventListener("pagehide",rdLeave);window.__leave=rdLeave;
 const DEF_REMIND="Имрӯз ҳатто 1 дақиқа китоб нахондед!",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
 const cfgTxt=(o,d)=>(o&&o[I18N.lang])||I18N.tr(d);
 const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&(canPerm("notif")||!!(S.ncfg&&S.ncfg.sub_can_edit)));
 function pushNotifyCfg(){const A=window.KitobAndroid;if(!A||!A.config)return;const c=S.ncfg||{};
- try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS)}))}catch(_){}}
+ try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
 async function loadNotifCfg(){const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.from("notif_cfg").select("*").eq("id",1).maybeSingle();if(!error&&data){S.ncfg=data;save();pushNotifyCfg();if(S.view==="me"&&(S.sheet==="admnotif"||!S.sheet))render()}}catch(_){}}
 async function saveNotif(p){const c=await sbLoad();if(!c){toast("Интернет нест");return false}
@@ -60,6 +60,7 @@ async function doRefresh(){
  if(await checkShell(false))return["Интерфейс нав мешавад…"];
  const out=[];if(S.upd)out.push("Навсозии барнома ҳаст (версияи "+S.upd.v+")");
  if(BOOKS.length>nb)out.push("Китобҳои нав: "+(BOOKS.length-nb));
+ const nw=await loadNewsOnce();if(nw){const seen=+(localStorage.getItem("kitob_news")||0);if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)localStorage.setItem("kitob_news",String(nw.id))}
  return out.length?out:["Ҳама чиз нав аст"]}
 (function(){
  const el=document.createElement("div");el.className="ptr";el.innerHTML='<div class="ptr-c"><div class="ptr-r"><svg viewBox="0 0 40 40"><circle class="ptr-bg" cx="20" cy="20" r="15"/><circle class="ptr-ar" cx="20" cy="20" r="15" pathLength="100"/></svg></div></div><div class="ptr-m"></div>';document.body.appendChild(el);
@@ -93,5 +94,5 @@ async function doRefresh(){
  addEventListener("touchend",end,{passive:true});addEventListener("touchcancel",end,{passive:true});
 })();
 try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Интерфейс нав шуд"))}}catch(_){}
-afterSplash(()=>{checkShell(true)});
+afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin()});
 afterSplash(checkUpdate);

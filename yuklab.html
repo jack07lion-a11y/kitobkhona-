@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Китобхона — боргирӣ</title>
+<style>
+:root{--g:#0b7d57;--g2:#13a56d;--bg:#f7f1e3;--ink:#2b2418;--mut:#8a7e66;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#131211;--ink:#f2efe9;--mut:#9a968f;--card:#1f1d1b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:max(20px,env(safe-area-inset-top)) 18px 40px}
+main{max-width:460px;margin:0 auto}
+h1{font-size:30px;margin:8px 0 4px}h1 em{font-style:normal;color:var(--g2)}
+.lead{color:var(--mut);margin:0 0 20px;font-weight:600}
+.card{background:var(--card);border-radius:22px;padding:18px;margin:0 0 16px;box-shadow:0 2px 14px rgba(0,0,0,.06)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:16px;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;font:800 18px system-ui;padding:16px;text-decoration:none}
+.btn[aria-disabled=true]{opacity:.5;pointer-events:none}
+small{color:var(--mut);display:block;text-align:center;margin-top:8px}
+h2{font-size:17px;margin:0 0 10px}
+ol{margin:0;padding-left:20px}li{margin:0 0 8px}
+.warn{background:#fff6dd;color:#6b5200;border-radius:14px;padding:12px 14px;font-weight:600;font-size:14px}
+@media (prefers-color-scheme:dark){.warn{background:#3a3114;color:#f3dd9a}}
+</style></head><body><main>
+<h1>Китоб<em>хона</em></h1>
+<p class="lead">Китобҳои тоҷикӣ ва аудиокитобҳо дар телефони шумо</p>
+
+<div class="card">
+ <h2>Android</h2>
+ <a class="btn" id="dl" href="#" aria-disabled="true">Боргирии барнома</a>
+ <small id="ver">Версияро месанҷем…</small>
+</div>
+
+<div class="card">
+ <h2>Чӣ тавр насб кунем</h2>
+ <ol>
+  <li>Тугмаи сабзро пахш кунед ва файлро боргирӣ кунед.</li>
+  <li>Файлро кушоед (аз «Боргириҳо» ё аз огоҳинома).</li>
+  <li>Агар Android «Насби барномаҳои номаълум»-ро пурсад, <b>«Иҷозат додан»</b>-ро пахш кунед (танҳо барои браузери шумо).</li>
+  <li>Агар «Play Protect» огоҳӣ диҳад, <b>«Ба ҳар ҳол насб кардан»</b>-ро интихоб кунед. Ин муқаррарӣ аст: барнома ҳанӯз дар Play Market нест.</li>
+  <li>Кушоед ва бо почтаатон дохил шавед.</li>
+ </ol>
+ <p class="warn">Баъд аз ин барнома худаш хабар медиҳад ва бо як тугма нав мешавад.</p>
+</div>
+
+<div class="card">
+ <h2>iPhone</h2>
+ <ol>
+  <li>Сайтро дар <b>Safari</b> кушоед: <a href="./">jack07lion-a11y.github.io/kitobkhona-</a></li>
+  <li>Тугмаи «Мубодила» → <b>«Ба экрани асосӣ»</b> (Add to Home Screen).</li>
+ </ol>
+</div>
+<p style="text-align:center"><a href="maxfiyat.html" style="color:var(--mut)">Сиёсати махфият</a></p>
+</main>
+<script>
+(async()=>{const dl=document.getElementById("dl"),v=document.getElementById("ver");
+ try{const r=await fetch("https://hxtpmwxglfuabdvaeapj.supabase.co/rest/v1/app_release?select=version,url&id=eq.1",{headers:{apikey:"sb_publishable_hnpY6mKTu9ahVxjIbcKvkQ_gjv0tb39"}});
+  const j=await r.json(),x=j&&j[0];
+  if(x&&x.version>0&&/^https:\/\/github\.com\/jack07lion-a11y\/kitobkhona-\/releases\//.test(x.url||"")){dl.href=x.url;dl.setAttribute("aria-disabled","false");v.textContent="Версияи "+x.version}
+  else v.textContent="Версияи нав ҳанӯз нашр нашудааст. Баъдтар кӯшиш кунед."}
+ catch(e){v.textContent="Ба сервер пайваст нашуд. Интернетро санҷед."}})();
+</script></body></html>

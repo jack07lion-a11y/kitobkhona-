@@ -178,6 +178,8 @@ function bind(){
  $$("[data-gopg]",b=>b.onclick=()=>{const k=+b.dataset.gopg,id=S.rdId;if(isTx(bk(id)))goChap(id,Math.floor(k/1e5),k%1e5);else jump(k)});
  $$("[data-gotch]",b=>b.onclick=()=>goChap(S.rdId,+b.dataset.gotch,0));
  $$("[data-lh]",b=>b.onclick=()=>{S.pref.lh=Math.round(Math.max(1.2,Math.min(2.2,(S.pref.lh||1.6)+ +b.dataset.lh*.1))*10)/10;render()});
+ $$("[data-privacy]",b=>b.onclick=()=>NATIVE.openUrl(SITE_URL+"maxfiyat.html"));
+ $$("[data-share]",b=>b.onclick=()=>{const bb=bk(+b.dataset.share)||bk(b.dataset.share);if(bb)NATIVE.share("«"+bb.t+"» — "+bb.a+"\nДар Китобхона бихонед:",bookLink(bb))});
  $$("[data-dir]",b=>b.onclick=()=>{S.pref.dir=b.dataset.dir;save();render()});
  {const fr=document.getElementById("fsr");if(fr){fr.oninput=()=>{const v=+fr.value,q=(v-13)/15*100;fr.style.setProperty("--p",q+"%");const t=document.getElementById("fsv");if(t){t.textContent=v;t.style.left=q+"%"}const r=document.querySelector(".rd");if(r)r.style.setProperty("--fs",v+"px")};fr.onchange=()=>{S.pref.fs=+fr.value;save();render()}}}
  {const q=document.getElementById("rdsq");if(q){let tm=0;const go=()=>{RQT=q.value;runSearch(RQT);rdsFill()};rdsFill();
@@ -253,6 +255,7 @@ function bind(){
  $$("[data-author]",b=>b.onclick=()=>{S.q=b.dataset.author;S.chip="all";openSearch()});
  const sk=document.getElementById("apseek");if(sk){sk.oninput=()=>{sk.dataset.drag=1;const a=S.au;let p=+sk.value;if(locked(bk(a.id))&&p>FREE_SEC){p=FREE_SEC;sk.value=p}a.pos=p;aprog();tickUI()};sk.onchange=()=>{delete sk.dataset.drag}}
  const mk=document.getElementById("rdmark");if(mk)mk.onclick=()=>{const id=S.rdId,p=mkey(id),a=S.marks[id]||[],had=a.includes(p);S.marks[id]=had?a.filter(x=>x!==p):[...a,p];mk.classList.toggle("on",!had);toast(had?"Хатчӯб бардошта шуд":"Хатчӯб гузошта шуд");save()};
+ bindFeedback();
  setupReader();
  setupSheet();
  setupWheel();
