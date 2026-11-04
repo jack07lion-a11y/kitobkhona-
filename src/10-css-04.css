@@ -1,0 +1,39 @@
+/* ---------- v11: iOS-like motion ---------- */
+.rd-view{margin:4px 0 0!important}
+.rd-flow{padding:0 24px;box-sizing:border-box}
+.rd-tsheet{position:absolute;inset:0;background:var(--pg);visibility:hidden;will-change:transform;overflow:hidden;box-shadow:-12px 0 28px rgba(0,0,0,.16),-1px 0 0 rgba(0,0,0,.06)}
+.rd-dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.t-dark .rd-tsheet{box-shadow:-12px 0 28px rgba(0,0,0,.6),-1px 0 0 rgba(255,255,255,.05)}
+.rd-tsheet .rd-flow{height:100%;will-change:transform}
+.sheet{animation:sheetup .5s cubic-bezier(.32,.72,0,1);touch-action:pan-y}
+.sh-bg{animation:fade .35s ease;transition:opacity .3s ease}
+.sh-bg.out{opacity:0}
+.sheet.still,.sh-bg.still{animation:none}
+@keyframes sheetup{from{transform:translateY(100%)}}
+:is(.bd-btn,.readbtn,.pay-btn,.chip,.round,.colc,.au-c,.ap-play,.ap-b,.ap-sp,.ap-pill,.mini-b,.rd-fabb,.swb,.stepper button,.cta,.pill,.bd-ic,.ap-ic,.sh-row,.row,.dlb,.seg button){transition:transform .18s cubic-bezier(.32,.72,0,1),opacity .18s;-webkit-tap-highlight-color:transparent}
+:is(.bd-btn,.readbtn,.pay-btn,.chip,.round,.colc,.au-c,.ap-play,.ap-b,.ap-sp,.ap-pill,.mini-b,.rd-fabb,.swb,.stepper button,.cta,.pill,.bd-ic,.ap-ic,.dlb,.seg button):active{transform:scale(.94)}
+:is(.sh-row,.row):active{opacity:.6}
+.book .cover{transition:transform .2s cubic-bezier(.32,.72,0,1)}
+.book:active .cover{transform:scale(.96)}
+.tabs{view-transition-name:tabs}
+.mini{view-transition-name:mini}
+::view-transition-group(root){animation-duration:.5s}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.5s;animation-timing-function:cubic-bezier(.32,.72,0,1);mix-blend-mode:normal}
+html[data-vt] .screen{animation:none!important}
+html[data-vt=fwd]::view-transition-old(root){animation-name:vt-out-l}
+html[data-vt=fwd]::view-transition-new(root){animation-name:vt-in-r;box-shadow:-12px 0 30px rgba(0,0,0,.18)}
+html[data-vt=back]::view-transition-old(root){animation-name:vt-out-r;z-index:2;box-shadow:-12px 0 30px rgba(0,0,0,.18)}
+html[data-vt=back]::view-transition-new(root){animation-name:vt-in-l}
+html[data-vt=up]::view-transition-old(root){animation-name:vt-stay}
+html[data-vt=up]::view-transition-new(root){animation-name:vt-up}
+html[data-vt=down]::view-transition-old(root){animation-name:vt-down;z-index:2}
+html[data-vt=down]::view-transition-new(root){animation-name:vt-stay}
+@keyframes vt-out-l{to{transform:translateX(-28%);filter:brightness(.88)}}
+@keyframes vt-in-r{from{transform:translateX(100%)}}
+@keyframes vt-out-r{to{transform:translateX(100%)}}
+@keyframes vt-in-l{from{transform:translateX(-28%);filter:brightness(.88)}}
+@keyframes vt-up{from{transform:translateY(100%);border-radius:28px}}
+@keyframes vt-down{to{transform:translateY(100%);border-radius:28px}}
+@keyframes vt-stay{from{opacity:1}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet,.sh-bg{animation:none}}
+

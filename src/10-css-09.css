@@ -1,0 +1,12 @@
+/* ---------- v17: horizontal "recently read" carousel ---------- */
+.car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));scroll-padding-inline:max(16px,env(safe-area-inset-left,0px));flex:none}
+.car::-webkit-scrollbar{display:none}
+.car .witem{flex:0 0 calc(100% - 42px);height:auto;min-height:118px;background:var(--card);scroll-snap-align:start}
+.car.one .witem{flex-basis:100%}
+.car .readbtn{display:inline-flex;white-space:nowrap;padding:0 14px}
+.cdots{display:flex;justify-content:center;gap:6px;margin-top:-4px}
+.cdots i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .3s cubic-bezier(.32,.72,0,1),background .3s}
+.cdots i.on{width:20px;background:var(--orange)}
+.car.nudge .witem{animation:carnudge 1.1s cubic-bezier(.32,.72,0,1) both}
+@keyframes carnudge{0%{transform:none}40%{transform:translateX(-84px)}72%{transform:translateX(8px)}100%{transform:none}}
+

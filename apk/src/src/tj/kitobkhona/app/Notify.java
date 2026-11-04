@@ -99,6 +99,25 @@ public class Notify {
         nm.notify(id, b.build());
     }
 
+    /** Хабари сервер (аз NewsJob). */
+    static void showNews(Context c, String title, String body) {
+        if (Build.VERSION.SDK_INT >= 33 && c.checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) return;
+        channel(c);
+        Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, CH) : new Notification.Builder(c);
+        Intent open = new Intent(c, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        int f = PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0);
+        b.setSmallIcon(R.drawable.ic_stat)
+                .setLargeIcon(BitmapFactory.decodeResource(c.getResources(), R.drawable.ic_large))
+                .setColor(0xFF0B7D57)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(new Notification.BigTextStyle().bigText(body))
+                .setAutoCancel(true)
+                .setContentIntent(PendingIntent.getActivity(c, 3, open, f));
+        NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(103, b.build());
+    }
+
     /** Корбар ба барнома баргашт: ҳамаи интизорӣ ва хабарҳоро бекор мекунем. */
     static void enter(Context c) {
         cancel(c, ACT_READ, 1);

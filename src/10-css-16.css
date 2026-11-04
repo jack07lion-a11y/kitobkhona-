@@ -1,0 +1,26 @@
+/* ---------- омор, китобхона ---------- */
+.stg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 0 12px}
+.stg>div{background:var(--card);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.stg small{font-size:11.5px;font-weight:700;color:var(--muted);line-height:1.25}
+.stg b{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.stg .all{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;background:var(--orange-soft)}
+.stg .all b{color:var(--orange)}
+.lb-cur{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:var(--card);border-radius:18px;padding:12px;color:var(--ink);font:inherit;margin:-2px 0 4px}
+.lb-t{display:flex;flex-direction:column;align-items:flex-start;gap:3px;flex:1;min-width:0;text-align:left}
+.lb-o .sh-cv,.lb-cur .sh-cv{display:block}
+.lb-t b{font-size:15.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-t small{color:var(--muted);font-weight:600;font-size:12.5px}
+.lb-cur em{font-style:normal;font-weight:800;color:var(--orange)}
+.lb-p{display:block;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:4px}
+.lb-p u{display:block;height:100%;background:var(--orange);border-radius:2px}
+.lb-r{padding:8px 4px;gap:6px}.lb-o{display:flex;align-items:center;gap:12px;flex:1;min-width:0;border:0;background:none;text-align:left;color:var(--ink);font:inherit;padding:0}
+.lb-x{border:0;background:var(--card);color:var(--muted);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none}
+.lb-x .ico{width:16px;height:16px}
+.lb-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.lb-pick.on em{color:var(--orange);font-weight:800}
+.bd-q{display:flex;gap:10px;margin:14px 0 4px}
+.bd-q button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:14px;background:var(--card);color:var(--ink);font:700 13px var(--font);padding:11px 8px}
+.bd-q button .ico{width:18px;height:18px}
+.bd-q button.on{background:var(--orange-soft);color:var(--orange)}
+.bd-ic.on{color:var(--orange)}.bd-ic.on svg{fill:currentColor}
+
