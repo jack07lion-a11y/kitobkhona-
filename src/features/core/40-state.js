@@ -1,0 +1,8 @@
+setInterval(()=>{if(S.view==="me"&&!S.sheet&&document.visibilityState==="visible")loadStats()},8000);
+window.__upd=(p,st)=>{S.updSt=st;S.updP=p;if(st==="down"){const el=document.querySelector(".upd-bar");if(el)el.style.setProperty("--p",p+"%");const sp=document.querySelector(".upd-sub");if(sp)sp.textContent="Боргирӣ… "+p+"%"}else render()};
+let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0,search:false,recent:[],prog:{},confirmOut:false,pref:{fs:16,th:"sepia",ff:"serif",v2:1},pages:{},marks:{},mode:{},aprog:{},apos:{},dl:{},dlBook:{},premium:false,sheet:null,tocTab:0,au:null};
+const app=document.getElementById("app");
+try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.upd=null;S.updSt="";S.updP=0;S.staff=null;S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
+if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;if(!S.rdCh)S.rdCh={};if(!S.rdFr)S.rdFr={};if(!S.lib)S.lib={q:[],d:[],c:[]};if(!S.flags)S.flags={premium:false};if(!S.pref.v2){S.pref.fs=16;S.pref.v2=1}S.pref.fs=Math.max(13,Math.min(28,Math.round((S.pref.fs-13)/3)*3+13));S.rdUI=false;if(Array.isArray(S.bkCache))S.bkCache.forEach(b=>{if(b&&b.id&&!BOOKS.some(x=>x.id===b.id))BOOKS.push(b)});if(!S.pref.lh)S.pref.lh=1.6;
+function save(){try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
+const esc=s=>s.replace(/"/g,"&quot;");
