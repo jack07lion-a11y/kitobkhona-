@@ -94,5 +94,5 @@ async function doRefresh(){
  addEventListener("touchend",end,{passive:true});addEventListener("touchcancel",end,{passive:true});
 })();
 try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Интерфейс нав шуд"))}}catch(_){}
-afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin()});
+afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck()});
 afterSplash(checkUpdate);

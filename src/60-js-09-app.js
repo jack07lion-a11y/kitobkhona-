@@ -178,6 +178,7 @@ function bind(){
  $$("[data-gopg]",b=>b.onclick=()=>{const k=+b.dataset.gopg,id=S.rdId;if(isTx(bk(id)))goChap(id,Math.floor(k/1e5),k%1e5);else jump(k)});
  $$("[data-gotch]",b=>b.onclick=()=>goChap(S.rdId,+b.dataset.gotch,0));
  $$("[data-lh]",b=>b.onclick=()=>{S.pref.lh=Math.round(Math.max(1.2,Math.min(2.2,(S.pref.lh||1.6)+ +b.dataset.lh*.1))*10)/10;render()});
+ $$("[data-bkdone]",b=>b.onclick=bkDone);
  $$("[data-privacy]",b=>b.onclick=()=>NATIVE.openUrl(SITE_URL+"maxfiyat.html"));
  $$("[data-share]",b=>b.onclick=()=>{const bb=bk(+b.dataset.share)||bk(b.dataset.share);if(bb)NATIVE.share("«"+bb.t+"» — "+bb.a+"\nДар Китобхона бихонед:",bookLink(bb))});
  $$("[data-dir]",b=>b.onclick=()=>{S.pref.dir=b.dataset.dir;save();render()});
