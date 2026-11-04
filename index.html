@@ -769,6 +769,20 @@ mark.rd-hit{transition:background .25s}
 mark.rd-hit.cur{animation:hitp .8s ease-out}
 @keyframes hitp{0%{box-shadow:0 0 0 0 rgba(244,183,60,.8)}100%{box-shadow:0 0 0 12px rgba(244,183,60,0)}}
 @media (prefers-reduced-motion:reduce){.rds-row,.sh-list .sh-row,mark.rd-hit.cur,.rd-sbar,#rdmark.on svg{animation:none!important}}
+
+/* ---------- лағжандаи калон (мисли намуна) ---------- */
+.rd-foot{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:12px 18px calc(6px) 18px}
+.rf-t{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 8px}
+.rf-t .rd-pg,.rf-t .rd-pc{font-size:17px;font-weight:800;color:var(--pgink);min-width:0}
+.rf-b{display:flex;justify-content:space-between;padding-top:6px}
+.rd-scr.big{-webkit-appearance:none;appearance:none;width:100%;height:44px;margin:0;background:transparent;flex:none;touch-action:none}
+.rd-scr.big::-webkit-slider-runnable-track{height:14px;border-radius:7px;background:linear-gradient(90deg,var(--orange),color-mix(in srgb,var(--orange) 12%,transparent))}
+.rd-scr.big::-webkit-slider-thumb{-webkit-appearance:none;width:48px;height:40px;margin-top:-13px;border-radius:15px;border:2px solid color-mix(in srgb,var(--orange) 45%,#fff);background:var(--orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4'/%3E%3C/svg%3E") center/26px no-repeat;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
+.rd-scr.big:active::-webkit-slider-thumb{transform:scale(1.14)}
+.rd.vm .rd-scr.big::-webkit-slider-thumb{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4'/%3E%3C/svg%3E")}
+.rd-scr.big::-moz-range-track{height:14px;border-radius:7px;background:linear-gradient(90deg,var(--orange),rgba(127,127,127,.12))}
+.rd-scr.big::-moz-range-thumb{width:44px;height:36px;border-radius:14px;border:2px solid #fff;background:var(--orange)}
+.rd-bub{display:none}
 </style>
 
 <script>window.__t0=performance.now();window.__after=[];window.afterSplash=function(f){if(window.__splDone)f();else window.__after.push(f)};try{var __o=JSON.parse(localStorage.getItem("kitob10")||"null"),__t=(__o&&__o.theme)||"paper";if(__t!=="auto")document.documentElement.dataset.theme=__t}catch(e){}setTimeout(function(){var e=document.getElementById("spl");e&&e.remove();if(!window.__splDone){window.__splDone=true;while(window.__after.length){try{window.__after.shift()()}catch(_){}}}},9000)</script>
@@ -1171,7 +1185,7 @@ function reader(){
    <button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
   <div class="rd-view${vm?" vm":""}" id="rdview"><div class="rd-flow" id="rdflow">${vm?"":chHTML(b,ci)}</div>${vm?"":`<i class="rd-dim" id="rddim"></i><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div>`}</div>
   <span class="rd-mini" id="rdmini"></span>
-  <div class="rd-foot"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><span id="rdnum" class="rd-pg">1/1</span><output class="rd-bub" id="rdbub"></output><input type="range" class="rd-scr" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><span id="rdpct" class="rd-pc">0%</span><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div>
+  <div class="rd-foot"><div class="rf-t"><span id="rdnum" class="rd-pg">1/1</span><span id="rdpct" class="rd-pc">0%</span></div><input type="range" class="rd-scr big" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><div class="rf-b"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div></div>
   <div class="rd-sbar"><b id="rdsn" translate="no">${RQ&&HI>=0?`${HI+1} / ${HITS.length}`:""}</b><button class="rd-ic" data-hit="-1" aria-label="Пешина">${CH('<path d="M15 5l-7 7 7 7"/>')}</button><button class="rd-ic" data-hit="1" aria-label="Оянда">${CH('<path d="M9 5l7 7-7 7"/>')}</button><button class="rd-ic" data-hitx aria-label="Пӯшидани ҷустуҷӯ">${P(IC_X,2.2)}</button></div>
  </section>`;
 }
@@ -1188,11 +1202,23 @@ function rdUpdate(b,ci,fr,frE){const R=RD,inf=rdInfo(b);let gf,gfE;
  set("rdch",inf.tc&&inf.tc[ci].n?inf.tc[ci].n:b.t);set("rdnum",N+"/"+M);set("rdmini",N+" / "+M);set("rdpct",pct+"%");
  const s=document.getElementById("rdscr");if(s&&!s.dataset.drag){s.value=Math.round(gf*1000);s.style.setProperty("--p",gf*100+"%")}
  const m=document.getElementById("rdmark");if(m)m.classList.toggle("on",(S.marks[b.id]||[]).includes(mkey(b.id)))}
+let TK=null,SCRN=-1,PAYASK=0,SVT=0;
+function tick(){let ok=false;try{if(navigator.vibrate)ok=navigator.vibrate(7)}catch(_){}
+ if(ok)return;try{if(!TK){TK=document.createElement("label");TK.style.cssText="position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none";TK.innerHTML='<input type="checkbox" switch tabindex="-1">';document.body.appendChild(TK)}TK.click()}catch(_){}}
+function rdLive(ci,fr){const R=RD,b=R.b,id=b.id;
+ if(R.vert){const sec=R.f.querySelector(`[data-ci="${ci}"]`);if(sec){R.v.scrollTop=sec.offsetTop+fr*sec.offsetHeight-R.H*.3;return}S.rdCh[id]=ci;S.rdFr[id]=fr;setupVert();return}
+ if(ci===Math.min(S.rdCh[id]||0,nch(b)-1)){const p=Math.max(0,Math.min(R.total-1,Math.floor(fr*R.total)));if(p!==(S.pages[id]||0)){R.f.style.transition="none";placeBase(p);hideTop();showPage(p)}return}
+ S.rdCh[id]=ci;S.rdFr[id]=fr;R.f.innerHTML=chHTML(b,ci);setupReader()}
 function bindScr(){const s=document.getElementById("rdscr");if(!s)return;const R=RD,b=R.b,inf=rdInfo(b);
  const loc=g=>{if(!inf.tc)return{ci:0,fr:g};const t=g*inf.tot;let ci=0;while(ci<inf.tc.length-1&&inf.cum[ci+1]<=t)ci++;return{ci,fr:Math.min(.9999,Math.max(0,(t-inf.cum[ci])/inf.tc[ci]._len))}};
- s.oninput=()=>{s.dataset.drag=1;const g=+s.value/1000,M=R.M||1;const bu=document.getElementById("rdbub");if(bu){bu.textContent=Math.min(M,Math.floor(g*M)+1);bu.style.left=(s.offsetLeft+11+g*(s.offsetWidth-22))+'px';bu.classList.add("on")}s.style.setProperty("--p",g*100+"%");
-  const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};set("rdnum",Math.min(M,Math.floor(g*M)+1)+"/"+M);set("rdpct",Math.round(g*100)+"%")};
- s.onchange=()=>{delete s.dataset.drag;const bu=document.getElementById("rdbub");if(bu)bu.classList.remove("on");const l=loc(+s.value/1000);rdGoto(l.ci,l.fr)}}
+ let raf=0,pend=0;
+ s.oninput=()=>{s.dataset.drag=1;let g=+s.value/1000;const M=R.M||1;
+  if(locked(b)){const lim=(FREE_PAGES-.5)/M;if(g>lim){g=lim;s.value=Math.round(g*1000);PAYASK=1}}
+  const N=Math.min(M,Math.floor(g*M)+1),set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
+  set("rdnum",N+"/"+M);set("rdpct",Math.round(g*100)+"%");
+  if(N!==SCRN){SCRN=N;tick()}
+  pend=g;if(!raf)raf=requestAnimationFrame(()=>{raf=0;const l=loc(pend);rdLive(l.ci,l.fr)})};
+ s.onchange=()=>{delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}}}
 function rdGoto(ci,fr){const R=RD,b=R.b,id=b.id,inf=rdInfo(b);
  const gf=inf.tc?(inf.cum[ci]+fr*inf.tc[ci]._len)/inf.tot:fr;
  if(locked(b)&&Math.floor(gf*(R.M||1))>=FREE_PAGES){const s=document.getElementById("rdscr");if(s)s.value=Math.round(R.gf*1000);payNow();return}
@@ -1313,7 +1339,7 @@ function hideTop(){const t=RD.top;t.style.transition="none";t.style.visibility="
 function showPage(p){
  const R=RD,b=R.b;S.pages[b.id]=p;S.rdFr[b.id]=p/R.total;
  rdUpdate(b,Math.min(S.rdCh[b.id]||0,nch(b)-1),p/R.total,(p+1)/R.total);
- save();
+ clearTimeout(SVT);SVT=setTimeout(save,400);
 }
 function canGo(d,act){const p=(S.pages[RD.b.id]||0)+d,id=RD.b.id,tc=isTx(RD.b)?txChapters(RD.b):null,ci=S.rdCh[id]||0;
  if(tc&&p<0){if(ci>0&&act)goChap(id,ci-1,1e9);return false}
