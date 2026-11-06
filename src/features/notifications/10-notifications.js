@@ -1,8 +1,8 @@
-const DEF_REMIND="Имрӯз ҳатто 1 дақиқа китоб нахондед!",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
+const DEF_REMIND="Вақти китоб хондан расид. Ба Китобхона ворид шавед",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
 const cfgTxt=(o,d)=>(o&&o[I18N.lang])||I18N.tr(d);
 const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&(canPerm("notif")||!!(S.ncfg&&S.ncfg.sub_can_edit)));
 function pushNotifyCfg(){const A=window.KitobAndroid;if(!A||!A.config)return;const c=S.ncfg||{};
- try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
+ try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,reg:!!S.uid,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
 async function loadNotifCfg(){const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.from("notif_cfg").select("*").eq("id",1).maybeSingle();if(!error&&data){S.ncfg=data;save();pushNotifyCfg();if(S.view==="me"&&(S.sheet==="admnotif"||!S.sheet))render()}}catch(_){}}
 async function saveNotif(p){const c=await sbLoad();if(!c){toast("Интернет нест");return false}

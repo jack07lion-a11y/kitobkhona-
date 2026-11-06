@@ -17,12 +17,18 @@ public class NotifyReceiver extends BroadcastReceiver {
             String tpl = s.getString("tpl", "Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!");
             Notify.show(c, Notify.ID_READ, tpl.replace("{n}", String.valueOf(min)));
         } else if (Notify.ACT_REMIND.equals(act)) {
-            // фардо ҳам (20:00)
+            // слоти навбатӣ ҳамеша аввал ба нақша гирифта мешавад
             Notify.scheduleDaily(c);
             if (!s.getBoolean("remind", true)) return;
-            if (s.getBoolean("fg", false)) return;
-            if (Notify.today().equals(s.getString("read_day", "")) && s.getInt("read_min", 0) >= 1) return;
-            Notify.show(c, Notify.ID_REMIND, s.getString("remind_text", "Имрӯз ҳатто 1 дақиқа китоб нахондед!"));
+            if (!s.getBoolean("reg", false)) return;        // танҳо барои касоне, ки сабти ном кардаанд
+            if (s.getBoolean("fg", false)) return;          // барнома кушода аст
+            String day = Notify.today();
+            if (!day.equals(s.getString("rem_day", ""))) s.edit().putString("rem_day", day).putInt("rem_n", 0).apply();
+            int sent = s.getInt("rem_n", 0);
+            boolean opened = day.equals(s.getString("open_day", ""));
+            if (!RemindPlan.allow(opened, sent)) return;
+            s.edit().putInt("rem_n", sent + 1).apply();
+            Notify.show(c, Notify.ID_REMIND, s.getString("remind_text", "Вақти китоб хондан расид. Ба Китобхона ворид шавед"));
         }
     }
 }

@@ -3,10 +3,10 @@ const RPK="kitob_rep";
 const rpLoad=()=>{try{return JSON.parse(localStorage.getItem(RPK)||"[]")}catch(_){return[]}};
 function shrinkKeep(file,max){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{try{const s=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);ok(cv.toDataURL("image/jpeg",.8))}catch(e){no(e)}};im.onerror=()=>{URL.revokeObjectURL(u);no(new Error("img"))};im.src=u})}
 function reportSheet(X){const d=S.rp||(S.rp={kind:"bug",text:"",img:""});
- return `<div class="sh-head"><b class="sh-t">Хато фиристодан</b>${X}</div>
-  <div class="seg">${[["bug","Хато"],["idea","Пешниҳод"],["book","Китоб"]].map(([k,n])=>`<button class="${d.kind===k?"on":""}" data-rpk="${k}">${n}</button>`).join("")}</div>
-  <textarea class="pe-i" id="rpt" rows="5" maxlength="1500" placeholder="Чӣ шуд? Дар кадом саҳифа? Чӣ интизор будед?…">${escH(d.text)}</textarea>
-  <div class="rp-img">${d.img?`<img src="${d.img}" alt=""><button class="lb-x" data-rpi-x aria-label="Бардоштан">${P(IC_X,2)}</button>`:`<button class="pill" data-rpi>${P('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',2)}Скриншот илова кардан</button>`}</div>
+ return `<div class="sh-head"><b class="sh-t">Фикр ва хато</b>${X}</div>
+  <div class="seg">${[["bug","Хато"],["idea","Пешниҳод"],["good","Хуб"]].map(([k,n])=>`<button class="${d.kind===k?"on":""}" data-rpk="${k}">${n}</button>`).join("")}</div>
+  <textarea class="pe-i" id="rpt" rows="5" maxlength="1500" placeholder="Хато бошад — чӣ шуд? Пешниҳод ё хуб бошад — нависед…">${escH(d.text)}</textarea>
+  <div class="rp-img">${d.img?`<img src="${d.img}" alt="" data-rpi-pen><button class="pill rp-pen" data-rpi-pen>${P('<path d="M4 20l4-1 11-11-3-3L5 16z"/>',2)}Қалам: ҷойи хаторо давра кунед</button><button class="lb-x" data-rpi-x aria-label="Бардоштан">${P(IC_X,2)}</button>`:`<button class="pill" data-rpi>${P('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',2)}Скриншот илова кардан</button>`}</div>
   <input type="file" id="rpf" accept="image/*" hidden>
   <p class="set-note">Версия ва дастгоҳ худкор ҳамроҳ мешавад. Парол ва рамзро нанависед.</p>
   <button class="pay-btn" data-rp-send style="width:100%">Фиристодан</button>`}
@@ -18,11 +18,11 @@ async function flushReports(){if(!S.uid||!navigator.onLine)return;const q=rpLoad
    if(error&&!/empty|too_many/.test(error.message||""))rest.push(r)}
   localStorage.setItem(RPK,JSON.stringify(rest))}catch(_){}}
 function sendReport(){const d=S.rp;if(!d||!d.text.trim()){toast("Матн нависед");return}
- const q=rpLoad();q.push({k:d.kind,b:d.text.trim(),i:NATIVE.info(),img:d.img,t:Date.now()});try{localStorage.setItem(RPK,JSON.stringify(q.slice(-5)))}catch(_){toast("Ҷой нест. Скриншотро бардоред");return}
+ const q=rpLoad(),good=d.kind==="good";q.push({k:good?"other":d.kind,b:(good?"[Хуб] ":"")+d.text.trim(),i:Object.assign({},NATIVE.info(),{view:d.where||S.view}),img:d.img,t:Date.now()});try{localStorage.setItem(RPK,JSON.stringify(q.slice(-5)))}catch(_){toast("Ҷой нест. Скриншотро бардоред");return}
  S.rp=null;S.sheet=null;render();toast(navigator.onLine?"Ташаккур! Фиристода шуд":"Нигоҳ дошта шуд, бо интернет мефиристем");flushReports()}
 
 // ===== Идоракунӣ: хатоҳо, хабарҳо =====
-const KIND_N={bug:"Хато",idea:"Пешниҳод",book:"Китоб",other:"Дигар"};
+const KIND_N={bug:"Хато",idea:"Пешниҳод",book:"Китоб",other:"Дигар"}; // «Хуб» бо қайди [Хуб] дар матн, намуди other
 const fmtT=s=>{const m=Math.round((s||0)/60);return m>=60?Math.floor(m/60)+" соат "+(m%60)+" дақ":m+" дақ"};
 function admRepHTML(X){const tab=S.rpTab||0,L=S.rpl,E=S.erl;
  let body="";

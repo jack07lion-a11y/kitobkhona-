@@ -16,7 +16,7 @@ function reader(){
  const CH=d=>P(d,2.2);
  return `<section class="rd t-${f.th}${vm?" vm":""}${S.rdUI?" ui":""}${RQ?" hq":""}" style="--lh:${f.lh||1.6};--fs:${f.fs}px;--ff:${f.ff==="serif"?'\'Lora\',Georgia,serif':'var(--font)'}">
   <div class="rd-top"><button class="rd-ic x" data-closeread aria-label="Пас">${CH('<path d="M15 5l-7 7 7 7"/>')}</button><span class="rd-ch" id="rdch" translate="no">${escH(b.t)}</span>
-   <button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
+   ${fabHTML("rd-ic")}<button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
   <div class="rd-view${vm?" vm":""}" id="rdview"><div class="rd-flow" id="rdflow">${vm?"":chHTML(b,ci)}</div>${vm?"":`<i class="rd-dim" id="rddim"></i><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div>`}</div>
   <span class="rd-mini" id="rdmini"></span>
   <div class="rd-foot"><div class="rf-t"><span id="rdnum" class="rd-pg">1/1</span><span id="rdpct" class="rd-pc">0%</span></div><input type="range" class="rd-scr big" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><div class="rf-b"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div></div>
@@ -189,7 +189,7 @@ function turn(d){if(!RD||RD.vert||S.sheet||RD.busy)return;if(!canGo(d,true))retu
 
 /* ---- пайвасти тугмаҳо: reader (аз bind() даъват мешавад) ---- */
 function bindReader($$){
- $$("[data-closeread]",b=>b.onclick=()=>nav(()=>{S.view=S.rdPrev||"home";S.sheet=null;render();window.scrollTo(0,0)},"down"));
+ $$("[data-closeread]",b=>b.onclick=()=>{fbqLeave();nav(()=>{S.view=S.rdPrev||"home";S.sheet=null;render();window.scrollTo(0,0)},"down")});
  $$("[data-toct]",b=>b.onclick=()=>{S.tocTab=+b.dataset.toct;render()});
  const jump=p=>{const id=S.rdId;if(locked(bk(id))&&p>=FREE_PAGES){S.payId=id;S.sheet="pay";render();return}S.pages[id]=p;delete S.rdFr[id];S.sheet=null;render()};
  $$("[data-goch]",b=>b.onclick=()=>jump(RD&&RD.heads?RD.heads[+b.dataset.goch]:0));
