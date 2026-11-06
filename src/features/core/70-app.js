@@ -34,7 +34,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));
@@ -48,7 +48,7 @@ function bind(){
  
  
  
- $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.staff=null;S.bkCache=[];for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].db)BOOKS.splice(i,1);S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";sbLoad().then(c=>c&&c.auth.signOut());go("login")});
+ $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.staff=null;S.bkCache=[];for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].db)BOOKS.splice(i,1);S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";pushNotifyCfg();sbLoad().then(c=>c&&c.auth.signOut());go("login")});
  
  
  $$("[data-sheet]",b=>b.onclick=e=>{e.stopPropagation();S.sheet=b.dataset.sheet;if(S.sheet==="toc")S.tocTab=0;render()});

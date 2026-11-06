@@ -63,7 +63,7 @@ async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("pro
 
 function me(){
  return `<section class="screen" style="gap:0">
-  <div class="pcover" style="${bnStyle(S.pBn)}"><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
+  <div class="pcover" style="${bnStyle(S.pBn)}">${fabHTML()}<button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
   <div class="pad" style="position:relative;display:flex;flex-direction:column;gap:20px;padding-top:0">
    <div class="prow"><div class="av">${avInner(S.pAv)}</div><div class="btns"><button class="pill" data-pedit>Таҳрири профил</button></div></div>
    <div><h1 class="name">${escH(S.uname||"Номи шумо")}${S.role==="admin"||S.role==="subadmin"?VBADGE:""}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>${S.pBio?`<p class="pbio">${escH(S.pBio)}</p>`:""}

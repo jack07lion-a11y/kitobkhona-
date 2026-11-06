@@ -908,6 +908,36 @@ html{overscroll-behavior-y:contain}
 .minv-c h2{margin:0;font-size:19px}.minv-c p{margin:0;color:var(--muted);font-weight:600;line-height:1.45}
 .minv-i{width:54px;height:54px;border-radius:50%;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;margin:0 auto}
 .minv-i .ico{width:26px;height:26px}
+/* ---------- «Фикр ва хато»: тугмаи давра, қалам, пурсиш ---------- */
+.fab{position:relative;background:#fff;box-shadow:0 0 0 2px rgba(19,165,109,.35),0 4px 14px rgba(19,165,109,.35)}
+.fab svg{width:30px;height:30px}
+.fab::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid #13a56d;opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:no-preference){.fab::after{animation:fabping 2.4s ease-out infinite}.fab{animation:fabglow 2.4s ease-in-out infinite}
+@keyframes fabping{0%{transform:scale(.9);opacity:.8}80%,100%{transform:scale(1.45);opacity:0}}
+@keyframes fabglow{50%{box-shadow:0 0 0 2px rgba(19,165,109,.6),0 6px 22px rgba(19,165,109,.65)}}}
+.top .fab{width:42px;height:42px}.top .fab svg{width:27px;height:27px}
+.rd-ic.fab{width:38px;height:38px;background:#fff}.rd-ic.fab svg{width:24px;height:24px}
+.rp-img img{max-width:100%;max-height:190px;border-radius:12px;display:block}
+.rp-pen{margin-top:8px;display:flex;gap:8px}
+.anno{position:fixed;inset:0;z-index:2147482800;background:#111;display:flex;flex-direction:column;opacity:0;transition:opacity .25s;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.anno.in{opacity:1}
+.anno-bar{display:flex;gap:8px;justify-content:center}.anno-bar .pill{background:#2a2a2a;color:#fff}.anno-bar .pill.on{background:var(--orange)}
+.anno-box{flex:1;min-height:0;display:grid;place-items:center;margin:12px 0}
+.anno-box canvas{max-width:100%;max-height:100%;touch-action:none;border-radius:6px;box-shadow:0 6px 30px rgba(0,0,0,.6)}
+.anno p{margin:0;text-align:center;color:#aaa;font-size:13px;font-weight:600}
+.fbq{position:fixed;inset:0;z-index:2147482500;pointer-events:none}
+.fbq-c{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);max-width:436px;margin:0 auto;background:var(--bg);color:var(--ink);border-radius:22px;padding:16px 16px 22px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 44px rgba(0,0,0,.3);transform:translateY(40px) scale(.97);opacity:0;transition:transform .45s cubic-bezier(.32,.72,0,1),opacity .35s;overflow:hidden}
+.fbq.in{pointer-events:auto}.fbq.in .fbq-c{transform:none;opacity:1}
+.fbq-c b{font-size:16px}.fbq-c p{margin:0;font-size:13px;line-height:1.45;color:var(--muted);font-weight:600}
+.fbq-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border:0;border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center}
+.fbq-x .ico{width:16px;height:16px}
+.fbq-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--line)}.fbq-bar i{display:block;height:100%;width:100%;background:var(--orange)}
+.fbq.held .fbq-bar{display:none}
+.fbq-n{position:absolute;right:14px;bottom:10px;font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.top{gap:6px}.top .round{width:40px;height:40px}.top .fab{width:40px;height:40px}.top .brand{min-width:0;flex:1;white-space:nowrap}.top .brand span{font-size:20px}
+.rp-img{display:flex;gap:10px;align-items:center;position:relative}.rp-img img{max-height:150px;width:auto}
+.rp-pen{margin:0;flex:1;font-size:13px;height:auto;min-height:40px;padding:8px 12px;text-align:left;white-space:normal;line-height:1.25}
+.fbq-c{padding-bottom:28px}
 
 /* ---------- эслатмаи захира ---------- */
 .bkb{position:fixed;left:0;right:0;top:0;z-index:2147482400;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 0;animation:bkIn .45s cubic-bezier(.32,.72,0,1)}
@@ -2117,7 +2147,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));
@@ -2131,7 +2161,7 @@ function bind(){
  
  
  
- $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.staff=null;S.bkCache=[];for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].db)BOOKS.splice(i,1);S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";sbLoad().then(c=>c&&c.auth.signOut());go("login")});
+ $$("[data-logout-yes]",b=>b.onclick=()=>{S.role="";S.staff=null;S.bkCache=[];for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].db)BOOKS.splice(i,1);S.gender=undefined;S.recent=[];S.prog={};S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";pushNotifyCfg();sbLoad().then(c=>c&&c.auth.signOut());go("login")});
  
  
  $$("[data-sheet]",b=>b.onclick=e=>{e.stopPropagation();S.sheet=b.dataset.sheet;if(S.sheet==="toc")S.tocTab=0;render()});
@@ -2311,7 +2341,7 @@ const isTx=b=>!!(b&&bpath(b)&&TX[b.id]);
 const mkey=id=>{const b=bk(id);return isTx(b)?(S.rdCh[id]||0)*1e5+(S.pages[id]||0):(S.pages[id]||0)};
 function mlabel(id,k){return isTx(bk(id))?`Боби ${Math.floor(k/1e5)+1}, саҳифаи ${k%1e5+1}`:`Саҳифаи ${k+1}`}
 function goChap(id,ci,p){S.rdCh[id]=ci;S.pages[id]=p;delete S.rdFr[id];S.sheet=null;render()}
-function openBook0(id){if(S.rdId!==id){RQ="";RQT="";HITS=[];HI=-1}S.rdUI=false;S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="read";if(S.view!=="read")S.rdPrev=S.view;S.rdId=id;S.sheet=null;S.view="read";render();window.scrollTo(0,0)}
+function openBook0(id){window.__rdT=Date.now();if(S.rdId!==id){RQ="";RQT="";HITS=[];HI=-1}S.rdUI=false;S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="read";if(S.view!=="read")S.rdPrev=S.view;S.rdId=id;S.sheet=null;S.view="read";render();window.scrollTo(0,0)}
 function openAudio(id){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="audio";
  if(!S.au||S.au.id!==id){if(S.au)S.apos[S.au.id]={ch:S.au.ch,pos:S.au.pos};const sv=S.apos[id]||{ch:0,pos:0};S.au={id,ch:sv.ch,pos:sv.pos,playing:true,speed:S.au?S.au.speed:1,sleep:0,sleepSet:0}}else S.au.playing=true;
  if(S.view!=="audio")S.apPrev=S.view;S.sheet=null;S.view="audio";render();window.scrollTo(0,0)}
@@ -2390,7 +2420,7 @@ function reader(){
  const CH=d=>P(d,2.2);
  return `<section class="rd t-${f.th}${vm?" vm":""}${S.rdUI?" ui":""}${RQ?" hq":""}" style="--lh:${f.lh||1.6};--fs:${f.fs}px;--ff:${f.ff==="serif"?'\'Lora\',Georgia,serif':'var(--font)'}">
   <div class="rd-top"><button class="rd-ic x" data-closeread aria-label="Пас">${CH('<path d="M15 5l-7 7 7 7"/>')}</button><span class="rd-ch" id="rdch" translate="no">${escH(b.t)}</span>
-   <button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
+   ${fabHTML("rd-ic")}<button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
   <div class="rd-view${vm?" vm":""}" id="rdview"><div class="rd-flow" id="rdflow">${vm?"":chHTML(b,ci)}</div>${vm?"":`<i class="rd-dim" id="rddim"></i><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div>`}</div>
   <span class="rd-mini" id="rdmini"></span>
   <div class="rd-foot"><div class="rf-t"><span id="rdnum" class="rd-pg">1/1</span><span id="rdpct" class="rd-pc">0%</span></div><input type="range" class="rd-scr big" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><div class="rf-b"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div></div>
@@ -2563,7 +2593,7 @@ function turn(d){if(!RD||RD.vert||S.sheet||RD.busy)return;if(!canGo(d,true))retu
 
 /* ---- пайвасти тугмаҳо: reader (аз bind() даъват мешавад) ---- */
 function bindReader($$){
- $$("[data-closeread]",b=>b.onclick=()=>nav(()=>{S.view=S.rdPrev||"home";S.sheet=null;render();window.scrollTo(0,0)},"down"));
+ $$("[data-closeread]",b=>b.onclick=()=>{fbqLeave();nav(()=>{S.view=S.rdPrev||"home";S.sheet=null;render();window.scrollTo(0,0)},"down")});
  $$("[data-toct]",b=>b.onclick=()=>{S.tocTab=+b.dataset.toct;render()});
  const jump=p=>{const id=S.rdId;if(locked(bk(id))&&p>=FREE_PAGES){S.payId=id;S.sheet="pay";render();return}S.pages[id]=p;delete S.rdFr[id];S.sheet=null;render()};
  $$("[data-goch]",b=>b.onclick=()=>jump(RD&&RD.heads?RD.heads[+b.dataset.goch]:0));
@@ -2743,7 +2773,7 @@ function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="
    ${list.length?`<div class="grid">${list.map(book).join("")}</div>`:`<p class="empty">Ҳеҷ чиз ёфт нашуд. Калимаи дигарро санҷед.</p>`}`}</section>${tabs()}`;
  }
  return `<section class="screen home pad">
-   <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div><button class="round fbtn" data-sheet="founders" aria-label="Бунёдгузорон">F</button>
+   <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div>${fabHTML()}<button class="round fbtn" data-sheet="founders" aria-label="Бунёдгузорон">F</button>
     <button class="round" data-opensearch aria-label="Ҷустуҷӯ">${P(I.search)}</button><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
    ${S.upd&&S.updNo!==S.upd.v?updBanner():""}
    ${PREM()?`<div class="promo hp"><h2>Китобхона Премиум</h2><p>Ҳамаи китобҳои пулакиро бепул хонед</p>
@@ -2872,7 +2902,7 @@ async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("pro
 
 function me(){
  return `<section class="screen" style="gap:0">
-  <div class="pcover" style="${bnStyle(S.pBn)}"><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
+  <div class="pcover" style="${bnStyle(S.pBn)}">${fabHTML()}<button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
   <div class="pad" style="position:relative;display:flex;flex-direction:column;gap:20px;padding-top:0">
    <div class="prow"><div class="av">${avInner(S.pAv)}</div><div class="btns"><button class="pill" data-pedit>Таҳрири профил</button></div></div>
    <div><h1 class="name">${escH(S.uname||"Номи шумо")}${S.role==="admin"||S.role==="subadmin"?VBADGE:""}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>${S.pBio?`<p class="pbio">${escH(S.pBio)}</p>`:""}
@@ -3026,10 +3056,10 @@ const RPK="kitob_rep";
 const rpLoad=()=>{try{return JSON.parse(localStorage.getItem(RPK)||"[]")}catch(_){return[]}};
 function shrinkKeep(file,max){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{try{const s=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);ok(cv.toDataURL("image/jpeg",.8))}catch(e){no(e)}};im.onerror=()=>{URL.revokeObjectURL(u);no(new Error("img"))};im.src=u})}
 function reportSheet(X){const d=S.rp||(S.rp={kind:"bug",text:"",img:""});
- return `<div class="sh-head"><b class="sh-t">Хато фиристодан</b>${X}</div>
-  <div class="seg">${[["bug","Хато"],["idea","Пешниҳод"],["book","Китоб"]].map(([k,n])=>`<button class="${d.kind===k?"on":""}" data-rpk="${k}">${n}</button>`).join("")}</div>
-  <textarea class="pe-i" id="rpt" rows="5" maxlength="1500" placeholder="Чӣ шуд? Дар кадом саҳифа? Чӣ интизор будед?…">${escH(d.text)}</textarea>
-  <div class="rp-img">${d.img?`<img src="${d.img}" alt=""><button class="lb-x" data-rpi-x aria-label="Бардоштан">${P(IC_X,2)}</button>`:`<button class="pill" data-rpi>${P('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',2)}Скриншот илова кардан</button>`}</div>
+ return `<div class="sh-head"><b class="sh-t">Фикр ва хато</b>${X}</div>
+  <div class="seg">${[["bug","Хато"],["idea","Пешниҳод"],["good","Хуб"]].map(([k,n])=>`<button class="${d.kind===k?"on":""}" data-rpk="${k}">${n}</button>`).join("")}</div>
+  <textarea class="pe-i" id="rpt" rows="5" maxlength="1500" placeholder="Хато бошад — чӣ шуд? Пешниҳод ё хуб бошад — нависед…">${escH(d.text)}</textarea>
+  <div class="rp-img">${d.img?`<img src="${d.img}" alt="" data-rpi-pen><button class="pill rp-pen" data-rpi-pen>${P('<path d="M4 20l4-1 11-11-3-3L5 16z"/>',2)}Қалам: ҷойи хаторо давра кунед</button><button class="lb-x" data-rpi-x aria-label="Бардоштан">${P(IC_X,2)}</button>`:`<button class="pill" data-rpi>${P('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',2)}Скриншот илова кардан</button>`}</div>
   <input type="file" id="rpf" accept="image/*" hidden>
   <p class="set-note">Версия ва дастгоҳ худкор ҳамроҳ мешавад. Парол ва рамзро нанависед.</p>
   <button class="pay-btn" data-rp-send style="width:100%">Фиристодан</button>`}
@@ -3041,11 +3071,11 @@ async function flushReports(){if(!S.uid||!navigator.onLine)return;const q=rpLoad
    if(error&&!/empty|too_many/.test(error.message||""))rest.push(r)}
   localStorage.setItem(RPK,JSON.stringify(rest))}catch(_){}}
 function sendReport(){const d=S.rp;if(!d||!d.text.trim()){toast("Матн нависед");return}
- const q=rpLoad();q.push({k:d.kind,b:d.text.trim(),i:NATIVE.info(),img:d.img,t:Date.now()});try{localStorage.setItem(RPK,JSON.stringify(q.slice(-5)))}catch(_){toast("Ҷой нест. Скриншотро бардоред");return}
+ const q=rpLoad(),good=d.kind==="good";q.push({k:good?"other":d.kind,b:(good?"[Хуб] ":"")+d.text.trim(),i:Object.assign({},NATIVE.info(),{view:d.where||S.view}),img:d.img,t:Date.now()});try{localStorage.setItem(RPK,JSON.stringify(q.slice(-5)))}catch(_){toast("Ҷой нест. Скриншотро бардоред");return}
  S.rp=null;S.sheet=null;render();toast(navigator.onLine?"Ташаккур! Фиристода шуд":"Нигоҳ дошта шуд, бо интернет мефиристем");flushReports()}
 
 // ===== Идоракунӣ: хатоҳо, хабарҳо =====
-const KIND_N={bug:"Хато",idea:"Пешниҳод",book:"Китоб",other:"Дигар"};
+const KIND_N={bug:"Хато",idea:"Пешниҳод",book:"Китоб",other:"Дигар"}; // «Хуб» бо қайди [Хуб] дар матн, намуди other
 const fmtT=s=>{const m=Math.round((s||0)/60);return m>=60?Math.floor(m/60)+" соат "+(m%60)+" дақ":m+" дақ"};
 function admRepHTML(X){const tab=S.rpTab||0,L=S.rpl,E=S.erl;
  let body="";
@@ -3091,11 +3121,64 @@ const bookLink=b=>SITE_URL+"?b="+encodeURIComponent(b.slug||b.id);
 
 /* ---- варақи report ---- */
 SHEETS.report=X=>{let h="";h=reportSheet(X);;return h};
-const DEF_REMIND="Имрӯз ҳатто 1 дақиқа китоб нахондед!",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
+/* ===== «Фикр ва хато» дар ҳама ҷо: тугмаи давра дар боло + пурсиш баъди баромадан аз китоб ===== */
+// тугмаи давра бо логотип (медурахшад): дар боло, дар профил ва дар хонанда
+const fabHTML=(cls)=>`<button class="round fab ${cls||""}" data-fab aria-label="Фикр ва хато" translate="no">${LOGO}</button>`;
+// Android: аввал сурати экран, баъд варақ (то хато ҳамон тавр дар сурат бошад)
+function fabOpen(){const A=window.KitobAndroid;const d=S.rp=S.rp||{kind:"bug",text:"",img:""};d.where=S.view;
+ const go=img=>{if(img)d.img=img;S.sheet="report";render()};
+ if(A&&A.snap&&!S.sheet){let done=false;window.__snap=u=>{if(done)return;done=true;go(u&&u.length>3000?u:"")};
+  try{A.snap()}catch(_){done=true;go("")}setTimeout(()=>{if(!done){done=true;go("")}},900)}
+ else go("")}
+// қалам: бо ангушт ҷойи хаторо давра кунед
+function annoOpen(){const d=S.rp;if(!d||!d.img||document.getElementById("anno"))return;
+ const el=document.createElement("div");el.id="anno";el.className="anno";
+ el.innerHTML=`<div class="anno-bar"><button class="pill" data-an="undo">Бозгашт</button><button class="pill" data-an="clear">Тоза</button><button class="pill on" data-an="ok">Тайёр</button></div><div class="anno-box"><canvas id="anc"></canvas></div><p>Бо ангушт ҷойи хаторо давра кунед</p>`;
+ document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("in"));
+ const im=new Image();im.onload=()=>{const box=el.querySelector(".anno-box"),cv=el.querySelector("#anc"),bw=box.clientWidth,bh=box.clientHeight,k=Math.min(bw/im.width,bh/im.height,1);
+  cv.width=Math.round(im.width*k);cv.height=Math.round(im.height*k);const x=cv.getContext("2d");let st=[],cur=null;
+  const draw=()=>{x.drawImage(im,0,0,cv.width,cv.height);x.strokeStyle="#e5322d";x.lineWidth=Math.max(4,cv.width/90);x.lineCap=x.lineJoin="round";
+   for(const s of st.concat(cur?[cur]:[])){x.beginPath();s.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));if(s.length===1)x.lineTo(s[0][0]+.1,s[0][1]);x.stroke()}};
+  const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+  cv.onpointerdown=e=>{cur=[pt(e)];try{cv.setPointerCapture(e.pointerId)}catch(_){}draw();e.preventDefault()};
+  cv.onpointermove=e=>{if(!cur)return;cur.push(pt(e));draw()};
+  cv.onpointerup=cv.onpointercancel=()=>{if(cur){st.push(cur);cur=null;draw()}};
+  draw();
+  el.querySelector("[data-an=undo]").onclick=()=>{st.pop();draw()};
+  el.querySelector("[data-an=clear]").onclick=()=>{st=[];draw()};
+  el.querySelector("[data-an=ok]").onclick=()=>{try{d.img=cv.toDataURL("image/jpeg",.8)}catch(_){}el.classList.remove("in");setTimeout(()=>{el.remove();render()},250)}};
+ im.src=d.img}
+// пурсиш баъди баромадан аз китоб (агар ≥5 сония хонда бошад); 15 сония; ҳангоми навиштан намеравад
+const FBQ={at:0,t:0,iv:0};
+function fbqLeave(){const dt=Date.now()-(window.__rdT||Date.now());let last=0;try{last=+localStorage.getItem("kitob_fbq")||0}catch(_){}
+ if(dt<5000||Date.now()-last<10*60*1000||!S.view||S.view!=="read")return;
+ setTimeout(fbqShow,900)}
+function fbqShow(){if(document.getElementById("fbq")||S.view==="read"||S.view==="login")return;
+ try{localStorage.setItem("kitob_fbq",String(Date.now()))}catch(_){}
+ const el=document.createElement("div");el.id="fbq";el.className="fbq";let kind="idea";
+ el.innerHTML=`<div class="fbq-c"><button class="fbq-x" aria-label="Пӯшидан">${P(IC_X,2)}</button><b>Фикри худро нависед</b><p>Хато бошад — хаторо, пешниҳод бошад — пешниҳодро, хуб бошад — хубро нависед.</p>
+  <div class="seg">${[["bug","Хато"],["idea","Пешниҳод"],["good","Хуб"]].map(([k,n])=>`<button data-fk="${k}" class="${k===kind?"on":""}">${n}</button>`).join("")}</div>
+  <textarea class="pe-i" rows="2" maxlength="1500" placeholder="Фикри шумо…"></textarea>
+  <button class="pay-btn" data-fq-send>Фиристодан</button><div class="fbq-bar"><i></i></div><span class="fbq-n">15</span></div>`;
+ document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("in"));
+ const ta=el.querySelector("textarea"),n=el.querySelector(".fbq-n"),bar=el.querySelector(".fbq-bar i");
+ let left=15,paused=false;
+ const close=()=>{clearInterval(FBQ.iv);el.classList.remove("in");setTimeout(()=>el.remove(),380)};
+ const stop=()=>{if(paused)return;paused=true;el.classList.add("held");n.textContent=""};  // навишта истодааст — намеравад
+ bar.style.transition="width 15s linear";requestAnimationFrame(()=>requestAnimationFrame(()=>bar.style.width="0%"));
+ FBQ.iv=setInterval(()=>{if(paused)return;left--;n.textContent=left;if(left<=0)close()},1000);
+ ta.onfocus=ta.oninput=()=>{stop();bar.style.transition="none"};
+ el.querySelectorAll("[data-fk]").forEach(b=>b.onclick=()=>{kind=b.dataset.fk;stop();bar.style.transition="none";el.querySelectorAll("[data-fk]").forEach(x=>x.classList.toggle("on",x===b))});
+ el.querySelector(".fbq-x").onclick=close;
+ el.querySelector("[data-fq-send]").onclick=()=>{const t=ta.value.trim();if(!t){stop();ta.focus();return}S.rp={kind,text:t,img:"",where:"read"};close();sendReport()}}
+function bindFeedbackQuick($$){
+ $$("[data-fab]",b=>b.onclick=e=>{e.stopPropagation();fabOpen()});
+ $$("[data-rpi-pen]",b=>b.onclick=annoOpen)}
+const DEF_REMIND="Вақти китоб хондан расид. Ба Китобхона ворид шавед",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
 const cfgTxt=(o,d)=>(o&&o[I18N.lang])||I18N.tr(d);
 const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&(canPerm("notif")||!!(S.ncfg&&S.ncfg.sub_can_edit)));
 function pushNotifyCfg(){const A=window.KitobAndroid;if(!A||!A.config)return;const c=S.ncfg||{};
- try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
+ try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,reg:!!S.uid,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
 async function loadNotifCfg(){const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.from("notif_cfg").select("*").eq("id",1).maybeSingle();if(!error&&data){S.ncfg=data;save();pushNotifyCfg();if(S.view==="me"&&(S.sheet==="admnotif"||!S.sheet))render()}}catch(_){}}
 async function saveNotif(p){const c=await sbLoad();if(!c){toast("Интернет нест");return false}
@@ -3254,7 +3337,7 @@ function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{rem
  return `<div class="sh-head"><b class="sh-t">Огоҳиномаҳо</b>${X}</div>
   ${sw("remind_on","Ёдоварии ҳаррӯза","Агар имрӯз ҳатто 1 дақиқа нахонда бошанд, ба ҳама худкор меравад")}
   ${sw("congrats_on","Табрики хондан","Баъди баромадан аз барнома, дақиқаҳои имрӯзро мегӯяд")}
-  <div class="nrow"><div class="ntx"><b>Соати ёдоварӣ</b><small>Аз 9 то 21</small></div><div class="stepper"><button data-nh="-1" aria-label="Камтар">−</button><b>${String(c.remind_hour||20).padStart(2,"0")}:00</b><button data-nh="1" aria-label="Бештар">+</button></div></div>
+  <div class="nrow"><div class="ntx"><b>Ёдоварӣ: 5 маротиба дар рӯз</b><small>09:30 · 12:30 · 15:30 · 18:30 · 20:30. Агар имрӯз ба барнома даромада бошад — ҳамагӣ 3</small></div></div>
   ${S.role==="admin"?sw("sub_can_edit","Ёрдамчиён ҳам таҳрир кунанд","Агар хомӯш бошад, ёрдамчӣ ин бахшро намебинад"):""}
   <p class="set-cap" style="margin-top:14px">Матнҳо</p>
   <div class="seg sm" style="margin-bottom:8px">${LANGS.map(([k,n])=>`<button class="${L===k?"on":""}" data-ndl="${k}" translate="no">${n}</button>`).join("")}</div>
@@ -3399,7 +3482,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="f83a6ca658";
+const WEB_H="67af1b7679";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

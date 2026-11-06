@@ -11,7 +11,7 @@ function home(){
    ${list.length?`<div class="grid">${list.map(book).join("")}</div>`:`<p class="empty">Ҳеҷ чиз ёфт нашуд. Калимаи дигарро санҷед.</p>`}`}</section>${tabs()}`;
  }
  return `<section class="screen home pad">
-   <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div><button class="round fbtn" data-sheet="founders" aria-label="Бунёдгузорон">F</button>
+   <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div>${fabHTML()}<button class="round fbtn" data-sheet="founders" aria-label="Бунёдгузорон">F</button>
     <button class="round" data-opensearch aria-label="Ҷустуҷӯ">${P(I.search)}</button><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
    ${S.upd&&S.updNo!==S.upd.v?updBanner():""}
    ${PREM()?`<div class="promo hp"><h2>Китобхона Премиум</h2><p>Ҳамаи китобҳои пулакиро бепул хонед</p>

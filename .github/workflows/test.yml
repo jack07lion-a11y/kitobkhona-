@@ -21,3 +21,12 @@ jobs:
           npx playwright install --with-deps chromium
       - name: "Санҷиши ҳар феатур"
         run: node tests/run.js
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: "Санҷиши нақшаи эслатмаҳо (Java)"
+        run: |
+          mkdir -p /tmp/rp
+          javac -encoding UTF-8 -d /tmp/rp apk/src/src/tj/kitobkhona/app/RemindPlan.java tests/RemindPlanTest.java
+          java -cp /tmp/rp tj.kitobkhona.app.RemindPlanTest

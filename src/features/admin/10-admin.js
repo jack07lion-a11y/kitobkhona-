@@ -109,7 +109,7 @@ function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{rem
  return `<div class="sh-head"><b class="sh-t">Огоҳиномаҳо</b>${X}</div>
   ${sw("remind_on","Ёдоварии ҳаррӯза","Агар имрӯз ҳатто 1 дақиқа нахонда бошанд, ба ҳама худкор меравад")}
   ${sw("congrats_on","Табрики хондан","Баъди баромадан аз барнома, дақиқаҳои имрӯзро мегӯяд")}
-  <div class="nrow"><div class="ntx"><b>Соати ёдоварӣ</b><small>Аз 9 то 21</small></div><div class="stepper"><button data-nh="-1" aria-label="Камтар">−</button><b>${String(c.remind_hour||20).padStart(2,"0")}:00</b><button data-nh="1" aria-label="Бештар">+</button></div></div>
+  <div class="nrow"><div class="ntx"><b>Ёдоварӣ: 5 маротиба дар рӯз</b><small>09:30 · 12:30 · 15:30 · 18:30 · 20:30. Агар имрӯз ба барнома даромада бошад — ҳамагӣ 3</small></div></div>
   ${S.role==="admin"?sw("sub_can_edit","Ёрдамчиён ҳам таҳрир кунанд","Агар хомӯш бошад, ёрдамчӣ ин бахшро намебинад"):""}
   <p class="set-cap" style="margin-top:14px">Матнҳо</p>
   <div class="seg sm" style="margin-bottom:8px">${LANGS.map(([k,n])=>`<button class="${L===k?"on":""}" data-ndl="${k}" translate="no">${n}</button>`).join("")}</div>

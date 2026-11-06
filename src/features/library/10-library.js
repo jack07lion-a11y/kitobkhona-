@@ -69,7 +69,7 @@ const isTx=b=>!!(b&&bpath(b)&&TX[b.id]);
 const mkey=id=>{const b=bk(id);return isTx(b)?(S.rdCh[id]||0)*1e5+(S.pages[id]||0):(S.pages[id]||0)};
 function mlabel(id,k){return isTx(bk(id))?`Боби ${Math.floor(k/1e5)+1}, саҳифаи ${k%1e5+1}`:`Саҳифаи ${k+1}`}
 function goChap(id,ci,p){S.rdCh[id]=ci;S.pages[id]=p;delete S.rdFr[id];S.sheet=null;render()}
-function openBook0(id){if(S.rdId!==id){RQ="";RQT="";HITS=[];HI=-1}S.rdUI=false;S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="read";if(S.view!=="read")S.rdPrev=S.view;S.rdId=id;S.sheet=null;S.view="read";render();window.scrollTo(0,0)}
+function openBook0(id){window.__rdT=Date.now();if(S.rdId!==id){RQ="";RQT="";HITS=[];HI=-1}S.rdUI=false;S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="read";if(S.view!=="read")S.rdPrev=S.view;S.rdId=id;S.sheet=null;S.view="read";render();window.scrollTo(0,0)}
 function openAudio(id){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,10);S.mode[id]="audio";
  if(!S.au||S.au.id!==id){if(S.au)S.apos[S.au.id]={ch:S.au.ch,pos:S.au.pos};const sv=S.apos[id]||{ch:0,pos:0};S.au={id,ch:sv.ch,pos:sv.pos,playing:true,speed:S.au?S.au.speed:1,sleep:0,sleepSet:0}}else S.au.playing=true;
  if(S.view!=="audio")S.apPrev=S.view;S.sheet=null;S.view="audio";render();window.scrollTo(0,0)}

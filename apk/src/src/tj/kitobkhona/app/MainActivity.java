@@ -258,10 +258,11 @@ public class MainActivity extends Activity {
                     android.content.SharedPreferences.Editor e = Notify.sp(MainActivity.this).edit();
                     e.putBoolean("remind", o.optBoolean("remind", true));
                     e.putBoolean("congrats", o.optBoolean("congrats", true));
+                    e.putBoolean("reg", o.optBoolean("reg", false));
                     e.putInt("hour", o.optInt("hour", 20));
                     e.putString("role", o.optString("role", ""));
                     e.putString("title", o.optString("title", "Китобхона"));
-                    e.putString("remind_text", o.optString("remindText", "Имрӯз ҳатто 1 дақиқа китоб нахондед!"));
+                    e.putString("remind_text", o.optString("remindText", "Вақти китоб хондан расид. Ба Китобхона ворид шавед"));
                     if (o.has("sbUrl")) e.putString("sb_url", o.optString("sbUrl", ""));
                     if (o.has("sbKey")) e.putString("sb_key", o.optString("sbKey", ""));
                     if (o.has("news")) e.putBoolean("news_on", o.optBoolean("news", true));
@@ -372,6 +373,32 @@ public class MainActivity extends Activity {
                 String c = sp.getString("crash", "");
                 if (c.length() > 0) sp.edit().remove("crash").apply();
                 return c;
+            }
+
+            // ---------- Сурати экран (барои «Фикр ва хато») ----------
+            @JavascriptInterface
+            public void snap() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String out = "";
+                        try {
+                            int w = web.getWidth(), h = web.getHeight();
+                            if (w > 0 && h > 0) {
+                                float sc = Math.min(1f, 900f / Math.max(w, h));
+                                android.graphics.Bitmap bm = android.graphics.Bitmap.createBitmap(Math.max(1, (int) (w * sc)), Math.max(1, (int) (h * sc)), android.graphics.Bitmap.Config.ARGB_8888);
+                                android.graphics.Canvas cv = new android.graphics.Canvas(bm);
+                                cv.drawColor(Color.WHITE);
+                                cv.scale(sc, sc);
+                                web.draw(cv);
+                                ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                                bm.compress(android.graphics.Bitmap.CompressFormat.JPEG, 72, bo);
+                                out = "data:image/jpeg;base64," + Base64.encodeToString(bo.toByteArray(), Base64.NO_WRAP);
+                            }
+                        } catch (Throwable ignored) { }
+                        web.evaluateJavascript("window.__snap&&window.__snap('" + out + "')", null);
+                    }
+                });
             }
 
             // ---------- Навсозии саҳифа (веб қисми) ----------

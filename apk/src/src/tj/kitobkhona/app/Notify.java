@@ -12,7 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import java.util.Calendar;
 
-/** Огоҳиномаҳои хондан: эслатмаи ҳаррӯза (соати 20:00) ва табрик 5 сония баъди баромадан. */
+/** Огоҳиномаҳои хондан: эслатмаҳои ҳаррӯза (5 маротиба, агар даромада бошад 3; RemindPlan) ва табрик 5 сония баъди баромадан. */
 public class Notify {
     static final String CH = "reading";
     static final int ID_READ = 101, ID_REMIND = 102;
@@ -52,24 +52,12 @@ public class Notify {
         if (am != null) am.cancel(pi(c, act, code));
     }
 
-    /** Соати ёдоварии навбатӣ (пешфарз 20:00; имрӯз агар нагузашта бошад, вагарна пагоҳ). */
-    static long nextRemind(Context c, long now) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now);
-        cal.set(Calendar.HOUR_OF_DAY, Math.max(9, Math.min(21, sp(c).getInt("hour", 20))));
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        if (cal.getTimeInMillis() <= now + 60000) cal.add(Calendar.DAY_OF_MONTH, 1);
-        return cal.getTimeInMillis();
-    }
-
     static void scheduleDaily(Context c) {
         if (!sp(c).getBoolean("remind", true)) {
             cancel(c, ACT_REMIND, 2);
             return;
         }
-        schedule(c, ACT_REMIND, 2, nextRemind(c, System.currentTimeMillis()));
+        schedule(c, ACT_REMIND, 2, RemindPlan.next(System.currentTimeMillis(), java.util.TimeZone.getDefault()));
     }
 
     static String today() {
@@ -121,6 +109,7 @@ public class Notify {
     /** Корбар ба барнома баргашт: ҳамаи интизорӣ ва хабарҳоро бекор мекунем. */
     static void enter(Context c) {
         cancel(c, ACT_READ, 1);
+        sp(c).edit().putString("open_day", today()).apply(); // имрӯз ба барнома даромад: ҳадди эслатма 3 мешавад
         NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) {
             nm.cancel(ID_READ);
