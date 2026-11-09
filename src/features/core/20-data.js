@@ -17,6 +17,10 @@ const BOOKS=IN_APK?[
  {id:900001,slug:"sadriddin-ayni-yoddoshtho",t:"Ёддоштҳо",a:"Садриддин Айнӣ",c:"fiction",col:["#1f4f7a","#123352"],audio:false,desc:"Хотираҳои Садриддин Айнӣ дар бораи кӯдакӣ, деҳа ва замони худ. 142 боб дар 4 қисм.",local:true,src:"books/yoddoshtho/book.json.gz",size:"0,8 МБ",cover:"books/yoddoshtho/cover.jpg"}
 ]:[];
 const LOCALS=BOOKS.slice();
+/* audio фақат вақте кор мекунад, ки админ байроқи «audio»-ро фурӯзон кардааст (docs/sql-bayroq.sql); au0 = қимати хоми база */
+function mkAud(b){const raw=b.au0!==undefined?!!b.au0:!!b.audio;Object.defineProperty(b,"au0",{value:raw,writable:true,enumerable:true,configurable:true});
+ Object.defineProperty(b,"audio",{get(){return !!this.au0&&FEAT("audio")},set(v){this.au0=!!v},enumerable:true,configurable:true})}
+BOOKS.forEach(mkAud);
 
 
 const PARAS=[
@@ -24,7 +28,7 @@ const PARAS=[
  "Китоб дӯсти беминнати инсон аст. Ҳар саҳифае, ки мехонем, ба мо як ҷаҳони нав мекушояд. Хонандаи доно аз ҳар сатр як дарс мегирад ва онро дар зиндагӣ ба кор мебарад.",
  "Бобоёни мо китобро азиз медоштанд. Онҳо дар шабҳои дарози зимистон дар гирди оташдон менишастанд ва достонҳои қаҳрамононро бо овози баланд мехонданд. Кӯдакон бошанд, бо чашмони пурзавқ гӯш медоданд.",
  "Имрӯз китоб ба телефони мо омадааст. Акнун дар роҳ, дар автобус ё пеш аз хоб метавонем чанд саҳифа хонем. Ҳатто бе интернет китоби боргирифта ҳамеша бо мост.",
- "Ҳар рӯз каме хондан одати хуб аст. Агар рӯзе бист дақиқа хонем, дар як сол даҳҳо китобро тамом мекунем. Барои ҳар ҳадафи иҷрошуда шумо мукофот мегиред.",
+ "Ҳар рӯз каме хондан одати хуб аст. Агар рӯзе бист дақиқа хонем, дар як сол даҳҳо китобро тамом мекунем. Хондани мунтазам одати хуб аст.",
  "Барои саҳифаи нав канори рости экранро пахш кунед ё саҳифаро бо ангушт ба чап кашед. Барои бозгашт канори чапро пахш кунед."
 ];
 const CHN=["Сарсухан","Боби якум","Боби дуюм","Боби сеюм"];
@@ -34,16 +38,16 @@ const bk=id=>BOOKS.find(x=>x.id===id);
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
  const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
- BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||""}));
+ BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||"",rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
 S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":data?.role==="subadmin"?"subadmin":""}catch(_){}}
-async function loadFlags(c){try{const{data,error}=await c.from("app_flags").select("*").eq("id",1).maybeSingle();if(!error&&data){const v=data.premium_on===true,m=+data.min_native||0;let ch=false;if(S.flags.premium!==v){S.flags.premium=v;ch=true}if((S.flags.min||0)!==m){S.flags.min=m;ch=true}const bk=data.backup_at?+new Date(data.backup_at):0;if(bk&&(S.flags.bk||0)!==bk){S.flags.bk=bk;ch=true}const wp=data.web_pub||"";if((S.flags.webPub||"")!==wp){S.flags.webPub=wp;ch=true}if(ch){save();if(S.view!=="login")render()}}}catch(_){}checkMin();webUpdCheck()}
+async function loadFlags(c){try{const{data,error}=await c.from("app_flags").select("*").eq("id",1).maybeSingle();if(!error&&data){const v=data.premium_on===true,m=+data.min_native||0;let ch=false;if(S.flags.premium!==v){S.flags.premium=v;ch=true}if((S.flags.min||0)!==m){S.flags.min=m;ch=true}const ft=data.feat&&typeof data.feat==="object"?data.feat:{};if(JSON.stringify(S.flags.feat||{})!==JSON.stringify(ft)){S.flags.feat=ft;ch=true}const bk=data.backup_at?+new Date(data.backup_at):0;if(bk&&(S.flags.bk||0)!==bk){S.flags.bk=bk;ch=true}const wp=data.web_pub||"";if((S.flags.webPub||"")!==wp){S.flags.webPub=wp;ch=true}if(ch){save();if(S.view!=="login")render()}}}catch(_){}checkMin();webUpdCheck()}
 async function loadStats(){if(S.role!=="admin"&&S.role!=="subadmin")return;try{const c=await sbLoad();if(!c)return;const{data,error}=await c.rpc("user_stats");if(error||!data)return;S.stats=data;
   const set=(k,v)=>{const e=document.getElementById("st_"+k);if(e)e.textContent=v};set("admin",data.admins);set("sub",data.subadmins);set("user",data.users);set("all",data.total);
-  const{data:r}=await c.rpc("stats_summary");if(r){S.rs=r;set("dau",r.dau);set("wau",r.wau);set("mt",fmtT(r.sec_today));set("m7",fmtT(r.sec_7d))}}catch(_){}}
-async function syncServer(){const c=await sbLoad();if(!c)return;await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
+  const{data:r}=await c.rpc("stats_summary");if(r){S.rs=r;set("dau",r.dau);set("wau",r.wau);set("mt",fmtT(r.sec_today));set("m7",fmtT(r.sec_7d))}loadFunnel(c)}catch(_){}}
+async function syncServer(){const c=await sbLoad();if(!c)return;trackInstall(c);await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);await loadPremium(c);await syncState(c,true);flushConsent(c);checkConsent(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
 const TX={};
 function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
 async function gunzipJSON(blob){const st=blob.stream().pipeThrough(new DecompressionStream("gzip"));return JSON.parse(await new Response(st).text())}

@@ -8,6 +8,7 @@ function login(){
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
+ ${consBlock()}<p class="hint">Ҷинси худро интихоб кунед (бо пахш кардан давом мекунед):</p>
  <div class="gopts"><button class="gopt" data-g="girl"><span class="gart"><svg viewBox="0 0 100 100">${ROSE_ART}</svg></span><b>Духтар</b></button><button class="gopt" data-g="boy"><span class="gart"><svg viewBox="0 0 100 100">${GLOVE_ART}</svg></span><b>Писар</b></button></div>`;
  return `<section class="login"><div class="hero pad"><div class="lg">${LOGO}</div><h1 translate="no">Китобхона</h1><p>Китобҳои тоҷикӣ ва аудиокитобҳо дар телефони шумо, ҳатто бе интернет.</p></div><div class="pad" style="display:flex;flex-direction:column;gap:16px">${S.step==="code"?code:S.step==="gender"?gender:email}</div></section>`;
 }/* ---- Профил: сурат, баннер, ном, маълумот ---- */
@@ -68,17 +69,17 @@ function me(){
    <div class="prow"><div class="av">${avInner(S.pAv)}</div><div class="btns"><button class="pill" data-pedit>Таҳрири профил</button></div></div>
    <div><h1 class="name">${escH(S.uname||"Номи шумо")}${S.role==="admin"||S.role==="subadmin"?VBADGE:""}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>${S.pBio?`<p class="pbio">${escH(S.pBio)}</p>`:""}
     <div class="meta2"><span>${P(I.brief,1.8)}${S.role==="admin"?"Админи Китобхона":S.role==="subadmin"?"Ёрдамчии админ":"Ҳисоби ройгон"}</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
-   ${PREM()?`<div class="banner2"><svg class="ico" style="width:40px;height:40px" viewBox="0 0 24 24" fill="#fff" fill-opacity=".9"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg><div><b>Китобхона Премиум</b><span>Имкониятҳои махсусро кашф кунед</span></div><button class="cta" data-toast="Харид — қадами оянда">Премиум ›</button></div>`:""}
+   ${PREM()&&FEAT("buy")?`<div class="banner2"><svg class="ico" style="width:40px;height:40px" viewBox="0 0 24 24" fill="#fff" fill-opacity=".9"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg><div><b>Китобхона Премиум</b><span>Имкониятҳои махсусро кашф кунед</span></div><button class="cta" data-toast="Харид — қадами оянда">Премиум ›</button></div>`:""}
    <div class="stats">
-    <button class="stat" data-sheet="khirad"><small translate="no">Тавозуни хирад</small><b>${COIN_I}0</b></button>
+    <button class="stat" data-sheet="khirad"><small translate="no">Тавозуни хирад</small><b>${FEAT("coin")?COIN_I+(S.coins||0):"Ба зудӣ"}</b></button>
     <div class="stat"><small>Мутолиаи умумӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${readTotal()} дақ</b></div>
-    <div class="stat"><small>Рейтинги Озмун</small><b><span style="color:#e0a820">${P(I.trophy,2)}</span>0</b></div>
+    <div class="stat"><small>Рейтинги Озмун</small><b><span style="color:#e0a820">${P(I.trophy,2)}</span>${FEAT("rank")?(S.rankNo||"—"):"Ба зудӣ"}</b></div>
     <div class="stat"><small>7 рӯзи охир</small><b><span style="color:#6a63e0">${P(I.cal,2)}</span>${read7()} дақ</b></div>
    </div>
    ${admHTML()}
    <div class="sec"><div class="sec-h"><h2>Ҷинс</h2></div><div class="plan"><span class="gart sm"><svg viewBox="0 0 100 100">${art()}</svg></span><div><b>${S.gender==="boy"?"Писар":S.gender==="girl"?"Духтар":"Интихоб нашудааст"}</b><span>${S.gender?"Ҷинсро иваз кардан мумкин нест. Фақат аз ҳисоб баромада, аз нав сабти ном кунед.":"Ҷинс ҳангоми сабти ном интихоб мешавад."}</span></div></div>
     ${S.confirmOut?`<div class="empty-card" style="flex-direction:column;align-items:stretch"><b>Аз ҳисоб мебароед?</b><span>Ҷинс ва ҷамъоварӣ нест мешавад. Бозгашт аз нав сабти ном аст.</span><div style="display:flex;gap:10px"><button class="pill" style="flex:1;background:var(--orange);color:#fff" data-logout-yes>Ҳа, мебароям</button><button class="pill" style="flex:1" data-logout-no>Бекор</button></div></div>`:`<button class="pill" style="width:100%;height:48px;justify-content:center" data-logout>Аз ҳисоб баромадан</button>`}</div>
-      ${PREM()?`<div class="sec"><div class="sec-h"><h2>Тарифҳо</h2></div>
+      ${PREM()&&FEAT("buy")?`<div class="sec"><div class="sec-h"><h2>Тарифҳо</h2></div>
     <div class="plan"><span class="round">${P('<circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.500 20c.5-4 2.800-6 5.500-6s5 2 5.500 6M14 15.200c.8-.5 1.700-.7 2.600-.7 2.200 0 3.900 1.600 4.400 5"/>')}</span><div><b>Тарифи оилавӣ</b><span>Як обуна барои 3–5 аъзои оила</span></div><button class="pill" data-toast="Тарифи оилавӣ — қадами оянда">Дидан</button></div>
     <div class="plan"><span class="round">${P('<path d="M3 9l9-5 9 5-9 5zM7 11.500V16c3 2 7 2 10 0v-4.500"/>')}</span><div><b>Тарифи мактабӣ</b><span>Мактаб як ҳисобро ба хонандагон тақсим мекунад</span></div><button class="pill" data-toast="Тарифи мактабӣ — қадами оянда">Дидан</button></div>
    </div>`:""}
@@ -134,11 +135,11 @@ function bindAccount($$){
    if(m.gender){S.gender=m.gender;S.uname=m.name||"";S.step="email";go("home");return}}
   S.step="gender";render()};
  $$("[data-g]",b=>b.onclick=async()=>{const n=(document.getElementById("uname").value||"").trim();
-  if(!n){toast("Номатонро нависед");return}
+  if(!n){toast("Номатонро нависед");return}if(!consOK())return;
   S.gender=b.dataset.g;S.uname=n;
   const c=await sbLoad();if(c){
    try{const{data:nm,error:ne}=await c.rpc("claim_name",{p_name:n});if(!ne&&nm){if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm}}catch(_){}
-   const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав");await syncServer()}
+   const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав");await consSave();await syncServer()}
   S.step="email";go("home")});
  const rs=document.getElementById("resend");
  if(rs){

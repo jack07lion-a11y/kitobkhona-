@@ -7,6 +7,9 @@ function flushRead(){if(ST.sec>0&&ST.b){const q=rsLoad();q[ST.b]=(q[ST.b]||0)+ST
 let rsBusy=false;
 async function sendRead(){if(rsBusy||!S.uid||!navigator.onLine)return;const q=rsLoad(),ks=Object.keys(q);if(!ks.length)return;rsBusy=true;
  try{const c=await sbLoad();if(!c)return;for(const k of ks){const{error}=await c.rpc("track_read",{p_sec:q[k],p_book:+k});if(error)break;const n=rsLoad();delete n[k];localStorage.setItem(RSK,JSON.stringify(n))}}catch(_){}finally{rsBusy=false}}
+/* воронка барои админ (docs/sql-metrika.sql): насб → сабти ном → 1 дақиқа хондан → баргашт */
+async function loadFunnel(c){if(!canPerm("stats"))return;try{const{data,error}=await c.rpc("funnel",{p_days:30});if(error||!data)return;S.fn=data;
+ ["installs","registered","read1","back1","back7"].forEach(k=>{const e=document.getElementById("fn_"+k);if(e)e.textContent=data[k]})}catch(_){}}
 async function trackActive(){try{if(!S.uid||!navigator.onLine)return;const d=todayKey();if(localStorage.getItem("kitob_act")===d)return;const c=await sbLoad();if(!c)return;const{error}=await c.rpc("track_active");if(!error)localStorage.setItem("kitob_act",d)}catch(_){}}/* ---------- Дақиқаҳои хондан ва огоҳиномаҳо (Android APK) ---------- */
 const RDG={sess:0,act:Date.now(),lt:0};
 const todayKey=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};

@@ -75,6 +75,7 @@ SHEETS.app=X=>{let h="";{const t=S.theme||"paper";
   <p class="set-note">${t==="auto"?"Мисли телефон: рӯз рӯшан, шаб торик.":t==="paper"?"Ранги коғази кӯҳна, чашм камтар хаста мешавад.":t==="dark"?"Барои шаб ва батареяро сарфа мекунад.":"Ҳамеша рӯшан."}</p>
   <div class="sh-list">
    <button class="sh-row" data-sheet="report"><span>${P('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>')}Хато фиристодан</span><em>›</em></button>
+   ${S.uid?`<button class="sh-row" data-sheet="delacc"><span>${P('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')}Ҳисобро нест кардан</span><em>›</em></button>`:""}
    <button class="sh-row" data-privacy><span>${P('<path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/>')}Сиёсати махфият</span><em>›</em></button>
    <button class="sh-row" data-sheet="lang" style="border:0"><span>${P('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.300 0 18M12 3c-2.5 2.700-2.5 15.300 0 18"/>')}Забон</span><em translate="no">${LANGS.find(x=>x[0]===(S.lang||"tg"))[1]} ›</em></button>
   </div>`};return h};

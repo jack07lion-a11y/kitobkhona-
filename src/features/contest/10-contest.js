@@ -53,4 +53,4 @@ function cxEditOn(){if(cxEd||S.role!=="admin")return;cxEd=true;if(!["home","lib"
 function cxSet(k,o){S.cxPos=S.cxPos||{};const g=cxGeo();CXF.goal.forEach(([kk],i)=>{if(!S.cxPos[kk])S.cxPos[kk]=cxOff(i,g)});S.cxPos[k]=o;save();cxPlace();cxSync&&cxSync()}
 function cxEditOff(){cxEd=false;cxSync=null;document.documentElement.classList.remove("cx-editing");cxEl.classList.remove("edit");const g=cxEl.querySelector(".cx-grid");g&&g.remove();const p=document.getElementById("cxp");p&&p.remove();
  cxEl.querySelectorAll(".cx-b").forEach(b=>{b.onpointerdown=b.onpointermove=b.onpointerup=b.onpointercancel=null});cxClose();try{history.replaceState(null,"",location.pathname+location.hash)}catch(_){}}
-function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast("Ба зудӣ илова мешавад")}
+function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}

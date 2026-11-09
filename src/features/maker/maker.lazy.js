@@ -155,6 +155,7 @@ function admMakeHTML(X){const d=MKS;
   <label class="pe-l" for="mkt">Номи китоб</label><input class="pe-i" id="mkt" value="${escH(d.title)}" autocomplete="off" placeholder="Масалан: Гулистон">
   <label class="pe-l" for="mka">Муаллиф</label><input class="pe-i" id="mka" value="${escH(d.author)}" autocomplete="off" placeholder="Масалан: Саъдии Шерозӣ">
   <label class="pe-l" for="mkc">Бахш</label><select class="pe-i" id="mkc">${GENRES.map(g=>`<option value="${g[0]}"${d.cat===g[0]?" selected":""}>${g[1]}</option>`).join("")}</select>
+  ${rightsHTML("mk",d.rt)}
   <label class="pe-l" for="mkv">Муқова (ихтиёрӣ; агар дар китоб бошад, худкор мегирад)</label><input class="pe-i" id="mkv" type="file" accept="image/*">
   ${d.err?`<p class="mk-err" translate="no">${escH(d.err)}</p>`:""}
   <div class="mk-prog" id="mkp" ${d.busy?"":"hidden"}><i id="mkbar" style="width:0%"></i></div><p class="mk-st" id="mkst" ${d.busy?"":"hidden"}></p>
@@ -167,8 +168,9 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
  const go=document.querySelector("[data-mk-go]");if(go)go.onclick=async()=>{
   if(d.res){MKS={file:null,title:"",author:"",cat:d.cat,cover:null,busy:false,res:null,err:""};render();return}
   if(!d.file){toast("Аввал файлро интихоб кунед");return}if(!d.author.trim()){toast("Муаллифро нависед");return}
+  const rt=readRights("mk");d.rt={rs:rt.rights_status,rh:rt.rights_holder,src2:rt.source,ed:rt.edition,tr:rt.translator,ln:rt.license_note};
   d.busy=true;d.err="";go.disabled=true;const p=$("mkp"),b=$("mkbar"),s=$("mkst");p.hidden=false;s.hidden=false;
   const prog=(x,txt)=>{b.style.width=Math.round(x*100)+"%";s.textContent=Math.round(x*100)+"% · "+txt};
   try{prog(.02,"Оғоз…");const r=await MK.convert(d.file,{title:d.title,author:d.author,category:d.cat,cover:d.cover},prog);
-   prog(.85,"Ба сервер фиристода мешавад…");await importZip(r.file,[]);prog(1,"Тайёр");d.res=r;d.busy=false;render();NATIVE.haptic(15)}
+   prog(.85,"Ба сервер фиристода мешавад…");await importZip(r.file,[],rt);prog(1,"Тайёр");d.res=r;d.busy=false;render();NATIVE.haptic(15)}
   catch(e){d.busy=false;d.err=(e&&e.message)||"Хато";if(!(e&&e.guard)){if(e&&e.rep&&e.rep.warns)d.err+=" "+e.rep.warns.join(" ");logErr("maker",d.err,e&&e.stack)}render()}}}
