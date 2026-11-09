@@ -30,3 +30,24 @@ jobs:
           mkdir -p /tmp/rp
           javac -encoding UTF-8 -d /tmp/rp apk/src/src/tj/kitobkhona/app/RemindPlan.java tests/RemindPlanTest.java
           java -cp /tmp/rp tj.kitobkhona.app.RemindPlanTest
+
+  # SQL (docs/sql-*.sql) дар PostgreSQL-и вақтинчаи CI бо Supabase-тақлид; ба Supabase-и воқеӣ дахл надорад
+  sql:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: "SQL: тартиб, такрор ва синовҳои RLS"
+        env:
+          PGHOST: localhost
+          PGPORT: "5432"
+          PGUSER: postgres
+          PGPASSWORD: ci
+        run: tests/run-sql.sh

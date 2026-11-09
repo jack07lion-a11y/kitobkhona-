@@ -29,7 +29,6 @@ jobs:
       - name: Йиғиш
         env:
           VC: ${{ github.run_number }}
-          VN: "0.1-test.${{ github.run_number }}"
           KS_PASS: ${{ secrets.KS_PASS }}
         run: ./apk/build-ci.sh
       - name: "Нигоҳ доштан (Artifact)"

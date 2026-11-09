@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
 
     /** Саҳифаи асосӣ: нусхаи навшуда (агар кор кунад); агар 2 бор оғоз нашуд — бозгашт ба нусхаи пештара ё ба нусхаи худи APK. */
     private InputStream shellIndex() throws Exception {
+        if (Flavor.PLAY) return getAssets().open("index.html");   // Play: интерфейс танҳо бо навсозии Play Market
         android.content.SharedPreferences s = Notify.sp(this);
         File dir = new File(getFilesDir(), "shell");
         File cur = new File(dir, "index.html"), prev = new File(dir, "index.prev.html");
@@ -484,6 +485,7 @@ public class MainActivity extends Activity {
 
             @JavascriptInterface
             public void downloadUpdate(final String url) {
+                if (Flavor.PLAY) return;   // Play: навсозӣ танҳо тавассути Play Market
                 if (url == null || !url.startsWith("https://github.com/jack07lion-a11y/kitobkhona-/releases/") || updBusy) return;
                 updBusy = true;
                 new Thread(new Runnable() {
@@ -528,6 +530,7 @@ public class MainActivity extends Activity {
 
             @JavascriptInterface
             public String installUpdate() {
+                if (Flavor.PLAY) return "err";
                 File f = new File(getCacheDir(), "update.apk");
                 if (!f.exists()) return "nofile";
                 if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
@@ -580,6 +583,11 @@ public class MainActivity extends Activity {
                         }
                     }
                 });
+            }
+
+            @JavascriptInterface
+            public String flavor() {
+                return Flavor.PLAY ? "play" : "direct";
             }
 
             @JavascriptInterface
@@ -666,6 +674,7 @@ public class MainActivity extends Activity {
 
     /** Нусхаи нави саҳифаро аз сайт мефарорем. report=true: ба JS фоиз ва натиҷаро мегӯем. */
     private void refreshShell(final boolean report) {
+        if (Flavor.PLAY) return;
         if (shellBusy) return;
         if (!online()) {
             if (report) jsShell(-1, "err");
