@@ -1,0 +1,3 @@
+slug,title,author,rights_status,rights_holder,source,edition,translator,license_note,eslatma
+sadriddin-ayni-yoddoshtho,Ёддоштҳо,Садриддин Айнӣ,pending,,,,,,"Китоби дохили APK. Статусро бунёдгузорон муайян мекунанд: public_domain | licensed | pending"
+,,,pending,,,,,,"Ҳар китоби дар Supabase нашршуда учун як сатр илова кунед (рӯйхат: select slug, t, a from books where published)"

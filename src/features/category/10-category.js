@@ -15,11 +15,12 @@ const CHIPS=[["all","Ҳама"],["audio","Аудио дар роҳ"],...GENRES.m
 const GENRE_ALIAS={"адабиёт":"fiction","адабиёти бадеӣ":"fiction","шеър":"poetry","таърих":"history"};
 function genreOf(n){const k=String(n||"").trim().toLowerCase();if(GENRE_ALIAS[k])return GENRE_ALIAS[k];const g=GENRES.find(x=>x[1].toLowerCase()===k||x[0]===k);return g?g[0]:"fiction"}
 
+const chipList=()=>CHIPS.filter(c=>c[0]!=="audio"||FEAT("audio"));
 const CATS=[["audio","Аудио дар роҳ","Дар нақлиёт ва кор гӯш кунед",'<path d="M4 15v-3a8 8 0 0116 0v3M4 15a2 2 0 012-2h1v6H6a2 2 0 01-2-2zM20 15a2 2 0 00-2-2h-1v6h1a2 2 0 002-2z"/>'],...GENRES];
 function comm(){
  const cnt={audio:BOOKS.filter(b=>b.audio).length};GENRES.forEach(g=>cnt[g[0]]=BOOKS.filter(b=>b.c===g[0]).length);
  return `<section class="screen pad"><h1 class="title">Категория</h1>
-  <div class="catlist">${CATS.map(([k,n,d,ic])=>`<button class="catrow" data-cat="${k}"><span class="cico">${P(ic,1.7)}</span><span class="txt"><b>${n}</b><span>${d}</span></span><span class="num">${cnt[k]}</span>${P(I.chev).replace('class="ico"','class="chev"')}</button>`).join("")}</div>
+  <div class="catlist">${CATS.filter(c=>c[0]!=="audio"||FEAT("audio")).map(([k,n,d,ic])=>`<button class="catrow" data-cat="${k}"><span class="cico">${P(ic,1.7)}</span><span class="txt"><b>${n}</b><span>${d}</span></span><span class="num">${cnt[k]}</span>${P(I.chev).replace('class="ico"','class="chev"')}</button>`).join("")}</div>
  </section>${tabs()}`;
 }
 

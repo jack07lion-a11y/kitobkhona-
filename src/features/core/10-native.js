@@ -1,6 +1,8 @@
 /* ---- Дарвозаҳои Android/веб ва сабти хатоҳои техникӣ ---- */
 const SITE_URL="https://jack07lion-a11y.github.io/kitobkhona-/";
 const NATIVE={
+ flavor(){try{const A=window.KitobAndroid;return A&&A.flavor?String(A.flavor()):"direct"}catch(_){return"direct"}},
+ isPlay(){return NATIVE.flavor()==="play"},
  ver(){try{const A=window.KitobAndroid;return A&&A.version?(+A.version()||0):0}catch(_){return 0}},
  share(text,url){const A=window.KitobAndroid,full=url?text+"\n"+url:text;
   try{if(A&&A.share){A.share(full);return}if(navigator.share){navigator.share({text,url}).catch(()=>{});return}}catch(_){}

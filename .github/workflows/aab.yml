@@ -1,0 +1,46 @@
+name: "AAB (Play)"
+
+# Фақат дастӣ. Google Play учун бастаи AAB (FLAVOR=play: бе худнавсозии APK ва бе REQUEST_INSTALL_PACKAGES).
+# ДИҚҚАТ: ин workflow ҳанӯз як маротиба ҳам иҷро нашудааст — аввалин иҷроро ва натиҷаро санҷед (docs/pre-launch/STATUS.md, банди 1.10).
+# Калити имзо: ҳамон apk/ks.enc + KS_PASS. Play App Signing-ро истифода баред: ин калит «калити боргузорӣ» (upload key) мешавад.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "index.html бо src/ мувофиқ аст?"
+        run: python3 tools/build.py --check
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: "Калит (аз apk/ks.enc бо парол KS_PASS)"
+        env:
+          KS_PASS: ${{ secrets.KS_PASS }}
+        run: |
+          [ -n "$KS_PASS" ] || { echo "KS_PASS дар Secrets нест"; exit 1; }
+          mkdir -p apk/ks
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in apk/ks.enc -out apk/ks/kitobkhona.jks -pass env:KS_PASS
+      - name: "bundletool 1.17.2 (санҷиши SHA-256)"
+        run: |
+          curl -fsSL -o bundletool.jar https://github.com/google/bundletool/releases/download/1.17.2/bundletool-all-1.17.2.jar
+          echo "2d4ad908faea64047c1cc9cb747e6aa667c6ab192e09607bd16b67246a8cd6ae  bundletool.jar" | sha256sum -c -
+      - name: "Йиғиш: AAB + APK-и play"
+        env:
+          KS_PASS: ${{ secrets.KS_PASS }}
+          VC: ${{ github.run_number }}
+          FLAVOR: play
+          AAB: "1"
+        run: BUNDLETOOL="$PWD/bundletool.jar" ./apk/build-ci.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kitobkhona-play
+          path: |
+            apk/src/build/kitobkhona.aab
+            apk/src/build/kitobkhona.apk

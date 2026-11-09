@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
 
     /** Саҳифаи асосӣ: нусхаи навшуда (агар кор кунад); агар 2 бор оғоз нашуд — бозгашт ба нусхаи пештара ё ба нусхаи худи APK. */
     private InputStream shellIndex() throws Exception {
+        if (Flavor.PLAY) return getAssets().open("index.html");   // Play: интерфейс танҳо бо навсозии Play Market
         android.content.SharedPreferences s = Notify.sp(this);
         File dir = new File(getFilesDir(), "shell");
         File cur = new File(dir, "index.html"), prev = new File(dir, "index.prev.html");
@@ -163,7 +164,11 @@ public class MainActivity extends Activity {
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
-        s.setAllowFileAccess(true);
+        // file:///android_asset ба ин танзим вобаста нест; боқии файлҳои телефон аз WebView пӯшида мешавад
+        s.setAllowFileAccess(false);
+        s.setAllowContentAccess(false);
+        s.setAllowFileAccessFromFileURLs(false);
+        s.setAllowUniversalAccessFromFileURLs(false);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setTextZoom(100);
         s.setCacheMode(online() ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -171,8 +176,12 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
                 Uri u = req.getUrl();
-                if ("file".equals(u.getScheme())) return false;
-                if ("https".equals(u.getScheme()) && HOST.equals(u.getHost())) return false;
+                String sc = u.getScheme();
+                // кўприги KitobAndroid фақат саҳифаи худи мо (asset ё сайти мо) учун: ҳамаи дигар file:// рад мешавад
+                if ("file".equals(sc)) return !ASSET.equals(u.toString().split("[?#]")[0]);
+                if ("https".equals(sc) && HOST.equals(u.getHost())) return false;
+                // ба бозгаштгоҳи беруна фақат схемаҳои бехатар (intent:, content:, javascript: ва ғ. рад мешаванд)
+                if (!("https".equals(sc) || "http".equals(sc) || "mailto".equals(sc) || "tel".equals(sc))) return true;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
                 return true;
             }
@@ -263,7 +272,8 @@ public class MainActivity extends Activity {
                     e.putString("role", o.optString("role", ""));
                     e.putString("title", o.optString("title", "Китобхона"));
                     e.putString("remind_text", o.optString("remindText", "Вақти китоб хондан расид. Ба Китобхона ворид шавед"));
-                    if (o.has("sbUrl")) e.putString("sb_url", o.optString("sbUrl", ""));
+                    // Supabase URL танҳо https://*.supabase.co (ҳамлагар калитро ба сервери худаш гузаронда наметавонад)
+                    if (o.has("sbUrl") && o.optString("sbUrl", "").matches("^https://[a-z0-9-]+\\.supabase\\.co/?$")) e.putString("sb_url", o.optString("sbUrl", ""));
                     if (o.has("sbKey")) e.putString("sb_key", o.optString("sbKey", ""));
                     if (o.has("news")) e.putBoolean("news_on", o.optBoolean("news", true));
                     e.putString("tpl", o.optString("tpl", "Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!"));
@@ -433,6 +443,7 @@ public class MainActivity extends Activity {
             // ---------- Аудио дар паси экран ----------
             @JavascriptInterface
             public void audioLoad(String url, String title, String artist, int posMs) {
+                if (url == null || !url.startsWith("https://")) return;
                 AudioService.cmd(MainActivity.this, AudioService.A_LOAD, url, title, artist, posMs);
             }
 
@@ -474,6 +485,7 @@ public class MainActivity extends Activity {
 
             @JavascriptInterface
             public void downloadUpdate(final String url) {
+                if (Flavor.PLAY) return;   // Play: навсозӣ танҳо тавассути Play Market
                 if (url == null || !url.startsWith("https://github.com/jack07lion-a11y/kitobkhona-/releases/") || updBusy) return;
                 updBusy = true;
                 new Thread(new Runnable() {
@@ -518,6 +530,7 @@ public class MainActivity extends Activity {
 
             @JavascriptInterface
             public String installUpdate() {
+                if (Flavor.PLAY) return "err";
                 File f = new File(getCacheDir(), "update.apk");
                 if (!f.exists()) return "nofile";
                 if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
@@ -570,6 +583,11 @@ public class MainActivity extends Activity {
                         }
                     }
                 });
+            }
+
+            @JavascriptInterface
+            public String flavor() {
+                return Flavor.PLAY ? "play" : "direct";
             }
 
             @JavascriptInterface
@@ -656,6 +674,7 @@ public class MainActivity extends Activity {
 
     /** Нусхаи нави саҳифаро аз сайт мефарорем. report=true: ба JS фоиз ва натиҷаро мегӯем. */
     private void refreshShell(final boolean report) {
+        if (Flavor.PLAY) return;
         if (shellBusy) return;
         if (!online()) {
             if (report) jsShell(-1, "err");

@@ -11,6 +11,8 @@ src/
     core/              пойдевор: native, data (Supabase/китоб), ui, state (S), sheets, tabbar, app (render/go/bind)
     library/ reader/ player/ home/ category/ account/ premium/
     contest/           Озмун (ИФМ, Фурӯғ, Баҳс — ҷояш омода: contest/ilm, furugh, bahs)
+    privacy/           розигӣ, синну сол, нест кардани ҳисоб (docs/sql-maxfiyat.sql)
+    sync/              синхронизатсияи пешравӣ, токчаҳо, хатчӯбҳо; воронка (docs/sql-holat.sql, sql-metrika.sql)
     stats/ feedback/ notifications/ backup/ update/ i18n/
     maker/             Китоб ясаш (танбал)
     admin/             панели админ ва ҳуқуқҳо
@@ -35,3 +37,10 @@ src/
 ## Санҷиш
 `npm i playwright && npx playwright install chromium && node tests/run.js [феатур…]`
 Ҳар феатур санҷиши худро дорад ва ҳамеша «хатои JS нест»-ро месанҷад. CI: `.github/workflows/test.yml`.
+
+## «Ба зудӣ» байроқҳо ва ҳимоя (бранч pre-launch)
+- `app_flags.feat` (jsonb) → `FEAT("audio"|"buy"|"contest"|"coin"|"rank"|"social"|"ai"|"quiz"|"teacher")`, пешфарз ҳама хомӯш; админ аз Идоракунӣ мекушояд (`set_feat`). Рӯйхат: `FEATS` дар `core/40-state.js`.
+- Премиум: сервер ҳал мекунад (`profiles.premium_until`, `can_read_book_file`), клиент танҳо нишон медиҳад (`locked(b)`).
+- Тартиби SQL: `docs/pre-launch/SQL-TARTIB.md`. Санҷиши SQL: `tests/run-sql.sh` (PostgreSQL-и вақтинчаӣ, на Supabase).
+- PWA: `manifest.webmanifest`, `sw.js`, `icons/`; landing: `landing.html` (скриншот: `node tools/screenshots.js`).
+- Нусхаи Play: `FLAVOR=play` дар `apk/build-ci.sh`; AAB: `AAB=1` (workflow «AAB (Play)»).
