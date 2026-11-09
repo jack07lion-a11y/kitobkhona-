@@ -51,4 +51,5 @@ if(/[?&]doira\b/.test(location.search)&&S.role==="admin")cxEditOn();
 })();
 try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Интерфейс нав шуд"))}}catch(_){}
 afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck();webUpdCheck();setTimeout(()=>{try{checkUpdate().then(()=>apkNag(true))}catch(_){}},1500)});
-afterSplash(checkUpdate);
+afterSplash(checkUpdate);/* PWA (iPhone/Safari «Ба экрани асосӣ» ва офлайн): service worker фақат дар браузер, на дар APK */
+try{if("serviceWorker" in navigator&&!window.KitobAndroid&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}catch(_){}

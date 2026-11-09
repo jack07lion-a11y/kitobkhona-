@@ -1,5 +1,12 @@
-<title>Китобхона прототипи</title>
+<title>Китобхона</title>
 <meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#0b7d57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Китобхона">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -1791,6 +1798,8 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 /* ---- Дарвозаҳои Android/веб ва сабти хатоҳои техникӣ ---- */
 const SITE_URL="https://jack07lion-a11y.github.io/kitobkhona-/";
 const NATIVE={
+ flavor(){try{const A=window.KitobAndroid;return A&&A.flavor?String(A.flavor()):"direct"}catch(_){return"direct"}},
+ isPlay(){return NATIVE.flavor()==="play"},
  ver(){try{const A=window.KitobAndroid;return A&&A.version?(+A.version()||0):0}catch(_){return 0}},
  share(text,url){const A=window.KitobAndroid,full=url?text+"\n"+url:text;
   try{if(A&&A.share){A.share(full);return}if(navigator.share){navigator.share({text,url}).catch(()=>{});return}}catch(_){}
@@ -3587,10 +3596,10 @@ function checkMin(){const m=(S.flags&&S.flags.min)||0,v=NATIVE.ver();let el=docu
  if(!(v>0&&m>v)){if(el)el.remove();return}
  if(el)return;el=document.createElement("div");el.id="minv_ov";el.className="minv";
  el.innerHTML=`<div class="minv-c"><div class="minv-i">${P('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',2)}</div><h2>Барномаи шумо кӯҳна шудааст</h2><p>Барои идома додан, версияи навро боргирӣ ва насб кунед.</p><button class="pay-btn" id="minv_go">Навсозӣ кардан</button></div>`;
- document.body.appendChild(el);document.getElementById("minv_go").onclick=()=>NATIVE.openUrl(SITE_URL+"yuklab.html")}
+ document.body.appendChild(el);document.getElementById("minv_go").onclick=()=>NATIVE.openUrl(NATIVE.isPlay()?"https://play.google.com/store/apps/details?id=tj.kitobkhona.app":SITE_URL+"yuklab.html")}
 async function loadRelease(){const c=await sbLoad();if(!c)return null;
  try{const{data,error}=await c.from("app_release").select("*").eq("id",1).maybeSingle();if(!error&&data){S.rel=data;return data}}catch(_){}return null}
-function checkUpdate(){const A=window.KitobAndroid;if(!A||!navigator.onLine)return Promise.resolve(false);let cur=0;try{cur=+A.version()||0}catch(e){}
+function checkUpdate(){const A=window.KitobAndroid;if(!A||NATIVE.isPlay()||!navigator.onLine)return Promise.resolve(false);let cur=0;try{cur=+A.version()||0}catch(e){}
  return loadRelease().then(async r=>{
   if(r&&r.version>cur&&/^https:\/\/github\.com\/jack07lion-a11y\/kitobkhona-\/releases\//.test(r.url||"")){if(!S.upd||S.upd.v!==r.version)S.upd={v:r.version,url:r.url};return true}
   // админ ва ёрдамчӣ: охирин APK-и сохташуда (нашр нашуда бошад ҳам) худкор
@@ -3630,7 +3639,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="49e1f6c2b2";
+const WEB_H="96bf6f9e2d";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
@@ -3674,7 +3683,7 @@ function bindWebPub(){const b=document.querySelector("[data-webpub]");if(!b)retu
    S.flags.webPub=h;S.webLast=h;save();render();toast("Нашр шуд: корбарон навсозиро мебинанд")}catch(_){toast("Интернет нест");b.disabled=false}}}/* ---- Навсозии APK: ойна аз поён, ҳар 5 дақиқа то навсозӣ нашавад; фоиз дар боло; тугмаи «Ўрнатиш» ----
    Админ ва ёрдамчӣ охирин APK-и сохташударо худкор мебинанд; корбарони оддӣ — танҳо баъди «Нашр кардан». */
 const AU={busy:false,ready:false,last:0,every:5*60*1000};
-const apkNative=()=>{const A=window.KitobAndroid;return A&&A.downloadUpdate&&A.installUpdate?A:null};
+const apkNative=()=>{const A=window.KitobAndroid;return A&&A.downloadUpdate&&A.installUpdate&&!NATIVE.isPlay()?A:null};
 function apkNag(force){const A=apkNative();if(!A||!S.upd||AU.busy||AU.ready)return;if(S.view==="login")return;
  if(document.getElementById("aus")||document.getElementById("wus")||(typeof WU!=="undefined"&&WU.busy))return;
  if(!force&&Date.now()-AU.last<AU.every)return;AU.last=Date.now();apkSheet()}
@@ -3829,4 +3838,6 @@ if(/[?&]doira\b/.test(location.search)&&S.role==="admin")cxEditOn();
 })();
 try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Интерфейс нав шуд"))}}catch(_){}
 afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck();webUpdCheck();setTimeout(()=>{try{checkUpdate().then(()=>apkNag(true))}catch(_){}},1500)});
-afterSplash(checkUpdate);</script>
+afterSplash(checkUpdate);/* PWA (iPhone/Safari «Ба экрани асосӣ» ва офлайн): service worker фақат дар браузер, на дар APK */
+try{if("serviceWorker" in navigator&&!window.KitobAndroid&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}catch(_){}
+</script>

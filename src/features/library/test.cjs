@@ -8,3 +8,23 @@ module.exports=async t=>{
  await t.page.click('[data-lib="col"]');await t.page.fill('#lbn','Дӯстдоштаҳо');await t.page.click('[data-lib-new]');
  t.eq(await t.page.evaluate(()=>S.lib.c.length),1,'маҷмӯа сохта шуд');
 };
+
+// «Манба ва нашр»: майдонҳои ҳуқуқ дар саҳифаи китоб
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home'});
+ await P.evaluate(()=>{BOOKS.push({id:910,t:'Бо иҷозатнома',a:'Муаллиф',c:'fiction',col:['#0b7d57','#063'],rs:'licensed',rh:'Нашриёти Намуна',src2:'Нусхаи чопӣ',ed:'Душанбе, 2020',tr:'Мутарҷими Намуна',ln:'Қарордоди №1'},{id:911,t:'Номаълум',a:'Муаллиф',c:'fiction',col:['#0b7d57','#063'],rs:'pending'},{id:912,t:'Бе маълумот',a:'Муаллиф',c:'fiction',col:['#0b7d57','#063']});openDetail(910)});
+ await P.waitForTimeout(200);
+ const a=await P.evaluate(()=>document.querySelector('.bd').innerText);
+ t.ok(/Манба ва нашр/.test(a)&&/Бо иҷозатнома ё розигӣ/.test(a)&&/Нашриёти Намуна/.test(a)&&/Нусхаи чопӣ/.test(a)&&/Душанбе, 2020/.test(a)&&/Мутарҷими Намуна/.test(a)&&/Қарордоди №1/.test(a),'«Манба ва нашр»: ҳамаи майдонҳо намоён');
+ await P.evaluate(()=>{openDetail(911)});await P.waitForTimeout(150);
+ t.ok(/Ҳоло тасдиқ нашудааст/.test(await P.evaluate(()=>document.querySelector('.bd').innerText)),'pending: «Ҳоло тасдиқ нашудааст»');
+ await P.evaluate(()=>{openDetail(912)});await P.waitForTimeout(150);
+ t.ok(/Маълумот дар бораи манба ва нашр ҳоло илова нашудааст/.test(await P.evaluate(()=>document.querySelector('.bd').innerText)),'бе маълумот: ёддошт, ҳеҷ чиз тӯқилмайди');
+ // байроқҳои рейтинг/фикр/АИ: пинҳон
+ const hid=await P.evaluate(()=>{const x=document.querySelector('.bd').innerText;return!/Рейтинг|Мехонанд|Фикри шумо|Аз рӯи китоб савол/.test(x)});
+ t.ok(hid,'рейтинг, шарҳ ва АИ-савол бе байроқ пинҳонанд');
+ await P.evaluate(()=>{S.flags.feat={social:true,ai:true};render()});await P.waitForTimeout(150);
+ t.ok(await P.evaluate(()=>/Рейтинг/.test(document.querySelector('.bd').innerText)&&/Аз рӯи китоб савол/.test(document.querySelector('.bd').innerText)),'байроқ фурӯзон: намоён мешаванд');
+})(module.exports);

@@ -9,10 +9,10 @@ function checkMin(){const m=(S.flags&&S.flags.min)||0,v=NATIVE.ver();let el=docu
  if(!(v>0&&m>v)){if(el)el.remove();return}
  if(el)return;el=document.createElement("div");el.id="minv_ov";el.className="minv";
  el.innerHTML=`<div class="minv-c"><div class="minv-i">${P('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',2)}</div><h2>Барномаи шумо кӯҳна шудааст</h2><p>Барои идома додан, версияи навро боргирӣ ва насб кунед.</p><button class="pay-btn" id="minv_go">Навсозӣ кардан</button></div>`;
- document.body.appendChild(el);document.getElementById("minv_go").onclick=()=>NATIVE.openUrl(SITE_URL+"yuklab.html")}
+ document.body.appendChild(el);document.getElementById("minv_go").onclick=()=>NATIVE.openUrl(NATIVE.isPlay()?"https://play.google.com/store/apps/details?id=tj.kitobkhona.app":SITE_URL+"yuklab.html")}
 async function loadRelease(){const c=await sbLoad();if(!c)return null;
  try{const{data,error}=await c.from("app_release").select("*").eq("id",1).maybeSingle();if(!error&&data){S.rel=data;return data}}catch(_){}return null}
-function checkUpdate(){const A=window.KitobAndroid;if(!A||!navigator.onLine)return Promise.resolve(false);let cur=0;try{cur=+A.version()||0}catch(e){}
+function checkUpdate(){const A=window.KitobAndroid;if(!A||NATIVE.isPlay()||!navigator.onLine)return Promise.resolve(false);let cur=0;try{cur=+A.version()||0}catch(e){}
  return loadRelease().then(async r=>{
   if(r&&r.version>cur&&/^https:\/\/github\.com\/jack07lion-a11y\/kitobkhona-\/releases\//.test(r.url||"")){if(!S.upd||S.upd.v!==r.version)S.upd={v:r.version,url:r.url};return true}
   // админ ва ёрдамчӣ: охирин APK-и сохташуда (нашр нашуда бошад ҳам) худкор
