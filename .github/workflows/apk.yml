@@ -19,14 +19,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: "Калити кӯҳнаи санҷишӣ (кэш; фақат то он ки apk/ks.enc пайдо шавад)"
-        if: hashFiles('apk/ks.enc') == ''
-        uses: actions/cache@v4
-        with:
-          path: apk/ks
-          key: kitob-ks-v1
-      - name: "Калити асосӣ (аз apk/ks.enc бо парол KS_PASS)"
-        if: hashFiles('apk/ks.enc') != ''
+      - name: "Калити асосӣ (аз apk/ks.enc бо парол KS_PASS; ёфт нашавад — йиғиш меафтад)"
         env:
           KS_PASS: ${{ secrets.KS_PASS }}
         run: |
