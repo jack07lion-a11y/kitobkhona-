@@ -32,7 +32,8 @@ module.exports=(prev=>async t=>{
  t.ok(imgs.length===5&&imgs.every(Boolean),'landing: 5 тасвири барнома боргирӣ шуд');
  t.ok(await P.evaluate(()=>['yuklab.html','index.html','maxfiyat.html','#iphone'].every(h=>!!document.querySelector('a[href="'+h+'"]'))),'landing: пайвандҳо (боргирӣ, браузер, махфият, iPhone)');
  t.ok(await P.evaluate(()=>/Ба экрани асосӣ/.test(document.getElementById('iphone').parentElement.innerText)&&/Насби барномаҳои номаълум/.test(document.body.innerText)),'landing: роҳнамои iPhone ва Android (манбаи номаълум)');
- t.ok(await P.evaluate(()=>/Ба зудӣ/.test(document.body.innerText)&&!document.querySelector('#contact a')),'landing: «Ба зудӣ» ҳаст; алоқа холӣ бошад, пайванди холӣ нест');
+ t.ok(await P.evaluate(()=>/Ба зудӣ/.test(document.body.innerText)&&[...document.querySelectorAll('#contact a')].every(a=>/^(https:\/\/t\.me\/[A-Za-z0-9_]{3,}|mailto:.+)$/.test(a.getAttribute('href')))),'landing: «Ба зудӣ» ҳаст; пайвандҳои алоқа фақат t.me ё mailto');
+ t.ok(await P.evaluate(()=>!!document.querySelector('#contact a[href="https://t.me/kitobkhona_official"]')),'landing: Телеграм-канал пайванди бор');
  for(const p of ['yuklab.html','maxfiyat.html']){const r=await P.goto(t.base+p);t.ok(r.ok(),p+' кушода мешавад')}
  t.ok(await P.evaluate(()=>/КОРАЛАМА/.test(document.body.innerText)&&/Ҳисобро нест кардан/.test(document.body.innerText)),'maxfiyat.html: белгии «КОРАЛАМА» ва нест кардани ҳисоб');
 })(module.exports);

@@ -102,12 +102,13 @@ footer{margin-top:40px;color:var(--mut);font-size:13px;text-align:center}
 
 <h2>Алоқа</h2>
 <div class="contact" id="contact"><span>Алоқа ба зудӣ илова мешавад.</span></div>
+<p>Навигариҳо ва барномаро дар Телеграм-канали мо пайгирӣ кунед.</p>
 
 <footer>© Китобхона · нусхаи санҷишӣ</footer>
 </main>
 <script>
 /* Бунёдгузорон ин ҷо ҳавола ва почтаро менависанд. Холӣ бошад — ҳеҷ чиз нишон дода намешавад. */
-const CONTACT={telegram:"",email:""};
+const CONTACT={telegram:"https://t.me/kitobkhona_official",email:""};
 (()=>{const box=document.getElementById("contact"),rows=[];
  if(/^https:\/\/t\.me\/[A-Za-z0-9_]{3,}$/.test(CONTACT.telegram))rows.push('<a href="'+CONTACT.telegram+'" rel="noopener">Telegram</a>');
  if(/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]{2,}$/.test(CONTACT.email))rows.push('<a href="mailto:'+CONTACT.email+'">'+CONTACT.email+'</a>');
