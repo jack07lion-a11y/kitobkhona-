@@ -39,8 +39,12 @@ begin
   delete from public.error_log where user_id = uid;
   delete from public.reports where user_id = uid;
   if to_regclass('public.user_state') is not null then execute 'delete from public.user_state where user_id = $1' using uid; end if;
-  -- сабти файлҳо дар Storage; худи файл дар S3 мумкин бимонад — ба «docs/pre-launch/STATUS.md», банди Storage нигаред
-  delete from storage.objects where bucket_id in ('avatars','reports') and (storage.foldername(name))[1] = uid::text;
+  -- Файлҳо дар Storage: Supabase-и нав нест кардани мустақимро манъ мекунад (storage.protect_delete).
+  -- Аватарро барнома аз Storage API нест мекунад; агар ин ҷо манъ бошад, ҳисоб бояд ба ҳар ҳол нест шавад.
+  begin
+    delete from storage.objects where bucket_id in ('avatars','reports') and (storage.foldername(name))[1] = uid::text;
+  exception when others then null;
+  end;
   delete from auth.users where id = uid;   -- profiles бо on delete cascade меравад
 end $$;
 revoke all on function public.delete_me() from public, anon;
