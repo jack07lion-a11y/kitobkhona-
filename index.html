@@ -901,6 +901,52 @@ html{overscroll-behavior-y:contain}
 @keyframes ptrs{to{transform:rotate(360deg)}}
 .ptr-m{position:absolute;left:18px;right:18px;top:calc(env(safe-area-inset-top,0px) + 26px);text-align:center;font:800 14px var(--font);color:var(--ink);opacity:0;transition:opacity .25s}
 @media (prefers-reduced-motion:reduce){.ptr.spin .ptr-r{animation-duration:1.7s}}
+/* ---- Рейтинг ---- */
+.rbadge{position:relative;font:800 20px/1 Inter,system-ui,sans-serif;color:var(--ink);background:var(--card)}
+.rbadge::before{content:"";position:absolute;inset:0;border-radius:50%;padding:3px;box-sizing:border-box;
+ background:conic-gradient(from 210deg,#0b7d57,#63d48f 38%,#13a56d 62%,#63d48f 85%,#0b7d57);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask-composite:exclude}
+.rbadge .rb-n{letter-spacing:-.5px}.rbadge .rb-n.sm{font-size:16px}.rbadge .rb-n.xs{font-size:12.5px}
+.rbadge .rb-i{display:grid;place-items:center;color:#0b7d57}.rbadge .rb-i .ico{width:22px;height:22px}
+.rbadge.g{color:#8a5a00;box-shadow:0 0 16px rgba(242,169,59,.5)}.rbadge.g::before{background:conic-gradient(from 210deg,#b57a00,#ffe27a 32%,#f2a93b 58%,#ffe27a 82%,#b57a00)}
+.rbadge.s{color:#4a5568;box-shadow:0 0 14px rgba(170,179,192,.5)}.rbadge.s::before{background:conic-gradient(from 210deg,#8e98a8,#f4f6f9 32%,#aab3c0 58%,#f4f6f9 82%,#8e98a8)}
+.rbadge.b{color:#7a4318;box-shadow:0 0 14px rgba(185,112,58,.45)}.rbadge.b::before{background:conic-gradient(from 210deg,#8a4a1c,#f6c79a 32%,#b9703a 58%,#f6c79a 82%,#8a4a1c)}
+.rt-top{display:flex;align-items:center;gap:14px;margin:6px 0 2px}.rt-top h1{margin:0;font:700 30px/1.1 Lora,Georgia,serif}
+.rt-sub{margin:0 0 16px;color:var(--muted);font-size:15px}
+.rt-list{display:flex;flex-direction:column;gap:10px}
+.rt-row{display:grid;grid-template-columns:44px 50px 1fr 20px;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:22px;padding:11px 14px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.rt-row:active{transform:scale(.98)}
+.rt-pos{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:800 18px/1 Inter,system-ui,sans-serif;background:var(--line);color:var(--ink);box-sizing:border-box}
+.rt-av{width:50px;height:50px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#0b7d57,#63d48f);flex:none}
+.rt-av img{width:100%;height:100%;object-fit:cover;display:block}.rt-av svg{width:28px;height:28px}
+.rt-nm{display:flex;flex-direction:column;min-width:0;gap:2px}.rt-nm b{font:700 17px/1.2 Inter,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-nm small{color:var(--muted);font-size:14px;font-weight:600}.rt-ch{color:var(--muted);display:grid;place-items:center}.rt-ch .ico{width:18px;height:18px}
+.rt-row.m1{background:linear-gradient(135deg,rgba(255,226,122,.42),var(--card) 70%);box-shadow:inset 0 0 0 1.5px rgba(242,169,59,.7),0 8px 22px rgba(242,169,59,.22)}
+.rt-row.m2{background:linear-gradient(135deg,rgba(210,216,226,.5),var(--card) 70%);box-shadow:inset 0 0 0 1.5px rgba(170,179,192,.8),0 6px 18px rgba(150,160,175,.2)}
+.rt-row.m3{background:linear-gradient(135deg,rgba(240,178,122,.4),var(--card) 70%);box-shadow:inset 0 0 0 1.5px rgba(185,112,58,.65),0 6px 18px rgba(185,112,58,.18)}
+.m1 .rt-pos,.rt-me.m1 .rt-pos{background:linear-gradient(135deg,#ffe27a,#f2a93b);color:#6b4300;box-shadow:0 4px 14px rgba(242,169,59,.55)}
+.m2 .rt-pos,.rt-me.m2 .rt-pos{background:linear-gradient(135deg,#f4f6f9,#aab3c0);color:#38414f;box-shadow:0 4px 12px rgba(150,160,175,.5)}
+.m3 .rt-pos,.rt-me.m3 .rt-pos{background:linear-gradient(135deg,#f6c79a,#b9703a);color:#4a2508;box-shadow:0 4px 12px rgba(185,112,58,.45)}
+.m1 .rt-av{box-shadow:0 0 0 3px #f2a93b}.m2 .rt-av{box-shadow:0 0 0 3px #aab3c0}.m3 .rt-av{box-shadow:0 0 0 3px #b9703a}
+.rt-me{position:sticky;bottom:16px;margin-top:16px;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#0b7d57,#13a56d);box-shadow:0 10px 28px rgba(11,125,87,.35)}
+.rt-me>div{display:flex;flex-direction:column;flex:1;min-width:0}.rt-me b{font:700 17px/1.2 Inter,system-ui,sans-serif}.rt-me span{font-size:14px;opacity:.92}
+.rt-me .rt-pos{background:#fff;color:#0b7d57;flex:none}
+.rt-me.mut{background:var(--card);color:var(--ink);box-shadow:none;margin-top:18px}.rt-me.mut span{color:var(--muted);opacity:1}
+.rt-me.m1{background:linear-gradient(135deg,#f2a93b,#ffd24a);color:#4a2f00}.rt-me.m2{background:linear-gradient(135deg,#aab3c0,#e4e8ee);color:#2a313c}.rt-me.m3{background:linear-gradient(135deg,#b9703a,#f0b27a);color:#3b1c06}
+/* варақаи профили китобхон */
+.ru{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:4px 4px 12px}
+.ru-av{width:112px;height:112px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#0b7d57,#63d48f)}
+.ru-av img{width:100%;height:100%;object-fit:cover}.ru-av svg{width:60px;height:60px}
+.ru-av.m1{box-shadow:0 0 0 4px #f2a93b,0 8px 26px rgba(242,169,59,.5)}.ru-av.m2{box-shadow:0 0 0 4px #aab3c0}.ru-av.m3{box-shadow:0 0 0 4px #b9703a}
+.ru h2{margin:6px 0 0;font:700 25px/1.2 Lora,Georgia,serif}
+.ru-pos{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;background:var(--line);font:800 15px Inter,system-ui,sans-serif}.ru-pos .ico{width:18px;height:18px}
+.ru-pos.m1{background:linear-gradient(135deg,#ffe27a,#f2a93b);color:#5a3800}.ru-pos.m2{background:linear-gradient(135deg,#f4f6f9,#aab3c0);color:#2f3744}.ru-pos.m3{background:linear-gradient(135deg,#f6c79a,#b9703a);color:#3b1c06}
+.ru-st{display:flex;gap:12px;width:100%;margin-top:4px}.ru-st>div{flex:1;background:var(--card);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;gap:2px}
+.ru-st b{font:800 19px/1.2 Inter,system-ui,sans-serif}.ru-st small{color:var(--muted);font-size:13px}
+.ru-bio{margin:6px 0 0;font-size:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}.ru-bio.mut{color:var(--muted)}
+/* доираи «Рейтинг» дар маркази Озмун: хурдтар */
+.cx-b.sm{width:72px;height:72px;margin:-36px 0 0 -36px}
+@media (prefers-reduced-motion:reduce){.rt-row{transition:none}}
 .cons{display:flex;flex-direction:column;gap:10px;text-align:left}
 .cons-age{display:flex;gap:8px}
 .cons-age .pill{flex:1;opacity:.75}
@@ -1824,7 +1870,7 @@ const SB_URL="https://hxtpmwxglfuabdvaeapj.supabase.co",SB_KEY="sb_publishable_h
 let sb=null;
 async function sbSend(e){const c=await sbLoad();
  if(c){const{error}=await c.auth.signInWithOtp({email:e,options:{shouldCreateUser:true}});
-  if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хатоги рӯй дод. Баъдтар аз нав кӯшиш кунед";return""}
+  if(error&&(/ban/i.test(error.message||"")||error.code==="user_banned"))return"BANNED";if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хатоги рӯй дод. Баъдтар аз нав кӯшиш кунед";return""}
  return SB_URL?"Интернет нест ё сервер ҷавоб намедиҳад":""}
 function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(sb)return r(sb);
  const mk=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};
@@ -1867,7 +1913,7 @@ async function loadFlags(c){try{const{data,error}=await c.from("app_flags").sele
 async function loadStats(){if(S.role!=="admin"&&S.role!=="subadmin")return;try{const c=await sbLoad();if(!c)return;const{data,error}=await c.rpc("user_stats");if(error||!data)return;S.stats=data;
   const set=(k,v)=>{const e=document.getElementById("st_"+k);if(e)e.textContent=v};set("admin",data.admins);set("sub",data.subadmins);set("user",data.users);set("all",data.total);
   const{data:r}=await c.rpc("stats_summary");if(r){S.rs=r;set("dau",r.dau);set("wau",r.wau);set("mt",fmtT(r.sec_today));set("m7",fmtT(r.sec_7d))}loadFunnel(c)}catch(_){}}
-async function syncServer(){const c=await sbLoad();if(!c)return;trackInstall(c);await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);await loadPremium(c);await syncState(c,true);flushConsent(c);checkConsent(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
+async function syncServer(){const c=await sbLoad();if(!c)return;trackInstall(c);await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);await loadPremium(c);loadMyRank(c);await syncState(c,true);flushConsent(c);checkConsent(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
 const TX={};
 function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
 async function gunzipJSON(blob){const st=blob.stream().pipeThrough(new DecompressionStream("gzip"));return JSON.parse(await new Response(st).text())}
@@ -2050,7 +2096,7 @@ function sheetHTML(){
  
  if(!h){S.sheet=null;return ""}
  const still=lastSheet===S.sheet?"still":"";lastSheet=S.sheet;
- return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
+ return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights","admdel"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
 }
 function skel(){return `<div class="skel-w">${[38,70,52,88,40,64,0,30,76,48,58].map(w=>w?`<span class="sk" style="width:${w}%"></span>`:`<span style="height:8px"></span>`).join("")}</div>`}
 function wheelHTML(){
@@ -2086,6 +2132,8 @@ SHEETS.app=X=>{let h="";{const t=S.theme||"paper";
   <p class="set-note">${t==="auto"?"Мисли телефон: рӯз рӯшан, шаб торик.":t==="paper"?"Ранги коғази кӯҳна, чашм камтар хаста мешавад.":t==="dark"?"Барои шаб ва батареяро сарфа мекунад.":"Ҳамеша рӯшан."}</p>
   <div class="sh-list">
    <button class="sh-row" data-sheet="report"><span>${P('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>')}Хато фиристодан</span><em>›</em></button>
+   ${S.uid?`<button class="sh-row" data-rt-vis><span>${P('<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>')}Дар рейтинг нишон дода шавам</span><em>${S.myRank&&S.myRank.hidden?"Не":"Ҳа"}</em></button>`:""}
+   <button class="sh-row" data-sheet="founders"><span>${P('<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20c.5-4 2.8-6 5.5-6s5 2 5.5 6M14 15.2c.8-.5 1.7-.7 2.6-.7 2.2 0 3.9 1.6 4.4 5"/>')}Бунёдгузорон</span><em>›</em></button>
    ${S.uid?`<button class="sh-row" data-sheet="delacc"><span>${P('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')}Ҳисобро нест кардан</span><em>›</em></button>`:""}
    <button class="sh-row" data-privacy><span>${P('<path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/>')}Сиёсати махфият</span><em>›</em></button>
    <button class="sh-row" data-sheet="lang" style="border:0"><span>${P('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.300 0 18M12 3c-2.5 2.700-2.5 15.300 0 18"/>')}Забон</span><em translate="no">${LANGS.find(x=>x[0]===(S.lang||"tg"))[1]} ›</em></button>
@@ -2146,7 +2194,7 @@ function ring(done,goal){const r=19,C=2*Math.PI*r;return `<div class="ringmini">
  if((S.view==="audio"&&!(S.au&&bk(S.au.id)))||(S.view==="read"&&!bk(S.rdId))||(S.view==="book"&&!bk(S.bookId)))S.view="home";
  const v=S.view;
  app.innerHTML=(v==="read"?reader(): v==="audio"?player(): v==="book"?detail(): v==="login"?login(): v==="home"?home(): v==="lib"?lib(): v==="me"?me():
-  v==="goal"?goal(): comm())+sheetHTML();
+  v==="goal"?goal(): v==="rating"?ratingView(): comm())+sheetHTML();
  if(fq){const q=document.getElementById("q");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
  bind();
  syncTabs();
@@ -2178,7 +2226,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));
@@ -2298,7 +2346,7 @@ window.__back=()=>{if(cxOpen){cxClose();return true}const q=sel=>{const e=docume
  if(S.sheet){closeSheet();return true}
  if(S.view==="read")return q("[data-closeread]");
  if(S.view==="audio")return q("[data-apmin]");
- if(S.view==="book")return q("[data-back]");
+ if(S.view==="book"||S.view==="rating")return q("[data-back]");
  if(S.search)return q("[data-closesearch]");
  if(S.view!=="home"&&S.view!=="login"){go("home");return true}
  return false};/* ---------- illustrated covers (100x150) ---------- */
@@ -2747,17 +2795,19 @@ const CXF={
   ["goal","Озмун","#2dbb82","#0b7d57",'<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>'],
   ["ifm","ИФМ","#f5b83d","#c47a12",'<path d="M4 5c3-1.500 5-1.500 8 0v14c-3-1.500-5-1.500-8 0zM20 5c-3-1.500-5-1.500-8 0v14c3-1.500 5-1.500 8 0z"/>'],
   ["furug","Фурӯғ","#a874e8","#6a3bb8",'<path d="M12 3a6 6 0 00-3 11v3h6v-3a6 6 0 00-3-11zM10 20h4"/>'],
-  ["bahs","Баҳс","#52aaf0","#1f6fb8",'<path d="M4 5h11v7H9l-3 3v-3H4zM18 9h2v7h-2v3l-3-3h-4"/>']],
+  ["bahs","Баҳс","#52aaf0","#1f6fb8",'<path d="M4 5h11v7H9l-3 3v-3H4zM18 9h2v7h-2v3l-3-3h-4"/>'],
+  ["rating","Рейтинг","#ffd24a","#d98a00",'<path d="M4 20h16M6 20v-7h4v7M10 20V6h4v14M14 20v-9h4v9"/>']],
  me:[["edit","Муҳаррир","#5b6677","#232b38",'<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>']]};
 let cxEl=null,cxOpen=false,cxT=0,cxEd=false,cxSel="goal",cxGS=8,cxSync=null,cxKey="goal";
 const fanKey=i=>{const k=tabKeys()[i];return k==="goal"?"goal":(k==="me"&&S.role==="admin"&&S.view==="me")?"me":null};
 function cxBuild(key){cxKey=key;
  if(!cxEl){cxEl=document.createElement("div");cxEl.id="cx";cxEl.hidden=true;document.body.appendChild(cxEl)}
  cxEl.innerHTML='<div class="cx-bg"></div>'+CXF[key].map(([k,n,c1,c2,ic],i)=>{const id=key+i,fs=n.length>5?9.4:11,ls=n.length>5?.9:1.3;
-  return `<button class="cx-b" data-cx="${k}" aria-label="${n}"><svg viewBox="0 0 84 84"><defs><linearGradient id="cxg${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><path id="cxp${id}" d="M11,42A31,31 0 0 0 73,42"/></defs><circle cx="42" cy="42" r="41" fill="url(#cxg${id})"/><circle cx="42" cy="42" r="39" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1.400"/><g transform="translate(30,12) scale(1)" fill="none" stroke="#fff" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round">${ic}</g><text font-size="${fs}" letter-spacing="${ls}" fill="#fff" text-anchor="middle"><textPath href="#cxp${id}" startOffset="50%"${k==="ifm"||k==="furug"?' translate="no"':""}>${n}</textPath></text></svg></button>`}).join("");
+  return `<button class="cx-b${k==="rating"?" sm":""}" data-cx="${k}" aria-label="${n}"><svg viewBox="0 0 84 84"><defs><linearGradient id="cxg${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><path id="cxp${id}" d="M11,42A31,31 0 0 0 73,42"/></defs><circle cx="42" cy="42" r="41" fill="url(#cxg${id})"/><circle cx="42" cy="42" r="39" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1.400"/><g transform="translate(30,12) scale(1)" fill="none" stroke="#fff" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round">${ic}</g><text font-size="${fs}" letter-spacing="${ls}" fill="#fff" text-anchor="middle"><textPath href="#cxp${id}" startOffset="50%"${k==="ifm"||k==="furug"?' translate="no"':""}>${n}</textPath></text></svg></button>`}).join("");
  cxEl.querySelector(".cx-bg").onclick=cxClose;cxEl.querySelectorAll(".cx-b").forEach(b=>b.onclick=()=>{if(!cxEd)cxPick(b.dataset.cx)})}
 function cxGeo(){const r=document.getElementById("tabbar").getBoundingClientRect();tbMeasure();const gi=tabKeys().indexOf(cxKey);return{ax:r.left+tbCenter(gi),ay:r.top+r.height/2,top:r.top,W:innerWidth}}
 function cxOff(i,g){const o=cxKey==="goal"&&S.cxPos&&S.cxPos[CXF.goal[i][0]];if(o)return o;
+ if(cxKey==="goal"&&CXF.goal[i][0]==="rating")return[0,-74];   // маркази камон: дар байни Ilm ва Фурӯғ, поёнтар
  if(cxKey==="me")return[Math.round(Math.min(g.W-46,g.ax)-g.ax),-80];
  const R=Math.min(136,g.W/2.9),t=[158,118,62,22][i]*Math.PI/180,x=Math.max(46,Math.min(g.W-46,g.ax+R*Math.cos(t)));return[Math.round(x-g.ax),Math.round(-(10+R*Math.sin(t)))]}
 function cxPlace(){const g=cxGeo();
@@ -2796,7 +2846,7 @@ function cxEditOn(){if(cxEd||S.role!=="admin")return;cxEd=true;if(!["home","lib"
 function cxSet(k,o){S.cxPos=S.cxPos||{};const g=cxGeo();CXF.goal.forEach(([kk],i)=>{if(!S.cxPos[kk])S.cxPos[kk]=cxOff(i,g)});S.cxPos[k]=o;save();cxPlace();cxSync&&cxSync()}
 function cxEditOff(){cxEd=false;cxSync=null;document.documentElement.classList.remove("cx-editing");cxEl.classList.remove("edit");const g=cxEl.querySelector(".cx-grid");g&&g.remove();const p=document.getElementById("cxp");p&&p.remove();
  cxEl.querySelectorAll(".cx-b").forEach(b=>{b.onpointerdown=b.onpointermove=b.onpointerup=b.onpointercancel=null});cxClose();try{history.replaceState(null,"",location.pathname+location.hash)}catch(_){}}
-function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}function home(){
+function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="rating")openRating();else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}function home(){
  const b=BOOKS[0];
  const EMPTY=`<div class="empty-card"><span class="round">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div><b>Ҳоло китобе нахондаед</b><span>Китобро интихоб кунед ва хониш оғоз мешавад</span></div><button class="pill" data-opensearch>Интихоб</button></div>`;
  if(S.search){
@@ -2809,7 +2859,7 @@ function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="
    ${list.length?`<div class="grid">${list.map(book).join("")}</div>`:`<p class="empty">Ҳеҷ чиз ёфт нашуд. Калимаи дигарро санҷед.</p>`}`}</section>${tabs()}`;
  }
  return `<section class="screen home pad">
-   <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div>${fabHTML()}<button class="round fbtn" data-sheet="founders" aria-label="Бунёдгузорон">F</button>
+   <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div>${fabHTML()}${ratingBadge()}
     <button class="round" data-opensearch aria-label="Ҷустуҷӯ">${P(I.search)}</button><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
    ${S.upd&&S.updNo!==S.upd.v?updBanner():""}
    ${PREM()&&FEAT("buy")?`<div class="promo hp"><h2>Китобхона Премиум</h2><p>Ҳамаи китобҳои пулакиро бепул хонед</p>
@@ -2882,11 +2932,13 @@ function login(){
  const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
  <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
+ const deleted=`<h2>Ҳисоб баста шудааст</h2><p class="hint">Ин ҳисоб нест карда шудааст. Маълумот то 30 рӯз дар сервер мемонад. Агар хато шуда бошад ё хоҳед ҳисобро баргардонед, ба бунёдгузорони Китобхона паём нависед: онҳо ҳисобро тикла метавонанд.</p>
+ <button class="btn" data-ext="https://t.me/kitobkhona_official">Навиштан дар Телеграм</button><button class="btn-t" id="back">Бозгашт</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
  ${consBlock()}<p class="hint">Ҷинси худро интихоб кунед (бо пахш кардан давом мекунед):</p>
  <div class="gopts"><button class="gopt" data-g="girl"><span class="gart"><svg viewBox="0 0 100 100">${ROSE_ART}</svg></span><b>Духтар</b></button><button class="gopt" data-g="boy"><span class="gart"><svg viewBox="0 0 100 100">${GLOVE_ART}</svg></span><b>Писар</b></button></div>`;
- return `<section class="login"><div class="hero pad"><div class="lg">${LOGO}</div><h1 translate="no">Китобхона</h1><p>Китобҳои тоҷикӣ ва аудиокитобҳо дар телефони шумо, ҳатто бе интернет.</p></div><div class="pad" style="display:flex;flex-direction:column;gap:16px">${S.step==="code"?code:S.step==="gender"?gender:email}</div></section>`;
+ return `<section class="login"><div class="hero pad"><div class="lg">${LOGO}</div><h1 translate="no">Китобхона</h1><p>Китобҳои тоҷикӣ ва аудиокитобҳо дар телефони шумо, ҳатто бе интернет.</p></div><div class="pad" style="display:flex;flex-direction:column;gap:16px">${S.step==="code"?code:S.step==="gender"?gender:S.step==="deleted"?deleted:email}</div></section>`;
 }/* ---- Профил: сурат, баннер, ном, маълумот ---- */
 const BGS=["linear-gradient(135deg,#4a52b4,#8a8fe0)","linear-gradient(135deg,#0b7d57,#63d48f)","linear-gradient(135deg,#c47a12,#f5b53c)","linear-gradient(135deg,#b4476a,#f09abb)","linear-gradient(135deg,#1f4f7a,#5fb0e6)","linear-gradient(135deg,#2b2b2b,#6b6b6b)"];
 // Аватарҳо барои духтарон: бе рӯй. Баъд расмҳои ҳақиқӣ ба папкаи avatars/ меоянд (img:"avatars/1.png")
@@ -2987,6 +3039,7 @@ function bindAccount($$){
   if(!okMail(e)){toast("Почтаро дуруст нависед, масалан nom@gmail.com");return}
   S.email=e;send.disabled=true;send.textContent="Фиристода истодааст…";
   const err=await sbSend(e);
+  if(err==="BANNED"){S.step="deleted";render();return}
   if(err){send.disabled=false;send.textContent="Гирифтани рамз";toast(err);return}
   S.resendAt=Date.now()+RESEND_SEC*1000;S.step="code";render();document.getElementById("c0").focus()};
  const cs=Array.from({length:OTPN},(_,i)=>i).map(i=>document.getElementById("c"+i));
@@ -3006,6 +3059,7 @@ function bindAccount($$){
   ver.disabled=true;ver.textContent="Тафтиш…";
   const c=await sbLoad();
   if(c){const{data,error}=await c.auth.verifyOtp({email:S.email,token:t,type:"email"});
+   if(error&&(/ban/i.test(error.message||"")||error.code==="user_banned")){S.step="deleted";render();return}
    if(error){ver.disabled=false;ver.textContent="Тасдиқ кардан";toast("Рамз нодуруст ё кӯҳна аст");return}
    const m=data.user?.user_metadata||{};S.uid=data.user?.id||"";syncServer();
    if(m.gender){S.gender=m.gender;S.uname=m.name||"";S.step="email";go("home");return}}
@@ -3054,6 +3108,72 @@ SHEETS.founders=X=>{let h="";{
   const F=[["ҶХ","Ҷасурбек Холиқулов Эгамбердиев","Ғоя ва маҳсулот","#0b7d57","#63d48f"],["УҶ","Умаров Ҷумъаназар","Маълумот ба зудӣ илова мешавад","#c47a12","#f5b53c"]];
   h=`<div class="sh-head"><b class="sh-t fnd-t">Бунёдгузорон</b>${X}</div>
   <div class="fnd">${F.map(([i,n,d,c1,c2])=>`<div class="fnd-c"><span translate="no" class="fnd-av" style="background:linear-gradient(135deg,${c1},${c2})">${i}</span><b>${n}</b><em>Бунёдгузор</em><span>${d}</span></div>`).join("")}</div>`};return h};
+/* ---- Рейтинг: китобхонҳои беҳтарин (дақиқаҳои хондан, ҳамаи вақт) ----
+   Сервер: docs/sql-reyting.sql (leaderboard, my_rank, set_rating_visible).
+   Нишон: тугмаи доира дар боло (ҷои шумо), саҳифаи рейтинг (Top 10), варақаи профили китобхон, доираи «Рейтинг» дар Озмун. */
+const RT_TOP=10;
+const RT_TROPHY='<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>';
+const fmtNum=n=>String(Math.round(+n||0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+const fmtDur=sec=>{const m=Math.floor((+sec||0)/60);return m<1?"кам аз 1 дақ":fmtNum(m)+" дақ"};
+const fmtDurLong=sec=>{const m=Math.floor((+sec||0)/60),h=Math.floor(m/60);return h?fmtNum(h)+" соат "+(m%60)+" дақиқа":m+" дақиқа"};
+const ratingList=()=>(S.rt&&S.rt.list)||S.rtCache||[];
+
+/* тугмаи доира: ҷои корбар (1, 2, 3 — тиллоӣ, нуқра, биринҷӣ); ҳеҷ гоҳ 0 нест — ҷой набошад, ҷоми ғолибӣ */
+function ratingBadge(){const p=+((S.myRank||{}).pos)||0,cls=p===1?" g":p===2?" s":p===3?" b":"";
+ const inner=p?`<b class="rb-n${p>=100?" sm":""}${p>=1000?" xs":""}">${p}</b>`:`<span class="rb-i">${P(RT_TROPHY,2.1)}</span>`;
+ return `<button class="round rbadge${cls}" data-rating aria-label="${p?"Рейтинг: ҷои "+p:"Рейтинг"}">${inner}</button>`}
+function paintBadge(){const e=document.querySelector(".rbadge");if(!e)return;
+ const t=document.createElement("div");t.innerHTML=ratingBadge();const n=t.firstChild;n.onclick=openRating;e.replaceWith(n)}
+
+function ratingView(){
+ const T=S.rt||{},L=ratingList();
+ let body="";
+ if(!S.uid)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Барои дидани рейтинг ворид шавед</b><span>Бо почтаи худ ворид шавед: рамз ба почта меояд, парол лозим нест</span><button class="pill" data-go="login" style="margin-top:10px">Ворид шудан</button></div></div>`;
+ else{
+  if(!L.length&&T.busy)body=skel();
+  else if(!L.length&&T.err)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг боргирӣ нашуд</b><span>Интернетро санҷед ва аз нав кӯшиш кунед</span><button class="pill" data-rt-retry style="margin-top:10px">Аз нав</button></div></div>`;
+  else if(!L.length)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг ҳоло холӣ аст</b><span>Аввалин шуда китоб хонед ва ба рӯйхат дароед</span></div></div>`;
+  else body=`<div class="rt-list">${L.map(rtRow).join("")}</div>${T.err?`<p class="hint">Интернет нест. Рӯйхати охирин нишон дода шуд.</p>`:""}`;
+  body+=rtMe()}
+ return `<section class="screen pad rt"><div class="rt-top"><button class="round" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><h1>Рейтинг</h1></div>
+  <p class="rt-sub">Беҳтарин китобхонҳо: дақиқаҳои хондан дар ҳамаи вақт</p>${body}</section>`}
+function rtRow(e,i){const p=e.pos;
+ return `<button class="rt-row${p<=3?" m"+p:""}" data-rt-user="${i}"><span class="rt-pos">${p}</span><span class="rt-av">${avInner(e.avatar)}</span><span class="rt-nm"><b>${escH(e.name)}</b><small>${fmtDur(e.sec)}</small></span><span class="rt-ch">${P(I.chev,2.2)}</span></button>`}
+/* карточкаи «Ҷои шумо» дар поёни саҳифа */
+function rtMe(){const r=S.myRank||{},p=+r.pos||0;
+ if(r.hidden)return `<div class="rt-me mut"><div><b>Шумо дар рейтинг нишон дода намешавед</b><span>${fmtDurLong(r.sec||0)} хондаед</span></div><button class="pill" data-rt-vis>Нишон додан</button></div>`;
+ if(!p)return `<div class="rt-me mut"><div><b>Шумо ҳоло дар рейтинг нестед</b><span>Китоб хонед ва дақиқаҳо ҷамъ шаванд</span></div><button class="pill" data-go="home">Хондан</button></div>`;
+ return `<div class="rt-me${p<=3?" m"+p:""}"><span class="rt-pos">${p}</span><div><b>Ҷои шумо</b><span>${fmtDurLong(r.sec)} · аз ${fmtNum(r.n||p)} нафар</span></div></div>`}
+
+/* варақаи профили китобхон (бо ангушт аз поён мебарояд) */
+SHEETS.ruser=X=>{const e=S.ru;if(!e)return "";const p=e.pos,m=p<=3?" m"+p:"";
+ return `<div class="sh-head"><b class="sh-t">Китобхон</b>${X}</div>
+ <div class="ru"><div class="ru-av${m}">${avInner(e.avatar)}</div><h2>${escH(e.name)}</h2><div class="ru-pos${m}">${P(RT_TROPHY,2)}Ҷои ${p}</div>
+ <div class="ru-st"><div><b>${fmtNum(Math.floor(e.sec/60))}</b><small>дақиқа</small></div><div><b>${fmtDurLong(e.sec)}</b><small>хондааст</small></div></div>
+ ${e.bio?`<p class="ru-bio">${escH(e.bio)}</p>`:`<p class="ru-bio mut">Маълумот ҳанӯз навишта нашудааст</p>`}</div>`};
+
+function openRating(){cxClose();if(S.view!=="rating"){S.prev=S.view;S.prevSearch=S.search}
+ S.view="rating";S.search=false;S.sheet=null;render();window.scrollTo(0,0);loadRating(true)}
+async function loadMyRank(c){try{if(!S.uid||!navigator.onLine)return;c=c||await sbLoad();if(!c)return;
+ const{data,error}=await c.rpc("my_rank");if(error||!data)return;S.myRank=data;save();paintBadge()}catch(_){}}
+async function loadRating(force){const T=S.rt=S.rt||{};if(!S.uid||T.busy)return;if(!force&&T.at&&Date.now()-T.at<30000)return;
+ T.busy=true;if(S.view==="rating"&&!ratingList().length)render();
+ try{const c=await sbLoad();if(!c||!navigator.onLine)throw 0;const{data,error}=await c.rpc("leaderboard",{p_limit:RT_TOP});if(error||!Array.isArray(data))throw 0;
+  T.list=data.map(x=>({pos:+x.pos,name:String(x.name||""),avatar:x.avatar||"",bio:x.bio||"",sec:+x.sec||0}));T.at=Date.now();T.err=false;S.rtCache=T.list;save()}
+ catch(_){T.err=true}finally{T.busy=false}
+ if(S.view==="rating")render();loadMyRank()}
+async function toggleRatingVisible(){const show=!!(S.myRank&&S.myRank.hidden);
+ try{const c=await sbLoad();if(!c)throw 0;const{error}=await c.rpc("set_rating_visible",{p_show:show});if(error)throw error;
+  S.myRank=Object.assign({},S.myRank,{hidden:!show});save();toast(show?"Шумо дар рейтинг нишон дода мешавед":"Шумо дар рейтинг нишон дода намешавед");
+  S.rt=null;if(S.view==="rating"){loadRating(true)}else render();loadMyRank(c)}
+ catch(_){toast("Нашуд. Интернетро санҷед ва аз нав кӯшиш кунед")}}
+function bindRating($$){
+ $$("[data-rating]",b=>b.onclick=openRating);
+ $$("[data-rt-user]",b=>b.onclick=()=>{const e=ratingList()[+b.dataset.rtUser];if(e){S.ru=e;S.sheet="ruser";render()}});
+ $$("[data-rt-vis]",b=>b.onclick=toggleRatingVisible);
+ $$("[data-rt-retry]",b=>b.onclick=()=>loadRating(true))}
+setInterval(()=>{if(document.visibilityState==="visible"&&S.uid){loadMyRank();if(S.view==="rating"&&!S.sheet)loadRating()}},180000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&S.uid)loadMyRank()});
 /* ---- Махфият: розигӣ, синну сол (18-сола хурд → огоҳии ота-она), ҳисобро нест кардан ----
    Сервер: docs/sql-maxfiyat.sql (save_consent, delete_me). Матни сиёсат: maxfiyat.html (қоралама, бунёдгузорон тасдиқ мекунанд). */
 const CONSENT_V="2026-11";
@@ -3079,19 +3199,19 @@ async function checkConsent(c){
   if(!S.sheet&&!["login","read","audio"].includes(S.view)){S.cons={};S.sheet="cons";render()}}catch(_){}}
 SHEETS.cons=X=>`<div class="sh-head"><b class="sh-t">Розигӣ ва синну сол</b></div><p class="hint">Барои идомаи кор розигии худро тасдиқ кунед.</p>${consBlock()}<button class="pay-btn" data-cons-ok>Тасдиқ кардан</button>`;
 SHEETS.delacc=X=>`<div class="sh-head"><b class="sh-t">Ҳисобро нест кардан</b>${X}</div>
- <p class="hint">Ҳисоби шумо ва маълумоти он аз сервер ПУРРА нест мешавад: почта, ном, профил, пешравии хондан, токчаҳо, омори хондан ва паёмҳои шумо. Ин амалро бозгардонида намешавад.</p>
+ <p class="hint">Ҳисоби шумо ҳамон дам <b>баста мешавад</b>: ворид шуда наметавонед ва дар рейтинг нишон дода намешавед. Маълумоти шумо (профил, пешравӣ, токчаҳо, дақиқаҳои хондан) то <b>30 рӯз</b> дар сервер мемонад: дар ин муддат ҳисобро танҳо бунёдгузорони Китобхона тикла метавонанд. Баъд аз 30 рӯз ҳамаи маълумот ПУРРА нест мешавад.</p>
+ <p class="hint">Шумо худатон онро бозгардонида наметавонед.</p>
  <button class="pay-btn" style="background:var(--orange)" data-delacc-go>Ҳа, ҳисобро нест кунед</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
 async function deleteAccount(){
  const c=await sbLoad(),btn=document.querySelector("[data-delacc-go]");
  if(!c||!navigator.onLine){toast("Интернет нест. Ҳисобро бе интернет нест кардан мумкин нест");return}
  if(btn){btn.disabled=true;btn.textContent="Нест карда истодааст…"}
  try{const uid=S.uid;
-  try{const{data:fl}=await c.storage.from("avatars").list(uid);if(fl&&fl.length)await c.storage.from("avatars").remove(fl.map(f=>uid+"/"+f.name))}catch(_){}
   const{error}=await c.rpc("delete_me");
   if(error){if(btn){btn.disabled=false;btn.textContent="Ҳа, ҳисобро нест кунед"}
    toast(/admin_cannot_delete/.test(error.message||"")?"Админ ҳисоби худро аз барнома нест карда наметавонад":"Нест нашуд. Интернетро санҷед ё баъдтар кӯшиш кунед");return}
   try{await c.auth.signOut()}catch(_){}
-  resetUserData();S.sheet=null;S.consentV="";S.consPend=null;S.cons=null;pushNotifyCfg();go("login");toast("Ҳисоби шумо нест шуд")}
+  resetUserData();S.sheet=null;S.consentV="";S.consPend=null;S.cons=null;S.myRank=null;pushNotifyCfg();S.step="deleted";go("login")}
  catch(_){if(btn){btn.disabled=false;btn.textContent="Ҳа, ҳисобро нест кунед"}toast("Нест нашуд. Баъдтар аз нав кӯшиш кунед")}}
 function bindPrivacy($$){
  $$("[data-age]",b=>b.onclick=()=>{S.cons=S.cons||{};S.cons.age=b.dataset.age;
@@ -3100,7 +3220,8 @@ function bindPrivacy($$){
  const g=document.getElementById("grd"),c=document.getElementById("cns");
  if(g)g.onchange=()=>{(S.cons=S.cons||{}).g=g.checked};if(c)c.onchange=()=>{(S.cons=S.cons||{}).c=c.checked};
  $$("[data-cons-ok]",b=>b.onclick=async()=>{if(!consOK())return;b.disabled=true;await consSave();S.sheet=null;render()});
- $$("[data-delacc-go]",b=>b.onclick=deleteAccount)}
+ $$("[data-delacc-go]",b=>b.onclick=deleteAccount);
+ $$("[data-ext]",b=>b.onclick=()=>NATIVE.openUrl(b.dataset.ext))}
 const FREE_PAGES=3,FREE_SEC=60;
 const PREM=()=>!!(S.flags&&S.flags.premium===true);
 const locked=b=>!!(PREM()&&b&&b.prem&&!S.premium&&!(typeof canPerm==="function"&&canPerm("books")));
@@ -3446,6 +3567,7 @@ const st=S.stats||{};
   <div class="nrow"><div class="ntx"><b>Нусхаи захира (GitLab)</b><small>Охирин нав кардан: ${new Date(bkLast()).toLocaleDateString()} · ${bkDays()} рӯз пеш${bkDue()?" · НАВ КАРДАН ЛОЗИМ":""}</small></div><button class="pill" data-bkdone>Анҷом шуд</button></div>
   ${S.role==="admin"?`<div class="nrow"><div class="ntx"><b>Премиум дар барнома</b><small>Хомӯш: ҳамаи китобҳо ройгон, навиштаҳои Премиум пинҳон. Ҳеҷ чиз нест намешавад</small></div><button class="swt${PREM()?" on":""}" data-flag="premium" role="switch" aria-label="Премиум"></button></div>`:""}
   ${S.role==="admin"?`<p class="set-cap">Бахшҳои «Ба зудӣ»: хомӯш = ба корбар пинҳон ё «Ба зудӣ» менамояд</p>${FEATS.map(([k,t,d])=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${d}</small></div><button class="swt${FEAT(k)?" on":""}" data-feat="${k}" role="switch" aria-label="${t}"></button></div>`).join("")}`:""}
+  ${S.role==="admin"?row('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',"Ҳисобҳои нест шуда","Тиклаш ва пурра тоза кардан","admdel"):""}
   ${canPerm("maker")&&canPerm("books")?row('<path d="M12 3v4M5 7h14v14H5zM9 12h6M9 16h4"/>',"Китоб ясаш","PDF, Word, EPUB → худкор ба барнома","admmake"):""}
   ${canPerm("books")?row('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',"Китобҳо","Китоби нав, zip, таҳрир","admbooks"):""}
   ${canPerm("reports")?row('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>',"Хатоҳо ва пешниҳодҳо","Аз корбарон ва хатоҳои техникӣ","admrep"):""}
@@ -3585,6 +3707,35 @@ SHEETS.adm=X=>{let h="";{const a=S.adm||{},ci=Math.max(0,ADM_COLS.findIndex(x=>x
    <button class="btn" data-admsave>Захира кардан</button>
    ${a.id?'<button class="btn-t" data-admdel style="color:#d33">Нест кардани китоб</button>':""}
   </div>`};return h};
+/* ---- Админ: ҳисобҳои нест шуда — тиклаш ва пурра тоза кардан (docs/sql-reyting.sql) ----
+   Корбар ҳисобашро нест мекунад → ҳисоб баста мешавад (кириш манъ), маълумот 30 рӯз мемонад. Фақат АДМИН тикла мекунад. */
+const DEL={list:null,busy:false,err:false,loaded:false};
+const DEL_DAYS=30;
+async function loadDeleted(){if(DEL.busy)return;DEL.busy=true;DEL.err=false;
+ try{const c=await sbLoad();if(!c)throw 0;const{data,error}=await c.rpc("deleted_list");if(error||!Array.isArray(data))throw 0;DEL.list=data}
+ catch(_){DEL.err=true}finally{DEL.busy=false}
+ if(S.sheet==="admdel")render()}
+const delDaysLeft=d=>Math.max(0,DEL_DAYS-Math.floor((Date.now()-new Date(d).getTime())/864e5));
+SHEETS.admdel=X=>{const L=DEL.list;
+ const rows=!L?(DEL.err?`<p class="hint">Рӯйхат боргирӣ нашуд. Аввал docs/sql-reyting.sql-ро иҷро кунед ё интернетро санҷед.</p>`:`<p class="hint">Боргирӣ…</p>`)
+  :!L.length?`<p class="hint">Ҳисоби нест шуда нест.</p>`
+  :L.map(x=>`<div class="nrow"><div class="ntx"><b>${escH(x.name||"—")}</b><small>${escH(x.email||"")} · нест шуд: ${new Date(x.deleted_at).toLocaleDateString()} · ${delDaysLeft(x.deleted_at)} рӯз монд</small></div><button class="pill" data-del-restore="${escH(x.id)}">Тиклаш</button></div>`).join("");
+ return `<div class="sh-head"><b class="sh-t">Ҳисобҳои нест шуда</b>${X}</div>
+ <p class="set-note">Корбар ҳисобашро нест кард: кириш баста, дар рейтинг нест. Маълумот ${DEL_DAYS} рӯз мемонад. «Тиклаш» ҳисобро пурра бармегардонад (профил, пешравӣ, дақиқаҳо).</p>
+ ${rows}
+ <div class="nrow"><div class="ntx"><b>Пурра тоза кардан</b><small>${DEL_DAYS} рӯзи гузашта ҳисобҳо ва маълумотҳояшон ҲАМЕША нест мешаванд</small></div><button class="pill" data-del-purge>Тоза кардан</button></div>`};
+function bindAdminDeleted($$){
+ if(S.sheet!=="admdel"){DEL.loaded=false;return}
+ if(!DEL.loaded){DEL.loaded=true;DEL.list=null;loadDeleted()}
+ $$("[data-del-restore]",b=>b.onclick=async()=>{if(!confirm("Ҳисобро тикла кунем? Корбар аз нав ворид шуда метавонад."))return;
+  b.disabled=true;
+  try{const c=await sbLoad();const{data,error}=await c.rpc("restore_account",{p_id:b.dataset.delRestore});
+   if(error||data!=="ok")throw 0;toast("Ҳисоб тикла шуд");DEL.list=null;loadDeleted()}
+  catch(_){b.disabled=false;toast("Тикла нашуд. Интернет ё ҳуқуқро санҷед")}});
+ $$("[data-del-purge]",b=>b.onclick=async()=>{if(!confirm("Ҳисобҳои "+DEL_DAYS+" рӯзи гузашта ПУРРА нест мешаванд. Давом медиҳед?"))return;
+  b.disabled=true;
+  try{const c=await sbLoad();const{data,error}=await c.rpc("purge_deleted",{p_days:DEL_DAYS});if(error)throw 0;toast(data+" ҳисоб тоза карда шуд");loadDeleted()}
+  catch(_){toast("Нашуд. Интернетро санҷед")}b.disabled=false})}
 function updBanner(){return "";const A=window.KitobAndroid,nat=!!(A&&A.downloadUpdate),st=S.updSt||"",x=`<button class="upd-x" data-updno aria-label="Пӯшидан">${P(IC_X,2.2)}</button>`;
  if(nat&&st==="down")return `<div class="upd"><div><b>Навсозӣ</b><span class="upd-sub">Боргирӣ… ${S.updP||0}%</span><i class="upd-bar" style="--p:${S.updP||0}%"></i></div></div>`;
  if(nat&&st==="ready")return `<div class="upd"><div><b>Навсозӣ тайёр аст</b><span>Барномаро аз нав оғоз кунед. Android «Навсозӣ»-ро мепурсад, пахш кунед</span></div><button class="upd-go" data-upd-install>Аз нав оғоз кардан</button></div>`;
@@ -3639,7 +3790,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="272c89d52b";
+const WEB_H="21717c86dc";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

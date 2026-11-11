@@ -26,7 +26,7 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.uid='u1';S.sheet='app';render()});await P.waitForTimeout(250);
  t.ok(await P.evaluate(()=>!!document.querySelector('[data-sheet=delacc]')),'Танзимот: «Ҳисобро нест кардан» барои воридшуда');
  await P.evaluate(()=>{S.sheet='delacc';render()});await P.waitForTimeout(250);
- t.ok(await P.evaluate(()=>!!document.querySelector('[data-delacc-go]')&&/ПУРРА нест мешавад/.test(document.querySelector('.sheet').innerText)),'варақи нест кардан: огоҳӣ ва тугма');
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-delacc-go]')&&/баста мешавад/.test(document.querySelector('.sheet').innerText)),'варақи нест кардан: огоҳӣ ва тугма');
  // сервер ҷавоб надиҳад: ҳисоб нест намешавад, корбар воридшуда мемонад
  await P.evaluate(()=>{window.__rpc=[];sbLoad=async()=>({storage:{from:()=>({list:async()=>({data:[]}),remove:async()=>({})})},rpc:async n=>{window.__rpc.push(n);return{error:{message:'net'}}},auth:{signOut:async()=>{window.__so=1}}})});
  await P.evaluate(()=>deleteAccount());await P.waitForTimeout(300);
@@ -34,5 +34,5 @@ module.exports=async t=>{
  // муваффақ: delete_me, баромадан, пок кардани маълумот
  await P.evaluate(()=>{S.prog={5:40};sbLoad=async()=>({storage:{from:()=>({list:async()=>({data:[{name:'a.webp'}]}),remove:async()=>({})})},rpc:async n=>{window.__rpc.push(n);return{error:null}},auth:{signOut:async()=>{window.__so=1}}})});
  await P.evaluate(()=>deleteAccount());await P.waitForTimeout(400);
- t.eq(await P.evaluate(()=>[S.uid,S.view,Object.keys(S.prog).length,!!window.__so,window.__rpc.slice(-1)[0]]),['','login',0,true,'delete_me'],'нест шуд: баромад, ба саҳифаи ворид, маълумот пок');
+ t.eq(await P.evaluate(()=>[S.uid,S.view,Object.keys(S.prog).length,!!window.__so,window.__rpc.slice(-1)[0],S.step]),['','login',0,true,'delete_me','deleted'],'нест шуд: баромад, «Ҳисоб баста шудааст», маълумоти маҳаллӣ пок');
 };

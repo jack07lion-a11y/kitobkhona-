@@ -1,0 +1,46 @@
+/* ---- Рейтинг ---- */
+.rbadge{position:relative;font:800 20px/1 Inter,system-ui,sans-serif;color:var(--ink);background:var(--card)}
+.rbadge::before{content:"";position:absolute;inset:0;border-radius:50%;padding:3px;box-sizing:border-box;
+ background:conic-gradient(from 210deg,#0b7d57,#63d48f 38%,#13a56d 62%,#63d48f 85%,#0b7d57);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask-composite:exclude}
+.rbadge .rb-n{letter-spacing:-.5px}.rbadge .rb-n.sm{font-size:16px}.rbadge .rb-n.xs{font-size:12.5px}
+.rbadge .rb-i{display:grid;place-items:center;color:#0b7d57}.rbadge .rb-i .ico{width:22px;height:22px}
+.rbadge.g{color:#8a5a00;box-shadow:0 0 16px rgba(242,169,59,.5)}.rbadge.g::before{background:conic-gradient(from 210deg,#b57a00,#ffe27a 32%,#f2a93b 58%,#ffe27a 82%,#b57a00)}
+.rbadge.s{color:#4a5568;box-shadow:0 0 14px rgba(170,179,192,.5)}.rbadge.s::before{background:conic-gradient(from 210deg,#8e98a8,#f4f6f9 32%,#aab3c0 58%,#f4f6f9 82%,#8e98a8)}
+.rbadge.b{color:#7a4318;box-shadow:0 0 14px rgba(185,112,58,.45)}.rbadge.b::before{background:conic-gradient(from 210deg,#8a4a1c,#f6c79a 32%,#b9703a 58%,#f6c79a 82%,#8a4a1c)}
+.rt-top{display:flex;align-items:center;gap:14px;margin:6px 0 2px}.rt-top h1{margin:0;font:700 30px/1.1 Lora,Georgia,serif}
+.rt-sub{margin:0 0 16px;color:var(--muted);font-size:15px}
+.rt-list{display:flex;flex-direction:column;gap:10px}
+.rt-row{display:grid;grid-template-columns:44px 50px 1fr 20px;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:22px;padding:11px 14px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.rt-row:active{transform:scale(.98)}
+.rt-pos{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:800 18px/1 Inter,system-ui,sans-serif;background:var(--line);color:var(--ink);box-sizing:border-box}
+.rt-av{width:50px;height:50px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#0b7d57,#63d48f);flex:none}
+.rt-av img{width:100%;height:100%;object-fit:cover;display:block}.rt-av svg{width:28px;height:28px}
+.rt-nm{display:flex;flex-direction:column;min-width:0;gap:2px}.rt-nm b{font:700 17px/1.2 Inter,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-nm small{color:var(--muted);font-size:14px;font-weight:600}.rt-ch{color:var(--muted);display:grid;place-items:center}.rt-ch .ico{width:18px;height:18px}
+.rt-row.m1{background:linear-gradient(135deg,rgba(255,226,122,.42),var(--card) 70%);box-shadow:inset 0 0 0 1.5px rgba(242,169,59,.7),0 8px 22px rgba(242,169,59,.22)}
+.rt-row.m2{background:linear-gradient(135deg,rgba(210,216,226,.5),var(--card) 70%);box-shadow:inset 0 0 0 1.5px rgba(170,179,192,.8),0 6px 18px rgba(150,160,175,.2)}
+.rt-row.m3{background:linear-gradient(135deg,rgba(240,178,122,.4),var(--card) 70%);box-shadow:inset 0 0 0 1.5px rgba(185,112,58,.65),0 6px 18px rgba(185,112,58,.18)}
+.m1 .rt-pos,.rt-me.m1 .rt-pos{background:linear-gradient(135deg,#ffe27a,#f2a93b);color:#6b4300;box-shadow:0 4px 14px rgba(242,169,59,.55)}
+.m2 .rt-pos,.rt-me.m2 .rt-pos{background:linear-gradient(135deg,#f4f6f9,#aab3c0);color:#38414f;box-shadow:0 4px 12px rgba(150,160,175,.5)}
+.m3 .rt-pos,.rt-me.m3 .rt-pos{background:linear-gradient(135deg,#f6c79a,#b9703a);color:#4a2508;box-shadow:0 4px 12px rgba(185,112,58,.45)}
+.m1 .rt-av{box-shadow:0 0 0 3px #f2a93b}.m2 .rt-av{box-shadow:0 0 0 3px #aab3c0}.m3 .rt-av{box-shadow:0 0 0 3px #b9703a}
+.rt-me{position:sticky;bottom:16px;margin-top:16px;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#0b7d57,#13a56d);box-shadow:0 10px 28px rgba(11,125,87,.35)}
+.rt-me>div{display:flex;flex-direction:column;flex:1;min-width:0}.rt-me b{font:700 17px/1.2 Inter,system-ui,sans-serif}.rt-me span{font-size:14px;opacity:.92}
+.rt-me .rt-pos{background:#fff;color:#0b7d57;flex:none}
+.rt-me.mut{background:var(--card);color:var(--ink);box-shadow:none;margin-top:18px}.rt-me.mut span{color:var(--muted);opacity:1}
+.rt-me.m1{background:linear-gradient(135deg,#f2a93b,#ffd24a);color:#4a2f00}.rt-me.m2{background:linear-gradient(135deg,#aab3c0,#e4e8ee);color:#2a313c}.rt-me.m3{background:linear-gradient(135deg,#b9703a,#f0b27a);color:#3b1c06}
+/* варақаи профили китобхон */
+.ru{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:4px 4px 12px}
+.ru-av{width:112px;height:112px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#0b7d57,#63d48f)}
+.ru-av img{width:100%;height:100%;object-fit:cover}.ru-av svg{width:60px;height:60px}
+.ru-av.m1{box-shadow:0 0 0 4px #f2a93b,0 8px 26px rgba(242,169,59,.5)}.ru-av.m2{box-shadow:0 0 0 4px #aab3c0}.ru-av.m3{box-shadow:0 0 0 4px #b9703a}
+.ru h2{margin:6px 0 0;font:700 25px/1.2 Lora,Georgia,serif}
+.ru-pos{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;background:var(--line);font:800 15px Inter,system-ui,sans-serif}.ru-pos .ico{width:18px;height:18px}
+.ru-pos.m1{background:linear-gradient(135deg,#ffe27a,#f2a93b);color:#5a3800}.ru-pos.m2{background:linear-gradient(135deg,#f4f6f9,#aab3c0);color:#2f3744}.ru-pos.m3{background:linear-gradient(135deg,#f6c79a,#b9703a);color:#3b1c06}
+.ru-st{display:flex;gap:12px;width:100%;margin-top:4px}.ru-st>div{flex:1;background:var(--card);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;gap:2px}
+.ru-st b{font:800 19px/1.2 Inter,system-ui,sans-serif}.ru-st small{color:var(--muted);font-size:13px}
+.ru-bio{margin:6px 0 0;font-size:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}.ru-bio.mut{color:var(--muted)}
+/* доираи «Рейтинг» дар маркази Озмун: хурдтар */
+.cx-b.sm{width:72px;height:72px;margin:-36px 0 0 -36px}
+@media (prefers-reduced-motion:reduce){.rt-row{transition:none}}

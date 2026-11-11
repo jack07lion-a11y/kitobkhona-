@@ -4,7 +4,7 @@ const SB_URL="https://hxtpmwxglfuabdvaeapj.supabase.co",SB_KEY="sb_publishable_h
 let sb=null;
 async function sbSend(e){const c=await sbLoad();
  if(c){const{error}=await c.auth.signInWithOtp({email:e,options:{shouldCreateUser:true}});
-  if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хатоги рӯй дод. Баъдтар аз нав кӯшиш кунед";return""}
+  if(error&&(/ban/i.test(error.message||"")||error.code==="user_banned"))return"BANNED";if(error)return/rate|limit|seconds/i.test(error.message)?"Каме сабр кунед ва аз нав кӯшиш кунед":"Хатоги рӯй дод. Баъдтар аз нав кӯшиш кунед";return""}
  return SB_URL?"Интернет нест ё сервер ҷавоб намедиҳад":""}
 function sbLoad(){return new Promise(r=>{if(!SB_URL||!SB_KEY)return r(null);if(sb)return r(sb);
  const mk=()=>{try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}catch(e){sb=null}r(sb)};
@@ -47,7 +47,7 @@ async function loadFlags(c){try{const{data,error}=await c.from("app_flags").sele
 async function loadStats(){if(S.role!=="admin"&&S.role!=="subadmin")return;try{const c=await sbLoad();if(!c)return;const{data,error}=await c.rpc("user_stats");if(error||!data)return;S.stats=data;
   const set=(k,v)=>{const e=document.getElementById("st_"+k);if(e)e.textContent=v};set("admin",data.admins);set("sub",data.subadmins);set("user",data.users);set("all",data.total);
   const{data:r}=await c.rpc("stats_summary");if(r){S.rs=r;set("dau",r.dau);set("wau",r.wau);set("mt",fmtT(r.sec_today));set("m7",fmtT(r.sec_7d))}loadFunnel(c)}catch(_){}}
-async function syncServer(){const c=await sbLoad();if(!c)return;trackInstall(c);await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);await loadPremium(c);await syncState(c,true);flushConsent(c);checkConsent(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
+async function syncServer(){const c=await sbLoad();if(!c)return;trackInstall(c);await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);await loadPremium(c);loadMyRank(c);await syncState(c,true);flushConsent(c);checkConsent(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
 const TX={};
 function txChapters(b){const d=TX[b.id];if(!d)return null;if(d._ch)return d._ch;const out=[];(d.parts||[]).forEach(pt=>(pt.chapters||[]).forEach((c,i)=>out.push({n:c.title||"",part:i===0?pt.title||"":"",bl:c.blocks||[]})));return d._ch=out}
 async function gunzipJSON(blob){const st=blob.stream().pipeThrough(new DecompressionStream("gzip"));return JSON.parse(await new Response(st).text())}
