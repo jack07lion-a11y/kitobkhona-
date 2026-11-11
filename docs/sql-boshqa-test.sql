@@ -82,11 +82,12 @@ begin
   execute 'set local role authenticated';
   perform public.delete_me();
   execute 'reset role';
-  select (select count(*) from auth.users where id='00000000-0000-4000-8000-0000000000c1')
-       + (select count(*) from public.profiles where id='00000000-0000-4000-8000-0000000000c1')
-       + (select count(*) from public.read_stats where user_id='00000000-0000-4000-8000-0000000000c1')
+  -- delete_me (sql-reyting.sql): ҳисоб БАСТА мешавад (deleted_at + banned_until), маълумот 30 рӯз мемонад
+  if (select deleted_at from public.profiles where id='00000000-0000-4000-8000-0000000000c1') is null then raise exception 'ФАЛ: delete_me deleted_at-ро нагузошт'; end if;
+  if (select banned_until from auth.users where id='00000000-0000-4000-8000-0000000000c1') <= now() then raise exception 'ФАЛ: delete_me кириши манъ накард'; end if;
+  select (select count(*) from public.read_stats where user_id='00000000-0000-4000-8000-0000000000c1')
        + (select count(*) from public.active_days where user_id='00000000-0000-4000-8000-0000000000c1') into n;
-  if n <> 0 then raise exception 'ФАЛ: delete_me маълумотро пурра нест накард (%)', n; end if;
+  if n <> 2 then raise exception 'ФАЛ: delete_me маълумотро дарҳол нест кард (бояд 30 рӯз монад), %', n; end if;
   raise notice 'ҲАМА ГУЗАШТ (ҳуқуқ, байроқ, розигӣ, воронка, нест кардан)';
 end $t$;
 rollback;
