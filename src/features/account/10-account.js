@@ -61,7 +61,8 @@ async function pushProfile(){try{const c=await sbLoad();if(!c||!S.uid)return;let
   const up=async(v,nm)=>{if(!v||!v.startsWith("data:"))return v;const b=await(await fetch(v)).blob(),p=S.uid+"/"+nm+".jpg",r=await c.storage.from("avatars").upload(p,b,{upsert:true,contentType:"image/jpeg"});if(r.error)return v;return c.storage.from("avatars").getPublicUrl(p).data.publicUrl+"?t="+Date.now()};
   av=await up(av,"avatar");bn=await up(bn,"banner");
   await c.rpc("save_profile",{p_avatar:isImg(av)&&av.startsWith("data:")?null:av,p_banner:isImg(bn)&&bn.startsWith("data:")?null:bn,p_bio:S.pBio||null})}catch(_){}}
-async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("profiles").select("name,avatar,banner,bio").eq("id",S.uid).maybeSingle();if(!data)return;
+async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("profiles").select("name,avatar,banner,bio").eq("id",S.uid).maybeSingle();
+  if(!data){if(S.uname&&!S.healTried){S.healTried=1;const r=await c.rpc("claim_name",{p_name:S.uname});if(!r.error&&r.data)S.uname=r.data}return}
   if(data.name)S.uname=data.name;if(!S.pAv&&data.avatar)S.pAv=data.avatar;if(!S.pBn&&data.banner)S.pBn=data.banner;if(!S.pBio&&data.bio)S.pBio=data.bio}catch(_){}}
 
 function me(){
@@ -142,7 +143,9 @@ function bindAccount($$){
   if(!n){toast("Номатонро нависед");return}if(!consOK())return;
   S.gender=b.dataset.g;S.uname=n;
   const c=await sbLoad();if(c){
-   try{const{data:nm,error:ne}=await c.rpc("claim_name",{p_name:n});if(!ne&&nm){if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm}}catch(_){}
+   let nm=null,ne=null;try{const r=await c.rpc("claim_name",{p_name:n});nm=r.data;ne=r.error}catch(e){ne=e||1}
+   if(ne||!nm){S.gender=undefined;toast("Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед");return}
+   if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm;
    const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав");await consSave();await syncServer()}
   S.step="email";go("home")});
  const rs=document.getElementById("resend");

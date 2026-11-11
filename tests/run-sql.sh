@@ -9,10 +9,10 @@ case "${DB:-$PGHOST}" in *supabase.co*|*supabase.com*) echo "ХАТО: ин ск
 TMP="kt_$$"; "${P[@]}" -d postgres -c "drop database if exists $TMP" -c "create database $TMP" 2>/dev/null || true
 Q=(psql -v ON_ERROR_STOP=1 -q -d "$TMP"); [ -n "$DB" ] && Q=(psql -v ON_ERROR_STOP=1 -q "${DB%/*}/$TMP")
 "${Q[@]}" -f tests/sql/mock-supabase.sql
-ORDER="admin nomho omor fayl poadmin aloqa ogoh zakhira reliz profil ijozat ijozat2 huquq bayroq himoya mulk maxfiyat holat metrika reyting tarbiya premium quiz"
+ORDER="admin nomho omor fayl poadmin aloqa ogoh zakhira reliz profil ijozat ijozat2 huquq bayroq himoya mulk maxfiyat holat metrika reyting profil-tuzat tarbiya premium quiz"
 for f in $ORDER; do [ -f docs/sql-$f.sql ] || continue; echo "== sql-$f.sql"; "${Q[@]}" -f docs/sql-$f.sql 2>&1 | grep -v NOTICE || true; done
 # қайта иҷро кардан бехатар (идемпотент) аст — санҷиш:
-for f in bayroq himoya mulk maxfiyat holat metrika reyting; do "${Q[@]}" -f docs/sql-$f.sql 2>&1 | grep -v NOTICE || true; done
+for f in bayroq himoya mulk maxfiyat holat metrika reyting profil-tuzat; do "${Q[@]}" -f docs/sql-$f.sql 2>&1 | grep -v NOTICE || true; done
 FAIL=0
 for t in docs/sql-*-test.sql; do echo "== $t"; OUT=$("${Q[@]}" -f "$t" 2>&1) || { echo "$OUT"; FAIL=1; continue; }; echo "$OUT" | grep -E 'ҲАМА ГУЗАШТ|ФАЛ' || { echo "$OUT"; FAIL=1; }; done
 "${P[@]}" -d postgres -c "drop database if exists $TMP" 2>/dev/null || true

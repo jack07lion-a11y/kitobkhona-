@@ -5,6 +5,7 @@ module.exports=async t=>{
  await P.waitForTimeout(300);
  t.ok(await P.evaluate(()=>!!document.getElementById('cns')&&!!document.querySelector('[data-age=under18]')),'сабти ном: розигӣ ва синну сол ҳастанд');
  await P.fill('#uname','Санҷиш');
+ await P.evaluate(()=>{sbLoad=async()=>({rpc:async(n,x)=>n==='claim_name'?{data:x.p_name,error:null}:{data:null,error:{message:'net'}},auth:{updateUser:async()=>({error:null})}})});
  // бе синну сол ва розигӣ — идома намедиҳад
  await P.click('[data-g=boy]');await P.waitForTimeout(150);
  t.eq(await P.evaluate(()=>[S.gender,S.view]),['','login'],'бе розигӣ идома надод');
@@ -19,6 +20,7 @@ module.exports=async t=>{
  t.ok(r.g==='boy'&&r.v==='home'&&r.p&&r.p.age==='under18'&&r.p.g===true,'бо розигӣ ва тасдиқи ота-она идома дод; розигӣ барои фиристодан дар навбат');
  // калонсол: огоҳии волидон лозим нест
  await t.open({view:'login',step:'gender',gender:''});await P.waitForTimeout(300);
+ await P.evaluate(()=>{sbLoad=async()=>({rpc:async(n,x)=>n==='claim_name'?{data:x.p_name,error:null}:{data:null,error:{message:'net'}},auth:{updateUser:async()=>({error:null})}})});
  await P.fill('#uname','Калон');await P.click('[data-age=adult]');await P.check('#cns');await P.click('[data-g=girl]');await P.waitForTimeout(800);
  t.eq(await P.evaluate(()=>[S.gender,S.consPend&&S.consPend.age]),['girl','adult'],'калонсол: бе огоҳии волидон идома дод');
  // ҳисобро нест кардан: сатр дар Танзимот (танҳо воридшуда)

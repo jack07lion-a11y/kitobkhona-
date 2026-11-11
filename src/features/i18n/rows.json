@@ -581,5 +581,9 @@
 ["Ўрнатиш","Установить","O‘rnatish","Install"],
 ["Иҷозат диҳед («Насби барнома»), баъд боз «Ўрнатиш»-ро пахш кунед","Разрешите установку, затем снова нажмите «Установить»","Ruxsat bering (o‘rnatish), keyin yana «O‘rnatish» ni bosing","Allow installing, then tap “Install” again"],
 ["Файл ёфт нашуд. Аз нав кӯшиш кунед","Файл не найден. Попробуйте снова","Fayl topilmadi. Qayta urinib ko‘ring","File not found. Try again"],
-["Боргирӣ нашуд. Интернетро санҷед","Не удалось загрузить. Проверьте интернет","Yuklanmadi. Internetni tekshiring","Download failed. Check the internet"]
+["Боргирӣ нашуд. Интернетро санҷед","Не удалось загрузить. Проверьте интернет","Yuklanmadi. Internetni tekshiring","Download failed. Check the internet"],
+["Рамзро тасдиқ кардаанд", "Подтвердили код", "Kodni tasdiqlaganlar", "Confirmed the code"],
+["Рамз тасдиқ нашудааст", "Код не подтверждён", "Kod tasdiqlanmagan", "Code not confirmed"],
+["Профил тайёр нест", "Профиль не готов", "Profil tayyor emas", "Profile not ready"],
+["Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед", "Профиль не создан. Проверьте интернет и попробуйте снова", "Profil yaratilmadi. Internetni tekshiring va qayta urinib ko‘ring", "Profile not created. Check the internet and try again"]
 ]
