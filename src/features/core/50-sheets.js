@@ -39,7 +39,7 @@ function sheetHTML(){
  
  if(!h){S.sheet=null;return ""}
  const still=lastSheet===S.sheet?"still":"";lastSheet=S.sheet;
- return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
+ return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights","admdel"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
 }
 function skel(){return `<div class="skel-w">${[38,70,52,88,40,64,0,30,76,48,58].map(w=>w?`<span class="sk" style="width:${w}%"></span>`:`<span style="height:8px"></span>`).join("")}</div>`}
 function wheelHTML(){
@@ -75,6 +75,8 @@ SHEETS.app=X=>{let h="";{const t=S.theme||"paper";
   <p class="set-note">${t==="auto"?"Мисли телефон: рӯз рӯшан, шаб торик.":t==="paper"?"Ранги коғази кӯҳна, чашм камтар хаста мешавад.":t==="dark"?"Барои шаб ва батареяро сарфа мекунад.":"Ҳамеша рӯшан."}</p>
   <div class="sh-list">
    <button class="sh-row" data-sheet="report"><span>${P('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>')}Хато фиристодан</span><em>›</em></button>
+   ${S.uid?`<button class="sh-row" data-rt-vis><span>${P('<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>')}Дар рейтинг нишон дода шавам</span><em>${S.myRank&&S.myRank.hidden?"Не":"Ҳа"}</em></button>`:""}
+   <button class="sh-row" data-sheet="founders"><span>${P('<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20c.5-4 2.8-6 5.5-6s5 2 5.5 6M14 15.2c.8-.5 1.7-.7 2.6-.7 2.2 0 3.9 1.6 4.4 5"/>')}Бунёдгузорон</span><em>›</em></button>
    ${S.uid?`<button class="sh-row" data-sheet="delacc"><span>${P('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')}Ҳисобро нест кардан</span><em>›</em></button>`:""}
    <button class="sh-row" data-privacy><span>${P('<path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/>')}Сиёсати махфият</span><em>›</em></button>
    <button class="sh-row" data-sheet="lang" style="border:0"><span>${P('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.300 0 18M12 3c-2.5 2.700-2.5 15.300 0 18"/>')}Забон</span><em translate="no">${LANGS.find(x=>x[0]===(S.lang||"tg"))[1]} ›</em></button>

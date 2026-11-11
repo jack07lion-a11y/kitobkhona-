@@ -4,17 +4,19 @@ const CXF={
   ["goal","Озмун","#2dbb82","#0b7d57",'<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>'],
   ["ifm","ИФМ","#f5b83d","#c47a12",'<path d="M4 5c3-1.500 5-1.500 8 0v14c-3-1.500-5-1.500-8 0zM20 5c-3-1.500-5-1.500-8 0v14c3-1.500 5-1.500 8 0z"/>'],
   ["furug","Фурӯғ","#a874e8","#6a3bb8",'<path d="M12 3a6 6 0 00-3 11v3h6v-3a6 6 0 00-3-11zM10 20h4"/>'],
-  ["bahs","Баҳс","#52aaf0","#1f6fb8",'<path d="M4 5h11v7H9l-3 3v-3H4zM18 9h2v7h-2v3l-3-3h-4"/>']],
+  ["bahs","Баҳс","#52aaf0","#1f6fb8",'<path d="M4 5h11v7H9l-3 3v-3H4zM18 9h2v7h-2v3l-3-3h-4"/>'],
+  ["rating","Рейтинг","#ffd24a","#d98a00",'<path d="M4 20h16M6 20v-7h4v7M10 20V6h4v14M14 20v-9h4v9"/>']],
  me:[["edit","Муҳаррир","#5b6677","#232b38",'<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>']]};
 let cxEl=null,cxOpen=false,cxT=0,cxEd=false,cxSel="goal",cxGS=8,cxSync=null,cxKey="goal";
 const fanKey=i=>{const k=tabKeys()[i];return k==="goal"?"goal":(k==="me"&&S.role==="admin"&&S.view==="me")?"me":null};
 function cxBuild(key){cxKey=key;
  if(!cxEl){cxEl=document.createElement("div");cxEl.id="cx";cxEl.hidden=true;document.body.appendChild(cxEl)}
  cxEl.innerHTML='<div class="cx-bg"></div>'+CXF[key].map(([k,n,c1,c2,ic],i)=>{const id=key+i,fs=n.length>5?9.4:11,ls=n.length>5?.9:1.3;
-  return `<button class="cx-b" data-cx="${k}" aria-label="${n}"><svg viewBox="0 0 84 84"><defs><linearGradient id="cxg${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><path id="cxp${id}" d="M11,42A31,31 0 0 0 73,42"/></defs><circle cx="42" cy="42" r="41" fill="url(#cxg${id})"/><circle cx="42" cy="42" r="39" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1.400"/><g transform="translate(30,12) scale(1)" fill="none" stroke="#fff" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round">${ic}</g><text font-size="${fs}" letter-spacing="${ls}" fill="#fff" text-anchor="middle"><textPath href="#cxp${id}" startOffset="50%"${k==="ifm"||k==="furug"?' translate="no"':""}>${n}</textPath></text></svg></button>`}).join("");
+  return `<button class="cx-b${k==="rating"?" sm":""}" data-cx="${k}" aria-label="${n}"><svg viewBox="0 0 84 84"><defs><linearGradient id="cxg${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><path id="cxp${id}" d="M11,42A31,31 0 0 0 73,42"/></defs><circle cx="42" cy="42" r="41" fill="url(#cxg${id})"/><circle cx="42" cy="42" r="39" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1.400"/><g transform="translate(30,12) scale(1)" fill="none" stroke="#fff" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round">${ic}</g><text font-size="${fs}" letter-spacing="${ls}" fill="#fff" text-anchor="middle"><textPath href="#cxp${id}" startOffset="50%"${k==="ifm"||k==="furug"?' translate="no"':""}>${n}</textPath></text></svg></button>`}).join("");
  cxEl.querySelector(".cx-bg").onclick=cxClose;cxEl.querySelectorAll(".cx-b").forEach(b=>b.onclick=()=>{if(!cxEd)cxPick(b.dataset.cx)})}
 function cxGeo(){const r=document.getElementById("tabbar").getBoundingClientRect();tbMeasure();const gi=tabKeys().indexOf(cxKey);return{ax:r.left+tbCenter(gi),ay:r.top+r.height/2,top:r.top,W:innerWidth}}
 function cxOff(i,g){const o=cxKey==="goal"&&S.cxPos&&S.cxPos[CXF.goal[i][0]];if(o)return o;
+ if(cxKey==="goal"&&CXF.goal[i][0]==="rating")return[0,-74];   // маркази камон: дар байни Ilm ва Фурӯғ, поёнтар
  if(cxKey==="me")return[Math.round(Math.min(g.W-46,g.ax)-g.ax),-80];
  const R=Math.min(136,g.W/2.9),t=[158,118,62,22][i]*Math.PI/180,x=Math.max(46,Math.min(g.W-46,g.ax+R*Math.cos(t)));return[Math.round(x-g.ax),Math.round(-(10+R*Math.sin(t)))]}
 function cxPlace(){const g=cxGeo();
@@ -53,4 +55,4 @@ function cxEditOn(){if(cxEd||S.role!=="admin")return;cxEd=true;if(!["home","lib"
 function cxSet(k,o){S.cxPos=S.cxPos||{};const g=cxGeo();CXF.goal.forEach(([kk],i)=>{if(!S.cxPos[kk])S.cxPos[kk]=cxOff(i,g)});S.cxPos[k]=o;save();cxPlace();cxSync&&cxSync()}
 function cxEditOff(){cxEd=false;cxSync=null;document.documentElement.classList.remove("cx-editing");cxEl.classList.remove("edit");const g=cxEl.querySelector(".cx-grid");g&&g.remove();const p=document.getElementById("cxp");p&&p.remove();
  cxEl.querySelectorAll(".cx-b").forEach(b=>{b.onpointerdown=b.onpointermove=b.onpointerup=b.onpointercancel=null});cxClose();try{history.replaceState(null,"",location.pathname+location.hash)}catch(_){}}
-function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}
+function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="rating")openRating();else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}

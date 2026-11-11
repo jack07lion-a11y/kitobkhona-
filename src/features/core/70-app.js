@@ -2,7 +2,7 @@ function render(fq){
  if((S.view==="audio"&&!(S.au&&bk(S.au.id)))||(S.view==="read"&&!bk(S.rdId))||(S.view==="book"&&!bk(S.bookId)))S.view="home";
  const v=S.view;
  app.innerHTML=(v==="read"?reader(): v==="audio"?player(): v==="book"?detail(): v==="login"?login(): v==="home"?home(): v==="lib"?lib(): v==="me"?me():
-  v==="goal"?goal(): comm())+sheetHTML();
+  v==="goal"?goal(): v==="rating"?ratingView(): comm())+sheetHTML();
  if(fq){const q=document.getElementById("q");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
  bind();
  syncTabs();
@@ -34,7 +34,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));
@@ -154,7 +154,7 @@ window.__back=()=>{if(cxOpen){cxClose();return true}const q=sel=>{const e=docume
  if(S.sheet){closeSheet();return true}
  if(S.view==="read")return q("[data-closeread]");
  if(S.view==="audio")return q("[data-apmin]");
- if(S.view==="book")return q("[data-back]");
+ if(S.view==="book"||S.view==="rating")return q("[data-back]");
  if(S.search)return q("[data-closesearch]");
  if(S.view!=="home"&&S.view!=="login"){go("home");return true}
  return false};

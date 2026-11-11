@@ -4,6 +4,8 @@
 1. `1-tekshiruv.sql` — санҷиши пешакӣ (ҳама `ok = true`).
 2. `2-ishga-tushirish.sql` — 14–19 дар як файл.
 3. `3-sinov.sql` — се синов (ROLLBACK).
+4. `4-reyting.sql` — рейтинг ва ҳисобро нест кардан бо тиклаш (30 рӯз).
+5. `5-sinov-reyting.sql` — синови рейтинг (ROLLBACK).
 
 Аввал: **Settings → Database → Backups** (ё `pg_dump`): нусхаи захира гиред. Ҳамаи файлҳо такроран иҷро шуда метавонанд (`if not exists` / `create or replace`).
 Ҳар файл бо «Run» — хато бошад, ТАВАҚҚУФ кунед ва ба ман нависед, давом надиҳед.
