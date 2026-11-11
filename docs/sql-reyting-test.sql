@@ -21,6 +21,8 @@ insert into public.read_stats(user_id, day, book_id, sec) values
  ('00000000-0000-4000-8000-0000000000e5', current_date, 1, 9000),
  ('00000000-0000-4000-8000-0000000000e6', current_date, 1, 8000);
 
+-- Ҳақиқий корбарон синовга халал нарасонанд: ҳамаашон ВАҚТИНЧА рейтингдан пинҳон мешаванд (охирида ROLLBACK)
+update public.profiles set hide_rating = true where id::text not like '00000000-0000-4000-8000-0000000000e%';
 do $t$
 declare r jsonb; n int; nm text; p bigint; s bigint;
 begin
@@ -104,7 +106,7 @@ begin
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000e7', true);
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e7"}', true);
   execute 'set local role authenticated';
-  select count(*) into n from public.deleted_list();
+  select count(*) into n from public.deleted_list() d where d.id::text like '00000000-0000-4000-8000-0000000000e%';
   if n <> 2 then execute 'reset role'; raise exception 'ФАЛ: deleted_list 2 нафар (Бахтиёр, Нестшуда) бояд бошад, ҳоло %', n; end if;
   if public.restore_account('00000000-0000-4000-8000-0000000000e2') <> 'ok' then execute 'reset role'; raise exception 'ФАЛ: restore_account'; end if;
   if public.restore_account('00000000-0000-4000-8000-0000000000e2') <> 'not_found' then execute 'reset role'; raise exception 'ФАЛ: такрорӣ тикланиш'; end if;
