@@ -147,7 +147,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){closeSheet
 let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S.view==="read")setupReader();TB.iw=0;if(!TB.raf){const i=tabKeys().indexOf(S.view);if(i>=0){tbMeasure();TB.x=TB.tx=tbCenter(i);tbDraw()}}},150)});
 if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
- if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else{S.view="login";S.step="gender";render()}}
+ if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else{S.view="login";S.step="gender";if(!S.uname)S.uname=String(m.full_name||m.name||"").slice(0,40);render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
 ["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 window.__back=()=>{if(cxOpen){cxClose();return true}const q=sel=>{const e=document.querySelector(sel);if(e){e.click();return true}return false};

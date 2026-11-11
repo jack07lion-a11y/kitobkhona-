@@ -18,6 +18,8 @@ begin
   insert into auth.users(id, email, last_sign_in_at, raw_user_meta_data) values ('00000000-0000-4000-8000-0000000000f4','t-v4@test.local', now(), '{"name":"ТестНомХ","gender":"girl"}');
   select name into nm from public.profiles where id = '00000000-0000-4000-8000-0000000000f4';
   if nm is distinct from 'ТестНомХ 1' then raise exception 'ФАЛ: номи такрорӣ «Ном 1» бояд шавад (%)', nm; end if;
+  insert into auth.users(id, email, last_sign_in_at, raw_user_meta_data) values ('00000000-0000-4000-8000-0000000000f6','t-g6@test.local', now(), '{"name":"Гугл Ном","full_name":"Гугл Ном"}');
+  if exists (select 1 from public.profiles where id = '00000000-0000-4000-8000-0000000000f6') then raise exception 'ФАЛ: фақат ном — профил сохта шуд'; end if;
   update auth.users set raw_user_meta_data = '{"name":"  ТестВ2  ","gender":"boy"}' where id = '00000000-0000-4000-8000-0000000000f2';
   select name into nm from public.profiles where id = '00000000-0000-4000-8000-0000000000f2';
   if nm is distinct from 'ТестВ2' then raise exception 'ФАЛ: updateUser-и ном профилро насохт (%)', nm; end if;
@@ -33,9 +35,9 @@ begin
   execute 'set local role authenticated';
   s1 := public.user_stats();
   execute 'reset role';
-  if (s1->>'total')::int - (s0->>'total')::int <> 4 then raise exception 'ФАЛ: total (тасдиқшуда) Δ=4 бояд, ҳоло %', (s1->>'total')::int - (s0->>'total')::int; end if;
+  if (s1->>'total')::int - (s0->>'total')::int <> 5 then raise exception 'ФАЛ: total (тасдиқшуда) Δ=5 бояд, ҳоло %', (s1->>'total')::int - (s0->>'total')::int; end if;
   if (s1->>'unverified')::int - (s0->>'unverified')::int <> 1 then raise exception 'ФАЛ: unverified Δ=1'; end if;
-  if (s1->>'no_profile')::int - (s0->>'no_profile')::int <> 1 then raise exception 'ФАЛ: no_profile Δ=1'; end if;
+  if (s1->>'no_profile')::int - (s0->>'no_profile')::int <> 2 then raise exception 'ФАЛ: no_profile Δ=2'; end if;
   if (s1->>'users')::int - (s0->>'users')::int <> 3 then raise exception 'ФАЛ: users Δ=3, ҳоло %', (s1->>'users')::int - (s0->>'users')::int; end if;
   begin execute 'set local role authenticated'; perform public.user_stats(); execute 'reset role'; exception when others then execute 'reset role'; end;
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000f4', true);

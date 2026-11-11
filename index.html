@@ -901,6 +901,10 @@ html{overscroll-behavior-y:contain}
 @keyframes ptrs{to{transform:rotate(360deg)}}
 .ptr-m{position:absolute;left:18px;right:18px;top:calc(env(safe-area-inset-top,0px) + 26px);text-align:center;font:800 14px var(--font);color:var(--ink);opacity:0;transition:opacity .25s}
 @media (prefers-reduced-motion:reduce){.ptr.spin .ptr-r{animation-duration:1.7s}}
+/* Бо Google ворид шудан */
+.or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mut,#8a8a8a);font-size:13px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:currentColor;opacity:.25}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;box-shadow:none}
 /* ---- Рейтинг ---- */
 .rbadge{position:relative;font:800 20px/1 Inter,system-ui,sans-serif;color:var(--ink);background:var(--card)}
 .rbadge::before{content:"";position:absolute;inset:0;border-radius:50%;padding:3px;box-sizing:border-box;
@@ -1841,7 +1845,10 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Рамзро тасдиқ кардаанд", "Подтвердили код", "Kodni tasdiqlaganlar", "Confirmed the code"],
 ["Рамз тасдиқ нашудааст", "Код не подтверждён", "Kod tasdiqlanmagan", "Code not confirmed"],
 ["Профил тайёр нест", "Профиль не готов", "Profil tayyor emas", "Profile not ready"],
-["Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед", "Профиль не создан. Проверьте интернет и попробуйте снова", "Profil yaratilmadi. Internetni tekshiring va qayta urinib ko‘ring", "Profile not created. Check the internet and try again"]
+["Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед", "Профиль не создан. Проверьте интернет и попробуйте снова", "Profil yaratilmadi. Internetni tekshiring va qayta urinib ko‘ring", "Profile not created. Check the internet and try again"],
+["Бо Google ворид шудан", "Войти через Google", "Google orqali kirish", "Sign in with Google"],
+["Сервер дастрас нест", "Сервер недоступен", "Server mavjud emas", "Server unavailable"],
+["Ворид шуда нашуд. Аз нав кӯшиш кунед", "Не удалось войти. Попробуйте снова", "Kirib bo‘lmadi. Qayta urinib ko‘ring", "Sign-in failed. Try again"]
 ]
 </script>
 <script>
@@ -2343,7 +2350,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){closeSheet
 let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S.view==="read")setupReader();TB.iw=0;if(!TB.raf){const i=tabKeys().indexOf(S.view);if(i>=0){tbMeasure();TB.x=TB.tx=tbCenter(i);tbDraw()}}},150)});
 if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
- if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else{S.view="login";S.step="gender";render()}}
+ if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else{S.view="login";S.step="gender";if(!S.uname)S.uname=String(m.full_name||m.name||"").slice(0,40);render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
 ["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 window.__back=()=>{if(cxOpen){cxClose();return true}const q=sel=>{const e=document.querySelector(sel);if(e){e.click();return true}return false};
@@ -2932,7 +2939,7 @@ function login(){
  const demo=!SB_URL||!SB_KEY;
  const email=`<h2>Ворид шавед</h2><p class="hint">Почтаи электронии худро нависед. Мо рамзи ${OTPN}-рақама мефиристем, парол лозим нест.</p>
  <label class="field" for="email"><input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="nom@gmail.com" value="${escH(S.email||"")}" style="padding-left:18px"></label>
- <button class="btn" id="send">Гирифтани рамз</button><button class="btn-t" data-go="home">Аввал дидан, бе бақайдгирӣ</button>${demo?'<p class="hint"><span class="demo">Реҷаи намуна: сервер ҳанӯз пайваст нест</span></p>':''}`;
+ <button class="btn" id="send">Гирифтани рамз</button><div class="or"><span>ё</span></div><button class="btn gbtn" id="google"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.5-4.1 7-10.2 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 010-9.4l-7.9-6.1a24 24 0 000 21.6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Бо Google ворид шудан</button><button class="btn-t" data-go="home">Аввал дидан, бе бақайдгирӣ</button>${demo?'<p class="hint"><span class="demo">Реҷаи намуна: сервер ҳанӯз пайваст нест</span></p>':''}`;
  const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
  <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
@@ -2992,7 +2999,7 @@ async function pushProfile(){try{const c=await sbLoad();if(!c||!S.uid)return;let
   av=await up(av,"avatar");bn=await up(bn,"banner");
   await c.rpc("save_profile",{p_avatar:isImg(av)&&av.startsWith("data:")?null:av,p_banner:isImg(bn)&&bn.startsWith("data:")?null:bn,p_bio:S.pBio||null})}catch(_){}}
 async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("profiles").select("name,avatar,banner,bio").eq("id",S.uid).maybeSingle();
-  if(!data){if(S.uname&&!S.healTried){S.healTried=1;const r=await c.rpc("claim_name",{p_name:S.uname});if(!r.error&&r.data)S.uname=r.data}return}
+  if(!data){if(S.gender&&S.uname&&!S.healTried){S.healTried=1;const r=await c.rpc("claim_name",{p_name:S.uname});if(!r.error&&r.data)S.uname=r.data}return}
   if(data.name)S.uname=data.name;if(!S.pAv&&data.avatar)S.pAv=data.avatar;if(!S.pBn&&data.banner)S.pBn=data.banner;if(!S.pBio&&data.bio)S.pBio=data.bio}catch(_){}}
 
 function me(){
@@ -3039,6 +3046,10 @@ function bindAccount($$){
   $$("[data-pe-save]",b=>b.onclick=peSave)}
  $$("[data-asg]",b=>b.onclick=()=>{if(S.pe){S.pe.asG=b.dataset.asg||"";S.pe.pend=null;render()}});
  $$("[data-ptab]",b=>b.onclick=()=>{S.ptab=+b.dataset.ptab;render()});
+ const gg=document.getElementById("google");
+ if(gg)gg.onclick=async()=>{const c=await sbLoad();if(!c){toast("Сервер дастрас нест");return}
+  const{error}=await c.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:"select_account"}}});
+  if(error)toast("Ворид шуда нашуд. Аз нав кӯшиш кунед")};
  const send=document.getElementById("send");
  if(send)send.onclick=async()=>{const e=document.getElementById("email").value.trim().toLowerCase();
   if(!okMail(e)){toast("Почтаро дуруст нависед, масалан nom@gmail.com");return}
@@ -3797,7 +3808,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="d5fe24e41a";
+const WEB_H="24fcd16be1";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

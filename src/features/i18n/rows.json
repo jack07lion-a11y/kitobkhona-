@@ -585,5 +585,8 @@
 ["Рамзро тасдиқ кардаанд", "Подтвердили код", "Kodni tasdiqlaganlar", "Confirmed the code"],
 ["Рамз тасдиқ нашудааст", "Код не подтверждён", "Kod tasdiqlanmagan", "Code not confirmed"],
 ["Профил тайёр нест", "Профиль не готов", "Profil tayyor emas", "Profile not ready"],
-["Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед", "Профиль не создан. Проверьте интернет и попробуйте снова", "Profil yaratilmadi. Internetni tekshiring va qayta urinib ko‘ring", "Profile not created. Check the internet and try again"]
+["Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед", "Профиль не создан. Проверьте интернет и попробуйте снова", "Profil yaratilmadi. Internetni tekshiring va qayta urinib ko‘ring", "Profile not created. Check the internet and try again"],
+["Бо Google ворид шудан", "Войти через Google", "Google orqali kirish", "Sign in with Google"],
+["Сервер дастрас нест", "Сервер недоступен", "Server mavjud emas", "Server unavailable"],
+["Ворид шуда нашуд. Аз нав кӯшиш кунед", "Не удалось войти. Попробуйте снова", "Kirib bo‘lmadi. Qayta urinib ko‘ring", "Sign-in failed. Try again"]
 ]
