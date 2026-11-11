@@ -111,8 +111,11 @@ function bindAccount($$){
  $$("[data-ptab]",b=>b.onclick=()=>{S.ptab=+b.dataset.ptab;render()});
  const gg=document.getElementById("google");
  if(gg)gg.onclick=async()=>{const c=await sbLoad();if(!c){toast("Сервер дастрас нест");return}
-  const{error}=await c.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:"select_account"}}});
-  if(error)toast("Ворид шуда нашуд. Аз нав кӯшиш кунед")};
+  const nat=window.KitobAndroid&&KitobAndroid.openAuth;
+  const{data,error}=await c.auth.signInWithOAuth({provider:"google",options:{redirectTo:nat?"tj.kitobkhona.app://auth":location.origin+location.pathname,skipBrowserRedirect:!!nat,queryParams:{prompt:"select_account"}}});
+  if(error||(nat&&!(data&&data.url))){toast("Ворид шуда нашуд. Аз нав кӯшиш кунед");return}
+  if(nat)KitobAndroid.openAuth(data.url)};
+
  const send=document.getElementById("send");
  if(send)send.onclick=async()=>{const e=document.getElementById("email").value.trim().toLowerCase();
   if(!okMail(e)){toast("Почтаро дуруст нависед, масалан nom@gmail.com");return}
@@ -189,3 +192,10 @@ SHEETS.founders=X=>{let h="";{
   const F=[["ҶХ","Ҷасурбек Холиқулов Эгамбердиев","Ғоя ва маҳсулот","#0b7d57","#63d48f"],["УҶ","Умаров Ҷумъаназар","Маълумот ба зудӣ илова мешавад","#c47a12","#f5b53c"]];
   h=`<div class="sh-head"><b class="sh-t fnd-t">Бунёдгузорон</b>${X}</div>
   <div class="fnd">${F.map(([i,n,d,c1,c2])=>`<div class="fnd-c"><span translate="no" class="fnd-av" style="background:linear-gradient(135deg,${c1},${c2})">${i}</span><b>${n}</b><em>Бунёдгузор</em><span>${d}</span></div>`).join("")}</div>`};return h};
+/* бозгашт аз Chrome (Android): токенҳо аз tj.kitobkhona.app://auth#access_token=… */
+window.__oauth=async frag=>{try{const p=new URLSearchParams(String(frag||"").replace(/^[#?]/,"")),at=p.get("access_token"),rt=p.get("refresh_token");
+  if(!at||!rt)throw 0;const c=await sbLoad();const{data,error}=await c.auth.setSession({access_token:at,refresh_token:rt});if(error||!data||!data.user)throw 0;
+  const u=data.user,m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;
+  if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;S.step="email";syncServer();go("home")}
+  else{S.view="login";S.step="gender";if(!S.uname)S.uname=String(m.full_name||m.name||"").slice(0,40);render()}}
+ catch(_){toast("Ворид шуда нашуд. Аз нав кӯшиш кунед")}};

@@ -22,4 +22,13 @@ module.exports=async t=>{
  await t.page.evaluate(()=>{window.__oa=null;sbLoad=async()=>({auth:{signInWithOAuth:async o=>{window.__oa=o;return{error:null}}}})});
  await t.page.click('#google');await t.page.waitForTimeout(300);
  t.eq(await t.page.evaluate(()=>[window.__oa&&window.__oa.provider,!!(window.__oa&&window.__oa.options.redirectTo),window.__oa&&window.__oa.options.queryParams.prompt]),['google',true,'select_account'],'Google: signInWithOAuth бо интихоби ҳисоб');
+ // Android: Chrome орқали Google, баъд бозгашт бо токенҳо
+ await t.open({view:'login',step:'email'});
+ await t.page.evaluate(()=>{window.__au=null;window.__ss=null;window.KitobAndroid={openAuth:u=>{window.__au=u}};
+  sbLoad=async()=>({auth:{signInWithOAuth:async o=>{window.__oo=o;return{data:{url:'https://x.supabase.co/auth/v1/authorize?provider=google'},error:null}},
+   setSession:async x=>{window.__ss=x;return{data:{user:{id:'g1',email:'g@x.co',user_metadata:{full_name:'Гул Номи'}}},error:null}}}})});
+ await t.page.click('#google');await t.page.waitForTimeout(300);
+ t.eq(await t.page.evaluate(()=>[window.__au,window.__oo.options.redirectTo,window.__oo.options.skipBrowserRedirect]),['https://x.supabase.co/auth/v1/authorize?provider=google','tj.kitobkhona.app://auth',true],'Android: Chrome кушода мешавад, бозгашт ба tj.kitobkhona.app://auth');
+ await t.page.evaluate(()=>{S.uname=''});await t.page.evaluate(()=>window.__oauth('access_token=AT&refresh_token=RT&x=1'));await t.page.waitForTimeout(300);
+ t.eq(await t.page.evaluate(()=>[window.__ss,S.uid,S.view,S.step,S.uname]),[{access_token:'AT',refresh_token:'RT'},'g1','login','gender','Гул Номи'],'бозгашт: сессия гузошта шуд, қадами ном (исм аз Google)');
 };

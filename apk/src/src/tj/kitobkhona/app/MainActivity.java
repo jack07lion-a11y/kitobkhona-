@@ -51,6 +51,25 @@ public class MainActivity extends Activity {
     private WebView web;
     private boolean fellBack = false;
     private boolean shellChecked = false;
+    /** Бозгашти Google-кириш (tj.kitobkhona.app://auth#...) то боркунии саҳифа нигоҳ дошта мешавад */
+    private String pendingAuth = null;
+
+    private static String authPayload(Intent in) {
+        try {
+            Uri d = in == null ? null : in.getData();
+            if (d != null && "tj.kitobkhona.app".equals(d.getScheme()) && "auth".equals(d.getHost())) {
+                String f = d.getEncodedFragment();
+                if (f == null || f.length() == 0) f = d.getEncodedQuery();
+                return f == null ? "" : f;
+            }
+        } catch (Exception ignored) { }
+        return null;
+    }
+
+    private void deliverAuth(String p) {
+        if (p == null || web == null) return;
+        web.evaluateJavascript("(function f(n){if(window.__oauth)window.__oauth(" + JSONObject.quote(p) + ");else if(n>0)setTimeout(function(){f(n-1)},500)})(20)", null);
+    }
     private volatile boolean updBusy = false;
     private ValueCallback<Uri[]> fileCb;
     private static final int PICK = 7;
@@ -110,6 +129,8 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        String ap = authPayload(intent);
+        if (ap != null) { deliverAuth(ap); return; }
         try {
             String b = Uri.parse(deepUrl(intent)).getQueryParameter("b");
             if (b != null && web != null) web.evaluateJavascript("window.__deep&&window.__deep(" + JSONObject.quote(b) + ")", null);
@@ -211,6 +232,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                if (pendingAuth != null) { String ap = pendingAuth; pendingAuth = null; deliverAuth(ap); }
                 if (!shellChecked) {
                     shellChecked = true;
                     // корбари оддӣ: саҳифа худ аз худ навсозӣ намешавад (танҳо баъди «Навсозӣ»); админ/ёрдамчӣ: худкор
@@ -281,6 +303,18 @@ public class MainActivity extends Activity {
                     Notify.scheduleDaily(MainActivity.this);
                     NewsJob.schedule(MainActivity.this);
                 } catch (Exception ignored) { }
+            }
+
+            /** Google-кириш: Google дар WebView манъ аст, аз ин рӯ Chrome-и телефон кушода мешавад. Танҳо Supabase-и худамон. */
+            @JavascriptInterface
+            public void openAuth(final String url) {
+                if (url == null || !url.matches("^https://[a-z0-9-]+\\.supabase\\.co/auth/v1/authorize\\?[^\\s]*$")) return;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); } catch (Exception ignored) { }
+                    }
+                });
             }
 
             // ---------- Дарвозаҳои умумӣ (JS: window.KitobAndroid.*) ----------
@@ -618,6 +652,7 @@ public class MainActivity extends Activity {
         setContentView(web);
         if (state != null) web.restoreState(state);
         else web.loadUrl(deepUrl(getIntent()));
+        pendingAuth = authPayload(getIntent());
     }
 
     @Override
