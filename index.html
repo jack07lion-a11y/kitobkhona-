@@ -1837,7 +1837,11 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ўрнатиш","Установить","O‘rnatish","Install"],
 ["Иҷозат диҳед («Насби барнома»), баъд боз «Ўрнатиш»-ро пахш кунед","Разрешите установку, затем снова нажмите «Установить»","Ruxsat bering (o‘rnatish), keyin yana «O‘rnatish» ni bosing","Allow installing, then tap “Install” again"],
 ["Файл ёфт нашуд. Аз нав кӯшиш кунед","Файл не найден. Попробуйте снова","Fayl topilmadi. Qayta urinib ko‘ring","File not found. Try again"],
-["Боргирӣ нашуд. Интернетро санҷед","Не удалось загрузить. Проверьте интернет","Yuklanmadi. Internetni tekshiring","Download failed. Check the internet"]
+["Боргирӣ нашуд. Интернетро санҷед","Не удалось загрузить. Проверьте интернет","Yuklanmadi. Internetni tekshiring","Download failed. Check the internet"],
+["Рамзро тасдиқ кардаанд", "Подтвердили код", "Kodni tasdiqlaganlar", "Confirmed the code"],
+["Рамз тасдиқ нашудааст", "Код не подтверждён", "Kod tasdiqlanmagan", "Code not confirmed"],
+["Профил тайёр нест", "Профиль не готов", "Profil tayyor emas", "Profile not ready"],
+["Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед", "Профиль не создан. Проверьте интернет и попробуйте снова", "Profil yaratilmadi. Internetni tekshiring va qayta urinib ko‘ring", "Profile not created. Check the internet and try again"]
 ]
 </script>
 <script>
@@ -1911,7 +1915,7 @@ async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession()
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":data?.role==="subadmin"?"subadmin":""}catch(_){}}
 async function loadFlags(c){try{const{data,error}=await c.from("app_flags").select("*").eq("id",1).maybeSingle();if(!error&&data){const v=data.premium_on===true,m=+data.min_native||0;let ch=false;if(S.flags.premium!==v){S.flags.premium=v;ch=true}if((S.flags.min||0)!==m){S.flags.min=m;ch=true}const ft=data.feat&&typeof data.feat==="object"?data.feat:{};if(JSON.stringify(S.flags.feat||{})!==JSON.stringify(ft)){S.flags.feat=ft;ch=true}const bk=data.backup_at?+new Date(data.backup_at):0;if(bk&&(S.flags.bk||0)!==bk){S.flags.bk=bk;ch=true}const wp=data.web_pub||"";if((S.flags.webPub||"")!==wp){S.flags.webPub=wp;ch=true}if(ch){save();if(S.view!=="login")render()}}}catch(_){}checkMin();webUpdCheck()}
 async function loadStats(){if(S.role!=="admin"&&S.role!=="subadmin")return;try{const c=await sbLoad();if(!c)return;const{data,error}=await c.rpc("user_stats");if(error||!data)return;S.stats=data;
-  const set=(k,v)=>{const e=document.getElementById("st_"+k);if(e)e.textContent=v};set("admin",data.admins);set("sub",data.subadmins);set("user",data.users);set("all",data.total);
+  const set=(k,v)=>{const e=document.getElementById("st_"+k);if(e)e.textContent=v};set("admin",data.admins);set("sub",data.subadmins);set("user",data.users);set("all",data.total);set("unv",data.unverified);set("np",data.no_profile);
   const{data:r}=await c.rpc("stats_summary");if(r){S.rs=r;set("dau",r.dau);set("wau",r.wau);set("mt",fmtT(r.sec_today));set("m7",fmtT(r.sec_7d))}loadFunnel(c)}catch(_){}}
 async function syncServer(){const c=await sbLoad();if(!c)return;trackInstall(c);await loadBooks(c);await loadRole(c);await loadPerms(c);await loadFlags(c);await loadProfile(c);await loadPremium(c);loadMyRank(c);await syncState(c,true);flushConsent(c);checkConsent(c);loadStats();save();await markHave();loadNotifCfg();if(S.view!=="login")render();pushNotifyCfg();tryRef();flushReports();flushErrs();sendRead();trackActive();bkCheck();if(canPerm("release"))loadRelAdmin();if(S.role==="admin"){loadStaff();if(/[?&]doira\b/.test(location.search))cxEditOn()}}
 const TX={};
@@ -2339,7 +2343,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){closeSheet
 let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S.view==="read")setupReader();TB.iw=0;if(!TB.raf){const i=tabKeys().indexOf(S.view);if(i>=0){tbMeasure();TB.x=TB.tx=tbCenter(i);tbDraw()}}},150)});
 if(S.step==="phone")S.step="email";
 sbLoad().then(async c=>{if(!c)return;const{data}=await c.auth.getSession();const u=data.session?.user;
- if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else if(S.view==="login"){S.step="gender";render()}}
+ if(u){const m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;if(S.view==="login"){go("home")}}else{S.view="login";S.step="gender";render()}}
  else if(S.gender&&S.uid){S.gender=undefined;S.uid="";S.view="login";S.step="email";render()}});
 ["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 window.__back=()=>{if(cxOpen){cxClose();return true}const q=sel=>{const e=document.querySelector(sel);if(e){e.click();return true}return false};
@@ -2987,7 +2991,8 @@ async function pushProfile(){try{const c=await sbLoad();if(!c||!S.uid)return;let
   const up=async(v,nm)=>{if(!v||!v.startsWith("data:"))return v;const b=await(await fetch(v)).blob(),p=S.uid+"/"+nm+".jpg",r=await c.storage.from("avatars").upload(p,b,{upsert:true,contentType:"image/jpeg"});if(r.error)return v;return c.storage.from("avatars").getPublicUrl(p).data.publicUrl+"?t="+Date.now()};
   av=await up(av,"avatar");bn=await up(bn,"banner");
   await c.rpc("save_profile",{p_avatar:isImg(av)&&av.startsWith("data:")?null:av,p_banner:isImg(bn)&&bn.startsWith("data:")?null:bn,p_bio:S.pBio||null})}catch(_){}}
-async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("profiles").select("name,avatar,banner,bio").eq("id",S.uid).maybeSingle();if(!data)return;
+async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("profiles").select("name,avatar,banner,bio").eq("id",S.uid).maybeSingle();
+  if(!data){if(S.uname&&!S.healTried){S.healTried=1;const r=await c.rpc("claim_name",{p_name:S.uname});if(!r.error&&r.data)S.uname=r.data}return}
   if(data.name)S.uname=data.name;if(!S.pAv&&data.avatar)S.pAv=data.avatar;if(!S.pBn&&data.banner)S.pBn=data.banner;if(!S.pBio&&data.bio)S.pBio=data.bio}catch(_){}}
 
 function me(){
@@ -3068,7 +3073,9 @@ function bindAccount($$){
   if(!n){toast("Номатонро нависед");return}if(!consOK())return;
   S.gender=b.dataset.g;S.uname=n;
   const c=await sbLoad();if(c){
-   try{const{data:nm,error:ne}=await c.rpc("claim_name",{p_name:n});if(!ne&&nm){if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm}}catch(_){}
+   let nm=null,ne=null;try{const r=await c.rpc("claim_name",{p_name:n});nm=r.data;ne=r.error}catch(e){ne=e||1}
+   if(ne||!nm){S.gender=undefined;toast("Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед");return}
+   if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm;
    const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав");await consSave();await syncServer()}
   S.step="email";go("home")});
  const rs=document.getElementById("resend");
@@ -3558,7 +3565,7 @@ function admHTML(){if(S.role!=="admin"&&S.role!=="subadmin")return "";
 const st=S.stats||{};
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
   ${canPerm("stats")?`
-  <div class="stg"><div><small>Админ</small><b id="st_admin">${st.admins??"–"}</b></div><div><small>Ёрдамчӣ</small><b id="st_sub">${st.subadmins??"–"}</b></div><div><small>Истифодабарандагон</small><b id="st_user">${st.users??"–"}</b></div><div class="all"><small>Ҳамагӣ ба қайд гирифта шудаанд</small><b id="st_all">${st.total??"–"}</b></div></div>
+  <div class="stg"><div><small>Админ</small><b id="st_admin">${st.admins??"–"}</b></div><div><small>Ёрдамчӣ</small><b id="st_sub">${st.subadmins??"–"}</b></div><div><small>Истифодабарандагон</small><b id="st_user">${st.users??"–"}</b></div><div class="all"><small>Рамзро тасдиқ кардаанд</small><b id="st_all">${st.total??"–"}</b></div><div><small>Рамз тасдиқ нашудааст</small><b id="st_unv">${st.unverified??"–"}</b></div><div><small>Профил тайёр нест</small><b id="st_np">${st.no_profile??"–"}</b></div></div>
   <div class="stg"><div><small>Имрӯз фаъол</small><b id="st_dau">${(S.rs||{}).dau??"–"}</b></div><div><small>7 рӯз фаъол</small><b id="st_wau">${(S.rs||{}).wau??"–"}</b></div><div><small>Хондан имрӯз</small><b id="st_mt" class="sm">${S.rs?fmtT(S.rs.sec_today):"–"}</b></div><div class="all"><small>Хондан дар 7 рӯз</small><b id="st_m7">${S.rs?fmtT(S.rs.sec_7d):"–"}</b></div></div>
   <p class="set-cap">Воронка, 30 рӯзи охир</p>
   <div class="stg"><div><small>Насб карданд</small><b id="fn_installs">${(S.fn||{}).installs??"–"}</b></div><div><small>Сабти ном карданд</small><b id="fn_registered">${(S.fn||{}).registered??"–"}</b></div><div><small>1 дақиқа хонданд</small><b id="fn_read1">${(S.fn||{}).read1??"–"}</b></div><div class="all"><small>Баргаштанд: рӯзи 1+ / рӯзи 7+</small><b><span id="fn_back1">${(S.fn||{}).back1??"–"}</span> / <span id="fn_back7">${(S.fn||{}).back7??"–"}</span></b></div></div>
@@ -3790,7 +3797,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="bd42ae6d3d";
+const WEB_H="d5fe24e41a";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
