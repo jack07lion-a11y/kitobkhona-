@@ -21,6 +21,8 @@ module.exports=async t=>{
  t.ok(await P.evaluate(()=>document.querySelector('.rt-row').innerText.includes('Хонанда 1')),'сатр: ном ҳаст');
  t.ok(await P.evaluate(()=>/Ҷои шумо/.test(document.querySelector('.rt-me').innerText)&&/27/.test(document.querySelector('.rt-me').innerText)),'«Ҷои шумо» дар поён: 27');
  t.ok(await P.evaluate(()=>document.getElementById('app').innerText.length>50&&!document.querySelector('.tb:not([hidden])')),'саҳифаи рейтинг: менюи поён пинҳон');
+ // 0 дақиқа ҳам рейтингда: «0 дақ» (на «кам аз 1»)
+ t.eq(await P.evaluate(()=>[fmtDur(0),fmtDur(59),fmtDur(60),fmtDur(5400),fmtDurLong(0)]),['0 дақ','0 дақ','1 дақ','90 дақ','0 дақиқа'],'дақиқа: 0 → «0 дақ», 59 сония → «0 дақ», 60 → «1 дақ»');
  // ===== 3) профили китобхон (варақа) =====
  await P.click('.rt-row');await P.waitForSelector('.ru');
  const ru=await P.evaluate(()=>({n:document.querySelector('.ru h2').textContent,b:document.querySelector('.ru-bio').innerText,pos:document.querySelector('.ru-pos').innerText,html:document.querySelector('.ru-bio').innerHTML,st:document.querySelector('.ru-st').innerText}));
@@ -31,7 +33,7 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.myRank={hidden:true,sec:600};render()});
  t.ok(await P.evaluate(()=>/нишон дода намешавед/.test(document.querySelector('.rt-me').innerText)&&!!document.querySelector('.rt-me [data-rt-vis]')),'пинҳон: огоҳӣ ва тугмаи «Нишон додан»');
  await P.evaluate(()=>{S.myRank={pos:null,sec:0,n:5};render()});
- t.ok(await P.evaluate(()=>/ҳоло дар рейтинг нестед/.test(document.querySelector('.rt-me').innerText)),'ҳоло рейтинг нест: «Хондан» (на «0»)');
+ t.ok(await P.evaluate(()=>/Ҷои шумо ҳоло маълум нест/.test(document.querySelector('.rt-me').innerText)&&!/\b0\b/.test(document.querySelector('.rt-me').innerText)),'профил тайёр нест: ҷой «маълум нест», рақами 0 нест');
  await P.evaluate(()=>{S.uid='';S.rt=null;S.rtCache=null;render()});
  t.ok(await P.evaluate(()=>/Барои дидани рейтинг ворид шавед/.test(document.getElementById('app').innerText)&&!!document.querySelector('[data-go=login]')),'меҳмон: «ворид шавед»');
  await P.evaluate(()=>{S.uid='u1';sbLoad=async()=>({rpc:async()=>({data:null,error:{message:'x'}})});S.rt=null;S.rtCache=null;loadRating(true)});await P.waitForTimeout(300);
