@@ -20,6 +20,7 @@ insert into public.read_stats(user_id, day, book_id, sec) values
  ('00000000-0000-4000-8000-0000000000e3', current_date, 1, 1200),
  ('00000000-0000-4000-8000-0000000000e5', current_date, 1, 9000),
  ('00000000-0000-4000-8000-0000000000e6', current_date, 1, 8000);
+update public.profiles set hide_rating = true where id::text not like '00000000-0000-4000-8000-0000000000e%';
 do $t$
 declare r jsonb; n int; nm text; p bigint; s bigint;
 begin
@@ -31,7 +32,7 @@ begin
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e1"}', true);
   execute 'set local role authenticated';
   select count(*) into n from public.leaderboard(10);
-  if n <> 3 then execute 'reset role'; raise exception 'ФАЛ: дар рейтинг 3 нафар бояд бошад (0-дақиқа, пинҳон ва нестшуда не), ҳоло %', n; end if;
+  if n <> 5 then execute 'reset role'; raise exception 'ФАЛ: дар рейтинг 5 нафар бояд бошад (Аъзам, Бахтиёр, Сино, Дилшод, Админ — охирин 0 дақ; пинҳон ва нестшуда не), ҳоло %', n; end if;
   select l.name, l.sec into nm, s from public.leaderboard(10) l where l.pos = 1;
   if nm <> 'Аъзам' or s <> 3600 then execute 'reset role'; raise exception 'ФАЛ: ҷои 1 нодуруст: % %', nm, s; end if;
   select l.name into nm from public.leaderboard(10) l where l.pos = 2;
@@ -43,7 +44,9 @@ begin
   if s <> 3000 then execute 'reset role'; raise exception 'ФАЛ: p_days нодуруст: %', s; end if;
   if (select l.avatar || l.bio from public.leaderboard(1) l) <> 'av:3Китоб дӯст медорам' then execute 'reset role'; raise exception 'ФАЛ: аватар/маълумот нест'; end if;
   r := public.my_rank();
-  if (r->>'pos')::int <> 1 or (r->>'sec')::int <> 3600 or (r->>'n')::int <> 3 then execute 'reset role'; raise exception 'ФАЛ: my_rank Аъзам: %', r; end if;
+  if (r->>'pos')::int <> 1 or (r->>'sec')::int <> 3600 or (r->>'n')::int <> 5 then execute 'reset role'; raise exception 'ФАЛ: my_rank Аъзам: %', r; end if;
+  select l.name, l.sec into nm, s from public.leaderboard(10) l where l.pos = 5;
+  if nm <> 'Админ' or s <> 0 then execute 'reset role'; raise exception 'ФАЛ: охирин воридшуда (0 дақ) охирин бояд бошад: % %', nm, s; end if;
   execute 'reset role';
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000e3', true);
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e3"}', true);
@@ -55,7 +58,7 @@ begin
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e4"}', true);
   execute 'set local role authenticated';
   r := public.my_rank();
-  if r->'pos' is distinct from 'null'::jsonb or (r->>'sec')::int <> 0 then execute 'reset role'; raise exception 'ФАЛ: бе хондан ҷой нест: %', r; end if;
+  if (r->>'pos')::int <> 4 or (r->>'sec')::int <> 0 then execute 'reset role'; raise exception 'ФАЛ: 0 дақиқа хонда ҳам ҷой дорад (4, 0 дақ): %', r; end if;
   execute 'reset role';
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000e5', true);
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e5"}', true);
@@ -81,7 +84,7 @@ begin
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e1"}', true);
   execute 'set local role authenticated';
   select count(*) into n from public.leaderboard(10);
-  if n <> 2 then execute 'reset role'; raise exception 'ФАЛ: нестшуда дар рейтинг мондааст (%)', n; end if;
+  if n <> 4 then execute 'reset role'; raise exception 'ФАЛ: нестшуда дар рейтинг мондааст (%)', n; end if;
   begin perform * from public.deleted_list(); execute 'reset role'; raise exception 'ФАЛ: корбар deleted_list-ро дид';
   exception when others then if sqlerrm like 'ФАЛ%' then raise; end if; execute 'reset role'; end;
   begin perform public.restore_account('00000000-0000-4000-8000-0000000000e2'); raise exception 'ФАЛ: корбар ҳисобро тиклад';
@@ -90,7 +93,7 @@ begin
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000e7', true);
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e7"}', true);
   execute 'set local role authenticated';
-  select count(*) into n from public.deleted_list();
+  select count(*) into n from public.deleted_list() d where d.id::text like '00000000-0000-4000-8000-0000000000e%';
   if n <> 2 then execute 'reset role'; raise exception 'ФАЛ: deleted_list 2 нафар (Бахтиёр, Нестшуда) бояд бошад, ҳоло %', n; end if;
   if public.restore_account('00000000-0000-4000-8000-0000000000e2') <> 'ok' then execute 'reset role'; raise exception 'ФАЛ: restore_account'; end if;
   if public.restore_account('00000000-0000-4000-8000-0000000000e2') <> 'not_found' then execute 'reset role'; raise exception 'ФАЛ: такрорӣ тикланиш'; end if;
@@ -103,7 +106,7 @@ begin
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e1"}', true);
   execute 'set local role authenticated';
   select count(*) into n from public.leaderboard(10);
-  if n <> 3 then execute 'reset role'; raise exception 'ФАЛ: тиклангандан баъд Бахтиёр рейтингга баргашта бояд (%)', n; end if;
+  if n <> 5 then execute 'reset role'; raise exception 'ФАЛ: тиклангандан баъд Бахтиёр рейтингга баргашта бояд (%)', n; end if;
   execute 'reset role';
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000e7', true);
   perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e7"}', true);
@@ -118,6 +121,13 @@ begin
   execute 'set local role authenticated';
   begin perform public.purge_deleted(0); execute 'reset role'; raise exception 'ФАЛ: корбар purge кард';
   exception when others then if sqlerrm like 'ФАЛ%' then raise; end if; execute 'reset role'; end;
+  execute 'reset role';
+  execute 'reset role';
+  update public.read_stats set sec = 0 where user_id::text like '00000000-0000-4000-8000-0000000000e%';
+  perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000e1', true);
+  perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000e1"}', true);
+  execute 'set local role authenticated';
+  if (select string_agg(l.name, ',' order by l.pos) from public.leaderboard(10) l) <> 'Аъзам,Бахтиёр,Сино,Дилшод,Админ' then execute 'reset role'; raise exception 'ФАЛ: ҳама 0 дақиқа — тартиби сабт: Аъзам,Бахтиёр,Сино,Дилшод,Админ; ҳоло %', (select string_agg(l.name, ',' order by l.pos) from public.leaderboard(10) l); end if;
   execute 'reset role';
   raise notice 'ҲАМА ГУЗАШТ (рейтинг, нест кардан ва тиклаш)';
 end $t$;

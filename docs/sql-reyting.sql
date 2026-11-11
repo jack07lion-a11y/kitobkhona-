@@ -4,7 +4,7 @@
 --
 -- Рейтинг: ҳамаи вақт, дақиқаҳои хондан (read_stats.sec) аз рӯи кам шудан; баробар бошад — кӣ пештар сабт шудааст, баландтар.
 --   • Ҳисоби нест шуда ва «дар рейтинг нишон надиҳед» интихобкарда рейтингда нест.
---   • 0 дақиқа хондагон рейтингда нестанд (ҷой надоранд).
+--   • ҲАМА ҲИСОБ рейтингда (0 дақиқа хонда бошад ҳам, «0 дақ»); баробар бошад — кӣ пештар рӯйхат гузашт, баландтар (охирин воридшуда — пасттар).
 --   • Рейтингро танҳо корбари воридшуда мебинад (меҳмон не).
 -- Нест кардани ҳисоб: ҲИСОБ ДАРҲОЛ БАСТА МЕШАВАД (кириш манъ), аммо маълумот 30 рӯз мемонад — фақат АДМИН тикланида метавонад.
 --   30 рӯзи гузашта админ «пурра тоза кардан»-ро пахш мекунад (purge_deleted) — маълумот ҳамеша нест мешавад.
@@ -16,12 +16,11 @@ alter table public.profiles add column if not exists hide_rating boolean not nul
 create or replace function public.rating_pool(p_days int default null)
 returns table(id uuid, name text, avatar text, bio text, created_at timestamptz, sec bigint)
 language sql stable security definer set search_path = public as $$
-  select p.id, p.name, p.avatar, p.bio, p.created_at, sum(s.sec)::bigint
-    from public.profiles p join public.read_stats s on s.user_id = p.id
+  select p.id, p.name, p.avatar, p.bio, p.created_at, coalesce(sum(s.sec), 0)::bigint
+    from public.profiles p
+    left join public.read_stats s on s.user_id = p.id and (p_days is null or s.day >= current_date - (greatest(p_days, 1) - 1))
    where p.deleted_at is null and not p.hide_rating
-     and (p_days is null or s.day >= current_date - (greatest(p_days, 1) - 1))
    group by p.id, p.name, p.avatar, p.bio, p.created_at
-  having sum(s.sec) > 0
 $$;
 revoke all on function public.rating_pool(int) from public, anon, authenticated;
 
@@ -51,7 +50,6 @@ begin
    where s.user_id = uid and (p_days is null or s.day >= current_date - (greatest(p_days, 1) - 1));
   select count(*) into v_n from public.rating_pool(p_days);
   if me.hide_rating then return jsonb_build_object('hidden', true, 'sec', v_sec, 'n', v_n); end if;
-  if v_sec = 0 then return jsonb_build_object('pos', null, 'sec', 0, 'n', v_n); end if;
   select count(*) + 1 into v_pos from public.rating_pool(p_days) r
    where r.sec > v_sec or (r.sec = v_sec and (r.created_at < me.created_at or (r.created_at = me.created_at and r.id < uid)));
   return jsonb_build_object('pos', v_pos, 'sec', v_sec, 'n', v_n);

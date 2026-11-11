@@ -4,7 +4,7 @@
 const RT_TOP=10;
 const RT_TROPHY='<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>';
 const fmtNum=n=>String(Math.round(+n||0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
-const fmtDur=sec=>{const m=Math.floor((+sec||0)/60);return m<1?"кам аз 1 дақ":fmtNum(m)+" дақ"};
+const fmtDur=sec=>fmtNum(Math.floor((+sec||0)/60))+" дақ";   // 0 дақиқа ҳам «0 дақ» (ҳамаи ҳисобҳо рейтингда)
 const fmtDurLong=sec=>{const m=Math.floor((+sec||0)/60),h=Math.floor(m/60);return h?fmtNum(h)+" соат "+(m%60)+" дақиқа":m+" дақиқа"};
 const ratingList=()=>(S.rt&&S.rt.list)||S.rtCache||[];
 
@@ -22,17 +22,17 @@ function ratingView(){
  else{
   if(!L.length&&T.busy)body=skel();
   else if(!L.length&&T.err)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг боргирӣ нашуд</b><span>Интернетро санҷед ва аз нав кӯшиш кунед</span><button class="pill" data-rt-retry style="margin-top:10px">Аз нав</button></div></div>`;
-  else if(!L.length)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг ҳоло холӣ аст</b><span>Аввалин шуда китоб хонед ва ба рӯйхат дароед</span></div></div>`;
+  else if(!L.length)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг ҳоло холӣ аст</b><span>Ҳисобҳо ба қайд гирифта шавад, рӯйхат пайдо мешавад</span></div></div>`;
   else body=`<div class="rt-list">${L.map(rtRow).join("")}</div>${T.err?`<p class="hint">Интернет нест. Рӯйхати охирин нишон дода шуд.</p>`:""}`;
   body+=rtMe()}
  return `<section class="screen pad rt"><div class="rt-top"><button class="round" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><h1>Рейтинг</h1></div>
-  <p class="rt-sub">Беҳтарин китобхонҳо: дақиқаҳои хондан дар ҳамаи вақт</p>${body}</section>`}
+  <p class="rt-sub">Дақиқаҳои хондан дар ҳамаи вақт. Баробар бошад, аввал рӯйхат гузашта баландтар аст.</p>${body}</section>`}
 function rtRow(e,i){const p=e.pos;
  return `<button class="rt-row${p<=3?" m"+p:""}" data-rt-user="${i}"><span class="rt-pos">${p}</span><span class="rt-av">${avInner(e.avatar)}</span><span class="rt-nm"><b>${escH(e.name)}</b><small>${fmtDur(e.sec)}</small></span><span class="rt-ch">${P(I.chev,2.2)}</span></button>`}
 /* карточкаи «Ҷои шумо» дар поёни саҳифа */
 function rtMe(){const r=S.myRank||{},p=+r.pos||0;
  if(r.hidden)return `<div class="rt-me mut"><div><b>Шумо дар рейтинг нишон дода намешавед</b><span>${fmtDurLong(r.sec||0)} хондаед</span></div><button class="pill" data-rt-vis>Нишон додан</button></div>`;
- if(!p)return `<div class="rt-me mut"><div><b>Шумо ҳоло дар рейтинг нестед</b><span>Китоб хонед ва дақиқаҳо ҷамъ шаванд</span></div><button class="pill" data-go="home">Хондан</button></div>`;
+ if(!p)return `<div class="rt-me mut"><div><b>Ҷои шумо ҳоло маълум нест</b><span>Профили шумо тайёр шавад, ҷой пайдо мешавад</span></div></div>`;
  return `<div class="rt-me${p<=3?" m"+p:""}"><span class="rt-pos">${p}</span><div><b>Ҷои шумо</b><span>${fmtDurLong(r.sec)} · аз ${fmtNum(r.n||p)} нафар</span></div></div>`}
 
 /* варақаи профили китобхон (бо ангушт аз поён мебарояд) */
