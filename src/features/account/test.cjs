@@ -13,8 +13,13 @@ module.exports=async t=>{
  await t.page.click('[data-g]');await t.page.waitForTimeout(400);
  t.eq(await t.page.evaluate(()=>[S.view,S.step,!S.gender,window.__cn.includes('claim_name')]),['login','gender',true,true],'claim_name хато → дар қадами ном мемонад');
  // худтуздиҳӣ: профил нест, ном маълум → claim_name як бор
- await t.page.evaluate(async()=>{S.uid='u9';S.uname='Азамат';S.healTried=0;window.__cn=[];
+ await t.page.evaluate(async()=>{S.uid='u9';S.uname='Азамат';S.gender='boy';S.healTried=0;window.__cn=[];
   await loadProfile({from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:null})})})}),rpc:async n=>{window.__cn.push(n);return{data:'Азамат',error:null}}});
   await loadProfile({from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:null})})})}),rpc:async n=>{window.__cn.push(n);return{data:'Азамат',error:null}}})});
  t.eq(await t.page.evaluate(()=>window.__cn),['claim_name'],'loadProfile: профил нест → claim_name як бор');
+ // «Бо Google ворид шудан»
+ await t.open({view:'login',step:'email'});
+ await t.page.evaluate(()=>{window.__oa=null;sbLoad=async()=>({auth:{signInWithOAuth:async o=>{window.__oa=o;return{error:null}}}})});
+ await t.page.click('#google');await t.page.waitForTimeout(300);
+ t.eq(await t.page.evaluate(()=>[window.__oa&&window.__oa.provider,!!(window.__oa&&window.__oa.options.redirectTo),window.__oa&&window.__oa.options.queryParams.prompt]),['google',true,'select_account'],'Google: signInWithOAuth бо интихоби ҳисоб');
 };

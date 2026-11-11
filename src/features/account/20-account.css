@@ -1,0 +1,4 @@
+/* Бо Google ворид шудан */
+.or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mut,#8a8a8a);font-size:13px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:currentColor;opacity:.25}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;box-shadow:none}

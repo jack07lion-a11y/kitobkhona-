@@ -33,7 +33,7 @@ create or replace function public.auth_user_profile_sync() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
   begin
-    if coalesce(trim(new.raw_user_meta_data ->> 'name'), '') <> '' then
+    if coalesce(trim(new.raw_user_meta_data ->> 'name'), '') <> '' and coalesce(new.raw_user_meta_data ->> 'gender', '') <> '' then
       perform public.ensure_profile(new.id, new.raw_user_meta_data ->> 'name');
     end if;
   exception when others then null;
@@ -49,7 +49,7 @@ do $b$
 declare r record;
 begin
   for r in select u.id, u.raw_user_meta_data ->> 'name' as nm from auth.users u
-            where coalesce(trim(u.raw_user_meta_data ->> 'name'), '') <> ''
+            where coalesce(trim(u.raw_user_meta_data ->> 'name'), '') <> '' and coalesce(u.raw_user_meta_data ->> 'gender', '') <> ''
               and not exists (select 1 from public.profiles p where p.id = u.id) loop
     perform public.ensure_profile(r.id, r.nm);
   end loop;
