@@ -1,0 +1,4 @@
+/* Китоб: ўлчови катта ҳангоми сурилиш */
+.rd-scr.big{touch-action:none;-webkit-tap-highlight-color:transparent}
+.rd-zb{position:absolute;bottom:100%;transform:translateX(-50%);margin-bottom:4px;padding:8px 16px;border-radius:14px;background:var(--orange,#0b7d57);color:#fff;font-weight:800;font-size:22px;letter-spacing:.3px;box-shadow:0 6px 18px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
+.rd-scr.zoom::-webkit-slider-thumb{transform:scale(1.35)}
