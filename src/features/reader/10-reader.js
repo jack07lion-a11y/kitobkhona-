@@ -46,13 +46,42 @@ function rdLive(ci,fr){const R=RD,b=R.b,id=b.id;
 function bindScr(){const s=document.getElementById("rdscr");if(!s)return;const R=RD,b=R.b,inf=rdInfo(b);
  const loc=g=>{if(!inf.tc)return{ci:0,fr:g};const t=g*inf.tot;let ci=0;while(ci<inf.tc.length-1&&inf.cum[ci+1]<=t)ci++;return{ci,fr:Math.min(.9999,Math.max(0,(t-inf.cum[ci])/inf.tc[ci]._len))}};
  let raf=0,pend=0;
- s.oninput=()=>{s.dataset.drag=1;let g=+s.value/1000;const M=R.M||1;
-  if(locked(b)){const lim=(FREE_PAGES-.5)/M;if(g>lim){g=lim;s.value=Math.round(g*1000);PAYASK=1}}
+ /* g — ҷои умумии китоб (0..1): ҳам аз клавиатура/ангушт (oninput), ҳам аз «ўлчови катта» (поён) */
+ const apply=g0=>{let g=g0;const M=R.M||1;
+  if(locked(b)){const lim=(FREE_PAGES-.5)/M;if(g>lim){g=lim;PAYASK=1}}
   const N=Math.min(M,Math.floor(g*M)+1),set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
   set("rdnum",N+"/"+M);set("rdpct",Math.round(g*100)+"%");
   if(N!==SCRN){SCRN=N;tick()}
-  pend=g;if(!raf)raf=requestAnimationFrame(()=>{raf=0;const l=loc(pend);rdLive(l.ci,l.fr)})};
- s.onchange=()=>{delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}}}
+  pend=g;if(!raf)raf=requestAnimationFrame(()=>{raf=0;const l=loc(pend);rdLive(l.ci,l.fr)});return{g,N}};
+ s.oninput=()=>{s.dataset.drag=1;const r=apply(+s.value/1000);if(r.g*1000<+s.value)s.value=Math.round(r.g*1000)};
+ s.onchange=()=>{delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}};
+ /* «Ўлчови катта»: сурилиш аз ҷои ангушт оғоз мешавад ва ҳар ~12 пикселӣ = 1 саҳифа (дақиқ). Ба канор расед — шитобон давом мекунад. */
+ const PPG=12;let st=null,bub=null,loop=0;
+ const bubble=()=>{if(!bub){bub=document.createElement("div");bub.className="rd-zb";(s.parentNode||document.body).appendChild(bub)}return bub};
+ const stop=ok=>{if(!st)return;const id=st.id;st=null;cancelAnimationFrame(loop);try{s.releasePointerCapture(id)}catch(_){}
+  if(bub){bub.remove();bub=null}delete s.dataset.drag;SCRN=-1;s.classList.remove("zoom");
+  if(PAYASK){PAYASK=0;payNow()}setTimeout(()=>{const e=document.getElementById("rdscr");if(e&&!e.dataset.drag&&R.gf!=null){e.value=Math.round(R.gf*1000);e.style.setProperty("--p",R.gf*100+"%")}},120)};
+ const step=t=>{if(!st)return;const r=s.getBoundingClientRect(),M=R.M||1,dt=Math.min(.05,(t-st.t)/1000||0);st.t=t;
+  const zone=64,l=st.cx-r.left,rr=r.right-st.cx;let dir=0,prox=0;
+  if(l<zone){dir=-1;prox=Math.min(1,(zone-l)/zone)}else if(rr<zone){dir=1;prox=Math.min(1,(zone-rr)/zone)}
+  if(dir)st.extra+=dir*prox*prox*Math.max(120,M/6)*dt;
+  const page=Math.max(0,Math.min(M-1,Math.round(st.p0+(st.cx-st.x)/PPG+st.extra)));
+  st.extra=Math.max(-st.p0-(st.cx-st.x)/PPG,Math.min(M-1-st.p0-(st.cx-st.x)/PPG,st.extra));
+  const res=apply((page+.5)/M),tf=Math.max(0,Math.min(1,(st.cx-r.left)/(r.width||1)));
+  s.value=Math.round(tf*1000);s.style.setProperty("--p",tf*100+"%");
+  const bb=bubble();bb.textContent=res.N+" / "+M;bb.style.left=Math.max(8,Math.min(r.width-8,tf*r.width+(r.left-(bb.parentNode.getBoundingClientRect().left))))+"px";
+  loop=requestAnimationFrame(step)};
+ const down=e=>{if(st||(e.button!=null&&e.button>0))return;e.preventDefault();
+  const r=s.getBoundingClientRect(),M=R.M||1;let g0=R.gf||0;const tx=r.left+g0*r.width;
+  if(Math.abs(e.clientX-tx)>34)g0=Math.max(0,Math.min(1,(e.clientX-r.left)/(r.width||1)));
+  st={id:e.pointerId,x:e.clientX,cx:e.clientX,p0:Math.max(0,Math.min(M-1,Math.floor(g0*M+1e-6))),extra:0,t:performance.now()};
+  s.dataset.drag=1;s.classList.add("zoom");try{s.setPointerCapture(e.pointerId)}catch(_){}
+  cancelAnimationFrame(loop);loop=requestAnimationFrame(step)};
+ s.addEventListener("pointerdown",down);
+ s.addEventListener("pointermove",e=>{if(st&&e.pointerId===st.id)st.cx=e.clientX});
+ ["pointerup","pointercancel","lostpointercapture"].forEach(n=>s.addEventListener(n,e=>{if(st&&e.pointerId===st.id)stop()}));
+ s.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+ s.addEventListener("mousedown",e=>e.preventDefault())}
 function rdGoto(ci,fr){const R=RD,b=R.b,id=b.id,inf=rdInfo(b);
  const gf=inf.tc?(inf.cum[ci]+fr*inf.tc[ci]._len)/inf.tot:fr;
  if(locked(b)&&Math.floor(gf*(R.M||1))>=FREE_PAGES){const s=document.getElementById("rdscr");if(s)s.value=Math.round(R.gf*1000);payNow();return}
