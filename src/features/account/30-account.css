@@ -1,0 +1,8 @@
+/* Бунёдгузорон: расм ва унвон */
+.fnd{grid-template-columns:1fr!important;gap:14px!important}
+.fnd-c{flex-direction:row!important;align-items:center!important;text-align:left!important;gap:4px 16px!important;padding:16px!important;display:grid!important;grid-template-columns:96px 1fr;grid-template-areas:"p n" "p e" "p d"}
+.fnd-ph{grid-area:p;width:96px;height:96px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#0b7d57,#ffd24a);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.fnd-ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:3px solid var(--card,#fff)}
+.fnd-c b{grid-area:n;align-self:end;font-size:17px}
+.fnd-c em{grid-area:e;font-size:14px}
+.fnd-c .fnd-d{grid-area:d;align-self:start;color:var(--muted);font-size:14px;line-height:1.3}

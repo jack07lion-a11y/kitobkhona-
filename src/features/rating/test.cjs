@@ -60,7 +60,7 @@ module.exports=async t=>{
  const st=await P.evaluate(()=>document.querySelector('.sheet').innerText);
  t.ok(/Дар рейтинг нишон дода шавам/.test(st)&&/Бунёдгузорон/.test(st),'танзимот: «Дар рейтинг нишон дода шавам» ва «Бунёдгузорон»');
  await P.click('[data-sheet=founders]');await P.waitForTimeout(250);
- t.ok(await P.evaluate(()=>S.sheet==='founders'&&/Ҷасурбек/.test(document.querySelector('.sheet').innerText)),'«Бунёдгузорон» аз танзимот кушода мешавад (ҷойи нав баъд муайян мешавад)');
+ t.ok(await P.evaluate(()=>S.sheet==='founders'&&/Ҷасурбек/.test(document.querySelector('.sheet').innerText)&&document.querySelectorAll('.fnd-ph img').length===2&&/Яке аз асосгузорони ғоя/.test(document.querySelector('.sheet').innerText)),'«Бунёдгузорон» аз танзимот кушода мешавад (ҷойи нав баъд муайян мешавад)');
  await P.evaluate(()=>{window.__c=[];sbLoad=async()=>({rpc:async(n,a)=>{window.__c.push([n,a]);return{data:n==='my_rank'?{hidden:true,sec:60,n:9}:null,error:null}}});S.sheet='app';render()});
  await P.click('[data-rt-vis]');await P.waitForTimeout(300);
  t.ok(await P.evaluate(()=>window.__c.some(x=>x[0]==='set_rating_visible'&&x[1].p_show===false)),'калид: set_rating_visible(false) — пинҳон кард');
