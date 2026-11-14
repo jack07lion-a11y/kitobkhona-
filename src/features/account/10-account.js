@@ -194,10 +194,10 @@ SHEETS.pedit=X=>{if(!(S.pe))return "";let h="";{const d=S.pe,girl=(d.asG||S.gend
   <input type="file" id="pef" accept="image/*" hidden>`};return h};
 
 /* ---- варақи founders ---- */
-SHEETS.founders=X=>{let h="";{
-  const F=[["ҶХ","Ҷасурбек Холиқулов Эгамбердиев","Ғоя ва маҳсулот","#0b7d57","#63d48f"],["УҶ","Умаров Ҷумъаназар","Маълумот ба зудӣ илова мешавад","#c47a12","#f5b53c"]];
-  h=`<div class="sh-head"><b class="sh-t fnd-t">Бунёдгузорон</b>${X}</div>
-  <div class="fnd">${F.map(([i,n,d,c1,c2])=>`<div class="fnd-c"><span translate="no" class="fnd-av" style="background:linear-gradient(135deg,${c1},${c2})">${i}</span><b>${n}</b><em>Бунёдгузор</em><span>${d}</span></div>`).join("")}</div>`};return h};
+SHEETS.founders=X=>{
+  const F=[["Ҷасурбек Холиқулов Эгамбердиев","avatars/founder-jasurbek.webp","Яке аз асосгузорони ғоя"],["Умаров Ҷумъаназар","avatars/founder-jumanazar.webp","Яке аз асосгузорони ғоя"]];
+  return `<div class="sh-head"><b class="sh-t fnd-t">Бунёдгузорон</b>${X}</div>
+  <div class="fnd">${F.map(([n,ph,d])=>`<div class="fnd-c"><span class="fnd-ph"><img src="${ph}" alt="" loading="lazy"></span><b>${n}</b><em>Бунёдгузор</em><span class="fnd-d">${d}</span></div>`).join("")}</div>`};
 /* бозгашт аз Chrome (Android): токенҳо аз tj.kitobkhona.app://auth#access_token=… */
 window.__oauth=async frag=>{try{const p=new URLSearchParams(String(frag||"").replace(/^[#?]/,"")),at=p.get("access_token"),rt=p.get("refresh_token");
   if(!at||!rt)throw 0;const c=await sbLoad();const{data,error}=await c.auth.setSession({access_token:at,refresh_token:rt});if(error||!data||!data.user)throw 0;

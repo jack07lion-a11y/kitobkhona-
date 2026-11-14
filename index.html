@@ -914,6 +914,14 @@ html{overscroll-behavior-y:contain}
 .or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mut,#8a8a8a);font-size:13px}
 .or:before,.or:after{content:"";flex:1;height:1px;background:currentColor;opacity:.25}
 .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;box-shadow:none}
+/* Бунёдгузорон: расм ва унвон */
+.fnd{grid-template-columns:1fr!important;gap:14px!important}
+.fnd-c{flex-direction:row!important;align-items:center!important;text-align:left!important;gap:4px 16px!important;padding:16px!important;display:grid!important;grid-template-columns:96px 1fr;grid-template-areas:"p n" "p e" "p d"}
+.fnd-ph{grid-area:p;width:96px;height:96px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#0b7d57,#ffd24a);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.fnd-ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:3px solid var(--card,#fff)}
+.fnd-c b{grid-area:n;align-self:end;font-size:17px}
+.fnd-c em{grid-area:e;font-size:14px}
+.fnd-c .fnd-d{grid-area:d;align-self:start;color:var(--muted);font-size:14px;line-height:1.3}
 /* ---- Рейтинг ---- */
 .rbadge{position:relative;font:800 20px/1 Inter,system-ui,sans-serif;color:var(--ink);background:var(--card)}
 .rbadge::before{content:"";position:absolute;inset:0;border-radius:50%;padding:3px;box-sizing:border-box;
@@ -1987,7 +1995,8 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Рақамҳо дар Идоракунӣ","Цифры в Управлении","Boshqaruvdagi raqamlar","Numbers in Admin"],
 ["Матн ва вақтро таҳрир кардан","Редактировать текст и время","Matn va vaqtni tahrirlash","Edit text and time"],
 ["Огоҳинома ба ҳамаи APK-ҳо","Уведомление всем APK","Barcha APK larga bildirishnoma","Notification to all APKs"],
-["Ҳеҷ кас, ба ҷуз худи админ","Никто, кроме админа","Adminning oʻzidan boshqa hech kim","No one but the admin"]
+["Ҳеҷ кас, ба ҷуз худи админ","Никто, кроме админа","Adminning oʻzidan boshqa hech kim","No one but the admin"],
+["Яке аз асосгузорони ғоя", "Один из основателей идеи", "G‘oya asoschilaridan biri", "One of the idea’s founders"]
 ]
 </script>
 <script>
@@ -3318,10 +3327,10 @@ SHEETS.pedit=X=>{if(!(S.pe))return "";let h="";{const d=S.pe,girl=(d.asG||S.gend
   <input type="file" id="pef" accept="image/*" hidden>`};return h};
 
 /* ---- варақи founders ---- */
-SHEETS.founders=X=>{let h="";{
-  const F=[["ҶХ","Ҷасурбек Холиқулов Эгамбердиев","Ғоя ва маҳсулот","#0b7d57","#63d48f"],["УҶ","Умаров Ҷумъаназар","Маълумот ба зудӣ илова мешавад","#c47a12","#f5b53c"]];
-  h=`<div class="sh-head"><b class="sh-t fnd-t">Бунёдгузорон</b>${X}</div>
-  <div class="fnd">${F.map(([i,n,d,c1,c2])=>`<div class="fnd-c"><span translate="no" class="fnd-av" style="background:linear-gradient(135deg,${c1},${c2})">${i}</span><b>${n}</b><em>Бунёдгузор</em><span>${d}</span></div>`).join("")}</div>`};return h};
+SHEETS.founders=X=>{
+  const F=[["Ҷасурбек Холиқулов Эгамбердиев","avatars/founder-jasurbek.webp","Яке аз асосгузорони ғоя"],["Умаров Ҷумъаназар","avatars/founder-jumanazar.webp","Яке аз асосгузорони ғоя"]];
+  return `<div class="sh-head"><b class="sh-t fnd-t">Бунёдгузорон</b>${X}</div>
+  <div class="fnd">${F.map(([n,ph,d])=>`<div class="fnd-c"><span class="fnd-ph"><img src="${ph}" alt="" loading="lazy"></span><b>${n}</b><em>Бунёдгузор</em><span class="fnd-d">${d}</span></div>`).join("")}</div>`};
 /* бозгашт аз Chrome (Android): токенҳо аз tj.kitobkhona.app://auth#access_token=… */
 window.__oauth=async frag=>{try{const p=new URLSearchParams(String(frag||"").replace(/^[#?]/,"")),at=p.get("access_token"),rt=p.get("refresh_token");
   if(!at||!rt)throw 0;const c=await sbLoad();const{data,error}=await c.auth.setSession({access_token:at,refresh_token:rt});if(error||!data||!data.user)throw 0;
@@ -4042,7 +4051,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="8c3381d88d";
+const WEB_H="3d7868a776";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
