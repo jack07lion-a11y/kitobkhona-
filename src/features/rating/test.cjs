@@ -85,4 +85,9 @@ module.exports=async t=>{
  t.ok(await P.evaluate(()=>window.__a.some(x=>x[0]==='purge_deleted'&&x[1].p_days===30)),'«Тоза кардан» → purge_deleted(30)');
  await P.evaluate(()=>{S.role='subadmin';S.sheet=null;S.view='me';render()});
  t.eq(await P.evaluate(()=>/Ҳисобҳои нест шуда/.test(document.getElementById('app').innerText)),false,'ёрдамчӣ (subadmin) тиклаш панелини намебинад: танҳо админ');
+ // «busy» хаста дар ҳолати захирашуда рӯйхатро манъ накунад
+ await P.evaluate(()=>{window.__lb=0;S.uid='u1';S.rtCache=[{pos:1,name:'Кӯҳна',avatar:'',bio:'',sec:60}];S.rt={busy:true,busyAt:Date.now()-60000,list:null};
+  sbLoad=async()=>({rpc:async(n)=>{if(n==='leaderboard'){window.__lb++;return{data:[{pos:1,name:'Нав А',avatar:'',bio:'',sec:300},{pos:2,name:'Нав Б',avatar:'',bio:'',sec:120}],error:null}}return{data:{pos:2,sec:120,n:2},error:null}}});loadRating(true)});
+ await P.waitForTimeout(400);
+ t.eq(await P.evaluate(()=>[window.__lb,(S.rt.list||[]).map(x=>x.name)]),[1,['Нав А','Нав Б']],'рейтинг: «busy» кӯҳна (хаста) рӯйхатро манъ намекунад, рӯйхати нав меояд');
 };

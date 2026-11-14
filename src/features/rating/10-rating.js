@@ -2,6 +2,7 @@
    Сервер: docs/sql-reyting.sql (leaderboard, my_rank, set_rating_visible).
    Нишон: тугмаи доира дар боло (ҷои шумо), саҳифаи рейтинг (Top 10), варақаи профили китобхон, доираи «Рейтинг» дар Озмун. */
 const RT_TOP=10;
+S.rt=null; // ҳолати муваққатӣ (busy ва ғ.) дар localStorage намемонад: «busy» хаста мешуд ва рӯйхат ҳеч гоҳ навсозӣ намешуд
 const RT_TROPHY='<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>';
 const fmtNum=n=>String(Math.round(+n||0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
 const fmtDur=sec=>fmtNum(Math.floor((+sec||0)/60))+" дақ";   // 0 дақиқа ҳам «0 дақ» (ҳамаи ҳисобҳо рейтингда)
@@ -46,8 +47,8 @@ function openRating(){cxClose();if(S.view!=="rating"){S.prev=S.view;S.prevSearch
  S.view="rating";S.search=false;S.sheet=null;render();window.scrollTo(0,0);loadRating(true)}
 async function loadMyRank(c){try{if(!S.uid||!navigator.onLine)return;c=c||await sbLoad();if(!c)return;
  const{data,error}=await c.rpc("my_rank");if(error||!data)return;S.myRank=data;save();paintBadge()}catch(_){}}
-async function loadRating(force){const T=S.rt=S.rt||{};if(!S.uid||T.busy)return;if(!force&&T.at&&Date.now()-T.at<30000)return;
- T.busy=true;if(S.view==="rating"&&!ratingList().length)render();
+async function loadRating(force){const T=S.rt=S.rt||{};if(!S.uid||(T.busy&&Date.now()-(T.busyAt||0)<15000))return;if(!force&&T.at&&Date.now()-T.at<30000)return;
+ T.busy=true;T.busyAt=Date.now();if(S.view==="rating"&&!ratingList().length)render();
  try{const c=await sbLoad();if(!c||!navigator.onLine)throw 0;const{data,error}=await c.rpc("leaderboard",{p_limit:RT_TOP});if(error||!Array.isArray(data))throw 0;
   T.list=data.map(x=>({pos:+x.pos,name:String(x.name||""),avatar:x.avatar||"",bio:x.bio||"",sec:+x.sec||0}));T.at=Date.now();T.err=false;S.rtCache=T.list;save()}
  catch(_){T.err=true}finally{T.busy=false}
