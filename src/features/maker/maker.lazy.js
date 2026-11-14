@@ -1,4 +1,4 @@
-/* ---- «Китоб ясаш»: PDF/Word/EPUB/FB2/TXT → .kitob дар худи браузер, баъд худкор фиристодан (пинҳон) ----
+/* ---- «Сохтани китоб»: PDF/Word/EPUB/FB2/TXT → .kitob дар худи браузер, баъд худкор фиристодан (пинҳон) ----
    Мантиқ айнан ҳамон tools/kitob_convert.py. Бе AI, бе лимит: танҳо код. */
 const MK={
  HEAD:/^(қисми|боби|қисм|боб|фасли|фасл|глава|часть)(?![\p{L}\d_])/iu,
@@ -19,8 +19,8 @@ const MK={
   const letters=cyr+lat,symF=sym/ns.length,cyrF=letters?cyr/letters:0;
   if(cyrF<.6||symF>.05)return{ok:false,why:"garbled",cyrF,symF};
   return{ok:true,cyrF,symF}},
- GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа чиқинди мешавад. «Китоб ясаш» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав ясаед.",
- SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Китоб ясаш» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
+ GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа чиқинди мешавад. «Сохтани китоб» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав ясаед.",
+ SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Сохтани китоб» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
  async docx(file){const z=await (await loadJSZip()).loadAsync(file);const W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
   const dx=await z.file("word/document.xml").async("string"),doc=new DOMParser().parseFromString(dx,"application/xml");
   const styles={};if(z.file("word/styles.xml")){const sx=new DOMParser().parseFromString(await z.file("word/styles.xml").async("string"),"application/xml");
@@ -146,10 +146,10 @@ const MK={
   return{book,blob,file:new File([blob],book.id+".kitob"),rep,hasCover:!!cb}}
 };
 
-// ===== Тирезаи «Китоб ясаш» (админ ва ёрдамчӣ) =====
+// ===== Тирезаи «Сохтани китоб» (админ ва ёрдамчӣ) =====
 let MKS={file:null,title:"",author:"",cat:"fiction",cover:null,busy:false,res:null,err:""};
 function admMakeHTML(X){const d=MKS;
- return `<div class="sh-head"><b class="sh-t">Китоб ясаш</b>${X}</div>
+ return `<div class="sh-head"><b class="sh-t">Сохтани китоб</b>${X}</div>
   <p class="set-note" style="margin-top:0">Файли китобро интихоб кунед (PDF, Word, EPUB, FB2, TXT). Барнома дар худи браузер .kitob месозад ва худкор <b>пинҳон</b> фиристода мешавад. Матн ҳеҷ гоҳ тағйир намеёбад.</p>
   <label class="mk-file${d.file?" on":""}" for="mkf">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}<span id="mkfn">${d.file?escH(d.file.name):"Файлро интихоб кунед"}</span></label><input type="file" id="mkf" accept=".pdf,.docx,.epub,.fb2,.txt" hidden>
   <label class="pe-l" for="mkt">Номи китоб</label><input class="pe-i" id="mkt" value="${escH(d.title)}" autocomplete="off" placeholder="Масалан: Гулистон">
@@ -160,7 +160,7 @@ function admMakeHTML(X){const d=MKS;
   ${d.err?`<p class="mk-err" translate="no">${escH(d.err)}</p>`:""}
   <div class="mk-prog" id="mkp" ${d.busy?"":"hidden"}><i id="mkbar" style="width:0%"></i></div><p class="mk-st" id="mkst" ${d.busy?"":"hidden"}></p>
   ${d.res?`<div class="mk-res"><b>Тайёр ✓ «${escH(d.res.book.title)}»</b><span>Боб: ${d.res.rep.chs} · сархат: ${d.res.rep.paras} · ҳарф: ${d.res.rep.chars}${d.res.hasCover?" · муқова ҳаст":""}</span>${d.res.rep.warns.map(w=>`<em>⚠ ${escH(w)}</em>`).join("")}<span>Китоб <b>пинҳон</b> фиристода шуд. Идоракунӣ → Китобҳо → «Таҳрир» → «Барои ҳама намоён»-ро белгилаб нашр кунед.</span></div>`:""}
-  <button class="pay-btn" data-mk-go style="width:100%;margin-top:14px" ${d.busy?"disabled":""}>${d.res?"Яна як китоб":"Ясаш ва фиристодан"}</button>`}
+  <button class="pay-btn" data-mk-go style="width:100%;margin-top:14px" ${d.busy?"disabled":""}>${d.res?"Яна як китоб":"Сохтан ва фиристодан"}</button>`}
 function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.getElementById(id);
  const f=$("mkf");if(f)f.onchange=()=>{const x=f.files&&f.files[0];if(!x)return;d.file=x;d.res=null;d.err="";
   if(!d.title)d.title=x.name.replace(/\.[^.]+$/,"").replace(/[_]+/g," ");const n=$("mkfn");if(n)n.textContent=x.name;const t=$("mkt");if(t&&!t.value)t.value=d.title;document.querySelector(".mk-file").classList.add("on")};

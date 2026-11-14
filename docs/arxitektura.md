@@ -14,7 +14,7 @@ src/
     privacy/           розигӣ, синну сол, нест кардани ҳисоб (docs/sql-maxfiyat.sql)
     sync/              синхронизатсияи пешравӣ, токчаҳо, хатчӯбҳо; воронка (docs/sql-holat.sql, sql-metrika.sql)
     stats/ feedback/ notifications/ backup/ update/ i18n/
-    maker/             Китоб ясаш (танбал)
+    maker/             Сохтани китоб (танбал)
     admin/             панели админ ва ҳуқуқҳо
     boot/              оғози барнома (render() + сплэш) — ҳамеша охирин
 ```

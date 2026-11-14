@@ -1,0 +1,30 @@
+/* ---------- Панели идоракунӣ: тугмаҳои торӣ ---------- */
+.adm-tag{font-size:10px;font-weight:800;background:var(--orange-soft);color:var(--orange-3);padding:3px 9px;border-radius:10px;margin-right:auto;margin-left:8px;align-self:center}
+.adm-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 8px}
+.adm-kpi>div{background:var(--card);border-radius:12px;padding:7px 9px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.adm-kpi small{font-size:10px;font-weight:700;color:var(--muted)}
+.adm-kpi b{font-size:18px;font-weight:800;letter-spacing:-.4px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-cap{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 6px;font-size:11px;color:var(--muted);font-weight:700}
+.adm-cap b{letter-spacing:.5px;text-transform:uppercase}
+.adm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.adm-tile{position:relative;background:var(--card);border:0;border-radius:14px;padding:12px 4px 10px;display:grid;justify-items:center;gap:6px;color:var(--ink);min-width:0}
+.adm-tile b{font-size:11px;font-weight:700;line-height:1.2;text-align:center;max-width:100%;overflow-wrap:anywhere}
+.adm-tile:active,.adm-apk:active{transform:scale(.97)}
+.adm-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none;background:var(--orange-soft);color:var(--orange-3)}
+.adm-ic .ico{width:19px;height:19px}
+.adm-ic.c1{background:#e3f1fb;color:#1f7db3}
+.adm-ic.c2{background:#efeafd;color:#5a50d6}
+.adm-ic.c3{background:#fdf1d8;color:#a8780b}
+.adm-ic.c4{background:#fde6e4;color:#c4302b}
+.adm-ic.c5{background:var(--orange-soft);color:var(--orange-3)}
+[data-theme="dark"] .adm-ic.c1{background:#16303f}
+[data-theme="dark"] .adm-ic.c2{background:#2a2545}
+[data-theme="dark"] .adm-ic.c3{background:#3a3016}
+[data-theme="dark"] .adm-ic.c4{background:#40201e}
+.adm-bd{position:absolute;top:6px;right:7px;font-style:normal;font-size:9.5px;font-weight:800;color:#fff;background:var(--orange);border-radius:9px;padding:1px 6px;min-width:16px;text-align:center}
+.adm-bd.r{background:#d33}
+.adm-apk{position:relative;width:100%;margin-top:10px;background:var(--card);border:0;border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;text-align:left;color:var(--ink)}
+.adm-apk div{flex:1;min-width:0}
+.adm-apk b{display:block;font-size:12.5px}
+.adm-apk span:not(.adm-ic){display:block;font-size:11px;color:var(--muted);font-weight:600}
+.adm-apk .adm-bd{position:static}

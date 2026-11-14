@@ -1,8 +1,10 @@
 let lastSheet=null;
+/* Агар варақ аз панели идоракунӣ кушода шуда бошад — пӯшидан ба панел бармегардонад (на ба «Ҳисоб») */
+function sheetNext(){const was=S.sheet;if(S.hubBack&&S.hubBack===was){S.hubBack=null;return"admhub"}S.hubBack=null;return null}
 function closeSheet(){S.nd=null;S.ndl=null;S._rl=0;const sh=document.querySelector(".sheet"),bg=document.querySelector(".sh-bg");
- if(!sh||matchMedia("(prefers-reduced-motion: reduce)").matches){S.sheet=null;render();return}
+ if(!sh||matchMedia("(prefers-reduced-motion: reduce)").matches){S.sheet=sheetNext();render();return}
  sh.style.transition=`transform .32s ${EASE}`;sh.style.transform="translateY(105%)";if(bg)bg.classList.add("out");{closing=true;const sec=app.firstElementChild;if(sec&&sec.classList.contains("behind")){sec.style.transform="";sec.classList.add("behind-out")}}
- setTimeout(()=>{S.sheet=null;render()},300)}function setupSheet(){const sh=document.querySelector(".sheet");if(!sh)return;let g=null;
+ setTimeout(()=>{S.sheet=sheetNext();render()},300)}function setupSheet(){const sh=document.querySelector(".sheet");if(!sh)return;let g=null;
  sh.onpointerdown=e=>{const r=sh.getBoundingClientRect();if(e.clientY-r.top>44&&sh.scrollTop>0)return;if(e.clientY-r.top>44&&e.target.closest("button,input"))return;g={y0:e.clientY,dy:0,vy:0,ly:e.clientY,lt:performance.now()}};
  sh.onpointermove=e=>{if(!g)return;const now=performance.now();g.vy=(e.clientY-g.ly)/Math.max(1,now-g.lt);g.ly=e.clientY;g.lt=now;g.dy=Math.max(0,e.clientY-g.y0);if(g.dy>6){try{sh.setPointerCapture(e.pointerId)}catch(_){}sh.style.transition="none";sh.style.transform=`translateY(${g.dy}px)`;const sec=app.firstElementChild;if(sec&&sec.classList.contains("behind")){const k=Math.min(1,g.dy/sh.offsetHeight);sec.classList.remove("behind-in");sec.style.transition="none";sec.style.transform=`scale(${.92+.08*k})`}}};
  sh.onpointerup=sh.onpointercancel=()=>{if(!g)return;const G0=g;g=null;if(G0.dy<6)return;
@@ -39,7 +41,7 @@ function sheetHTML(){
  
  if(!h){S.sheet=null;return ""}
  const still=lastSheet===S.sheet?"still":"";lastSheet=S.sheet;
- return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights","admdel"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
+ return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights","admdel","admhub","admstat","admfeat"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
 }
 function skel(){return `<div class="skel-w">${[38,70,52,88,40,64,0,30,76,48,58].map(w=>w?`<span class="sk" style="width:${w}%"></span>`:`<span style="height:8px"></span>`).join("")}</div>`}
 function wheelHTML(){
