@@ -28,3 +28,6 @@
 .rp-img{display:flex;gap:10px;align-items:center;position:relative}.rp-img img{max-height:150px;width:auto}
 .rp-pen{margin:0;flex:1;font-size:13px;height:auto;min-height:40px;padding:8px 12px;text-align:left;white-space:normal;line-height:1.25}
 .fbq-c{padding-bottom:28px}
+/* хатои инлайн дар шакли китоб */
+.a-err{margin:2px 0 0;padding:10px 12px;border-radius:12px;background:#fde8e6;color:#b3261e;font-size:13px;font-weight:700;line-height:1.4}
+.a-bad{outline:2px solid #d33;outline-offset:2px;border-radius:12px}
