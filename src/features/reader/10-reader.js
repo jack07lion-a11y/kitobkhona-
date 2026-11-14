@@ -19,7 +19,7 @@ function reader(){
    ${fabHTML("rd-ic")}<button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
   <div class="rd-view${vm?" vm":""}" id="rdview"><div class="rd-flow" id="rdflow">${vm?"":chHTML(b,ci)}</div>${vm?"":`<i class="rd-dim" id="rddim"></i><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div>`}</div>
   <span class="rd-mini" id="rdmini"></span>
-  <div class="rd-foot"><div class="rf-t"><span id="rdnum" class="rd-pg">1/1</span><span id="rdpct" class="rd-pc">0%</span></div><input type="range" class="rd-scr big" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><div class="rf-b"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div></div>
+  <div class="rd-foot"><div class="rf-t"><span id="rdnum" class="rd-pg">1/1</span><span id="rdpct" class="rd-pc">0%</span></div><div class="rd-sw"><input type="range" class="rd-scr big" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><i class="rd-sh" id="rdsh" aria-hidden="true"></i></div><div class="rf-b"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div></div>
   <div class="rd-sbar"><b id="rdsn" translate="no">${RQ&&HI>=0?`${HI+1} / ${HITS.length}`:""}</b><button class="rd-ic" data-hit="-1" aria-label="Пешина">${CH('<path d="M15 5l-7 7 7 7"/>')}</button><button class="rd-ic" data-hit="1" aria-label="Оянда">${CH('<path d="M9 5l7 7-7 7"/>')}</button><button class="rd-ic" data-hitx aria-label="Пӯшидани ҷустуҷӯ">${P(IC_X,2.2)}</button></div>
  </section>`;
 }
@@ -37,7 +37,7 @@ function rdUpdate(b,ci,fr,frE){const R=RD,inf=rdInfo(b);let gf,gfE;
  const s=document.getElementById("rdscr");if(s&&!s.dataset.drag){s.value=Math.round(gf*1000);s.style.setProperty("--p",gf*100+"%")}
  const m=document.getElementById("rdmark");if(m)m.classList.toggle("on",(S.marks[b.id]||[]).includes(mkey(b.id)))}
 let TK=null,SCRN=-1,PAYASK=0,SVT=0;
-function tick(){let ok=false;try{if(navigator.vibrate)ok=navigator.vibrate(7)}catch(_){}
+function tick(){let ok=false;try{if(navigator.vibrate)ok=navigator.vibrate(4)}catch(_){}
  if(ok)return;try{if(!TK){TK=document.createElement("label");TK.style.cssText="position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none";TK.innerHTML='<input type="checkbox" switch tabindex="-1">';document.body.appendChild(TK)}TK.click()}catch(_){}}
 function rdLive(ci,fr){const R=RD,b=R.b,id=b.id;
  if(R.vert){const sec=R.f.querySelector(`[data-ci="${ci}"]`);if(sec){R.v.scrollTop=sec.offsetTop+fr*sec.offsetHeight-R.H*.3;return}S.rdCh[id]=ci;S.rdFr[id]=fr;setupVert();return}
@@ -56,32 +56,36 @@ function bindScr(){const s=document.getElementById("rdscr");if(!s)return;const R
  s.oninput=()=>{s.dataset.drag=1;const r=apply(+s.value/1000);if(r.g*1000<+s.value)s.value=Math.round(r.g*1000)};
  s.onchange=()=>{delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}};
  /* «Ўлчови катта»: сурилиш аз ҷои ангушт оғоз мешавад ва ҳар ~12 пикселӣ = 1 саҳифа (дақиқ). Ба канор расед — шитобон давом мекунад. */
- const PPG=12;let st=null,bub=null,loop=0;
+ const PPG=14;let st=null,bub=null,loop=0;const H=document.getElementById("rdsh")||s; // H — ягона ҷойи ламс: сабти худи range дар iPhone шитобон мепарид
+ /* ангушт аз навор боло барад — суръат камтар (аниқ): 0–40px — оддӣ; 40–110px — 40%; боло — 12% (тақрибан 1 саҳифа ба 100 пиксел) */
+ const fine=dy=>dy<40?1:dy<110?.4:.12;
  const bubble=()=>{if(!bub){bub=document.createElement("div");bub.className="rd-zb";(s.parentNode||document.body).appendChild(bub)}return bub};
- const stop=ok=>{if(!st)return;const id=st.id;st=null;cancelAnimationFrame(loop);try{s.releasePointerCapture(id)}catch(_){}
+ const stop=ok=>{if(!st)return;const id=st.id;st=null;cancelAnimationFrame(loop);try{H.releasePointerCapture(id)}catch(_){}
   if(bub){bub.remove();bub=null}delete s.dataset.drag;SCRN=-1;s.classList.remove("zoom");
   if(PAYASK){PAYASK=0;payNow()}setTimeout(()=>{const e=document.getElementById("rdscr");if(e&&!e.dataset.drag&&R.gf!=null){e.value=Math.round(R.gf*1000);e.style.setProperty("--p",R.gf*100+"%")}},120)};
  const step=t=>{if(!st)return;const r=s.getBoundingClientRect(),M=R.M||1,dt=Math.min(.05,(t-st.t)/1000||0);st.t=t;
+  const fk=fine(Math.max(0,r.top-st.cy));st.acc+=(st.cx-st.lx)/PPG*fk;st.lx=st.cx;
   const zone=64,l=st.cx-r.left,rr=r.right-st.cx;let dir=0,prox=0;
   if(l<zone){dir=-1;prox=Math.min(1,(zone-l)/zone)}else if(rr<zone){dir=1;prox=Math.min(1,(zone-rr)/zone)}
   if(dir)st.extra+=dir*prox*prox*Math.max(120,M/6)*dt;
-  const page=Math.max(0,Math.min(M-1,Math.round(st.p0+(st.cx-st.x)/PPG+st.extra)));
-  st.extra=Math.max(-st.p0-(st.cx-st.x)/PPG,Math.min(M-1-st.p0-(st.cx-st.x)/PPG,st.extra));
+  st.extra=Math.max(-st.p0-st.acc,Math.min(M-1-st.p0-st.acc,st.extra));
+  const page=Math.max(0,Math.min(M-1,Math.round(st.p0+st.acc+st.extra)));
   const res=apply((page+.5)/M),tf=Math.max(0,Math.min(1,(st.cx-r.left)/(r.width||1)));
   s.value=Math.round(tf*1000);s.style.setProperty("--p",tf*100+"%");
-  const bb=bubble();bb.textContent=res.N+" / "+M;bb.style.left=Math.max(8,Math.min(r.width-8,tf*r.width+(r.left-(bb.parentNode.getBoundingClientRect().left))))+"px";
+  const bb=bubble();bb.textContent=res.N+" / "+M+(fk<1?" · аниқ":"");bb.classList.toggle("fine",fk<1);bb.style.left=Math.max(8,Math.min(r.width-8,tf*r.width+(r.left-(bb.parentNode.getBoundingClientRect().left))))+"px";
   loop=requestAnimationFrame(step)};
  const down=e=>{if(st||(e.button!=null&&e.button>0))return;e.preventDefault();
   const r=s.getBoundingClientRect(),M=R.M||1;let g0=R.gf||0;const tx=r.left+g0*r.width;
   if(Math.abs(e.clientX-tx)>34)g0=Math.max(0,Math.min(1,(e.clientX-r.left)/(r.width||1)));
-  st={id:e.pointerId,x:e.clientX,cx:e.clientX,p0:Math.max(0,Math.min(M-1,Math.floor(g0*M+1e-6))),extra:0,t:performance.now()};
-  s.dataset.drag=1;s.classList.add("zoom");try{s.setPointerCapture(e.pointerId)}catch(_){}
+  st={id:e.pointerId,x:e.clientX,cx:e.clientX,cy:e.clientY,lx:e.clientX,acc:0,p0:Math.max(0,Math.min(M-1,Math.floor(g0*M+1e-6))),extra:0,t:performance.now()};
+  s.dataset.drag=1;s.classList.add("zoom");try{H.setPointerCapture(e.pointerId)}catch(_){}
   cancelAnimationFrame(loop);loop=requestAnimationFrame(step)};
- s.addEventListener("pointerdown",down);
- s.addEventListener("pointermove",e=>{if(st&&e.pointerId===st.id)st.cx=e.clientX});
- ["pointerup","pointercancel","lostpointercapture"].forEach(n=>s.addEventListener(n,e=>{if(st&&e.pointerId===st.id)stop()}));
- s.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
- s.addEventListener("mousedown",e=>e.preventDefault())}
+ H.addEventListener("pointerdown",down);
+ H.addEventListener("pointermove",e=>{if(st&&e.pointerId===st.id){st.cx=e.clientX;st.cy=e.clientY}});
+ ["pointerup","pointercancel","lostpointercapture"].forEach(n=>H.addEventListener(n,e=>{if(st&&e.pointerId===st.id)stop()}));
+ H.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+ H.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
+ H.addEventListener("mousedown",e=>e.preventDefault())}
 function rdGoto(ci,fr){const R=RD,b=R.b,id=b.id,inf=rdInfo(b);
  const gf=inf.tc?(inf.cum[ci]+fr*inf.tc[ci]._len)/inf.tot:fr;
  if(locked(b)&&Math.floor(gf*(R.M||1))>=FREE_PAGES){const s=document.getElementById("rdscr");if(s)s.value=Math.round(R.gf*1000);payNow();return}

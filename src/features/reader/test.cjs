@@ -28,3 +28,28 @@ module.exports=async t=>{
  const edge=+(await num()).split('/')[0];await P.mouse.up();
  t.ok(edge>before+10||box.M<30,'канорда саҳифа шитобон меравад ('+before+' → '+edge+')');
 };
+
+// слайдер: ламс танҳо аз қабати махсус; 14px = 1 саҳифа; ангушт боло = дақиқтар
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home'});
+ await P.evaluate(()=>{const w="китоб ҳаёт модар кӯдакӣ деҳа замон дарё мактаб устод нон об".split(" ");const chs=[];
+  for(let c=0;c<80;c++){const bl=[];for(let i=0;i<30;i++){let s="";for(let k=0;k<60;k++)s+=w[(c*7+i*3+k*5)%w.length]+" ";bl.push(["p",s.trim()+"."])}chs.push({title:"Боби "+(c+1),blocks:bl})}
+  BOOKS.push({id:778,t:"Калон",a:"М",c:"fiction",col:["#1f4f7a","#123352"],tp:"x"});TX[778]={parts:[{title:"Қисми якум",chapters:chs}]};openBook0(778)});
+ await P.waitForTimeout(1500);await P.evaluate(()=>{S.rdUI=true;render()});await P.waitForTimeout(800);
+ t.ok(await P.evaluate(()=>RD.M>500),'китоби калон: саҳифаҳо зиёд (>500)');
+ t.eq(await P.evaluate(()=>[getComputedStyle(document.getElementById('rdscr')).pointerEvents,!!document.getElementById('rdsh')]),['none',true],'range ламсро намегирад, қабати ламс ҳаст');
+ const r=await P.evaluate(()=>{const e=document.getElementById('rdscr').getBoundingClientRect();return{x:e.x,y:e.y+e.height/2,w:e.width}});
+ const pg=async()=>+(await P.evaluate(()=>document.getElementById('rdnum').textContent)).split('/')[0];
+ const mid=r.x+r.w*.4;
+ await P.mouse.move(mid,r.y);await P.mouse.down();await P.waitForTimeout(100);const p0=await pg();
+ await P.mouse.move(mid+28,r.y,{steps:8});await P.waitForTimeout(200);
+ const d=(await pg())-p0;t.ok(d>=1&&d<=3,'28px ≈ 2 саҳифа (на 5–6): '+d);
+ await P.mouse.up();await P.waitForTimeout(200);
+ await P.mouse.move(mid,r.y);await P.mouse.down();await P.mouse.move(mid,r.y-90,{steps:6});await P.waitForTimeout(100);
+ const a=await pg();await P.mouse.move(mid+112,r.y-90,{steps:10});await P.waitForTimeout(200);
+ const f=(await pg())-a;t.ok(f>=1&&f<=5,'ангушт боло: 112px = камтар (аниқ): '+f);
+ t.ok(await P.evaluate(()=>/аниқ/.test(document.querySelector('.rd-zb')?.textContent||'')),'пуфак «аниқ» нишон медиҳад');
+ await P.mouse.up();
+})(module.exports);
