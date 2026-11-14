@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
                 String sc = u.getScheme();
                 // кўприги KitobAndroid фақат саҳифаи худи мо (asset ё сайти мо) учун: ҳамаи дигар file:// рад мешавад
                 if ("file".equals(sc)) return !ASSET.equals(u.toString().split("[?#]")[0]);
-                if ("https".equals(sc) && HOST.equals(u.getHost())) return false;
+                if ("https".equals(sc) && HOST.equals(u.getHost()) && (u.getPath() == null || u.getPath().startsWith("/kitobkhona-"))) return false; // фақат саҳифаи худи мо, на дигар репозиторийҳои ҳамон хост
                 // ба бозгаштгоҳи беруна фақат схемаҳои бехатар (intent:, content:, javascript: ва ғ. рад мешаванд)
                 if (!("https".equals(sc) || "http".equals(sc) || "mailto".equals(sc) || "tel".equals(sc))) return true;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }

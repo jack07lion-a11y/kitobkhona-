@@ -12,7 +12,7 @@ async function uploadCover(c,id,slug,file){
 // Ҳуқуқҳо: [калид, ном, тавсиф, пешфарзи ёрдамчӣ]. Админ ҳамаашро дорад. «Танҳо админ» ҳуқуқҳо ба ёрдамчӣ дода намешаванд.
 const CAPS=[
  ["books","Китобҳо: илова, таҳрир, нест кардан","Идоракунӣ → Китобҳо",true],
- ["maker","Китоб ясаш (PDF, Word → .kitob)","Идоракунӣ → Китоб ясаш",false],
+ ["maker","Сохтани китоб (PDF, Word → .kitob)","Идоракунӣ → Сохтани китоб",false],
  ["reports","Хатоҳо ва пешниҳодҳо","Дидан ва «Ҳал шуд» кардан",true],
  ["stats","Омор (корбарон, хондан)","Рақамҳо дар Идоракунӣ",true],
  ["notif","Огоҳиномаҳо (ёдоварӣ, табрик)","Матн ва вақтро таҳрир кардан",false],
@@ -80,28 +80,49 @@ async function importZip(file,imgs,meta){
  if(res.error)throw new Error("Дар база сабт нашуд: "+res.error.message);
  try{(await caches.open("kitob-books")).delete("https://kitob.local/"+tp)}catch(_){}
  await loadBooks(c);return d.title}
+/* ---- Идоракунӣ: дар «Ҳисоб» танҳо як сатр; худи панел — варақи калон бо тугмаҳои торӣ (admhub) ---- */
+const ADM_I={chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',book:'<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',maker:'<path d="M12 3v4M5 7h14v14H5zM9 12h6M9 16h4"/>',warn:'<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 004 0"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',users:'<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M17 8v6M14 11h6"/>',save:'<path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6"/>',flag:'<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'};
+/* [калид, ном, нишона, ранг, шарт, рақам/нишон] — шарт ба ҳуқуқҳо */
+function admTiles(){const nb=BOOKS.filter(x=>x.db).length,ns=(S.staff||[]).length;
+ return[["admstat","Омор","chart","c1",canPerm("stats"),""],
+  ["admbooks","Китобҳо","book","c5",canPerm("books"),nb?String(nb):""],
+  ["admmake","Сохтани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
+  ["admrep","Хатоҳо","warn","c4",canPerm("reports"),""],
+  ["admnews","Хабар","bell","c3",canPerm("news"),""],
+  ["admnotif","Огоҳиномаҳо","bell","c3",canNotif(),""],
+  ["admrel","APK","dl","c5",canPerm("release"),relNew()?"!":""],
+  ["admstaff","Ёрдамчиён","users","c2",S.role==="admin",ns?String(ns):""],
+  ["admbk","Захира","save","c1",true,bkDue()?"!":""],
+  ["admfeat","Бахшҳо","flag","c1",S.role==="admin",""],
+  ["admdel","Нест шуда","trash","c4",S.role==="admin",""]].filter(t=>t[4])}
 function admHTML(){if(S.role!=="admin"&&S.role!=="subadmin")return "";
- const row=(ic,t,d,sh)=>`<div class="plan"><span class="round">${P(ic,2)}</span><div><b>${t}</b><span>${d}</span></div><button class="pill" data-sheet="${sh}">Кушодан</button></div>`;
-const st=S.stats||{};
+ const n=admTiles().length,alert=relNew()||bkDue();
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
-  ${canPerm("stats")?`
+  <div class="plan"><span class="round">${P(ADM_I.flag,2)}</span><div><b>Панели идоракунӣ${alert?'<i class="rel-dot"></i>':""}</b><span>${n} бахш · ${S.role==="admin"?"админ":"ёрдамчӣ"}</span></div><button class="pill" data-sheet="admhub">Кушодан</button></div></div>`}
+const fmtShort=sec=>{const m=Math.round((sec||0)/60);return m>=60?Math.floor(m/60)+"с "+String(m%60).padStart(2,"0")+"д":m+"д"};
+const admKpi=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};return[["Корбар","hk_u",st.total],["Фаъол","hk_dau",rs.dau],["Хондан","hk_mt",S.rs?fmtShort(rs.sec_today):null],["Насб","hk_in",fn.installs]]};
+function admKpiUpdate(){const m={hk_u:(S.stats||{}).total,hk_dau:(S.rs||{}).dau,hk_mt:S.rs?fmtShort(S.rs.sec_today):null,hk_in:(S.fn||{}).installs};Object.keys(m).forEach(k=>{const e=document.getElementById(k);if(e)e.textContent=m[k]??"–"})}
+function admHubHTML(X){const T=admTiles(),role=S.role==="admin"?"АДМИН":"ЁРДАМЧӢ";
+ return `<div class="sh-head"><b class="sh-t">Идоракунӣ</b><span class="adm-tag">${role}</span>${X}</div>
+  ${canPerm("stats")?`<div class="adm-kpi">${admKpi().map(([t,id,v])=>`<div><small>${t}</small><b id="${id}">${v??"–"}</b></div>`).join("")}</div>`:""}
+  <p class="adm-cap"><b>Бахшҳо</b><span>${T.length}</span></p>
+  <div class="adm-grid">${T.map(([sh,t,ic,c,,bd])=>`<button class="adm-tile" data-adm-go="${sh}"><span class="adm-ic ${c}">${P(ADM_I[ic],1.8)}</span><b>${t}</b>${bd?`<i class="adm-bd${bd==="!"?" r":""}">${bd}</i>`:""}</button>`).join("")}</div>
+  ${canPerm("release")?`<button class="adm-apk" data-adm-go="admrel"><span class="adm-ic c5">${P(ADM_I.dl,1.8)}</span><div><b>Навсозии APK${S.rel&&S.rel.version?" #"+S.rel.version:""}</b><span>${relNew()?"Версияи нав тайёр: нашр кардан мумкин":S.rel&&S.rel.version?"Нашр шудааст":"Нашр ва қатъ кардани навсозӣ"}</span></div>${relNew()?'<i class="adm-bd r">!</i>':""}</button>`:""}`}
+function admStatHTML(X){const st=S.stats||{};return `<div class="sh-head"><b class="sh-t">Омор</b>${X}</div>
+
   <div class="stg"><div><small>Админ</small><b id="st_admin">${st.admins??"–"}</b></div><div><small>Ёрдамчӣ</small><b id="st_sub">${st.subadmins??"–"}</b></div><div><small>Истифодабарандагон</small><b id="st_user">${st.users??"–"}</b></div><div class="all"><small>Рамзро тасдиқ кардаанд</small><b id="st_all">${st.total??"–"}</b></div><div><small>Рамз тасдиқ нашудааст</small><b id="st_unv">${st.unverified??"–"}</b></div><div><small>Профил тайёр нест</small><b id="st_np">${st.no_profile??"–"}</b></div></div>
   <div class="stg"><div><small>Имрӯз фаъол</small><b id="st_dau">${(S.rs||{}).dau??"–"}</b></div><div><small>7 рӯз фаъол</small><b id="st_wau">${(S.rs||{}).wau??"–"}</b></div><div><small>Хондан имрӯз</small><b id="st_mt" class="sm">${S.rs?fmtT(S.rs.sec_today):"–"}</b></div><div class="all"><small>Хондан дар 7 рӯз</small><b id="st_m7">${S.rs?fmtT(S.rs.sec_7d):"–"}</b></div></div>
-  <p class="set-cap">Воронка, 30 рӯзи охир</p>
+  <p class="set-cap">Роҳи корбар, 30 рӯзи охир</p>
   <div class="stg"><div><small>Насб карданд</small><b id="fn_installs">${(S.fn||{}).installs??"–"}</b></div><div><small>Сабти ном карданд</small><b id="fn_registered">${(S.fn||{}).registered??"–"}</b></div><div><small>1 дақиқа хонданд</small><b id="fn_read1">${(S.fn||{}).read1??"–"}</b></div><div class="all"><small>Баргаштанд: рӯзи 1+ / рӯзи 7+</small><b><span id="fn_back1">${(S.fn||{}).back1??"–"}</span> / <span id="fn_back7">${(S.fn||{}).back7??"–"}</span></b></div></div>
   ${S.rs&&S.rs.top&&S.rs.top.length?`<p class="set-note" translate="no">${S.rs.top.map((t,i)=>(i+1)+". "+escH(t.title)+" — "+fmtT(t.sec)).join("<br>")}</p>`:""}
-  `:""}
+ `}
+function admBkHTML(X){return `<div class="sh-head"><b class="sh-t">Нусхаи захира</b>${X}</div>
   <div class="nrow"><div class="ntx"><b>Нусхаи захира (GitLab)</b><small>Охирин нав кардан: ${new Date(bkLast()).toLocaleDateString()} · ${bkDays()} рӯз пеш${bkDue()?" · НАВ КАРДАН ЛОЗИМ":""}</small></div><button class="pill" data-bkdone>Анҷом шуд</button></div>
+ `}
+function admFeatHTML(X){return `<div class="sh-head"><b class="sh-t">Бахшҳо ва Премиум</b>${X}</div>
   ${S.role==="admin"?`<div class="nrow"><div class="ntx"><b>Премиум дар барнома</b><small>Хомӯш: ҳамаи китобҳо ройгон, навиштаҳои Премиум пинҳон. Ҳеҷ чиз нест намешавад</small></div><button class="swt${PREM()?" on":""}" data-flag="premium" role="switch" aria-label="Премиум"></button></div>`:""}
   ${S.role==="admin"?`<p class="set-cap">Бахшҳои «Ба зудӣ»: хомӯш = ба корбар пинҳон ё «Ба зудӣ» менамояд</p>${FEATS.map(([k,t,d])=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${d}</small></div><button class="swt${FEAT(k)?" on":""}" data-feat="${k}" role="switch" aria-label="${t}"></button></div>`).join("")}`:""}
-  ${S.role==="admin"?row('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',"Ҳисобҳои нест шуда","Тиклаш ва пурра тоза кардан","admdel"):""}
-  ${canPerm("maker")&&canPerm("books")?row('<path d="M12 3v4M5 7h14v14H5zM9 12h6M9 16h4"/>',"Китоб ясаш","PDF, Word, EPUB → худкор ба барнома","admmake"):""}
-  ${canPerm("books")?row('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',"Китобҳо","Китоби нав, zip, таҳрир","admbooks"):""}
-  ${canPerm("reports")?row('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>',"Хатоҳо ва пешниҳодҳо","Аз корбарон ва хатоҳои техникӣ","admrep"):""}
-  ${canPerm("news")?row(I.bell,"Хабар фиристодан","Огоҳинома ба ҳамаи APK-ҳо","admnews"):""}
-  ${canNotif()?row(I.bell,"Огоҳиномаҳо","Ёдоварӣ ва табрик: матн, вақт, хомӯш кардан","admnotif"):""}
-  ${canPerm("release")?row('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',"Навсозии APK"+(relNew()?'<i class="rel-dot"></i>':""),relNew()?"Версияи нав тайёр: нашр кардан мумкин":"Нашр ва қатъ кардани навсозии APK","admrel"):""}
-  ${S.role==="admin"?row('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M17 8v6M14 11h6"/>',"Ёрдамчиёни админ","Таъин кардан ва бардоштан","admstaff"):""}</div>`}
+ `}
 function admBooksHTML(X){const mine=BOOKS.filter(x=>x.db);
  return `<div class="sh-head"><b class="sh-t">Китобҳо</b>${X}</div>
   <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Танҳо ном ва муаллиф, бе матн</span></div><button class="pill" data-adm="new">Илова</button></div>
@@ -147,6 +168,7 @@ function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{rem
 
 /* ---- пайвасти тугмаҳо: admin (аз bind() даъват мешавад) ---- */
 function bindAdmin($$){
+ $$("[data-adm-go]",b=>b.onclick=e=>{e.stopPropagation();const to=b.dataset.admGo;S.hubBack=to;S.sheet=to;if(to==="admrel")S._rl=0;render()});
  $$("[data-adm]",b=>b.onclick=e=>{e.stopPropagation();S.adm=b.dataset.adm==="edit"?{...bk(+b.dataset.id)}:{};S.sheet="adm";render()});
  const az=document.getElementById("admzip");
  if(az)az.onchange=async()=>{const all=[...(az.files||[])];if(!all.length)return;let ok=0,bad=[];
@@ -195,6 +217,12 @@ function bindAdmin($$){
  $$("[data-perm]",b=>b.onclick=async()=>{const on=!b.classList.contains("on");b.classList.toggle("on",on);try{const c=await sbLoad();const{error}=await c.rpc("set_perm",{p_email:b.dataset.pm,p_key:b.dataset.perm,p_on:on});if(error){b.classList.toggle("on",!on);toast("Иҷозат дода нашуд. Аввал SQL-и иҷозатҳоро иҷро кунед")}else loadStaff()}catch(_){b.classList.toggle("on",!on);toast("Интернет нест")}});
  $$("[data-sa-del]",b=>b.onclick=async()=>{if(!confirm("Ин ёрдамчиро бардоред?"))return;await setStaff(b.dataset.saDel,"user")});
 }
+
+/* ---- варақҳои панели нав ---- */
+SHEETS.admhub=X=>admHubHTML(X);
+SHEETS.admstat=X=>canPerm("stats")?admStatHTML(X):"";
+SHEETS.admbk=X=>admBkHTML(X);
+SHEETS.admfeat=X=>S.role==="admin"?admFeatHTML(X):"";
 
 /* ---- варақи admrights ---- */
 SHEETS.admrights=X=>{let h="";h=admRightsHTML(X);;return h};

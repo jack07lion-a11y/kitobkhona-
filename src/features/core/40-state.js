@@ -13,4 +13,4 @@ function stamp(){const a=JSON.stringify(S.lib),b=JSON.stringify(S.marks);
  if(S._lh===undefined||S._mh===undefined){S._lh=a;S._mh=b;if(S.libT===undefined)S.libT=hasAny(S.lib)?Date.now():0;if(S.marksT===undefined)S.marksT=hasAny(S.marks)?Date.now():0;return}
  if(a!==S._lh){S._lh=a;S.libT=Date.now()}if(b!==S._mh){S._mh=b;S.marksT=Date.now()}}
 function save(){stamp();try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
-const esc=s=>s.replace(/"/g,"&quot;");
+const esc=s=>escH(s==null?"":s); // & < > " — ҳам барои аттрибут, ҳам барои матн бехатар

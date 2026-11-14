@@ -1,9 +1,3 @@
-function updBanner(){return "";const A=window.KitobAndroid,nat=!!(A&&A.downloadUpdate),st=S.updSt||"",x=`<button class="upd-x" data-updno aria-label="Пӯшидан">${P(IC_X,2.2)}</button>`;
- if(nat&&st==="down")return `<div class="upd"><div><b>Навсозӣ</b><span class="upd-sub">Боргирӣ… ${S.updP||0}%</span><i class="upd-bar" style="--p:${S.updP||0}%"></i></div></div>`;
- if(nat&&st==="ready")return `<div class="upd"><div><b>Навсозӣ тайёр аст</b><span>Барномаро аз нав оғоз кунед. Android «Навсозӣ»-ро мепурсад, пахш кунед</span></div><button class="upd-go" data-upd-install>Аз нав оғоз кардан</button></div>`;
- const err=nat&&st==="err",go=nat?`<button class="upd-go" data-upd-go>${err?"Аз нав кӯшиш кардан":"Боргирӣ"}</button>`:`<a class="upd-go" href="${esc(S.upd.url)}">Боргирӣ</a>`;
- return `<div class="upd"><div><b>Версияи нав омад</b><span>${err?"Боргирӣ нашуд. Интернетро санҷед":"Барои навсозӣ версияи навро боргирӣ кунед"}</span></div>${go}${x}</div>`}
-
 // ===== Версияи ҳадди ақали APK: агар кӯҳна бошад, ба навсозӣ даъват мекунем =====
 function checkMin(){const m=(S.flags&&S.flags.min)||0,v=NATIVE.ver();let el=document.getElementById("minv_ov");
  if(!(v>0&&m>v)){if(el)el.remove();return}
@@ -37,7 +31,7 @@ async function doRefresh(){
  if(wuDue()){out.push("Навсозии нав тайёр аст");webUpdCheck()}
  if(S.upd&&apkNative()){out.push("Навсозии барнома ҳаст (версияи "+S.upd.v+")");setTimeout(()=>apkNag(true),900)}
  if(BOOKS.length>nb)out.push("Китобҳои нав: "+(BOOKS.length-nb));
- const nw=await loadNewsOnce();if(nw){const seen=+(localStorage.getItem("kitob_news")||0);if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)localStorage.setItem("kitob_news",String(nw.id))}
+ const nw=await loadNewsOnce();if(nw){let seen=0;try{seen=+(localStorage.getItem("kitob_news")||0)}catch(_){}if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)try{localStorage.setItem("kitob_news",String(nw.id))}catch(_){}}
  return out.length?out:["Ҳама чиз нав аст"]}
 
 /* ---- пайвасти тугмаҳо: update (аз bind() даъват мешавад) ---- */

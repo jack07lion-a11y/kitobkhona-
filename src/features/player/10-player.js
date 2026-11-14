@@ -8,7 +8,7 @@ function player(){
  return `<section class="ap" style="--bc:${b.col[0]}">
   <div class="ap-top"><button class="ap-ic" data-apmin aria-label="Хурд кардан">${P('<path d="M6 9l6 6 6-6"/>',2.2)}</button><span class="ap-lbl">Аудиокитоб</span><button class="ap-ic" data-toast="Мубодила — қадами оянда" aria-label="Мубодила">${P('<path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/>',2)}</button></div>
   <div class="ap-cover">${cover(b)}</div>
-  <div class="ap-meta"><h1>${b.t}</h1><p>${t.n} · ${b.a}</p></div>
+  <div class="ap-meta"><h1>${escH(b.t)}</h1><p>${escH(t.n)} · ${escH(b.a)}</p></div>
   <input class="ap-seek" type="range" id="apseek" min="0" max="${t.d}" step="1" value="${Math.floor(a.pos)}" aria-label="Мавқеи пахш" style="--p:${a.pos/t.d*100}%">
   <div class="ap-time"><span id="apcur">${fmt(a.pos)}</span><span>${fmt(t.d)}</span></div>
   <div class="ap-ctl"><button class="ap-sp" data-apspeed aria-label="Суръат">${a.speed}x</button><button class="ap-b" data-apskip="-10" aria-label="10 сония ақиб">${B10}</button><button class="ap-play" data-applay aria-label="${a.playing?"Таваққуф":"Пахш"}">${a.playing?PAUSE:PLAY}</button><button class="ap-b" data-apskip="10" aria-label="10 сония пеш">${F10}</button><button class="ap-b ap-tm ${a.sleep?"on":""}" data-aptimer aria-label="Таймери хоб">${TIMER}${a.sleep?`<small id="aptm">${Math.ceil(a.sleep/60)}′</small>`:""}</button></div>
@@ -33,7 +33,7 @@ function dl(list){const id=S.au.id,b=bk(id);if(locked(b)){S.payId=id;S.sheet="pa
  {const T=1400+250*todo.length,t0=Date.now(),iv=setInterval(()=>{const p=Math.min(99,Math.round((Date.now()-t0)/T*100));document.querySelectorAll("[data-dlall]").forEach(e=>{e.classList.add("ing");e.style.setProperty("--p",p+"%");e.textContent="Боргирӣ… "+p+"%"});todo.forEach(i=>{const e=document.getElementById("dlt"+i);if(e)e.innerHTML="<small>"+p+"%</small>"})},120);setTimeout(()=>clearInterval(iv),T)}
  setTimeout(()=>{S.dl[id]=[...new Set([...(S.dl[id]||[]),...todo])];toast(todo.length>1?"Аудиокитоб барои гӯш кардан бе интернет нигоҳ дошта шуд":"Боб боргирифта шуд");render()},1400+250*todo.length)}
 function mini(){const a=S.au;if(!a)return "";const b=bk(a.id),t=tracks(b)[a.ch];
- return `<div class="mini-sp"></div><div class="mini"><button class="mini-main" data-openap aria-label="Плеерро кушодан"><span class="mini-cv">${cover(b)}</span><span class="mini-tx"><b>${b.t}</b><em>${t.n}</em></span></button><button class="mini-b" data-applay aria-label="${a.playing?"Таваққуф":"Пахш"}">${a.playing?PAUSE:PLAY}</button><button class="mini-b" data-mpclose aria-label="Пӯшидан">${P(IC_X,2)}</button><i class="mini-bar"><i id="mpbar" style="width:${a.pos/t.d*100}%"></i></i></div>`}
+ return `<div class="mini-sp"></div><div class="mini"><button class="mini-main" data-openap aria-label="Плеерро кушодан"><span class="mini-cv">${cover(b)}</span><span class="mini-tx"><b>${escH(b.t)}</b><em>${escH(t.n)}</em></span></button><button class="mini-b" data-applay aria-label="${a.playing?"Таваққуф":"Пахш"}">${a.playing?PAUSE:PLAY}</button><button class="mini-b" data-mpclose aria-label="Пӯшидан">${P(IC_X,2)}</button><i class="mini-bar"><i id="mpbar" style="width:${a.pos/t.d*100}%"></i></i></div>`}
 
 function nav(fn,dir){
  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;

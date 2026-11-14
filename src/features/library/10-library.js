@@ -24,7 +24,7 @@ const A={
 };
 const ARTS={};
 // рӯи муқова: расм (агар ҳаст) ё нақшаи худкор бо ном. Агар расм кушода нашавад (суроғаи кӯҳна), нақша худкор намоён мешавад
-function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div>`}
+function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${escH(b.t)}</b><em>${escH(b.a)}</em></div>`}
 let CV_REF=0;
 function coverErr(im){const f=im.closest(".f-front");const b=f&&bk(+im.dataset.cb);if(!b)return;
  const au=f.querySelector(".au");f.innerHTML=coverFallback(b)+(au?au.outerHTML:"");
@@ -48,19 +48,19 @@ function openDetail(id){if(S.view!=="book"){S.prev=S.view;S.prevSearch=S.search}
 function detail(){
  const b=BOOKS.find(x=>x.id===S.bookId);const pr=S.prog[b.id]||0;
  const sim=BOOKS.filter(x=>x.c===b.c&&x.id!==b.id).slice(0,6);
- const qs=[`«${b.t}» дар бораи чист?`,"Аз рӯи китоб флешкарта сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
+ const qs=[`«${escH(b.t)}» дар бораи чист?`,"Аз рӯи китоб флешкарта сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
  const spark='<path d="M12 3l1.900 5.100L19 10l-5.100 1.900L12 17l-1.900-5.100L5 10l5.100-1.900zM19 15l.8 2.200L22 18l-2.200.8L19 21l-.8-2.200L16 18l2.200-.8z" fill="currentColor" stroke="none"/>';
  return `<section class="bd" style="--bc:${b.col[0]}">
   <div class="bd-top pad"><button class="bd-ic" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><span class="bd-tt">${b.t}</span>
    <button class="bd-ic" data-share="${b.id}" aria-label="Мубодила">${P('<path d="M14 5l7 7-7 7M21 12H10a7 7 0 00-7 7"/>',2)}</button>
    <button class="bd-ic" data-dlbook="${b.id}" aria-label="Боргирифтан">${(S.dlBook[b.id]||b.have)?P(IC_OK,2.2):P(IC_DL,2)}</button>
    <button class="bd-ic${S.lib.q.includes(b.id)?" on":""}" data-qtog="${b.id}" aria-label="Ба навбат">${P('<path d="M6 3h12v18l-6-4-6 4z"/>',2)}</button></div>
-  <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p>${fmtPill(b)}</div>
+  <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${escH(b.t)}</h1><p class="bd-au">${escH(b.a)}</p>${fmtPill(b)}</div>
   <div class="pad bd-body">
    <div class="bd-stats">${FEAT("social")?`<div><small>Рейтинг</small><b><span style="color:#f2a93b">${FILL(I.star)}</span>—</b></div>`:""}<div><small>Давомнокӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${b.audio?"—":"Матн"}</b></div>${FEAT("social")?`<div><small>Мехонанд</small><b><span style="color:var(--orange)">${P('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M16 4.500a3.500 3.500 0 010 7M18 14c2 .7 3.300 2.700 3.500 6"/>',2)}</span>0</b></div>`:""}</div>
    <div class="bd-act ${locked(b)?"sm":""}">${b.ebook===false?"":`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}<span class="lb">${locked(b)?"Бо Премиум хондан":(bpath(b)&&!b.have?"Боргирӣ ва хондан":"Хондан")}</span>${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`${b.ebook===false?"":"<i></i>"}<button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}Гӯш кардан${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
    <div class="bd-q"><button class="${S.lib.q.includes(b.id)?"on":""}" data-qtog="${b.id}">${P(I.list,2)}${S.lib.q.includes(b.id)?"Дар навбат":"Ба навбат гузоштан"}</button><button class="${isDone(b.id)?"on":""}" data-dtog="${b.id}">${P(I.flag,2)}${isDone(b.id)?"Хонда шуд":"Хонда шуд гуфтан"}</button></div>
-   <p class="bd-desc">${DESC[b.id]||b.desc||""}</p>
+   <p class="bd-desc">${escH(DESC[b.id]||b.desc||"")}</p>
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]||(GENRES.find(x=>x[0]===b.c)||[])[1]||""}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
     <div><span>${P('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',1.8)}Гӯянда</span><b>${b.audio?"—":"Танҳо матн"}</b></div>

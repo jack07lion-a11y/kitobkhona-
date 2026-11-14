@@ -1,8 +1,10 @@
 let lastSheet=null;
+/* Агар варақ аз панели идоракунӣ кушода шуда бошад — пӯшидан ба панел бармегардонад (на ба «Ҳисоб») */
+function sheetNext(){const was=S.sheet;if(S.hubBack&&S.hubBack===was){S.hubBack=null;return"admhub"}S.hubBack=null;return null}
 function closeSheet(){S.nd=null;S.ndl=null;S._rl=0;const sh=document.querySelector(".sheet"),bg=document.querySelector(".sh-bg");
- if(!sh||matchMedia("(prefers-reduced-motion: reduce)").matches){S.sheet=null;render();return}
+ if(!sh||matchMedia("(prefers-reduced-motion: reduce)").matches){S.sheet=sheetNext();render();return}
  sh.style.transition=`transform .32s ${EASE}`;sh.style.transform="translateY(105%)";if(bg)bg.classList.add("out");{closing=true;const sec=app.firstElementChild;if(sec&&sec.classList.contains("behind")){sec.style.transform="";sec.classList.add("behind-out")}}
- setTimeout(()=>{S.sheet=null;render()},300)}function setupSheet(){const sh=document.querySelector(".sheet");if(!sh)return;let g=null;
+ setTimeout(()=>{S.sheet=sheetNext();render()},300)}function setupSheet(){const sh=document.querySelector(".sheet");if(!sh)return;let g=null;
  sh.onpointerdown=e=>{const r=sh.getBoundingClientRect();if(e.clientY-r.top>44&&sh.scrollTop>0)return;if(e.clientY-r.top>44&&e.target.closest("button,input"))return;g={y0:e.clientY,dy:0,vy:0,ly:e.clientY,lt:performance.now()}};
  sh.onpointermove=e=>{if(!g)return;const now=performance.now();g.vy=(e.clientY-g.ly)/Math.max(1,now-g.lt);g.ly=e.clientY;g.lt=now;g.dy=Math.max(0,e.clientY-g.y0);if(g.dy>6){try{sh.setPointerCapture(e.pointerId)}catch(_){}sh.style.transition="none";sh.style.transform=`translateY(${g.dy}px)`;const sec=app.firstElementChild;if(sec&&sec.classList.contains("behind")){const k=Math.min(1,g.dy/sh.offsetHeight);sec.classList.remove("behind-in");sec.style.transition="none";sec.style.transform=`scale(${.92+.08*k})`}}};
  sh.onpointerup=sh.onpointercancel=()=>{if(!g)return;const G0=g;g=null;if(G0.dy<6)return;
@@ -39,14 +41,14 @@ function sheetHTML(){
  
  if(!h){S.sheet=null;return ""}
  const still=lastSheet===S.sheet?"still":"";lastSheet=S.sheet;
- return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights","admdel"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
+ return `<div class="sh-bg ${still}" data-shclose></div><div class="sheet ${still} ${S.view==="audio"?"ap-sh":""} ${S.sheet==="rds"?"tall":["pedit","lib","report","admrep","admnews","admmake","admrights","admdel","admhub","admstat","admfeat"].includes(S.sheet)?"tall pe":""}" role="dialog" aria-modal="true">${h}</div>`;
 }
 function skel(){return `<div class="skel-w">${[38,70,52,88,40,64,0,30,76,48,58].map(w=>w?`<span class="sk" style="width:${w}%"></span>`:`<span style="height:8px"></span>`).join("")}</div>`}
 function wheelHTML(){
  const RC=S.recent.filter(id=>bk(id));
  if(!RC.length)return `<div class="wheel one" id="wheel"><div class="wpad t"></div><div class="witem wempty"><span class="round" style="width:60px;height:60px">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div class="wi"><b>Ҳоло китоб нахондаед</b><span class="a">Хонданро ҳозир оғоз кунед</span><button class="readbtn" data-read="2">${P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}Китобро хонед</button></div></div><div class="wpad b"></div></div>`;
  const one=RC.length===1;
- return `<div class="car ${one?"one":""}" id="wheel">${RC.map(id=>{const b=BOOKS.find(x=>x.id===id);const au=S.mode[id]==="audio";const pr=(au?S.aprog[id]:S.prog[id])||0;return `<div class="witem"><div style="width:60px;flex:none">${cover(b)}</div><div class="wi"><b>${b.t}</b><span class="a">${b.a}</span><div class="pbar"><i style="width:${pr}%"></i></div><button class="readbtn" ${au?"data-listen":"data-read"}="${id}">${au?P(I.head,2.2):P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}${au?"Гӯш кардан":"Идома додан"} <small>(${pr}%)</small></button></div></div>`}).join("")}</div>${one?"":`<div class="cdots" aria-hidden="true">${S.recent.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`}`;
+ return `<div class="car ${one?"one":""}" id="wheel">${RC.map(id=>{const b=BOOKS.find(x=>x.id===id);const au=S.mode[id]==="audio";const pr=(au?S.aprog[id]:S.prog[id])||0;return `<div class="witem"><div style="width:60px;flex:none">${cover(b)}</div><div class="wi"><b>${escH(b.t)}</b><span class="a">${escH(b.a)}</span><div class="pbar"><i style="width:${pr}%"></i></div><button class="readbtn" ${au?"data-listen":"data-read"}="${id}">${au?P(I.head,2.2):P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}${au?"Гӯш кардан":"Идома додан"} <small>(${pr}%)</small></button></div></div>`}).join("")}</div>${one?"":`<div class="cdots" aria-hidden="true">${S.recent.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`}`;
 }
 function setupWheel(){
  const w=document.getElementById("wheel");if(!w)return;

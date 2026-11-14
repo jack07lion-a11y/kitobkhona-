@@ -15,7 +15,7 @@ function bindPremium($$){
 
 /* ---- варақи pay ---- */
 SHEETS.pay=X=>{let h="";{const b=S.payId?bk(S.payId):null;
-  h=`<div class="pay">${X}<span class="pay-cr">${CROWN}</span><h2>${b?"Парчаи ройгон тамом шуд":"Китобхона Премиум"}</h2><p>${b?`Барои идомаи «${b.t}» ба Премиум гузаред.`:"Ҳамаи китобҳо ва аудиокитобҳо бе маҳдудият."}</p>
+  h=`<div class="pay">${X}<span class="pay-cr">${CROWN}</span><h2>${b?"Парчаи ройгон тамом шуд":"Китобхона Премиум"}</h2><p>${b?`Барои идомаи «${escH(b.t)}» ба Премиум гузаред.`:"Ҳамаи китобҳо ва аудиокитобҳо бе маҳдудият."}</p>
   <ul>${["Ҳамаи китобҳои пулакӣ","Аудиокитобҳо пурра","Бе интернет хондан ва гӯш кардан","Тарифи оила ва мактаб"].map(x=>`<li>${P(IC_OK,2.4)}${x}</li>`).join("")}</ul>
   <div class="pay-price"><b>Ба зудӣ</b></div><p class="hint">Обуна ҳоло омода мешавад. Китобҳои ройгонро бемаҳдудият хонед.</p>
   <button class="pay-btn" data-subscribe disabled aria-disabled="true">Обуна ба зудӣ кушода мешавад</button><button class="pay-later" data-shclose>Баъдтар</button></div>`};return h};
