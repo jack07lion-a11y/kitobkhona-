@@ -28,3 +28,14 @@
 .adm-apk b{display:block;font-size:12.5px}
 .adm-apk span:not(.adm-ic){display:block;font-size:11px;color:var(--muted);font-weight:600}
 .adm-apk .adm-bd{position:static}
+/* экрани танг (320px) ва забонҳои дароз (русӣ): ҳеҷ чиз аз саҳифа набарояд */
+.stg>div{min-width:0}
+.stg small,.stg b{overflow-wrap:anywhere}
+.sheet select,.sheet textarea,.sheet .field{max-width:100%;min-width:0}
+.nrow .ntx{min-width:0}.nrow .pill{flex:none;max-width:48%}
+.seg.sm button{min-width:0;padding-left:6px;padding-right:6px;font-size:12px;overflow-wrap:anywhere}
+.search{min-width:0}.search input{min-width:0;width:100%}
+.seg.sm{max-width:100%}
+.seg.sm button{flex:1 1 0;white-space:normal;line-height:1.15}
+.set-row{flex-wrap:wrap;row-gap:8px}
+.set-row .seg.sm{flex:1 1 auto;min-width:0}

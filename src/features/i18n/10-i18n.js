@@ -12,6 +12,8 @@ const I18N=(()=>{
   uz:{"китоб":()=>"ta kitob","боб":()=>"ta bob","маҷмӯа":()=>"ta toʻplam","саҳифа":()=>"ta sahifa","сония":()=>"soniya","дақиқа":()=>"daqiqa","дақ":()=>"daq.","мб":()=>"MB"},
   en:{"китоб":n=>n==1?"book":"books","боб":n=>n==1?"chapter":"chapters","маҷмӯа":n=>n==1?"collection":"collections","саҳифа":n=>n==1?"page":"pages","сония":()=>"sec","дақиқа":()=>"min","дақ":()=>"min","мб":()=>"MB"}};
  const RULES=[
+  [/^(\d+) бахш · (админ|ёрдамчӣ)$/,(l,m)=>({ru:`${m[1]} разделов · ${m[2]==="админ"?"админ":"помощник"}`,uz:`${m[1]} boʻlim · ${m[2]==="админ"?"admin":"yordamchi"}`,en:`${m[1]} sections · ${m[2]==="админ"?"admin":"helper"}`})[l]],
+  [/^Охирин нав кардан: (.+) · (\d+) рӯз пеш( · НАВ КАРДАН ЛОЗИМ)?$/,(l,m)=>({ru:`Последнее обновление: ${m[1]} · ${m[2]} дн. назад${m[3]?" · НУЖНО ОБНОВИТЬ":""}`,uz:`Oxirgi yangilash: ${m[1]} · ${m[2]} kun oldin${m[3]?" · YANGILASH KERAK":""}`,en:`Last updated: ${m[1]} · ${m[2]} days ago${m[3]?" · UPDATE NEEDED":""}`})[l]],
   [/^«([\s\S]+)» дар бораи чист\?$/,(l,m)=>({ru:`О чём «${m[1]}»?`,uz:`«${m[1]}» nima haqida?`,en:`What is “${m[1]}” about?`})[l]],
   [/^Барои идомаи «([\s\S]+)» ба Премиум гузаред\.$/,(l,m)=>({ru:`Чтобы продолжить «${m[1]}», перейдите на Премиум.`,uz:`«${m[1]}» ni davom ettirish uchun Premiumga oʻting.`,en:`To continue “${m[1]}”, go Premium.`})[l]],
   [/^Ин ном банд буд\. Ба шумо «([\s\S]+)» дода шуд$/,(l,m)=>({ru:`Это имя было занято. Вам присвоено «${m[1]}»`,uz:`Bu ism band edi. Sizga «${m[1]}» berildi`,en:`That name was taken. You were given “${m[1]}”`})[l]],
@@ -25,14 +27,15 @@ const I18N=(()=>{
  const built={},cache={},orig=new WeakMap(),oatt=new WeakMap();
  let lang="tg";
  function build(l){if(built[l])return built[l];const c=COL[l],ex=new Map(),sub=[];
-  ROWS().forEach(r=>{const k=r[0].trim(),v=r[c];if(!k||!v)return;ex.set(k,v.trim());if(k.length>=3&&/[\p{L}]/u.test(k))sub.push([new RegExp("(?<![\\p{L}\\p{N}])"+esc(k)+"(?![\\p{L}\\p{N}])","gu"),v.trim()])});
+  ROWS().forEach(r=>{const k=r[0].trim(),v=r[c];if(!k||!v)return;ex.set(k,v.trim());if(r[4]!=="x"&&k.length>=3&&/[\p{L}]/u.test(k))sub.push([new RegExp("(?<![\\p{L}\\p{N}])"+esc(k)+"(?![\\p{L}\\p{N}])","gu"),v.trim()])});
   sub.sort((a,b)=>b[0].source.length-a[0].source.length);return built[l]={ex,sub}}
  function tr(s,l=lang){if(l==="tg"||!s)return s;const t=s.trim();if(!t||!/[Ѐ-ӿ]/.test(t))return s;
   const ck=l+"\u0001"+s;if(cache[ck]!==undefined)return cache[ck];
   const B=build(l);let out=B.ex.get(t);
   if(out===undefined){for(const [re,f] of RULES){const m=t.match(re);if(m){out=f(l,m);break}}}
   if(out===undefined){out=t.replace(NUM,(_,n,u)=>n+" "+(U[l][u]?U[l][u](parseFloat(n.replace(",","."))):u));
-   B.sub.forEach(([re,v])=>{out=out.replace(re,v)})}
+   /* қисмӣ-иваз танҳо барои матни кӯтоҳ: ҷумлаи дароз ё сатри пурра дорад ё бетағйир мемонад — на омехтаи ду забон */
+   if(t.length<=36)B.sub.forEach(([re,v])=>{out=out.replace(re,v)})}
   const lead=s.match(/^\s*/)[0],trail=s.match(/\s*$/)[0];return cache[ck]=lead+out+trail}
  const ATT=["placeholder","title","aria-label","alt"];
  const skip=n=>{const e=n.nodeType===1?n:n.parentElement;return !e||!!e.closest(NOTR)};

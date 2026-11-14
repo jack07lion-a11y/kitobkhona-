@@ -1079,6 +1079,17 @@ select.pe-i{appearance:auto}
 .adm-apk b{display:block;font-size:12.5px}
 .adm-apk span:not(.adm-ic){display:block;font-size:11px;color:var(--muted);font-weight:600}
 .adm-apk .adm-bd{position:static}
+/* экрани танг (320px) ва забонҳои дароз (русӣ): ҳеҷ чиз аз саҳифа набарояд */
+.stg>div{min-width:0}
+.stg small,.stg b{overflow-wrap:anywhere}
+.sheet select,.sheet textarea,.sheet .field{max-width:100%;min-width:0}
+.nrow .ntx{min-width:0}.nrow .pill{flex:none;max-width:48%}
+.seg.sm button{min-width:0;padding-left:6px;padding-right:6px;font-size:12px;overflow-wrap:anywhere}
+.search{min-width:0}.search input{min-width:0;width:100%}
+.seg.sm{max-width:100%}
+.seg.sm button{flex:1 1 0;white-space:normal;line-height:1.15}
+.set-row{flex-wrap:wrap;row-gap:8px}
+.set-row .seg.sm{flex:1 1 auto;min-width:0}
 
 /* ---------- навсозии саҳифа ---------- */
 .wus{position:fixed;inset:0;z-index:2147482600;pointer-events:none}
@@ -1329,7 +1340,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Иҷозат диҳед ва баргашта аз нав пахш кунед","Разрешите и вернитесь, затем нажмите снова","Ruxsat bering, qaytib qayta bosing","Allow it, come back and tap again"],
 ["Китобҳо","Книги","Kitoblar","Books"],
 ["Китоби нав, zip, таҳрир","Новая книга, zip, редактирование","Yangi kitob, zip, tahrirlash","New book, zip, editing"],
-["Кушодан","Открыть","Ochish","Open"],
+["Кушодан","Открыть","Ochish","Open","x"],
 ["Ёдоварӣ ва табрик: матн, вақт, хомӯш кардан","Напоминание и поздравление: текст, время, отключение","Eslatma va tabrik: matn, vaqt, oʻchirish","Reminder and congratulation: text, time, turn off"],
 ["Таъин кардан ва бардоштан","Назначить и снять","Tayinlash va olib tashlash","Assign and remove"],
 ["Ёдоварии ҳаррӯза","Ежедневное напоминание","Kundalik eslatma","Daily reminder"],
@@ -1557,7 +1568,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Бахш","Раздел","Boʻlim","Category"],
 ["Гӯянда","Чтец","Ovoz","Narrator"],
 ["Синну сол","Возраст","Yosh","Age"],
-["Хондан","Читать","Oʻqish","Read"],
+["Хондан","Читать","Oʻqish","Read","x"],
 ["Парча хондан","Читать фрагмент","Parchani oʻqish","Read preview"],
 ["Боргирӣ ва хондан","Скачать и читать","Yuklab olish va oʻqish","Download and read"],
 ["Гӯш кардан","Слушать","Tinglash","Listen"],
@@ -1843,7 +1854,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Анҷом шуд","Готово","Bajarildi","Done"],
 ["Баъдтар","Позже","Keyinroq","Later"],
 ["Ташаккур! Эслатма 30 рӯзи дигар меояд","Спасибо! Напоминание придёт через 30 дней","Rahmat! Eslatma 30 kundan keyin keladi","Thanks! The reminder returns in 30 days"],
-["Сохтани китоб","Создать книгу","Kitob yasash","Create a book"],
+["Сохтани китоб","Создать книгу","Kitob yasash","Create a book","x"],
 ["PDF, Word, EPUB → худкор ба барнома","PDF, Word, EPUB → автоматически в приложение","PDF, Word, EPUB → avtomatik ilovaga","PDF, Word, EPUB → straight into the app"],
 ["Файлро интихоб кунед","Выберите файл","Faylni tanlang","Choose a file"],
 ["Номи китоб","Название книги","Kitob nomi","Book title"],
@@ -1880,7 +1891,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Нашр шуд: корбарон навсозиро мебинанд","Опубликовано: пользователи увидят обновление","E’lon qilindi: foydalanuvchilar yangilanishni ko‘radi","Published: users will see the update"],
 ["Навсозии барнома тайёр аст","Обновление приложения готово","Ilova yangilanishi tayyor","App update is ready"],
 ["Версияи нави барнома омода шуд. Навсозӣ чанд сонияро мегирад. Дар вақти боргирӣ шумо метавонед хондани китобро давом диҳед.","Новая версия приложения готова. Обновление займёт несколько секунд. Во время загрузки можно продолжать читать.","Ilovaning yangi versiyasi tayyor. Yangilanish bir necha soniya oladi. Yuklanayotganda kitob o‘qishni davom ettirishingiz mumkin.","A new version is ready. The update takes a few seconds. You can keep reading while it downloads."],
-["Насб кардан","Установить","O‘rnatish","Install"],
+["Насб кардан","Установить","O‘rnatish","Install","x"],
 ["Иҷозат диҳед («Насби барнома»), баъд боз «Насб кардан»-ро пахш кунед","Разрешите установку, затем снова нажмите «Установить»","Ruxsat bering (o‘rnatish), keyin yana «O‘rnatish» ni bosing","Allow installing, then tap “Install” again"],
 ["Файл ёфт нашуд. Аз нав кӯшиш кунед","Файл не найден. Попробуйте снова","Fayl topilmadi. Qayta urinib ko‘ring","File not found. Try again"],
 ["Боргирӣ нашуд. Интернетро санҷед","Не удалось загрузить. Проверьте интернет","Yuklanmadi. Internetni tekshiring","Download failed. Check the internet"],
@@ -1891,22 +1902,92 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Бо Google ворид шудан","Войти через Google","Google orqali kirish","Sign in with Google"],
 ["Сервер дастрас нест","Сервер недоступен","Server mavjud emas","Server unavailable"],
 ["Ворид шуда нашуд. Аз нав кӯшиш кунед","Не удалось войти. Попробуйте снова","Kirib bo‘lmadi. Qayta urinib ko‘ring","Sign-in failed. Try again"],
-["Омор","Статистика","Statistika","Stats"],
-["Хатоҳо","Ошибки","Xatolar","Errors"],
-["Хабар","Новости","Xabar","News"],
-["Захира","Резерв","Zaxira","Backup"],
-["Бахшҳо","Разделы","Boʻlimlar","Sections"],
-["Нест шуда","Удалённые","Oʻchirilgan","Deleted"],
-["Ёрдамчиён","Помощники","Yordamchilar","Helpers"],
-["Корбар","Пользователи","Foydalanuvchi","Users"],
-["Фаъол","Активные","Faol","Active"],
-["Насб","Установки","Oʻrnatish","Installs"],
-["Панели идоракунӣ","Панель управления","Boshqaruv paneli","Admin panel"],
-["Бахшҳо ва Премиум","Разделы и Премиум","Boʻlimlar va Premium","Sections and Premium"],
-["Нусхаи захира","Резервная копия","Zaxira nusxa","Backup"],
+["Омор","Статистика","Statistika","Stats","x"],
+["Хатоҳо","Ошибки","Xatolar","Errors","x"],
+["Хабар","Новости","Xabar","News","x"],
+["Захира","Резерв","Zaxira","Backup","x"],
+["Бахшҳо","Разделы","Boʻlimlar","Sections","x"],
+["Нест шуда","Удалённые","Oʻchirilgan","Deleted","x"],
+["Ёрдамчиён","Помощники","Yordamchilar","Helpers","x"],
+["Корбар","Пользователи","Foydalanuvchi","Users","x"],
+["Фаъол","Активные","Faol","Active","x"],
+["Насб","Установки","Oʻrnatish","Installs","x"],
+["Панели идоракунӣ","Панель управления","Boshqaruv paneli","Admin panel","x"],
+["Бахшҳо ва Премиум","Разделы и Премиум","Boʻlimlar va Premium","Sections and Premium","x"],
+["Нусхаи захира","Резервная копия","Zaxira nusxa","Backup","x"],
 ["Роҳи корбар, 30 рӯзи охир","Путь пользователя, 30 дней","Foydalanuvchi yoʻli, 30 kun","User funnel, last 30 days"],
-["АДМИН","АДМИН","ADMIN","ADMIN"],
-["ЁРДАМЧӢ","ПОМОЩНИК","YORDAMCHI","HELPER"]
+["АДМИН","АДМИН","ADMIN","ADMIN","x"],
+["ЁРДАМЧӢ","ПОМОЩНИК","YORDAMCHI","HELPER","x"],
+["Фикр ва хато","Отзыв и ошибка","Fikr va xato","Feedback & bugs","x"],
+["Хуб","Отлично","Yaxshi","Good","x"],
+["Хато бошад — чӣ шуд? Пешниҳод ё хуб бошад — нависед…","Если ошибка — что случилось? Если предложение или похвала — напишите…","Xato boʻlsa — nima boʻldi? Taklif yoki yaxshi fikr boʻlsa — yozing…","If a bug — what happened? A suggestion or praise — write it here…"],
+["Ин валютаи Китобхона. Ба зудӣ кушода мешавад.","Это валюта Китобхоны. Скоро откроется.","Bu Kitobxona valyutasi. Tez orada ochiladi.","This is the Kitobkhona currency. Opening soon."],
+["Озмун ба зудӣ кушода мешавад","Конкурс скоро откроется","Tanlov tez orada ochiladi","The contest opens soon"],
+["ИФМ, Фурӯғ ва Баҳс — ҳоло омода мешаванд","ИФМ, Фуруг и Бахс — пока готовятся","IFM, Furugʻ va Bahs — hozir tayyorlanmoqda","IFM, Furugh and Bahs — in preparation"],
+["Ба зудӣ","Скоро","Tez orada","Soon","x"],
+["Обуна ҳоло омода мешавад. Китобҳои ройгонро бемаҳдудият хонед.","Подписка пока готовится. Бесплатные книги можно читать без ограничений.","Obuna hozir tayyorlanmoqda. Bepul kitoblarni cheklovsiz oʻqing.","Subscription is being prepared. Read free books without limits."],
+["Обуна ба зудӣ кушода мешавад","Подписка скоро откроется","Obuna tez orada ochiladi","Subscription opens soon"],
+["Ранг 1","Цвет 1","Rang 1","Color 1","x"],
+["Ранг 2","Цвет 2","Rang 2","Color 2","x"],
+["Ранг 3","Цвет 3","Rang 3","Color 3","x"],
+["Ранг 4","Цвет 4","Rang 4","Color 4","x"],
+["Ранг 5","Цвет 5","Rang 5","Color 5","x"],
+["Ранг 6","Цвет 6","Rang 6","Color 6","x"],
+["Манба ва нашр","Источник и издание","Manba va nashr","Source & edition"],
+["Ҳолати ҳуқуқ","Правовой статус","Huquqiy holat","Rights status","x"],
+["Умумиҷамъиятӣ (бунёдгузорон тасдиқ кардаанд)","Общественное достояние (подтверждено основателями)","Umumiy mulk (asoschilar tasdiqlagan)","Public domain (confirmed by the founders)"],
+["Муқова: Сабз","Обложка: Зелёная","Muqova: Yashil","Cover: Green","x"],
+["Муқова: Сурх","Обложка: Красная","Muqova: Qizil","Cover: Red","x"],
+["Муқова: Бунафш","Обложка: Фиолетовая","Muqova: Binafsha","Cover: Purple"],
+["Муқова: Кабуд","Обложка: Синяя","Muqova: Koʻk","Cover: Blue"],
+["Муқова: Зарди тира","Обложка: Тёмно-жёлтая","Muqova: Toʻq sariq","Cover: Dark yellow"],
+["Муқова: Гулобӣ","Обложка: Розовая","Muqova: Pushti","Cover: Pink"],
+["Муқова: Хокистарӣ","Обложка: Серая","Muqova: Kulrang","Cover: Gray"],
+["Ҳуқуқ ва манба (барои нашр ҳатмӣ)","Права и источник (обязательно для публикации)","Huquq va manba (nashr uchun majburiy)","Rights and source (required to publish)"],
+["Ҳоло номаълум (нашр нашавад)","Пока неизвестно (не публиковать)","Hozircha nomaʼlum (nashr qilinmasin)","Unknown for now (do not publish)"],
+["Иҷозатнома ё розигӣ дорем","Есть лицензия или согласие","Litsenziya yoki rozilik bor","We have a license or consent"],
+["Соҳиби ҳуқуқ (нашриёт, муаллиф ё меросхӯр)","Правообладатель (издательство, автор или наследник)","Huquq egasi (nashriyot, muallif yoki merosxoʻr)","Rights holder (publisher, author or heir)"],
+["Манба (аз куҷо гирифта шуд)","Источник (откуда взято)","Manba (qayerdan olingan)","Source (where it came from)"],
+["Нашр (нашриёт, сол)","Издание (издательство, год)","Nashr (nashriyot, yil)","Edition (publisher, year)"],
+["Мутарҷим ё муҳаррир","Переводчик или редактор","Tarjimon yoki muharrir","Translator or editor"],
+["Эзоҳи иҷозатнома (ихтиёрӣ)","Примечание о лицензии (необязательно)","Litsenziya izohi (ixtiyoriy)","License note (optional)"],
+["Имрӯз фаъол","Активны сегодня","Bugun faol","Active today","x"],
+["7 рӯз фаъол","Активны за 7 дней","7 kun faol","Active in 7 days","x"],
+["Хондан имрӯз","Чтение сегодня","Bugun oʻqish","Reading today","x"],
+["Хондан дар 7 рӯз","Чтение за 7 дней","7 kunda oʻqish","Reading in 7 days"],
+["Насб карданд","Установили","Oʻrnatdi","Installed","x"],
+["Сабти ном карданд","Зарегистрировались","Roʻyxatdan oʻtdi","Registered"],
+["1 дақиқа хонданд","Читали 1 минуту","1 daqiqa oʻqidi","Read for 1 min"],
+["Баргаштанд: рӯзи 1+ / рӯзи 7+","Вернулись: день 1+ / день 7+","Qaytdi: 1-kun+ / 7-kun+","Returned: day 1+ / day 7+"],
+["Хатоҳо ва пешниҳодҳо","Ошибки и предложения","Xatolar va takliflar","Bugs and suggestions"],
+["Нав","Новые","Yangi","New","x"],
+["Ҳал шуд","Решено","Hal boʻldi","Resolved","x"],
+["Техникӣ","Технические","Texnik","Technical","x"],
+["Холӣ аст","Пусто","Boʻsh","Empty","x"],
+["Хабар фиристодан","Отправить новость","Xabar yuborish","Send news"],
+["Сарлавҳа","Заголовок","Sarlavha","Title","x"],
+["Масалан: Китобҳои нав илова шуданд","Например: Добавлены новые книги","Masalan: Yangi kitoblar qoʻshildi","E.g.: New books added"],
+["Чанд сатр…","Несколько строк…","Bir necha satr…","A few lines…","x"],
+["Хабар ба ҳамаи APK-ҳо ҳамчун огоҳинома меравад (то 6 соат дар дастгоҳ мерасад).","Новость придёт всем APK как уведомление (до 6 часов).","Xabar barcha APK larga bildirishnoma sifatida boradi (qurilmaga 6 soatgacha yetib boradi).","The news goes to all APKs as a notification (up to 6 hours to arrive)."],
+["Ёдоварӣ: 5 маротиба дар рӯз","Напоминания: 5 раз в день","Eslatma: kuniga 5 marta","Reminders: 5 times a day"],
+["09:30 · 12:30 · 15:30 · 18:30 · 20:30. Агар имрӯз ба барнома даромада бошад — ҳамагӣ 3","09:30 · 12:30 · 15:30 · 18:30 · 20:30. Если сегодня заходил(а) в приложение — всего 3","09:30 · 12:30 · 15:30 · 18:30 · 20:30. Bugun ilovaga kirgan boʻlsa — jami 3 ta","09:30 · 12:30 · 15:30 · 18:30 · 20:30. If the app was opened today — 3 in total"],
+["Вақти китоб хондан расид. Ба Китобхона ворид шавед","Пора читать книгу. Зайдите в Китобхону","Kitob oʻqish vaqti keldi. Kitobxonaga kiring","Time to read. Open Kitobkhona"],
+["Версияи ҳадди ақал","Минимальная версия","Minimal versiya","Minimum version"],
+["Сабт","Сохранить","Saqlash","Save","x"],
+["Нашр ва қатъ кардани навсозӣ","Публикация и остановка обновления","Yangilanishni nashr qilish va toʻxtatish","Publish and stop the update"],
+["Ҳисобҳои нест шуда","Удалённые аккаунты","Oʻchirilgan hisoblar","Deleted accounts"],
+["Пурра тоза кардан","Удалить полностью","Butunlay tozalash","Delete permanently"],
+["танҳо админ","только админ","faqat admin","admin only","x"],
+["пинҳон","скрыто","yashirin","hidden","x"],
+["Плеер (ҳоло намуна аст)","Плеер (пока образец)","Pleyer (hozircha namuna)","Player (sample for now)"],
+["Озмун: ИФМ, Фурӯғ, Баҳс","Конкурс: ИФМ, Фуруг, Бахс","Tanlov: IFM, Furugʻ, Bahs","Contest: IFM, Furugh, Bahs"],
+["Саҳифаҳои озмун","Страницы конкурса","Tanlov sahifalari","Contest pages"],
+["Нишондиҳандаи танга","Индикатор монет","Tanga koʻrsatkichi","Coin indicator"],
+["Дидан ва «Ҳал шуд» кардан","Просмотр и отметка «Решено»","Koʻrish va «Hal boʻldi» qilish","View and mark «Resolved»"],
+["Рақамҳо дар Идоракунӣ","Цифры в Управлении","Boshqaruvdagi raqamlar","Numbers in Admin"],
+["Матн ва вақтро таҳрир кардан","Редактировать текст и время","Matn va vaqtni tahrirlash","Edit text and time"],
+["Огоҳинома ба ҳамаи APK-ҳо","Уведомление всем APK","Barcha APK larga bildirishnoma","Notification to all APKs"],
+["Ҳеҷ кас, ба ҷуз худи админ","Никто, кроме админа","Adminning oʻzidan boshqa hech kim","No one but the admin"]
 ]
 </script>
 <script>
@@ -2817,7 +2898,7 @@ function bindReader($$){
 }
 
 /* ---- варақи toc ---- */
-SHEETS.toc=X=>{let h="";{const b=bk(S.rdId),mk=(S.marks[b.id]||[]).slice().sort((x,y)=>x-y),tcs=isTx(b)?txChapters(b):null;
+SHEETS.toc=X=>{let h="";if(!bk(S.rdId))return "";{const b=bk(S.rdId),mk=(S.marks[b.id]||[]).slice().sort((x,y)=>x-y),tcs=isTx(b)?txChapters(b):null;
   h=`<div class="sh-head"><div class="sh-cv">${cover(b)}</div><div><b>${escH(b.t)}</b><span>${escH(b.a)}</span></div>${X}</div>
   <div class="seg">${["Мундариҷа","Хатчӯб"].map((n,i)=>`<button class="${S.tocTab===i?"on":""}" data-toct="${i}">${n}</button>`).join("")}</div>
   ${S.tocTab===0?(tcs?`<div class="sh-list">${tcs.map((c,i)=>`${c.part?`<p class="sh-empty" style="text-align:left;margin:10px 4px 2px">${escH(c.part)}</p>`:""}<button class="sh-row toc-r" data-gotch="${i}"><span translate="no"><svg class="toc-i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>${escH(c.n)}</span><em>${(S.rdCh[b.id]||0)===i?"Ҳозир":""}</em></button>`).join("")}</div>`:`<div class="sh-list">${CHN.map((n,i)=>`<button class="sh-row" data-goch="${i}"><span>${n}</span><em><span data-chp="${i}">–</span>-саҳифа</em></button>`).join("")}</div>`)
@@ -3955,7 +4036,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="cac0feff08";
+const WEB_H="747250681f";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
@@ -4039,6 +4120,8 @@ const I18N=(()=>{
   uz:{"китоб":()=>"ta kitob","боб":()=>"ta bob","маҷмӯа":()=>"ta toʻplam","саҳифа":()=>"ta sahifa","сония":()=>"soniya","дақиқа":()=>"daqiqa","дақ":()=>"daq.","мб":()=>"MB"},
   en:{"китоб":n=>n==1?"book":"books","боб":n=>n==1?"chapter":"chapters","маҷмӯа":n=>n==1?"collection":"collections","саҳифа":n=>n==1?"page":"pages","сония":()=>"sec","дақиқа":()=>"min","дақ":()=>"min","мб":()=>"MB"}};
  const RULES=[
+  [/^(\d+) бахш · (админ|ёрдамчӣ)$/,(l,m)=>({ru:`${m[1]} разделов · ${m[2]==="админ"?"админ":"помощник"}`,uz:`${m[1]} boʻlim · ${m[2]==="админ"?"admin":"yordamchi"}`,en:`${m[1]} sections · ${m[2]==="админ"?"admin":"helper"}`})[l]],
+  [/^Охирин нав кардан: (.+) · (\d+) рӯз пеш( · НАВ КАРДАН ЛОЗИМ)?$/,(l,m)=>({ru:`Последнее обновление: ${m[1]} · ${m[2]} дн. назад${m[3]?" · НУЖНО ОБНОВИТЬ":""}`,uz:`Oxirgi yangilash: ${m[1]} · ${m[2]} kun oldin${m[3]?" · YANGILASH KERAK":""}`,en:`Last updated: ${m[1]} · ${m[2]} days ago${m[3]?" · UPDATE NEEDED":""}`})[l]],
   [/^«([\s\S]+)» дар бораи чист\?$/,(l,m)=>({ru:`О чём «${m[1]}»?`,uz:`«${m[1]}» nima haqida?`,en:`What is “${m[1]}” about?`})[l]],
   [/^Барои идомаи «([\s\S]+)» ба Премиум гузаред\.$/,(l,m)=>({ru:`Чтобы продолжить «${m[1]}», перейдите на Премиум.`,uz:`«${m[1]}» ni davom ettirish uchun Premiumga oʻting.`,en:`To continue “${m[1]}”, go Premium.`})[l]],
   [/^Ин ном банд буд\. Ба шумо «([\s\S]+)» дода шуд$/,(l,m)=>({ru:`Это имя было занято. Вам присвоено «${m[1]}»`,uz:`Bu ism band edi. Sizga «${m[1]}» berildi`,en:`That name was taken. You were given “${m[1]}”`})[l]],
@@ -4052,14 +4135,15 @@ const I18N=(()=>{
  const built={},cache={},orig=new WeakMap(),oatt=new WeakMap();
  let lang="tg";
  function build(l){if(built[l])return built[l];const c=COL[l],ex=new Map(),sub=[];
-  ROWS().forEach(r=>{const k=r[0].trim(),v=r[c];if(!k||!v)return;ex.set(k,v.trim());if(k.length>=3&&/[\p{L}]/u.test(k))sub.push([new RegExp("(?<![\\p{L}\\p{N}])"+esc(k)+"(?![\\p{L}\\p{N}])","gu"),v.trim()])});
+  ROWS().forEach(r=>{const k=r[0].trim(),v=r[c];if(!k||!v)return;ex.set(k,v.trim());if(r[4]!=="x"&&k.length>=3&&/[\p{L}]/u.test(k))sub.push([new RegExp("(?<![\\p{L}\\p{N}])"+esc(k)+"(?![\\p{L}\\p{N}])","gu"),v.trim()])});
   sub.sort((a,b)=>b[0].source.length-a[0].source.length);return built[l]={ex,sub}}
  function tr(s,l=lang){if(l==="tg"||!s)return s;const t=s.trim();if(!t||!/[Ѐ-ӿ]/.test(t))return s;
   const ck=l+"\u0001"+s;if(cache[ck]!==undefined)return cache[ck];
   const B=build(l);let out=B.ex.get(t);
   if(out===undefined){for(const [re,f] of RULES){const m=t.match(re);if(m){out=f(l,m);break}}}
   if(out===undefined){out=t.replace(NUM,(_,n,u)=>n+" "+(U[l][u]?U[l][u](parseFloat(n.replace(",","."))):u));
-   B.sub.forEach(([re,v])=>{out=out.replace(re,v)})}
+   /* қисмӣ-иваз танҳо барои матни кӯтоҳ: ҷумлаи дароз ё сатри пурра дорад ё бетағйир мемонад — на омехтаи ду забон */
+   if(t.length<=36)B.sub.forEach(([re,v])=>{out=out.replace(re,v)})}
   const lead=s.match(/^\s*/)[0],trail=s.match(/\s*$/)[0];return cache[ck]=lead+out+trail}
  const ATT=["placeholder","title","aria-label","alt"];
  const skip=n=>{const e=n.nodeType===1?n:n.parentElement;return !e||!!e.closest(NOTR)};

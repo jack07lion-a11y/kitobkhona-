@@ -21,6 +21,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: "Санҷиши ҳар феатур"
         run: node tests/run.js
+      - name: "Тафтиши фарогир (ҳамаи саҳифаҳо ва варақҳо)"
+        run: node tests/crawl.js
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
