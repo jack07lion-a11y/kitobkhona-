@@ -2550,10 +2550,11 @@ function toggleUI(){S.rdUI=!S.rdUI;const r=document.querySelector(".rd");if(r)r.
 function payNow(){S.payId=S.rdId;S.sheet="pay";render()}
 function rdUpdate(b,ci,fr,frE){const R=RD,inf=rdInfo(b);let gf,gfE;
  if(inf.tc){const L=inf.tc[ci]._len,c0=inf.cum[ci];gf=(c0+fr*L)/inf.tot;gfE=(c0+frE*L)/inf.tot}else{gf=fr;gfE=frE}
- const M=R.M=inf.tc?Math.max(1,Math.round(inf.tot/R.cpp)):Math.max(1,R.total||1);
+ const dEl=document.getElementById("rdscr"),drag=!!(dEl&&dEl.dataset.drag); // ҳангоми кашидан: ҷамъи саҳифа ва рақамро намеҷунбонем (пештар 2522↔2455 ҷаҳида, слайдер часпида монд)
+ const M=R.M=drag&&window.__MF?window.__MF:inf.tc?Math.max(1,Math.round(inf.tot/R.cpp)):Math.max(1,R.total||1);
  const N=Math.min(M,Math.floor(gf*M+1e-6)+1),pct=Math.min(100,Math.round(gfE*100));S.prog[b.id]=pct;R.gf=gf;
  const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
- set("rdch",inf.tc&&inf.tc[ci].n?inf.tc[ci].n:b.t);set("rdnum",N+"/"+M);set("rdmini",N+" / "+M);set("rdpct",pct+"%");
+ set("rdch",inf.tc&&inf.tc[ci].n?inf.tc[ci].n:b.t);if(!drag){set("rdnum",N+"/"+M);set("rdmini",N+" / "+M);set("rdpct",pct+"%")}
  const s=document.getElementById("rdscr");if(s&&!s.dataset.drag){s.value=Math.round(gf*1000);s.style.setProperty("--p",gf*100+"%")}
  const m=document.getElementById("rdmark");if(m)m.classList.toggle("on",(S.marks[b.id]||[]).includes(mkey(b.id)))}
 let TK=null,SCRN=-1,PAYASK=0,SVT=0;
@@ -2563,11 +2564,14 @@ function rdLive(ci,fr){const R=RD,b=R.b,id=b.id;
  if(R.vert){const sec=R.f.querySelector(`[data-ci="${ci}"]`);if(sec){R.v.scrollTop=sec.offsetTop+fr*sec.offsetHeight-R.H*.3;return}S.rdCh[id]=ci;S.rdFr[id]=fr;setupVert();return}
  if(ci===Math.min(S.rdCh[id]||0,nch(b)-1)){const p=Math.max(0,Math.min(R.total-1,Math.floor(fr*R.total)));if(p!==(S.pages[id]||0)){R.f.style.transition="none";placeBase(p);hideTop();showPage(p)}return}
  S.rdCh[id]=ci;S.rdFr[id]=fr;R.f.innerHTML=chHTML(b,ci);setupReader()}
-function bindScr(){const s=document.getElementById("rdscr");if(!s)return;const R=RD,b=R.b,inf=rdInfo(b);
- const loc=g=>{if(!inf.tc)return{ci:0,fr:g};const t=g*inf.tot;let ci=0;while(ci<inf.tc.length-1&&inf.cum[ci+1]<=t)ci++;return{ci,fr:Math.min(.9999,Math.max(0,(t-inf.cum[ci])/inf.tc[ci]._len))}};
+function bindScr(){const s=document.getElementById("rdscr");if(!s)return;
+ /* RD ҳар дафъа, ки боб иваз мешавад, нав сохта мешавад — аз ин рӯ дар ин ҷо ҳамеша RD-и ҳозираро мехонем (пештар «R» кӯҳна мемонд ва слайдер часпида мемонд) */
+ const MM=()=>(s.dataset.drag&&window.__MF)||RD.M||1; // ҷамъи саҳифа ҳангоми кашидан доимӣ мемонад
+ const R=new Proxy({},{get:(_,k)=>RD[k],set:(_,k,v)=>{RD[k]=v;return true}}),b=RD.b;
+ const loc=g=>{const inf=rdInfo(RD.b);if(!inf.tc)return{ci:0,fr:g};const t=g*inf.tot;let ci=0;while(ci<inf.tc.length-1&&inf.cum[ci+1]<=t)ci++;return{ci,fr:Math.min(.9999,Math.max(0,(t-inf.cum[ci])/inf.tc[ci]._len))}};
  let raf=0,pend=0;
  /* g — ҷои умумии китоб (0..1): ҳам аз клавиатура/ангушт (oninput), ҳам аз «ўлчови катта» (поён) */
- const apply=g0=>{let g=g0;const M=R.M||1;
+ const apply=g0=>{let g=g0;const M=MM();
   if(locked(b)){const lim=(FREE_PAGES-.5)/M;if(g>lim){g=lim;PAYASK=1}}
   const N=Math.min(M,Math.floor(g*M)+1),set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
   set("rdnum",N+"/"+M);set("rdpct",Math.round(g*100)+"%");
@@ -2581,9 +2585,9 @@ function bindScr(){const s=document.getElementById("rdscr");if(!s)return;const R
  const fine=dy=>dy<40?1:dy<110?.4:.12;
  const bubble=()=>{if(!bub){bub=document.createElement("div");bub.className="rd-zb";(s.parentNode||document.body).appendChild(bub)}return bub};
  const stop=ok=>{if(!st)return;const id=st.id;st=null;cancelAnimationFrame(loop);try{H.releasePointerCapture(id)}catch(_){}
-  if(bub){bub.remove();bub=null}delete s.dataset.drag;SCRN=-1;s.classList.remove("zoom");
+  if(bub){bub.remove();bub=null}delete s.dataset.drag;window.__MF=0;SCRN=-1;s.classList.remove("zoom");
   if(PAYASK){PAYASK=0;payNow()}setTimeout(()=>{const e=document.getElementById("rdscr");if(e&&!e.dataset.drag&&R.gf!=null){e.value=Math.round(R.gf*1000);e.style.setProperty("--p",R.gf*100+"%")}},120)};
- const step=t=>{if(!st)return;const r=s.getBoundingClientRect(),M=R.M||1,dt=Math.min(.05,(t-st.t)/1000||0);st.t=t;
+ const step=t=>{if(!st)return;const r=s.getBoundingClientRect(),M=MM(),dt=Math.min(.05,(t-st.t)/1000||0);st.t=t;
   const fk=fine(Math.max(0,r.top-st.cy));st.acc+=(st.cx-st.lx)/PPG*fk;st.lx=st.cx;
   const zone=64,l=st.cx-r.left,rr=r.right-st.cx;let dir=0,prox=0;
   if(l<zone){dir=-1;prox=Math.min(1,(zone-l)/zone)}else if(rr<zone){dir=1;prox=Math.min(1,(zone-rr)/zone)}
@@ -2595,11 +2599,12 @@ function bindScr(){const s=document.getElementById("rdscr");if(!s)return;const R
   const bb=bubble();bb.textContent=res.N+" / "+M+(fk<1?" · аниқ":"");bb.classList.toggle("fine",fk<1);bb.style.left=Math.max(8,Math.min(r.width-8,tf*r.width+(r.left-(bb.parentNode.getBoundingClientRect().left))))+"px";
   loop=requestAnimationFrame(step)};
  const down=e=>{if(st||(e.button!=null&&e.button>0))return;e.preventDefault();
-  const r=s.getBoundingClientRect(),M=R.M||1;let g0=R.gf||0;const tx=r.left+g0*r.width;
+  const r=s.getBoundingClientRect(),M=MM();let g0=R.gf||0;const tx=r.left+g0*r.width;
   if(Math.abs(e.clientX-tx)>34)g0=Math.max(0,Math.min(1,(e.clientX-r.left)/(r.width||1)));
   st={id:e.pointerId,x:e.clientX,cx:e.clientX,cy:e.clientY,lx:e.clientX,acc:0,p0:Math.max(0,Math.min(M-1,Math.floor(g0*M+1e-6))),extra:0,t:performance.now()};
-  s.dataset.drag=1;s.classList.add("zoom");try{H.setPointerCapture(e.pointerId)}catch(_){}
+  window.__MF=RD.M||1;s.dataset.drag=1;s.classList.add("zoom");try{H.setPointerCapture(e.pointerId)}catch(_){}
   cancelAnimationFrame(loop);loop=requestAnimationFrame(step)};
+ if(H.__scrBound)return;H.__scrBound=1; // фақат як бор: бе ин ҳар setupReader гӯшкунаки нав илова мекард ва слайдер часпида мемонд
  H.addEventListener("pointerdown",down);
  H.addEventListener("pointermove",e=>{if(st&&e.pointerId===st.id){st.cx=e.clientX;st.cy=e.clientY}});
  ["pointerup","pointercancel","lostpointercapture"].forEach(n=>H.addEventListener(n,e=>{if(st&&e.pointerId===st.id)stop()}));
@@ -3881,7 +3886,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="c75d92e4c5";
+const WEB_H="ea25eefce8";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

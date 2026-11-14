@@ -53,3 +53,34 @@ module.exports=(prev=>async t=>{
  t.ok(await P.evaluate(()=>/аниқ/.test(document.querySelector('.rd-zb')?.textContent||'')),'пуфак «аниқ» нишон медиҳад');
  await P.mouse.up();
 })(module.exports);
+
+// «часпидани» слайдер: баъди ҷаҳиш ба боби дигар ва 2-юм кашидан — аз ҷои ҳозира давом мекунад, рақам ҷаҳида нест
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home'});
+ await P.evaluate(()=>{const w="китоб ҳаёт модар кӯдакӣ деҳа замон дарё мактаб устод нон об".split(" ");const chs=[];
+  for(let c=0;c<80;c++){const bl=[["h","БОБИ "+(c+1)]];for(let i=0;i<10+(c%7)*3;i++){let s="";for(let k=0;k<60;k++)s+=w[(c*7+i*3+k*5)%w.length]+" ";bl.push(["p",s.trim()+"."])}chs.push({title:"Боби "+(c+1),blocks:bl})}
+  BOOKS.push({id:779,t:"Часпак",a:"М",c:"fiction",col:["#1f4f7a","#123352"],tp:"x"});TX[779]={parts:[{title:"Қ",chapters:chs}]};openBook0(779)});
+ await P.waitForTimeout(1500);await P.evaluate(()=>{S.rdUI=true;render()});await P.waitForTimeout(800);
+ const r=await P.evaluate(()=>{const e=document.getElementById('rdscr').getBoundingClientRect();return{x:e.x,y:e.y+e.height/2,w:e.width}});
+ const num=async()=>{const x=(await P.evaluate(()=>document.getElementById('rdnum').textContent)).split('/');return{n:+x[0],m:+x[1]}};
+ await P.mouse.move(r.x+r.w*.55,r.y);await P.mouse.down();await P.waitForTimeout(300);
+ const d0=await num();
+ await P.mouse.move(r.x+r.w*.55+40,r.y,{steps:8});await P.waitForTimeout(300);
+ const d1=await num();
+ t.eq(d1.m,d0.m,'ҳангоми кашидан ҷамъи саҳифа ҷаҳида намешавад ('+d0.m+')');
+ await P.mouse.up();await P.waitForTimeout(500);
+ const after=await num();
+ const val=+await P.evaluate(()=>document.getElementById('rdscr').value);
+ t.ok(val>400,'баъди раҳо кардан тумб ба аввал напарид ('+val+')');
+ const tx=r.x+val/1000*r.w;
+ await P.mouse.move(tx,r.y);await P.mouse.down();await P.waitForTimeout(250);
+ const s0=await num();
+ t.ok(Math.abs(s0.n-after.n)<=2,'2-юм ламс аз ҳамон саҳифа оғоз мешавад ('+after.n+' → '+s0.n+')');
+ await P.mouse.move(tx+42,r.y,{steps:8});await P.waitForTimeout(300);
+ const s1=await num();
+ t.ok(s1.n-s0.n>=2&&s1.n-s0.n<=5,'2-юм кашидан кор мекунад: 42px ≈ 3 саҳифа ('+(s1.n-s0.n)+')');
+ await P.mouse.up();
+ t.eq(await P.evaluate(()=>document.querySelectorAll('#rdsh').length),1,'қабати ламс як нусха');
+})(module.exports);
