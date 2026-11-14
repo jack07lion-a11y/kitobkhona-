@@ -10,7 +10,7 @@ function rdInfo(b){if(!isTx(b))return{tc:null,cum:[0,1],tot:1};const d=TX[b.id];
  return d._inf={tc,cum,tot:Math.max(1,cum[cum.length-1])}}
 function chHTML(b,ci){HC=0;HCI=ci;
  if(isTx(b)){const c=txChapters(b)[ci];return `${c.part?`<p class="rd-part">${escH(c.part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(c.n)}</h2>${blocksHTML(c.bl)}`}
- const chs=chapters(b);return `<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${b.t}</h1><p class="rd-au">${b.a}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${c.n}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`}
+ const chs=chapters(b);return `<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${escH(c.n)}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`}
 function reader(){
  const b=bk(S.rdId),f=S.pref,ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),vm=f.dir==="v";
  const CH=d=>P(d,2.2);
@@ -250,7 +250,7 @@ function bindReader($$){
 
 /* ---- варақи toc ---- */
 SHEETS.toc=X=>{let h="";{const b=bk(S.rdId),mk=(S.marks[b.id]||[]).slice().sort((x,y)=>x-y),tcs=isTx(b)?txChapters(b):null;
-  h=`<div class="sh-head"><div class="sh-cv">${cover(b)}</div><div><b>${b.t}</b><span>${b.a}</span></div>${X}</div>
+  h=`<div class="sh-head"><div class="sh-cv">${cover(b)}</div><div><b>${escH(b.t)}</b><span>${escH(b.a)}</span></div>${X}</div>
   <div class="seg">${["Мундариҷа","Хатчӯб"].map((n,i)=>`<button class="${S.tocTab===i?"on":""}" data-toct="${i}">${n}</button>`).join("")}</div>
   ${S.tocTab===0?(tcs?`<div class="sh-list">${tcs.map((c,i)=>`${c.part?`<p class="sh-empty" style="text-align:left;margin:10px 4px 2px">${escH(c.part)}</p>`:""}<button class="sh-row toc-r" data-gotch="${i}"><span translate="no"><svg class="toc-i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>${escH(c.n)}</span><em>${(S.rdCh[b.id]||0)===i?"Ҳозир":""}</em></button>`).join("")}</div>`:`<div class="sh-list">${CHN.map((n,i)=>`<button class="sh-row" data-goch="${i}"><span>${n}</span><em><span data-chp="${i}">–</span>-саҳифа</em></button>`).join("")}</div>`)
    :S.tocTab===1?(mk.length?`<div class="sh-list">${mk.map(p=>`<button class="sh-row" data-gopg="${p}"><span>${P(IC_MARK)}${mlabel(b.id,p)}</span><em>Гузаштан ›</em></button>`).join("")}</div>`:`<p class="sh-empty">Ҳоло хатчӯб нест. Дар боло тугмаи ${P(IC_MARK)} -ро пахш кунед.</p>`)

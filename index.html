@@ -2126,7 +2126,7 @@ function stamp(){const a=JSON.stringify(S.lib),b=JSON.stringify(S.marks);
  if(S._lh===undefined||S._mh===undefined){S._lh=a;S._mh=b;if(S.libT===undefined)S.libT=hasAny(S.lib)?Date.now():0;if(S.marksT===undefined)S.marksT=hasAny(S.marks)?Date.now():0;return}
  if(a!==S._lh){S._lh=a;S.libT=Date.now()}if(b!==S._mh){S._mh=b;S.marksT=Date.now()}}
 function save(){stamp();try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
-const esc=s=>s.replace(/"/g,"&quot;");let lastSheet=null;
+const esc=s=>escH(s==null?"":s); // & < > " — ҳам барои аттрибут, ҳам барои матн бехатарlet lastSheet=null;
 /* Агар варақ аз панели идоракунӣ кушода шуда бошад — пӯшидан ба панел бармегардонад (на ба «Ҳисоб») */
 function sheetNext(){const was=S.sheet;if(S.hubBack&&S.hubBack===was){S.hubBack=null;return"admhub"}S.hubBack=null;return null}
 function closeSheet(){S.nd=null;S.ndl=null;S._rl=0;const sh=document.querySelector(".sheet"),bg=document.querySelector(".sh-bg");
@@ -2176,7 +2176,7 @@ function wheelHTML(){
  const RC=S.recent.filter(id=>bk(id));
  if(!RC.length)return `<div class="wheel one" id="wheel"><div class="wpad t"></div><div class="witem wempty"><span class="round" style="width:60px;height:60px">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div class="wi"><b>Ҳоло китоб нахондаед</b><span class="a">Хонданро ҳозир оғоз кунед</span><button class="readbtn" data-read="2">${P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}Китобро хонед</button></div></div><div class="wpad b"></div></div>`;
  const one=RC.length===1;
- return `<div class="car ${one?"one":""}" id="wheel">${RC.map(id=>{const b=BOOKS.find(x=>x.id===id);const au=S.mode[id]==="audio";const pr=(au?S.aprog[id]:S.prog[id])||0;return `<div class="witem"><div style="width:60px;flex:none">${cover(b)}</div><div class="wi"><b>${b.t}</b><span class="a">${b.a}</span><div class="pbar"><i style="width:${pr}%"></i></div><button class="readbtn" ${au?"data-listen":"data-read"}="${id}">${au?P(I.head,2.2):P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}${au?"Гӯш кардан":"Идома додан"} <small>(${pr}%)</small></button></div></div>`}).join("")}</div>${one?"":`<div class="cdots" aria-hidden="true">${S.recent.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`}`;
+ return `<div class="car ${one?"one":""}" id="wheel">${RC.map(id=>{const b=BOOKS.find(x=>x.id===id);const au=S.mode[id]==="audio";const pr=(au?S.aprog[id]:S.prog[id])||0;return `<div class="witem"><div style="width:60px;flex:none">${cover(b)}</div><div class="wi"><b>${escH(b.t)}</b><span class="a">${escH(b.a)}</span><div class="pbar"><i style="width:${pr}%"></i></div><button class="readbtn" ${au?"data-listen":"data-read"}="${id}">${au?P(I.head,2.2):P('<path d="M6 4v16l14-8z" fill="currentColor"/>')}${au?"Гӯш кардан":"Идома додан"} <small>(${pr}%)</small></button></div></div>`}).join("")}</div>${one?"":`<div class="cdots" aria-hidden="true">${S.recent.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>`}`;
 }
 function setupWheel(){
  const w=document.getElementById("wheel");if(!w)return;
@@ -2448,7 +2448,7 @@ const A={
 };
 const ARTS={};
 // рӯи муқова: расм (агар ҳаст) ё нақшаи худкор бо ном. Агар расм кушода нашавад (суроғаи кӯҳна), нақша худкор намоён мешавад
-function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div>`}
+function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${escH(b.t)}</b><em>${escH(b.a)}</em></div>`}
 let CV_REF=0;
 function coverErr(im){const f=im.closest(".f-front");const b=f&&bk(+im.dataset.cb);if(!b)return;
  const au=f.querySelector(".au");f.innerHTML=coverFallback(b)+(au?au.outerHTML:"");
@@ -2472,19 +2472,19 @@ function openDetail(id){if(S.view!=="book"){S.prev=S.view;S.prevSearch=S.search}
 function detail(){
  const b=BOOKS.find(x=>x.id===S.bookId);const pr=S.prog[b.id]||0;
  const sim=BOOKS.filter(x=>x.c===b.c&&x.id!==b.id).slice(0,6);
- const qs=[`«${b.t}» дар бораи чист?`,"Аз рӯи китоб флешкарта сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
+ const qs=[`«${escH(b.t)}» дар бораи чист?`,"Аз рӯи китоб флешкарта сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
  const spark='<path d="M12 3l1.900 5.100L19 10l-5.100 1.900L12 17l-1.900-5.100L5 10l5.100-1.900zM19 15l.8 2.200L22 18l-2.200.8L19 21l-.8-2.200L16 18l2.200-.8z" fill="currentColor" stroke="none"/>';
  return `<section class="bd" style="--bc:${b.col[0]}">
   <div class="bd-top pad"><button class="bd-ic" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><span class="bd-tt">${b.t}</span>
    <button class="bd-ic" data-share="${b.id}" aria-label="Мубодила">${P('<path d="M14 5l7 7-7 7M21 12H10a7 7 0 00-7 7"/>',2)}</button>
    <button class="bd-ic" data-dlbook="${b.id}" aria-label="Боргирифтан">${(S.dlBook[b.id]||b.have)?P(IC_OK,2.2):P(IC_DL,2)}</button>
    <button class="bd-ic${S.lib.q.includes(b.id)?" on":""}" data-qtog="${b.id}" aria-label="Ба навбат">${P('<path d="M6 3h12v18l-6-4-6 4z"/>',2)}</button></div>
-  <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${b.t}</h1><p class="bd-au">${b.a}</p>${fmtPill(b)}</div>
+  <div class="bd-hero pad"><div class="bd-cover">${cover(b)}</div><h1>${escH(b.t)}</h1><p class="bd-au">${escH(b.a)}</p>${fmtPill(b)}</div>
   <div class="pad bd-body">
    <div class="bd-stats">${FEAT("social")?`<div><small>Рейтинг</small><b><span style="color:#f2a93b">${FILL(I.star)}</span>—</b></div>`:""}<div><small>Давомнокӣ</small><b><span style="color:#3aa0d8">${P(I.clock,2)}</span>${b.audio?"—":"Матн"}</b></div>${FEAT("social")?`<div><small>Мехонанд</small><b><span style="color:var(--orange)">${P('<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c.6-4 3.200-6 6.500-6s5.900 2 6.500 6M16 4.500a3.500 3.500 0 010 7M18 14c2 .7 3.300 2.700 3.500 6"/>',2)}</span>0</b></div>`:""}</div>
    <div class="bd-act ${locked(b)?"sm":""}">${b.ebook===false?"":`<button class="bd-btn" data-read="${b.id}">${P('<path d="M3 5c3-1.500 6-1.500 9 0v14c-3-1.500-6-1.500-9 0zM21 5c-3-1.500-6-1.500-9 0v14c3-1.500 6-1.500 9 0z"/>',2)}<span class="lb">${locked(b)?"Бо Премиум хондан":(bpath(b)&&!b.have?"Боргирӣ ва хондан":"Хондан")}</span>${pr&&!locked(b)?` <small>(${pr}%)</small>`:""}</button>`}${b.audio?`${b.ebook===false?"":"<i></i>"}<button class="bd-btn" data-listen="${b.id}">${P(I.head,2)}Гӯш кардан${S.aprog[b.id]&&!locked(b)?` <small>(${S.aprog[b.id]}%)</small>`:""}</button>`:""}</div>
    <div class="bd-q"><button class="${S.lib.q.includes(b.id)?"on":""}" data-qtog="${b.id}">${P(I.list,2)}${S.lib.q.includes(b.id)?"Дар навбат":"Ба навбат гузоштан"}</button><button class="${isDone(b.id)?"on":""}" data-dtog="${b.id}">${P(I.flag,2)}${isDone(b.id)?"Хонда шуд":"Хонда шуд гуфтан"}</button></div>
-   <p class="bd-desc">${DESC[b.id]||b.desc||""}</p>
+   <p class="bd-desc">${escH(DESC[b.id]||b.desc||"")}</p>
    <div class="sec"><h2 class="bd-h">Батафсил</h2>
     <div class="bd-info"><div><span>${P('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',1.8)}Бахш</span><b>${CATN[b.c]||(GENRES.find(x=>x[0]===b.c)||[])[1]||""}${b.audio?`, <em>Аудио дар роҳ</em>`:""}</b></div>
     <div><span>${P('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',1.8)}Гӯянда</span><b>${b.audio?"—":"Танҳо матн"}</b></div>
@@ -2578,7 +2578,7 @@ function rdInfo(b){if(!isTx(b))return{tc:null,cum:[0,1],tot:1};const d=TX[b.id];
  return d._inf={tc,cum,tot:Math.max(1,cum[cum.length-1])}}
 function chHTML(b,ci){HC=0;HCI=ci;
  if(isTx(b)){const c=txChapters(b)[ci];return `${c.part?`<p class="rd-part">${escH(c.part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(c.n)}</h2>${blocksHTML(c.bl)}`}
- const chs=chapters(b);return `<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${b.t}</h1><p class="rd-au">${b.a}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${c.n}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`}
+ const chs=chapters(b);return `<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${escH(c.n)}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`}
 function reader(){
  const b=bk(S.rdId),f=S.pref,ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),vm=f.dir==="v";
  const CH=d=>P(d,2.2);
@@ -2818,7 +2818,7 @@ function bindReader($$){
 
 /* ---- варақи toc ---- */
 SHEETS.toc=X=>{let h="";{const b=bk(S.rdId),mk=(S.marks[b.id]||[]).slice().sort((x,y)=>x-y),tcs=isTx(b)?txChapters(b):null;
-  h=`<div class="sh-head"><div class="sh-cv">${cover(b)}</div><div><b>${b.t}</b><span>${b.a}</span></div>${X}</div>
+  h=`<div class="sh-head"><div class="sh-cv">${cover(b)}</div><div><b>${escH(b.t)}</b><span>${escH(b.a)}</span></div>${X}</div>
   <div class="seg">${["Мундариҷа","Хатчӯб"].map((n,i)=>`<button class="${S.tocTab===i?"on":""}" data-toct="${i}">${n}</button>`).join("")}</div>
   ${S.tocTab===0?(tcs?`<div class="sh-list">${tcs.map((c,i)=>`${c.part?`<p class="sh-empty" style="text-align:left;margin:10px 4px 2px">${escH(c.part)}</p>`:""}<button class="sh-row toc-r" data-gotch="${i}"><span translate="no"><svg class="toc-i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>${escH(c.n)}</span><em>${(S.rdCh[b.id]||0)===i?"Ҳозир":""}</em></button>`).join("")}</div>`:`<div class="sh-list">${CHN.map((n,i)=>`<button class="sh-row" data-goch="${i}"><span>${n}</span><em><span data-chp="${i}">–</span>-саҳифа</em></button>`).join("")}</div>`)
    :S.tocTab===1?(mk.length?`<div class="sh-list">${mk.map(p=>`<button class="sh-row" data-gopg="${p}"><span>${P(IC_MARK)}${mlabel(b.id,p)}</span><em>Гузаштан ›</em></button>`).join("")}</div>`:`<p class="sh-empty">Ҳоло хатчӯб нест. Дар боло тугмаи ${P(IC_MARK)} -ро пахш кунед.</p>`)
@@ -2848,7 +2848,7 @@ function player(){
  return `<section class="ap" style="--bc:${b.col[0]}">
   <div class="ap-top"><button class="ap-ic" data-apmin aria-label="Хурд кардан">${P('<path d="M6 9l6 6 6-6"/>',2.2)}</button><span class="ap-lbl">Аудиокитоб</span><button class="ap-ic" data-toast="Мубодила — қадами оянда" aria-label="Мубодила">${P('<path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/>',2)}</button></div>
   <div class="ap-cover">${cover(b)}</div>
-  <div class="ap-meta"><h1>${b.t}</h1><p>${t.n} · ${b.a}</p></div>
+  <div class="ap-meta"><h1>${escH(b.t)}</h1><p>${escH(t.n)} · ${escH(b.a)}</p></div>
   <input class="ap-seek" type="range" id="apseek" min="0" max="${t.d}" step="1" value="${Math.floor(a.pos)}" aria-label="Мавқеи пахш" style="--p:${a.pos/t.d*100}%">
   <div class="ap-time"><span id="apcur">${fmt(a.pos)}</span><span>${fmt(t.d)}</span></div>
   <div class="ap-ctl"><button class="ap-sp" data-apspeed aria-label="Суръат">${a.speed}x</button><button class="ap-b" data-apskip="-10" aria-label="10 сония ақиб">${B10}</button><button class="ap-play" data-applay aria-label="${a.playing?"Таваққуф":"Пахш"}">${a.playing?PAUSE:PLAY}</button><button class="ap-b" data-apskip="10" aria-label="10 сония пеш">${F10}</button><button class="ap-b ap-tm ${a.sleep?"on":""}" data-aptimer aria-label="Таймери хоб">${TIMER}${a.sleep?`<small id="aptm">${Math.ceil(a.sleep/60)}′</small>`:""}</button></div>
@@ -2873,7 +2873,7 @@ function dl(list){const id=S.au.id,b=bk(id);if(locked(b)){S.payId=id;S.sheet="pa
  {const T=1400+250*todo.length,t0=Date.now(),iv=setInterval(()=>{const p=Math.min(99,Math.round((Date.now()-t0)/T*100));document.querySelectorAll("[data-dlall]").forEach(e=>{e.classList.add("ing");e.style.setProperty("--p",p+"%");e.textContent="Боргирӣ… "+p+"%"});todo.forEach(i=>{const e=document.getElementById("dlt"+i);if(e)e.innerHTML="<small>"+p+"%</small>"})},120);setTimeout(()=>clearInterval(iv),T)}
  setTimeout(()=>{S.dl[id]=[...new Set([...(S.dl[id]||[]),...todo])];toast(todo.length>1?"Аудиокитоб барои гӯш кардан бе интернет нигоҳ дошта шуд":"Боб боргирифта шуд");render()},1400+250*todo.length)}
 function mini(){const a=S.au;if(!a)return "";const b=bk(a.id),t=tracks(b)[a.ch];
- return `<div class="mini-sp"></div><div class="mini"><button class="mini-main" data-openap aria-label="Плеерро кушодан"><span class="mini-cv">${cover(b)}</span><span class="mini-tx"><b>${b.t}</b><em>${t.n}</em></span></button><button class="mini-b" data-applay aria-label="${a.playing?"Таваққуф":"Пахш"}">${a.playing?PAUSE:PLAY}</button><button class="mini-b" data-mpclose aria-label="Пӯшидан">${P(IC_X,2)}</button><i class="mini-bar"><i id="mpbar" style="width:${a.pos/t.d*100}%"></i></i></div>`}
+ return `<div class="mini-sp"></div><div class="mini"><button class="mini-main" data-openap aria-label="Плеерро кушодан"><span class="mini-cv">${cover(b)}</span><span class="mini-tx"><b>${escH(b.t)}</b><em>${escH(t.n)}</em></span></button><button class="mini-b" data-applay aria-label="${a.playing?"Таваққуф":"Пахш"}">${a.playing?PAUSE:PLAY}</button><button class="mini-b" data-mpclose aria-label="Пӯшидан">${P(IC_X,2)}</button><i class="mini-bar"><i id="mpbar" style="width:${a.pos/t.d*100}%"></i></i></div>`}
 
 function nav(fn,dir){
  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2979,7 +2979,6 @@ function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="
  return `<section class="screen home pad">
    <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div>${fabHTML()}${ratingBadge()}
     <button class="round" data-opensearch aria-label="Ҷустуҷӯ">${P(I.search)}</button><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
-   ${S.upd&&S.updNo!==S.upd.v?updBanner():""}
    ${PREM()&&FEAT("buy")?`<div class="promo hp"><h2>Китобхона Премиум</h2><p>Ҳамаи китобҳои пулакиро бепул хонед</p>
     <button class="cta" data-toast="Харид — қадами оянда">Гузаштан ба Премиум ${P(I.chev,2.4)}</button>
     <svg class="art" viewBox="0 0 150 140" aria-hidden="true"><path d="M50 110l-8-60 28 26 22-44 24 44 26-26-8 60z" fill="#fff" fill-opacity=".92"/><path d="M75 62l5 10 11 1-8 7 2 11-10-6-10 6 2-11-8-7 11-1z" fill="#63d48f"/></svg></div>`:""}
@@ -2990,7 +2989,7 @@ function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="
    ${BOOKS.length?`<div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice(0,8).map(book).join("")}</div></div>`:""}
    ${BOOKS.some(x=>x.audio)?`<div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>`:""}
    <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${GENRES.filter(g=>BOOKS.some(x=>x.c===g[0])).map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${x.a}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${x.a}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
+   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${escH(x.a)}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${escH(x.a)}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
    ${BOOKS.length>8?`<div class="sec"><div class="sec-h"><h2>Навтарин</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice().reverse().slice(0,8).map(book).join("")}</div></div>`:""}
    ${S.premium||!PREM()||!FEAT("buy")?"":`<button class="ppill ${S.au?"up":""}" data-paywall>${CROWN}Премиум ${P(I.chev,2.4)}</button>`}
   </section>${tabs()}`;
@@ -3374,7 +3373,7 @@ function bindPremium($$){
 
 /* ---- варақи pay ---- */
 SHEETS.pay=X=>{let h="";{const b=S.payId?bk(S.payId):null;
-  h=`<div class="pay">${X}<span class="pay-cr">${CROWN}</span><h2>${b?"Парчаи ройгон тамом шуд":"Китобхона Премиум"}</h2><p>${b?`Барои идомаи «${b.t}» ба Премиум гузаред.`:"Ҳамаи китобҳо ва аудиокитобҳо бе маҳдудият."}</p>
+  h=`<div class="pay">${X}<span class="pay-cr">${CROWN}</span><h2>${b?"Парчаи ройгон тамом шуд":"Китобхона Премиум"}</h2><p>${b?`Барои идомаи «${escH(b.t)}» ба Премиум гузаред.`:"Ҳамаи китобҳо ва аудиокитобҳо бе маҳдудият."}</p>
   <ul>${["Ҳамаи китобҳои пулакӣ","Аудиокитобҳо пурра","Бе интернет хондан ва гӯш кардан","Тарифи оила ва мактаб"].map(x=>`<li>${P(IC_OK,2.4)}${x}</li>`).join("")}</ul>
   <div class="pay-price"><b>Ба зудӣ</b></div><p class="hint">Обуна ҳоло омода мешавад. Китобҳои ройгонро бемаҳдудият хонед.</p>
   <button class="pay-btn" data-subscribe disabled aria-disabled="true">Обуна ба зудӣ кушода мешавад</button><button class="pay-later" data-shclose>Баъдтар</button></div>`};return h};
@@ -3908,12 +3907,6 @@ function bindAdminDeleted($$){
   b.disabled=true;
   try{const c=await sbLoad();const{data,error}=await c.rpc("purge_deleted",{p_days:DEL_DAYS});if(error)throw 0;toast(data+" ҳисоб тоза карда шуд");loadDeleted()}
   catch(_){toast("Нашуд. Интернетро санҷед")}b.disabled=false})}
-function updBanner(){return "";const A=window.KitobAndroid,nat=!!(A&&A.downloadUpdate),st=S.updSt||"",x=`<button class="upd-x" data-updno aria-label="Пӯшидан">${P(IC_X,2.2)}</button>`;
- if(nat&&st==="down")return `<div class="upd"><div><b>Навсозӣ</b><span class="upd-sub">Боргирӣ… ${S.updP||0}%</span><i class="upd-bar" style="--p:${S.updP||0}%"></i></div></div>`;
- if(nat&&st==="ready")return `<div class="upd"><div><b>Навсозӣ тайёр аст</b><span>Барномаро аз нав оғоз кунед. Android «Навсозӣ»-ро мепурсад, пахш кунед</span></div><button class="upd-go" data-upd-install>Аз нав оғоз кардан</button></div>`;
- const err=nat&&st==="err",go=nat?`<button class="upd-go" data-upd-go>${err?"Аз нав кӯшиш кардан":"Боргирӣ"}</button>`:`<a class="upd-go" href="${esc(S.upd.url)}">Боргирӣ</a>`;
- return `<div class="upd"><div><b>Версияи нав омад</b><span>${err?"Боргирӣ нашуд. Интернетро санҷед":"Барои навсозӣ версияи навро боргирӣ кунед"}</span></div>${go}${x}</div>`}
-
 // ===== Версияи ҳадди ақали APK: агар кӯҳна бошад, ба навсозӣ даъват мекунем =====
 function checkMin(){const m=(S.flags&&S.flags.min)||0,v=NATIVE.ver();let el=document.getElementById("minv_ov");
  if(!(v>0&&m>v)){if(el)el.remove();return}
@@ -3947,7 +3940,7 @@ async function doRefresh(){
  if(wuDue()){out.push("Навсозии нав тайёр аст");webUpdCheck()}
  if(S.upd&&apkNative()){out.push("Навсозии барнома ҳаст (версияи "+S.upd.v+")");setTimeout(()=>apkNag(true),900)}
  if(BOOKS.length>nb)out.push("Китобҳои нав: "+(BOOKS.length-nb));
- const nw=await loadNewsOnce();if(nw){const seen=+(localStorage.getItem("kitob_news")||0);if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)localStorage.setItem("kitob_news",String(nw.id))}
+ const nw=await loadNewsOnce();if(nw){let seen=0;try{seen=+(localStorage.getItem("kitob_news")||0)}catch(_){}if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)try{localStorage.setItem("kitob_news",String(nw.id))}catch(_){}}
  return out.length?out:["Ҳама чиз нав аст"]}
 
 /* ---- пайвасти тугмаҳо: update (аз bind() даъват мешавад) ---- */
@@ -3962,7 +3955,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="df307c4e9e";
+const WEB_H="cac0feff08";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

@@ -13,7 +13,6 @@ function home(){
  return `<section class="screen home pad">
    <div class="top"><div class="brand" translate="no">${LOGO}<span>Китоб<em>хона</em></span></div>${fabHTML()}${ratingBadge()}
     <button class="round" data-opensearch aria-label="Ҷустуҷӯ">${P(I.search)}</button><button class="round" data-sheet="app" aria-label="Танзимот">${P(I.gear)}</button></div>
-   ${S.upd&&S.updNo!==S.upd.v?updBanner():""}
    ${PREM()&&FEAT("buy")?`<div class="promo hp"><h2>Китобхона Премиум</h2><p>Ҳамаи китобҳои пулакиро бепул хонед</p>
     <button class="cta" data-toast="Харид — қадами оянда">Гузаштан ба Премиум ${P(I.chev,2.4)}</button>
     <svg class="art" viewBox="0 0 150 140" aria-hidden="true"><path d="M50 110l-8-60 28 26 22-44 24 44 26-26-8 60z" fill="#fff" fill-opacity=".92"/><path d="M75 62l5 10 11 1-8 7 2 11-10-6-10 6 2-11-8-7 11-1z" fill="#63d48f"/></svg></div>`:""}
@@ -24,7 +23,7 @@ function home(){
    ${BOOKS.length?`<div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice(0,8).map(book).join("")}</div></div>`:""}
    ${BOOKS.some(x=>x.audio)?`<div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>`:""}
    <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${GENRES.filter(g=>BOOKS.some(x=>x.c===g[0])).map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${x.a}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${x.a}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
+   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${escH(x.a)}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${escH(x.a)}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
    ${BOOKS.length>8?`<div class="sec"><div class="sec-h"><h2>Навтарин</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice().reverse().slice(0,8).map(book).join("")}</div></div>`:""}
    ${S.premium||!PREM()||!FEAT("buy")?"":`<button class="ppill ${S.au?"up":""}" data-paywall>${CROWN}Премиум ${P(I.chev,2.4)}</button>`}
   </section>${tabs()}`;
