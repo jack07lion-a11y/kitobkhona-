@@ -28,3 +28,13 @@ module.exports=(prev=>async t=>{
  await P.evaluate(()=>{S.flags.feat={social:true,ai:true};render()});await P.waitForTimeout(150);
  t.ok(await P.evaluate(()=>/Рейтинг/.test(document.querySelector('.bd').innerText)&&/Аз рӯи китоб савол/.test(document.querySelector('.bd').innerText)),'байроқ фурӯзон: намоён мешаванд');
 })(module.exports);
+
+// муқова: агар суроға кушода нашавад, нақшаи худкор намоён мешавад (ҷои холӣ не)
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home'});
+ await P.evaluate(()=>{BOOKS.push({id:888,t:'Гулистон',a:'Саъдӣ',c:'classic',col:['#0b7d57','#063'],cover:'https://example.invalid/x.jpg'});S.view='home';S.search=true;S.chip='all';S.q='';render()});
+ await P.waitForTimeout(1500);
+ t.ok(await P.evaluate(()=>{const f=document.querySelector('[data-book="888"] .f-front');return !!f&&!f.querySelector('img')&&!!f.querySelector('.cv-t')}),'муқова кушода нашуд → нақшаи худкори китоб намоён мешавад');
+})(module.exports);

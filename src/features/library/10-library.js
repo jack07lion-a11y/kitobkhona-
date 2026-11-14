@@ -23,9 +23,16 @@ const A={
  atom:(x,y,s,c)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke="${c}" stroke-width="1.600"><ellipse rx="26" ry="9"/><ellipse rx="26" ry="9" transform="rotate(60)"/><ellipse rx="26" ry="9" transform="rotate(120)"/><circle r="4" fill="${c}" stroke="none"/></g>`,
 };
 const ARTS={};
+// рӯи муқова: расм (агар ҳаст) ё нақшаи худкор бо ном. Агар расм кушода нашавад (суроғаи кӯҳна), нақша худкор намоён мешавад
+function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div>`}
+let CV_REF=0;
+function coverErr(im){const f=im.closest(".f-front");const b=f&&bk(+im.dataset.cb);if(!b)return;
+ const au=f.querySelector(".au");f.innerHTML=coverFallback(b)+(au?au.outerHTML:"");
+ // суроғаи имзошуда шояд кӯҳна шуда бошад: як бор нав мекунем
+ if(!CV_REF){CV_REF=1;setTimeout(()=>{sbLoad().then(c=>c&&loadBooks(c)).then(()=>{if(S.view!=="read"&&!S.sheet)render()}).catch(()=>{})},800)}}
 function cover(b){
  const au=b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:"";
- const face=b.cover?`<img src="${escH(b.cover)}" alt="">`:`<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${b.t}</b><em>${b.a}</em></div>`;
+ const face=b.cover?`<img src="${escH(b.cover)}" alt="" data-cb="${b.id}" onerror="coverErr(this)">`:coverFallback(b);
  return `<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front">${face}${au}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`;
 }
 

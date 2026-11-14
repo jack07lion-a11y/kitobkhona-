@@ -3,10 +3,10 @@ const ADM_CATS=GENRES.map(g=>[g[0],g[1]]);
 const VBADGE='<span class="vbadge" title="Админ" aria-label="Админ"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8cf0"/><path d="M12 5.2l1.8 4 4.4.5-3.3 3 .9 4.3L12 14.800 8.200 17l.9-4.300-3.300-3 4.400-.5z" fill="#fff"/></svg></span>';
 function shrinkImage(file,maxW,maxH){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();
  im.onload=()=>{const k=Math.min(1,maxW/im.naturalWidth,maxH/im.naturalHeight),w=Math.round(im.naturalWidth*k),h=Math.round(im.naturalHeight*k),cv=document.createElement("canvas");
-  cv.width=w;cv.height=h;cv.getContext("2d").drawImage(im,0,0,w,h);URL.revokeObjectURL(u);cv.toBlob(b=>b?ok(b):no(new Error("Расм кор накард")),"image/jpeg",.86)};
+  cv.width=w;cv.height=h;cv.getContext("2d").drawImage(im,0,0,w,h);URL.revokeObjectURL(u);cv.toBlob(b=>b?ok(b):no(new Error("Расм кор накард")),"image/jpeg",.92)};
  im.onerror=()=>{URL.revokeObjectURL(u);no(new Error("Расмро кушода натавонистам"))};im.src=u})}
 async function uploadCover(c,id,slug,file){
- const sl=slug||("b"+id),path=sl+"/cover-"+Date.now()+".jpg",blob=await shrinkImage(file,800,1200);
+ const sl=slug||("b"+id),path="b"+id+"/cover-"+Date.now()+".jpg",blob=await shrinkImage(file,900,1350); // роҳи танҳо ASCII: ҳарфи тоҷикӣ дар калид хато медод
  let e=(await c.storage.from("books").upload(path,blob,{upsert:true,contentType:"image/jpeg"})).error;if(e)throw new Error("Муқова бор нашуд: "+e.message);
  e=(await c.from("books").update({cover_path:path,slug:sl}).eq("id",id)).error;if(e)throw new Error("Муқова сабт нашуд: "+e.message)}
 // Ҳуқуқҳо: [калид, ном, тавсиф, пешфарзи ёрдамчӣ]. Админ ҳамаашро дорад. «Танҳо админ» ҳуқуқҳо ба ёрдамчӣ дода намешаванд.
@@ -40,6 +40,12 @@ function rightsHTML(p,a){a=a||{};const f=(id,ph,v,mx)=>`<label class="field" for
   <select id="${p}_rs" aria-label="Ҳолати ҳуқуқ">${RIGHTS.map(([k,n])=>`<option value="${k}"${(a.rs||"pending")===k?" selected":""}>${n}</option>`).join("")}</select>
   ${f("rh","Соҳиби ҳуқуқ (нашриёт, муаллиф ё меросхӯр)",a.rh)}${f("sr","Манба (аз куҷо гирифта шуд)",a.src2)}${f("ed","Нашр (нашриёт, сол)",a.ed)}${f("tr","Мутарҷим ё муҳаррир",a.tr)}${f("ln","Эзоҳи иҷозатнома (ихтиёрӣ)",a.ln,300)}
   <p class="hint">Ин ҷо ҳуқуқӣ хулоса нест: фақат маълумот сабт мешавад. «Ҳоло номаълум» бошад, китобро нашр кардан мумкин нест.</p>`}
+/* хатои инлайн дар худи варақ (на танҳо toast): ҷойи лозимаро нишон медиҳад */
+function admErr(msg,field){const e=document.getElementById("a_err");if(e){e.textContent=msg;e.hidden=!msg}
+ document.querySelectorAll(".a-bad").forEach(x=>x.classList.remove("a-bad"));
+ const f=field&&document.getElementById(field);if(f){f.classList.add("a-bad");try{f.scrollIntoView({block:"center",behavior:"smooth"})}catch(_){}}
+ else if(e&&msg){try{e.scrollIntoView({block:"center",behavior:"smooth"})}catch(_){}}}
+function rightsField(r){return !r||r.rights_status==="pending"?"a_rs":!r.source?"a_sr":"a_rh"}
 function readRights(p){const v=id=>((document.getElementById(p+"_"+id)||{}).value||"").trim();
  return{rights_status:v("rs")||"pending",rights_holder:v("rh")||null,source:v("sr")||null,edition:v("ed")||null,translator:v("tr")||null,license_note:v("ln")||null}}
 /* ҳамон қоидаи сервер (триггер books_rights_guard): хабар ба тоҷикӣ ё "" */
@@ -100,7 +106,7 @@ function admBooksHTML(X){const mine=BOOKS.filter(x=>x.db);
  return `<div class="sh-head"><b class="sh-t">Китобҳо</b>${X}</div>
   <div class="plan"><span class="round">${P('<path d="M12 5v14M5 12h14"/>',2)}</span><div><b>Китоби нав илова кардан</b><span>Танҳо ном ва муаллиф, бе матн</span></div><button class="pill" data-adm="new">Илова</button></div>
   <div class="plan"><span class="round">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}</span><div><b>Бастаи китоб (.kitob, zip ё book.json)</b><span>Якчанд китобро якбора интихоб кунед. Аввал пинҳон бор мешавад</span></div><label class="pill" for="admzip">Интихоб</label><input type="file" id="admzip" multiple hidden></div>
-  ${mine.map(b=>`<div class="plan"><span class="sh-cv" style="width:38px;flex:none">${cover(b)}</span><div><b translate="no">${escH(b.t)}</b><span><span translate="no">${escH(b.a)}</span>${b.pub?"":' · <i class="hidden-tag">Пинҳон</i>'}</span></div><button class="pill" data-adm="edit" data-id="${b.id}">Таҳрир</button></div>`).join("")}`}
+  ${mine.map(b=>`<div class="plan"><span class="sh-cv" style="width:38px;flex:none">${cover(b)}</span><div><b translate="no">${escH(b.t)}</b><span><span translate="no">${escH(b.a)}</span>${b.pub?"":' · <i class="hidden-tag">Пинҳон</i>'}${b.cvMiss?' · <i class="hidden-tag">Муқова кушода нашуд</i>':""}</span></div><button class="pill" data-adm="edit" data-id="${b.id}">Таҳрир</button></div>`).join("")}`}
 function admRelHTML(X){const pub=(S.rel&&S.rel.version)||0,b=S.rb,newer=relNew();
  return `<div class="sh-head"><b class="sh-t">Навсозии APK</b>${X}</div>
   <p class="set-note" style="margin-top:0">Тағйироти сайт (рӯйхат, дизайн, тарҷума) ҳамеша худкор ба ҳама мерасад, бе баннер. Ин ҷо танҳо навсозии иловаи Android.</p>
@@ -153,14 +159,16 @@ function bindAdmin($$){
  const acv=document.getElementById("a_cv");
  if(acv)acv.onchange=()=>{const f=acv.files&&acv.files[0],n=document.getElementById("a_cvn");if(f&&n)n.textContent="Интихоб шуд: "+f.name};
  const rsel=document.getElementById("a_rs"),rpub=document.getElementById("a_pub");
- if(rsel&&rpub)rsel.onchange=()=>{const pend=rsel.value==="pending"&&!(S.adm&&S.adm.id&&S.adm.pub);rpub.disabled=pend;if(pend)rpub.checked=false};
+ if(rpub)rpub.onchange=()=>{admErr("");if(!rpub.checked)return;const rt=readRights("a"),em=rightsCheck(rt);
+  if(em){rpub.checked=false;admErr("Китобро ҳама бинад, аввал ҳуқуқро пур кунед: «Ҳуқуқ ва манба»-ро интихоб кунед (масалан «Умумиҷамъиятӣ») ва Манбаро нависед. "+em,rightsField(rt))}};
+ ["a_rs","a_sr","a_rh"].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener("input",()=>admErr(""))});
  const asave=document.querySelector("[data-admsave]");
  if(asave)asave.onclick=async()=>{
   const v=id=>document.getElementById(id),t=v("a_t").value.trim(),a=v("a_a").value.trim();
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
   const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked,ebook:v("a_eb").checked,premium:v("a_pr").checked};
-  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){toast(em);return}}Object.assign(row,rt);
+  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё галочкаро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const cvf=v("a_cv").files&&v("a_cv").files[0];
   let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null,sqlMiss=false;
@@ -222,7 +230,8 @@ SHEETS.adm=X=>{let h="";{const a=S.adm||{},ci=Math.max(0,ADM_COLS.findIndex(x=>x
    <label class="chk"><input type="checkbox" id="a_eb" ${a.ebook===false?"":"checked"}>Шакли электронӣ (матн) дорад</label>
    <label class="chk"><input type="checkbox" id="a_au" ${a.audio?"checked":""}>Аудио низ дорад</label>
    <label class="chk"><input type="checkbox" id="a_pr" ${a.prem?"checked":""}>Премиум (пурра танҳо бо обуна)</label>
-   <label class="chk"><input type="checkbox" id="a_pub" ${a.id&&!a.pub?"":((a.rs||"pending")==="pending"&&!(a.id&&a.pub)?"disabled":"checked")}>Барои ҳама намоён (нашр)</label>
+   <label class="chk"><input type="checkbox" id="a_pub" ${a.id&&a.pub?"checked":""}>Барои ҳама намоён (нашр)</label>
+   <p class="a-err" id="a_err" hidden></p>
    <label class="chk" for="a_cv" style="flex-wrap:wrap"><span class="pill" style="pointer-events:none">Муқова (расм)</span><span id="a_cvn" style="color:var(--muted);font-size:13px">${a.cover?"Ҳоло муқова ҳаст. Иваз кардан мумкин":"Расм интихоб кунед (JPG ё PNG, 2:3)"}</span></label>
    <input type="file" id="a_cv" accept="image/*" hidden>
    <button class="btn" data-admsave>Захира кардан</button>

@@ -37,8 +37,10 @@ function tracks(b){const n=3+b.id%3;return Array.from({length:n},(_,i)=>({n:i?`�
 const bk=id=>BOOKS.find(x=>x.id===id);
 async function loadBooks(c){try{const{data,error}=await c.from("books").select("*").order("id");if(error||!data)return;
  const cp=data.map(r=>r.cover_path).filter(Boolean);let urls={};
- if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,604800);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}}
- BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||"",rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
+ if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,2592000);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}
+  // ҳар муқовае, ки дар рӯйхати умумӣ наомад, алоҳида меомӯзем (як хато ҳамаро вайрон накунад)
+  for(const pth of cp.filter(x=>!urls[x]).slice(0,40)){try{const{data:u1}=await c.storage.from("books").createSignedUrl(pth,2592000);if(u1&&u1.signedUrl)urls[pth]=u1.signedUrl}catch(_){}}}
+ BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||"",cvMiss:!!(r.cover_path&&!urls[r.cover_path]),rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
 S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
