@@ -31,4 +31,12 @@ module.exports=async t=>{
  t.eq(await t.page.evaluate(()=>[window.__au,window.__oo.options.redirectTo,window.__oo.options.skipBrowserRedirect]),['https://x.supabase.co/auth/v1/authorize?provider=google','tj.kitobkhona.app://auth',true],'Android: Chrome кушода мешавад, бозгашт ба tj.kitobkhona.app://auth');
  await t.page.evaluate(()=>{S.uname=''});await t.page.evaluate(()=>window.__oauth('access_token=AT&refresh_token=RT&x=1'));await t.page.waitForTimeout(300);
  t.eq(await t.page.evaluate(()=>[window.__ss,S.uid,S.view,S.step,S.uname]),[{access_token:'AT',refresh_token:'RT'},'g1','login','gender','Гул Номи'],'бозгашт: сессия гузошта шуд, қадами ном (исм аз Google)');
+ // профил аз триггери сервер (claim_name набошад ҳам): updateUser → профил ҳаст → ба хона
+ await t.open({view:'login'});
+ await t.page.evaluate(()=>{S.view='login';S.step='gender';S.consent=1;window.consOK=()=>true;window.__uu=null;
+  sbLoad=async()=>({auth:{updateUser:async o=>{window.__uu=o;return{error:null}},getSession:async()=>({data:{session:{user:{id:'u77'}}}})},
+   from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:{name:'Номи Нав 1'}})})})}),rpc:async()=>({data:null,error:{message:'function claim_name does not exist'}})});render()});
+ await t.page.fill('#uname','Номи Нав');await t.page.evaluate(()=>{window.consOK=()=>true});
+ await t.page.click('[data-g=boy]');await t.page.waitForTimeout(500);
+ t.eq(await t.page.evaluate(()=>[S.view,S.uname,window.__uu&&window.__uu.data.gender]),['home','Номи Нав 1','boy'],'профил аз триггер: claim_name набошад ҳам кириш давом мекунад');
 };

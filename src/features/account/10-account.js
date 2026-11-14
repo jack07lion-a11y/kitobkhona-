@@ -150,10 +150,16 @@ function bindAccount($$){
   if(!n){toast("Номатонро нависед");return}if(!consOK())return;
   S.gender=b.dataset.g;S.uname=n;
   const c=await sbLoad();if(c){
-   let nm=null,ne=null;try{const r=await c.rpc("claim_name",{p_name:n});nm=r.data;ne=r.error}catch(e){ne=e||1}
-   if(ne||!nm){S.gender=undefined;toast("Профил сохта нашуд. Интернетро санҷед ва аз нав кӯшиш кунед");return}
+   let nm=null,why="";
+   /* 1) метадата → триггери сервер профилро худкор месозад (номи беҳамто); ба claim_name вобаста нест */
+   try{const{error:ue}=await c.auth.updateUser({data:{gender:S.gender,name:n}});if(ue)why=ue.message||ue.code||"updateUser"}catch(e){why=String(e&&e.message||e)}
+   try{const ss=(await c.auth.getSession()).data.session,id=ss&&ss.user&&ss.user.id;
+    if(id){S.uid=id;const{data}=await c.from("profiles").select("name").eq("id",id).maybeSingle();if(data&&data.name)nm=data.name}}catch(_){}
+   /* 2) нашуд → claim_name */
+   if(!nm){try{const r=await c.rpc("claim_name",{p_name:n});if(r.error)why=r.error.message||r.error.code||why;else if(r.data)nm=r.data}catch(e){why=why||String(e&&e.message||e)}}
+   if(!nm){S.gender=undefined;toast("Профил сохта нашуд"+(why?" ("+String(why).slice(0,70)+")":"")+". Аз нав кӯшиш кунед");return}
    if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm;
-   const{error}=await c.auth.updateUser({data:{gender:S.gender,name:S.uname}});if(error)toast("Дар сервер сабт нашуд, баъдтар аз нав");await consSave();await syncServer()}
+   await consSave();await syncServer()}
   S.step="email";go("home")});
  const rs=document.getElementById("resend");
  if(rs){
