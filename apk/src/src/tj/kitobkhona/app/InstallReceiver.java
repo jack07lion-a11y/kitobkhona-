@@ -15,7 +15,7 @@ public class InstallReceiver extends BroadcastReceiver {
             Intent confirm = in.getParcelableExtra(Intent.EXTRA_INTENT);
             if (confirm != null) {
                 confirm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                c.startActivity(confirm);
+                try { c.startActivity(confirm); } catch (Exception ignored) { }
             }
         } else if (st != PackageInstaller.STATUS_SUCCESS) {
             Toast.makeText(c, "Насб нашуд", Toast.LENGTH_LONG).show();

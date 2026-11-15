@@ -22,6 +22,7 @@ async function checkShell(auto){if(window.KitobAndroid||!navigator.onLine)return
  try{const r=await fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"});if(!r.ok)return false;const t=await r.text();let x=0;for(let i=0;i<t.length;i++)x=(x*31+t.charCodeAt(i))|0;
   const k=x+":"+t.length,old=localStorage.getItem("kitob_shell");localStorage.setItem("kitob_shell",k);
   if(old&&old!==k){try{sessionStorage.setItem("kitob_upd","1")}catch(_){}location.reload();return true}}catch(_){}return false}
+let CS_T=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-CS_T>5*60*1000){CS_T=Date.now();checkShell(true)}}); // сайт/iPhone: ҳангоми баргаштан нусхаи нав
 async function doRefresh(){
  if(!navigator.onLine)return["Интернет нест"];
  const nb=BOOKS.length;try{await syncServer()}catch(_){}
@@ -29,7 +30,7 @@ async function doRefresh(){
  if(await checkShell(false))return["Интерфейс нав мешавад…"];
  const out=[];
  if(wuDue()){out.push("Навсозии нав тайёр аст");webUpdCheck()}
- if(S.upd&&apkNative()){out.push("Навсозии барнома ҳаст (версияи "+S.upd.v+")");setTimeout(()=>apkNag(true),900)}
+ if(S.upd&&apkNative()){out.push("Навсозии барнома ҳаст (версияи "+S.upd.v+")");setTimeout(()=>{apkAuto();apkInstallIdle()},900)}
  if(BOOKS.length>nb)out.push("Китобҳои нав: "+(BOOKS.length-nb));
  const nw=await loadNewsOnce();if(nw){let seen=0;try{seen=+(localStorage.getItem("kitob_news")||0)}catch(_){}if(seen&&nw.id>seen)out.push("Хабар: "+nw.title);if(nw.id>seen)try{localStorage.setItem("kitob_news",String(nw.id))}catch(_){}}
  return out.length?out:["Ҳама чиз нав аст"]}
