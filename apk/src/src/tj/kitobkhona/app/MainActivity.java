@@ -563,6 +563,11 @@ public class MainActivity extends Activity {
             }
 
             @JavascriptInterface
+            public boolean canInstall() {
+                return Build.VERSION.SDK_INT < 26 || getPackageManager().canRequestPackageInstalls();
+            }
+
+            @JavascriptInterface
             public String installUpdate() {
                 if (Flavor.PLAY) return "err";
                 File f = new File(getCacheDir(), "update.apk");
@@ -581,6 +586,8 @@ public class MainActivity extends Activity {
                 try {
                     PackageInstaller pi = getPackageManager().getPackageInstaller();
                     PackageInstaller.SessionParams sp = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+                    // Android 12+: агар худи ин барнома насбкунанда бошад, навсозӣ бе савол (ҳангоми аз экран баромадан)
+                    if (Build.VERSION.SDK_INT >= 31) sp.setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED);
                     int id = pi.createSession(sp);
                     PackageInstaller.Session s = pi.openSession(id);
                     OutputStream os = s.openWrite("kitobkhona", 0, f.length());

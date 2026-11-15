@@ -7,8 +7,12 @@ const wuDue=()=>{const A=wuNative(),p=S.flags&&S.flags.webPub;return !!(A&&p&&!w
 function webUpdCheck(){const A=wuNative();if(!A)return;
  if(wuStaff()){try{A.setShellAuto(true)}catch(_){}if(!window.__stShell){window.__stShell=1;try{A.updateShell()}catch(_){}}return}
  try{A.setShellAuto(false)}catch(_){}
- if(WU.ready){wuRestartUI();return}
- if(wuDue()&&!WU.busy)wuSheet()}
+ if(WU.ready){wuApply();return}
+ if(wuDue()&&!WU.busy)wuAuto()}
+/* ХУДКОР: ойна ва тугма нест. Нусха паси замина фаро мешавад, баъд дар вақти баргаштан ба барнома (ё оғози навбатӣ) худ ба худ ишга меафтад. */
+function wuAuto(){const A=wuNative();if(!A||!S.flags||!S.flags.webPub)return;S.webDone=S.flags.webPub;save();WU.busy=true;WU.auto=true;try{A.updateShell()}catch(_){WU.busy=false}}
+function wuApply(){if(!WU.ready||S.view==="read"||S.sheet)return;WU.ready=false;try{location.reload()}catch(_){}}
+let WU_HID=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")WU_HID=Date.now();else if(WU.ready&&Date.now()-WU_HID>8000)wuApply()});
 function wuSheet(){if(document.getElementById("wus"))return;const el=document.createElement("div");el.id="wus";el.className="wus";
  el.innerHTML=`<div class="wus-bg"></div><div class="wus-c"><i class="wus-h"></i><div class="wus-i">${P('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',2)}</div><h3>Навсозии нав тайёр аст</h3><p>Барнома беҳтар шуд. Навсозӣ чанд сонияро мегирад ва шумо метавонед хондани китобро давом диҳед.</p><button class="pay-btn" id="wus-go">Навсозӣ</button></div>`;
  document.body.appendChild(el);const c=el.querySelector(".wus-c"),bg=el.querySelector(".wus-bg");
@@ -27,6 +31,7 @@ function wuRestartUI(){if(document.getElementById("wur"))return;const el=documen
  el.innerHTML=`<button class="pay-btn" id="wur-go">${P('<path d="M4 12a8 8 0 1 0 3-6.200M4 4v4h4"/>',2)}Аз нав оғоз кардан</button>`;document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("in"));
  document.getElementById("wur-go").onclick=()=>{try{window.KitobAndroid.restartApp()}catch(_){location.reload()}}}
 window.__shellP=(p,st)=>{if(wuStaff())return;
+ if(WU.auto){if(st==="ready"){WU.busy=false;WU.ready=true}else if(st==="err"){WU.busy=false;WU.auto=false;S.webDone=null;save()}return}
  if(st==="down"){WU.pct=p;wuRing(p)}
  else if(st==="ready"){WU.busy=false;WU.ready=true;wuRing(100,true);setTimeout(wuRingOff,1800);wuRestartUI()}
  else if(st==="err"){WU.busy=false;S.webDone=null;save();wuRingOff();toast("Навсозӣ нашуд. Баъдтар аз нав кӯшиш кунед")}};
@@ -34,7 +39,7 @@ window.__shellP=(p,st)=>{if(wuStaff())return;
 // ===== Админ: нашри нусхаи сайт ба корбарони APK =====
 async function webLatest(){try{const r=await fetch(SITE_URL+"version.json?nc="+Date.now(),{cache:"no-store"});if(!r.ok)return null;const j=await r.json();return j&&j.h||null}catch(_){return null}}
 function admWebHTML(){const pub=(S.flags&&S.flags.webPub)||"",last=S.webLast||"";
- return `<div class="plan wuadm"><div><b>Навсозии саҳифа ба корбарон (APK)</b><span>Корбарони оддии APK нусхаи навро фақат баъди «Нашр кардан» мегиранд. Админ ва ёрдамчӣ худкор мегиранд. Сайт ва iPhone — доимо навтарин.</span>
+ return `<div class="plan wuadm"><div><b>Навсозии саҳифа ба корбарон (APK)</b><span>Баъди «Нашр кардан» нусха ба корбарони APK худкор, бе савол, дар вақти баргаштан ба барнома мерасад. Админ ва ёрдамчӣ дарҳол мегиранд. Сайт ва iPhone — доимо навтарин.</span>
   <small translate="no">Охирин сохташуда: ${last||"—"} · Нашршуда: ${pub||"—"} · Дар ин дастгоҳ: ${WEB_H}</small></div>
   <div class="rp-a"><button class="pill" data-webpub style="background:var(--orange);color:#fff"${last&&last===pub?" disabled":""}>${last&&last===pub?"Нашр шудааст ✓":"Нашр кардан"}</button></div></div>`}
 function bindWebPub(){const b=document.querySelector("[data-webpub]");if(!b)return;
