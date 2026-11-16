@@ -70,7 +70,7 @@ module.exports=async t=>{
   sbLoad=async()=>({rpc:async n=>{window.__r.push(n);return{error:null}},auth:{signOut:async()=>{window.__o=1}},storage:{from:()=>({list:async()=>{window.__stor=1;return{data:[]}},remove:async()=>({})})}});
   await deleteAccount();return{r:window.__r,view:S.view,step:S.step,uid:S.uid,stor:!!window.__stor,txt:document.getElementById('app').innerText}});
  t.ok(so.r.includes('delete_me')&&so.view==='login'&&so.step==='deleted'&&so.uid===''&&!so.stor,'нест кардан: delete_me, баромад; аватар файлҳо НЕ нест мешаванд (тиклаш учун)');
- t.ok(/Ҳисоб баста шудааст/.test(so.txt)&&/30 рӯз/.test(so.txt)&&!!await P.evaluate(()=>document.querySelector('[data-ext*="t.me/kitobkhona_official"]')),'экран: «Ҳисоб баста шудааст», 30 рӯз, пайванди Телеграм');
+ t.ok(/Ҳисоб баста шудааст/.test(so.txt)&&!/30 рӯз/.test(so.txt)&&!!await P.evaluate(()=>document.querySelector('[data-ext*="t.me/kitobkhona_official"]')),'экран: «Ҳисоб баста шудааст», бе муҳлат, пайванди Телеграм');
  // вуруди банӣ (Supabase: User is banned) → ҳамон экран
  const bn=await P.evaluate(async()=>{sbLoad=async()=>({auth:{signInWithOtp:async()=>({error:{message:'User is banned',code:'user_banned'}})}});return await sbSend('a@b.co')});
  t.eq(bn,'BANNED','вуруд: Supabase «banned» → ҳисоби нестшуда');
@@ -78,13 +78,13 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.role='admin';S.step='email';S.view='me';S.sheet='admdel';window.__a=[];window.confirm=()=>true;
   sbLoad=async()=>({rpc:async(n,a)=>{window.__a.push([n,a]);if(n==='deleted_list')return{data:[{id:'11111111-1111-4111-8111-111111111111',name:'Ном <i>X</i>',email:'a@b.co',deleted_at:new Date(Date.now()-5*864e5).toISOString()}],error:null};if(n==='restore_account')return{data:'ok',error:null};if(n==='purge_deleted')return{data:2,error:null};return{data:null,error:null}}});render()});
  await P.waitForSelector('[data-del-restore]');
- t.ok(await P.evaluate(()=>/25 рӯз монд/.test(document.querySelector('.sheet').innerText)&&!document.querySelector('.sheet i')),'нестшудагон: рӯйхат, «25 рӯз монд», HTML ёзилган матн иҷро намешавад');
+ t.ok(await P.evaluate(()=>!/рӯз монд/.test(document.querySelector('.sheet').innerText)&&!document.querySelector('.sheet i')),'нестшудагон: рӯйхат, бе муҳлати рӯз, HTML ёзилган матн иҷро намешавад');
  await P.click('[data-del-restore]');await P.waitForTimeout(300);
  t.ok(await P.evaluate(()=>window.__a.some(x=>x[0]==='restore_account'&&x[1].p_id==='11111111-1111-4111-8111-111111111111')),'«Тиклаш» → restore_account бо id-и дуруст');
- await P.click('[data-del-purge]');await P.waitForTimeout(300);
- t.ok(await P.evaluate(()=>window.__a.some(x=>x[0]==='purge_deleted'&&x[1].p_days===30)),'«Тоза кардан» → purge_deleted(30)');
+ t.ok(await P.evaluate(()=>!document.querySelector('[data-del-purge]')&&!window.__a.some(x=>x[0]==='purge_deleted')),'«Пурра тоза кардан» дар барнома нест (маълумот ҳеч гоҳ худкор тоза намешавад)');
  await P.evaluate(()=>{S.role='subadmin';S.sheet=null;S.view='me';render()});
- t.eq(await P.evaluate(()=>/Ҳисобҳои нест шуда/.test(document.getElementById('app').innerText)),false,'ёрдамчӣ (subadmin) тиклаш панелини намебинад: танҳо админ');
+ await P.evaluate(()=>{S.sheet='admhub';render()});await P.waitForTimeout(250);
+ t.eq(await P.evaluate(()=>/Нест шуда/.test(document.querySelector('.sheet').innerText)),true,'ёрдамчӣ (subadmin) ҳам «Нест шуда»-ро мебинад ва тикла мекунад');
  // «busy» хаста дар ҳолати захирашуда рӯйхатро манъ накунад
  await P.evaluate(()=>{window.__lb=0;S.uid='u1';S.rtCache=[{pos:1,name:'Кӯҳна',avatar:'',bio:'',sec:60}];S.rt={busy:true,busyAt:Date.now()-60000,list:null};
   sbLoad=async()=>({rpc:async(n)=>{if(n==='leaderboard'){window.__lb++;return{data:[{pos:1,name:'Нав А',avatar:'',bio:'',sec:300},{pos:2,name:'Нав Б',avatar:'',bio:'',sec:120}],error:null}}return{data:{pos:2,sec:120,n:2},error:null}}});loadRating(true)});

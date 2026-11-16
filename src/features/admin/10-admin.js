@@ -94,7 +94,7 @@ function admTiles(){const nb=BOOKS.filter(x=>x.db).length,ns=(S.staff||[]).lengt
   ["admstaff","Ёрдамчиён","users","c2",S.role==="admin",ns?String(ns):""],
   ["admbk","Захира","save","c1",true,bkDue()?"!":""],
   ["admfeat","Бахшҳо","flag","c1",S.role==="admin",""],
-  ["admdel","Нест шуда","trash","c4",S.role==="admin",""]].filter(t=>t[4])}
+  ["admdel","Нест шуда","trash","c4",S.role==="admin"||S.role==="subadmin",""]].filter(t=>t[4])}
 function admHTML(){if(S.role!=="admin"&&S.role!=="subadmin")return "";
  const n=admTiles().length,alert=relNew()||bkDue();
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
