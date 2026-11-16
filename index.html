@@ -920,8 +920,8 @@ html{overscroll-behavior-y:contain}
 .rd-gl.open{opacity:0}
 .rd-gc{right:12px;top:66%;width:58px;height:270px;border-radius:30px;transform:translateY(-50%) scale(.6);transform-origin:50% 100%;opacity:0;pointer-events:none;overflow:hidden;touch-action:none;transition:opacity .15s,transform .18s cubic-bezier(.3,1.3,.5,1)}
 .rd-gc.on{opacity:1;transform:translateY(-50%) scale(1);pointer-events:auto}
-.rd-gk{position:absolute;left:0;right:0;top:0;height:var(--g,0%);background:linear-gradient(180deg,rgba(19,165,109,.28),rgba(11,125,87,.55));border-radius:30px 30px 0 0}
-.rd-gk:after{content:"";position:absolute;left:50%;bottom:-3px;width:26px;height:6px;margin-left:-13px;border-radius:3px;background:#0b7d57;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.rd-gk{position:absolute;left:0;right:0;bottom:0;height:var(--g,0%);background:linear-gradient(0deg,rgba(11,125,87,.6),rgba(19,165,109,.3));border-radius:0 0 30px 30px}
+.rd-gk:after{content:"";position:absolute;left:50%;top:-3px;width:26px;height:6px;margin-left:-13px;border-radius:3px;background:#0b7d57;box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .rd-gc:before,.rd-gc:after{content:"";position:absolute;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:rgba(0,0,0,.28);box-shadow:0 12px 0 rgba(0,0,0,.18),0 24px 0 rgba(0,0,0,.1)}
 .rd-gc:before{top:14px}.rd-gc:after{bottom:38px;box-shadow:0 -12px 0 rgba(0,0,0,.18),0 -24px 0 rgba(0,0,0,.1)}
 .rd-gp{right:80px;top:66%;transform:translateY(-50%) translateX(10px);opacity:0;pointer-events:none;padding:12px 18px;border-radius:26px;font:800 22px/1 Inter,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;transition:opacity .15s,transform .18s}
@@ -2778,18 +2778,20 @@ function bindScr(){const s=document.getElementById("rdscr");if(!s)return;
   const gpaint=(N,M,g)=>{const a=document.getElementById("rdgln"),p=document.getElementById("rdgcn"),k=document.getElementById("rdgk");if(a)a.textContent=N;if(p)p.textContent=N+" / "+M;if(k)k.style.setProperty("--g",Math.max(0,Math.min(1,g))*100+"%")};
   const gstop=()=>{if(!gs)return;const id=gs.id,el=gs.el;gs=null;cancelAnimationFrame(gloop);try{el.releasePointerCapture(id)}catch(_){}
    window.__MF=0;delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}gclose(900)};
-  const gstep=t=>{if(!gs)return;const M=MM(),dt=Math.min(.05,(t-gs.t)/1000||0);gs.t=t;
-   const rc=GC.getBoundingClientRect(),gr=G.getBoundingClientRect(),fk=gfine(Math.max(0,gr.left-gs.cx));
-   gs.acc+=(gs.cy-gs.ly)/PPV*fk;gs.ly=gs.cy;
-   const zone=36,top=rc.top,bot=rc.bottom;let dir=0,prox=0;
-   if(gs.cy<top+zone){dir=-1;prox=Math.min(1,(top+zone-gs.cy)/zone)}else if(gs.cy>bot-zone){dir=1;prox=Math.min(1,(gs.cy-(bot-zone))/zone)}
-   if(dir)gs.extra+=dir*prox*prox*Math.max(120,M/6)*dt;
-   gs.extra=Math.max(-gs.p0-gs.acc,Math.min(M-1-gs.p0-gs.acc,gs.extra));
-   const page=Math.max(0,Math.min(M-1,Math.round(gs.p0+gs.acc+gs.extra))),res=apply((page+.5)/M);
-   gpaint(res.N,M,res.g);GP.classList.toggle("fine",fk<1);
+  /* ТЕЗЛИК-ВОБАСТА: оҳиста = дақиқ (14 px = 1 саҳифа); тез = калон (як зарби капсула ≈ тамоми китоб). БОЛО = пеш, ПОЁН = ақиб. */
+  const gstep=t=>{if(!gs)return;const M=MM(),dt=Math.max(.008,Math.min(.06,(t-gs.t)/1000||.016));gs.t=t;
+   const gr=G.getBoundingClientRect(),fk=gfine(Math.max(0,gr.left-gs.cx));
+   const dy=gs.ly-gs.cy;gs.ly=gs.cy;                       // боло кашидан = мусбат
+   gs.v=gs.v*.6+(Math.abs(dy)/dt)*.4;                        // суръат (px/с), ҳамвор
+   const cap=Math.max(1,(M/Math.max(120,GC.getBoundingClientRect().height))*PPV*1.3);   // то тамоми китоб дар як зарба
+   const mult=Math.min(cap,1+Math.pow(Math.max(0,gs.v-110)/160,2));                     // v<110 px/с → 1 (дақиқ)
+   gs.acc+=dy/PPV*fk*(fk<1?1:mult);
+   gs.acc=Math.max(-gs.p0,Math.min(M-1-gs.p0,gs.acc));
+   const page=Math.max(0,Math.min(M-1,Math.round(gs.p0+gs.acc))),res=apply((page+.5)/M);
+   gpaint(res.N,M,res.g);GP.classList.toggle("fine",fk<1||gs.v<110);
    gloop=requestAnimationFrame(gstep)};
   const gdown=e=>{if(gs||(e.button!=null&&e.button>0))return;e.preventDefault();const M=RD.M||1,el=e.currentTarget;
-   gs={id:e.pointerId,el,cy:e.clientY,ly:e.clientY,cx:e.clientX,acc:0,extra:0,p0:Math.max(0,Math.min(M-1,Math.floor((R.gf||0)*M+1e-6))),t:performance.now()};
+   gs={id:e.pointerId,el,cy:e.clientY,ly:e.clientY,cx:e.clientX,acc:0,v:0,p0:Math.max(0,Math.min(M-1,Math.floor((R.gf||0)*M+1e-6))),t:performance.now()};
    window.__MF=M;s.dataset.drag=1;gpaint(gs.p0+1,M,R.gf||0);gopen();try{el.setPointerCapture(e.pointerId)}catch(_){}
    cancelAnimationFrame(gloop);gloop=requestAnimationFrame(gstep)};
   for(const el of [G,GC]){el.addEventListener("pointerdown",gdown);
@@ -4179,7 +4181,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="755711203e";
+const WEB_H="8c538f3187";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

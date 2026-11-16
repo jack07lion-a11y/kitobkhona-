@@ -94,18 +94,20 @@ function bindScr(){const s=document.getElementById("rdscr");if(!s)return;
   const gpaint=(N,M,g)=>{const a=document.getElementById("rdgln"),p=document.getElementById("rdgcn"),k=document.getElementById("rdgk");if(a)a.textContent=N;if(p)p.textContent=N+" / "+M;if(k)k.style.setProperty("--g",Math.max(0,Math.min(1,g))*100+"%")};
   const gstop=()=>{if(!gs)return;const id=gs.id,el=gs.el;gs=null;cancelAnimationFrame(gloop);try{el.releasePointerCapture(id)}catch(_){}
    window.__MF=0;delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}gclose(900)};
-  const gstep=t=>{if(!gs)return;const M=MM(),dt=Math.min(.05,(t-gs.t)/1000||0);gs.t=t;
-   const rc=GC.getBoundingClientRect(),gr=G.getBoundingClientRect(),fk=gfine(Math.max(0,gr.left-gs.cx));
-   gs.acc+=(gs.cy-gs.ly)/PPV*fk;gs.ly=gs.cy;
-   const zone=36,top=rc.top,bot=rc.bottom;let dir=0,prox=0;
-   if(gs.cy<top+zone){dir=-1;prox=Math.min(1,(top+zone-gs.cy)/zone)}else if(gs.cy>bot-zone){dir=1;prox=Math.min(1,(gs.cy-(bot-zone))/zone)}
-   if(dir)gs.extra+=dir*prox*prox*Math.max(120,M/6)*dt;
-   gs.extra=Math.max(-gs.p0-gs.acc,Math.min(M-1-gs.p0-gs.acc,gs.extra));
-   const page=Math.max(0,Math.min(M-1,Math.round(gs.p0+gs.acc+gs.extra))),res=apply((page+.5)/M);
-   gpaint(res.N,M,res.g);GP.classList.toggle("fine",fk<1);
+  /* ТЕЗЛИК-ВОБАСТА: оҳиста = дақиқ (14 px = 1 саҳифа); тез = калон (як зарби капсула ≈ тамоми китоб). БОЛО = пеш, ПОЁН = ақиб. */
+  const gstep=t=>{if(!gs)return;const M=MM(),dt=Math.max(.008,Math.min(.06,(t-gs.t)/1000||.016));gs.t=t;
+   const gr=G.getBoundingClientRect(),fk=gfine(Math.max(0,gr.left-gs.cx));
+   const dy=gs.ly-gs.cy;gs.ly=gs.cy;                       // боло кашидан = мусбат
+   gs.v=gs.v*.6+(Math.abs(dy)/dt)*.4;                        // суръат (px/с), ҳамвор
+   const cap=Math.max(1,(M/Math.max(120,GC.getBoundingClientRect().height))*PPV*1.3);   // то тамоми китоб дар як зарба
+   const mult=Math.min(cap,1+Math.pow(Math.max(0,gs.v-110)/160,2));                     // v<110 px/с → 1 (дақиқ)
+   gs.acc+=dy/PPV*fk*(fk<1?1:mult);
+   gs.acc=Math.max(-gs.p0,Math.min(M-1-gs.p0,gs.acc));
+   const page=Math.max(0,Math.min(M-1,Math.round(gs.p0+gs.acc))),res=apply((page+.5)/M);
+   gpaint(res.N,M,res.g);GP.classList.toggle("fine",fk<1||gs.v<110);
    gloop=requestAnimationFrame(gstep)};
   const gdown=e=>{if(gs||(e.button!=null&&e.button>0))return;e.preventDefault();const M=RD.M||1,el=e.currentTarget;
-   gs={id:e.pointerId,el,cy:e.clientY,ly:e.clientY,cx:e.clientX,acc:0,extra:0,p0:Math.max(0,Math.min(M-1,Math.floor((R.gf||0)*M+1e-6))),t:performance.now()};
+   gs={id:e.pointerId,el,cy:e.clientY,ly:e.clientY,cx:e.clientX,acc:0,v:0,p0:Math.max(0,Math.min(M-1,Math.floor((R.gf||0)*M+1e-6))),t:performance.now()};
    window.__MF=M;s.dataset.drag=1;gpaint(gs.p0+1,M,R.gf||0);gopen();try{el.setPointerCapture(e.pointerId)}catch(_){}
    cancelAnimationFrame(gloop);gloop=requestAnimationFrame(gstep)};
   for(const el of [G,GC]){el.addEventListener("pointerdown",gdown);
