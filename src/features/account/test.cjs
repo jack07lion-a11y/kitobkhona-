@@ -39,4 +39,8 @@ module.exports=async t=>{
  await t.page.fill('#uname','Номи Нав');await t.page.evaluate(()=>{window.consOK=()=>true});
  await t.page.click('[data-g=boy]');await t.page.waitForTimeout(500);
  t.eq(await t.page.evaluate(()=>[S.view,S.uname,window.__uu&&window.__uu.data.gender]),['home','Номи Нав 1','boy'],'профил аз триггер: claim_name набошад ҳам кириш давом мекунад');
+ // расмҳои ҷинс (атиргул, перчатка): дар худи барнома, бе интернет ҳам намоён
+ await t.open({view:'login'});
+ await t.page.evaluate(()=>{S.view='login';S.step='gender';render()});await t.page.waitForTimeout(400);
+ t.ok(await t.page.evaluate(()=>{const m=[...document.querySelectorAll('.gart img')];return m.length===2&&m.every(i=>/^data:image\/webp;base64,/.test(i.src)&&i.complete&&i.naturalWidth>0)}),'атиргул ва перчатка: дар худи барнома (data-URI), дарҳол намоён, бе боркунӣ аз сервер');
 };

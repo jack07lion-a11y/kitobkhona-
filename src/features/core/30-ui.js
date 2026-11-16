@@ -20,41 +20,6 @@ const I={
  star:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',
 };
 const GLOVE='<g transform="translate(.500 3.200) scale(.9)"><path d="M1 7.500a4 4 0 014-4h1.500a4 4 0 014 4V11a2.500 2.500 0 01-2.500 2.500H3.500A2.500 2.500 0 011 11zM3 13.500V18h6.500v-4.500M3 15.800h6.500M1 9h3.200M5 6.200h3"/></g><g transform="translate(23.500 3.200) scale(-.9 .9)"><path d="M1 7.500a4 4 0 014-4h1.500a4 4 0 014 4V11a2.500 2.500 0 01-2.500 2.500H3.500A2.500 2.500 0 011 11zM3 13.500V18h6.500v-4.500M3 15.800h6.500M1 9h3.200M5 6.200h3"/></g>';
-const ROSE_ART=`<defs>
-<linearGradient id="rs1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c72a55"/><stop offset="1" stop-color="#8f1a3c"/></linearGradient>
-<linearGradient id="rs2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5466f"/><stop offset="1" stop-color="#c32c57"/></linearGradient>
-<linearGradient id="rs3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f67d9c"/><stop offset="1" stop-color="#e04a73"/></linearGradient>
-<linearGradient id="rl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3fbf7f"/><stop offset="1" stop-color="#0d7a52"/></linearGradient>
-</defs>
-<path d="M50 62C49 74 52 84 50 96" fill="none" stroke="#0d7a52" stroke-width="4" stroke-linecap="round"/>
-<path d="M50 82C42 83 33 79 29 70c9-1 18 3 21 12z" fill="url(#rl)"/><path d="M50 82C43 78 38 75 33 72" stroke="#0a5f40" stroke-width="1.200" fill="none" stroke-linecap="round"/>
-<path d="M50 74C59 75 67 71 71 62c-9-1-18 3-21 12z" fill="url(#rl)"/><path d="M50 74C58 70 63 67 68 64" stroke="#0a5f40" stroke-width="1.200" fill="none" stroke-linecap="round"/>
-<path d="M44 66l-3 4M56 66l3 4" stroke="#0d7a52" stroke-width="2.600" stroke-linecap="round"/>
-<g stroke="#fff" stroke-opacity=".28" stroke-width=".9">
-<g fill="url(#rs1)"><ellipse cx="50" cy="22" rx="15" ry="17" transform="rotate(0 50 38)"/><ellipse cx="50" cy="22" rx="15" ry="17" transform="rotate(72 50 38)"/><ellipse cx="50" cy="22" rx="15" ry="17" transform="rotate(144 50 38)"/><ellipse cx="50" cy="22" rx="15" ry="17" transform="rotate(216 50 38)"/><ellipse cx="50" cy="22" rx="15" ry="17" transform="rotate(288 50 38)"/></g>
-<g fill="url(#rs2)"><ellipse cx="50" cy="26" rx="11.500" ry="13.500" transform="rotate(36 50 38)"/><ellipse cx="50" cy="26" rx="11.500" ry="13.500" transform="rotate(108 50 38)"/><ellipse cx="50" cy="26" rx="11.500" ry="13.500" transform="rotate(180 50 38)"/><ellipse cx="50" cy="26" rx="11.500" ry="13.500" transform="rotate(252 50 38)"/><ellipse cx="50" cy="26" rx="11.500" ry="13.500" transform="rotate(324 50 38)"/></g>
-<g fill="url(#rs3)"><ellipse cx="50" cy="30" rx="8.500" ry="10" transform="rotate(0 50 38)"/><ellipse cx="50" cy="30" rx="8.500" ry="10" transform="rotate(90 50 38)"/><ellipse cx="50" cy="30" rx="8.500" ry="10" transform="rotate(180 50 38)"/><ellipse cx="50" cy="30" rx="8.500" ry="10" transform="rotate(270 50 38)"/></g></g>
-<circle cx="50" cy="38" r="6" fill="#b01f48"/>
-<path d="M50 38c0-2.500 3-3 3.800-1 .8 2.400-1.600 4.600-4.200 4.200-3.200-.5-4.600-4-3-6.400 1.800-2.800 6-3.200 8.200-.8" fill="none" stroke="#ffd0dc" stroke-opacity=".8" stroke-width="1.300" stroke-linecap="round"/>
-<path d="M38 20c3-4 7-6 12-6" stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none" stroke-linecap="round"/>`;
-const GLOVE_ART=`<defs>
-<linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0504d"/><stop offset="1" stop-color="#a21c2b"/></linearGradient>
-<linearGradient id="gt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d23842"/><stop offset="1" stop-color="#8d1624"/></linearGradient>
-</defs>
-<g transform="translate(5 22) rotate(-12 22 40) scale(.94)"><path d="M8 24C-1 22-3 38 8 42c5 2 9-2 8-7z" fill="url(#gt)"/>
-<path d="M6 24C6 9 15 2 26 2c11 0 16 9 16 20v18c0 6-4 10-10 10H14c-5 0-8-4-8-9z" fill="url(#gb)"/>
-<path d="M12 30c6 3 18 3 26-2" stroke="#7d1620" stroke-opacity=".55" stroke-width="1.500" fill="none" stroke-linecap="round"/>
-<rect x="10" y="48" width="26" height="14" rx="3" fill="#f6f1e4"/><path d="M10 50.500h26" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
-<path d="M14 54h18M14 58.500h18" stroke="#c9bfa6" stroke-width="1.500" stroke-linecap="round"/>
-<path d="M16 12c4-4 12-5 18 0" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-<g transform="translate(95 22) scale(-1 1) rotate(-12 22 40) scale(.94)"><path d="M8 24C-1 22-3 38 8 42c5 2 9-2 8-7z" fill="url(#gt)"/>
-<path d="M6 24C6 9 15 2 26 2c11 0 16 9 16 20v18c0 6-4 10-10 10H14c-5 0-8-4-8-9z" fill="url(#gb)"/>
-<path d="M12 30c6 3 18 3 26-2" stroke="#7d1620" stroke-opacity=".55" stroke-width="1.500" fill="none" stroke-linecap="round"/>
-<rect x="10" y="48" width="26" height="14" rx="3" fill="#f6f1e4"/><path d="M10 50.500h26" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
-<path d="M14 54h18M14 58.500h18" stroke="#c9bfa6" stroke-width="1.500" stroke-linecap="round"/>
-<path d="M16 12c4-4 12-5 18 0" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none" stroke-linecap="round"/></g>
-<path d="M50 7l1.800 3.800 4.200.6-3 3 .7 4.200L50 16.600l-3.700 2 .7-4.200-3-3 4.200-.6z" fill="#ffc93c"/>`;
-const art=()=>S.gender==="boy"?GLOVE_ART:ROSE_ART;
 const CROWN='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>';
 const TAB=[
  ["home","Асосӣ",'<path d="M3 21h18M5 21v-9M19 21v-9M5 12h3M16 12h3M8 12a4 4 0 018 0M12 8V5.2M10.8 5.2h2.4M9.5 21v-4a2.5 2.5 0 015 0v4"/>'],
