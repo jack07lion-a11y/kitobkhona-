@@ -22,6 +22,14 @@ begin
   if r <> 'ok' then raise exception 'ФАЛ: ёрдамчӣ (400 рӯз баъд) тикла накард (%)', r; end if;
   execute 'reset role';
   if (select deleted_at from public.profiles where id = '00000000-0000-4000-8000-0000000000a2') is not null then raise exception 'ФАЛ: deleted_at тоза нашуд'; end if;
+  -- ёрдамчӣ худро нест карда наметавонад
+  perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000a1', true);
+  perform set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a1"}', true);
+  execute 'set local role authenticated';
+  begin perform public.delete_me(); raise exception 'ФАЛ: ёрдамчӣ худро нест кард';
+  exception when others then if sqlerrm like 'ФАЛ%' then raise; end if; end;
+  execute 'reset role';
+  if (select deleted_at from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') is not null then raise exception 'ФАЛ: ёрдамчӣ нест шуд'; end if;
   -- корбари оддӣ: манъ
   update public.profiles set deleted_at = now() where id = '00000000-0000-4000-8000-0000000000a2';
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000a3', true);

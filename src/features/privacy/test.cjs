@@ -56,4 +56,13 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.sheet='delacc2';render()});await P.waitForTimeout(150);await P.click('[data-delacc-next="3"]');await P.waitForTimeout(300);
  await P.evaluate(()=>{DF.t0=Date.now()-44700});await P.waitForTimeout(1200);
  t.ok(await P.evaluate(()=>window.__rpc2.includes('delete_me')),'45 сония гузашт: ҳисоб худкор нест шуд (delete_me)');
+ // админ ва ёрдамчӣ: нест карда наметавонанд, тугмаи нест кардан ва ҳисобкунак ишламайд
+ for(const role of ['admin','subadmin']){
+  await P.evaluate(r=>{S.uid='u1';S.role=r;S.sheet='delacc';window.__rpc3=[];sbLoad=async()=>({rpc:async n=>{window.__rpc3.push(n);return{error:null}},auth:{signOut:async()=>{}},storage:{from:()=>({list:async()=>({data:[]}),remove:async()=>({})})}});render()},role);await P.waitForTimeout(200);
+  t.ok(await P.evaluate(()=>!document.querySelector('[data-delacc-next]')&&/ҳуқуқро надоред/.test(document.querySelector('.sheet').innerText)),role+': «ҳуқуқ надоред», тугмаи давом нест');
+  await P.evaluate(()=>{S.sheet='delacc3';render()});await P.waitForTimeout(150);
+  await P.evaluate(()=>deleteAccount());await P.waitForTimeout(200);
+  t.eq(await P.evaluate(()=>[window.__rpc3.includes('delete_me'),DF.on,S.uid]),[false,false,'u1'],role+': delete_me ҳеч гоҳ даъват намешавад');
+ }
+ await P.evaluate(()=>{S.role='user';S.sheet=null});
 };

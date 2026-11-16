@@ -685,5 +685,7 @@
 ["Ҳисоб нест карда истодааст…", "Аккаунт удаляется…", "Hisob o‘chirilmoqda…", "Deleting the account…"],
 ["Ҳисоби шумо баъди", "Ваш аккаунт будет удалён через", "Hisobingiz", "Your account will be deleted in"],
 ["сония", "секунд", "soniya", "seconds"],
-["Ҳисоби нест шуда", "Удалённые аккаунты", "O‘chirilgan hisoblar", "Deleted accounts"]
+["Ҳисоби нест шуда", "Удалённые аккаунты", "O‘chirilgan hisoblar", "Deleted accounts"],
+["МАНЪ АСТ", "ЗАПРЕЩЕНО", "TAQIQLANGAN", "NOT ALLOWED"],
+["Фаҳмидам", "Понятно", "Tushundim", "Got it"]
 ]
