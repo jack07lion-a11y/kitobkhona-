@@ -64,4 +64,30 @@ module.exports=(prev=>async t=>{
  t.eq(await P.evaluate(()=>S.sheet),null,'аз худи панел пӯшидан — ба «Ҳисоб»');
  await P.evaluate(()=>{S.sheet='admmake';render()});await P.waitForTimeout(400);
  t.ok(await P.evaluate(()=>{const x=document.getElementById('app').innerText;return /Омода кардани китоб/.test(x)&&!/ясаш|Ясаш|Ўрнатиш|воронка|Воронка/.test(x)}),'матнҳои ғайритоҷикӣ (ясаш, Ўрнатиш…) дар намуд нест');
+ // ёрдамчӣ доимӣ / нав: нишон ва бардоштан
+ const PP=t.page;
+ await PP.evaluate(()=>{S.role='admin';S.view='me';S.step='email';S.staff=[{email:'old@x.co',name:'Доимӣ',role:'subadmin',perms:{},since:null,permanent:true},{email:'new@x.co',name:'Навакак',role:'subadmin',perms:{},since:new Date().toISOString(),permanent:false}];
+  window.__rp=[];window.confirm=()=>true;sbLoad=async()=>({rpc:async(n,a)=>{window.__rp.push([n,a&&a.p_email,a&&a.p_role]);if(n==='staff_list')return{data:S.staff,error:null};return{data:n==='set_role'?'ok':'ok',error:null}}});S.sheet='admstaff';render()});
+ await PP.waitForTimeout(250);
+ t.ok(await PP.evaluate(()=>document.querySelectorAll('.sbd.perm').length===1&&document.querySelectorAll('.sbd.beta').length===1),'нишон: доимӣ — квадрати сабз, нав — «Бета»');
+ // НАВ: як тасдиқ, фавран set_role
+ await PP.click('[data-sa-del="new@x.co"]');await PP.waitForTimeout(250);
+ t.ok(await PP.evaluate(()=>window.__rp.some(x=>x[0]==='set_role'&&x[1]==='new@x.co'&&x[2]==='user')&&!/sadel/.test(S.sheet||'')),'нав ёрдамчӣ: як тасдиқ ва бардошта шуд');
+ // ДОИМӢ: 3 ойна, ҳисобкунак 60, фақат як тугма; фавран set_role НЕ
+ await PP.evaluate(()=>{window.__rp=[];S.sheet='admstaff';render()});await PP.waitForTimeout(150);
+ await PP.click('[data-sa-del="old@x.co"]');await PP.waitForTimeout(200);
+ t.ok(await PP.evaluate(()=>S.sheet==='sadel1'&&/ХАТАРНОК/.test(document.querySelector('.sheet').innerText)),'доимӣ: ойнаи 1 («ХАТАРНОК»)');
+ await PP.click('[data-sd-next="2"]');await PP.waitForTimeout(150);
+ t.ok(await PP.evaluate(()=>S.sheet==='sadel2'&&/Боз як бор/.test(document.querySelector('.sheet').innerText)),'доимӣ: ойнаи 2 (матни дигар)');
+ await PP.click('[data-sd-next="3"]');await PP.waitForTimeout(400);
+ t.ok(await PP.evaluate(()=>S.sheet==='sadel3'&&SD.on&&document.querySelectorAll('.sheet button').length===1&&!!document.querySelector('[data-sd-cancel]')&&window.__rp.some(x=>x[0]==='request_staff_removal')&&!window.__rp.some(x=>x[0]==='set_role')),'доимӣ: ойнаи 3, ҳисобкунак, ФАҚАТ «Бекор кардан», request_staff_removal, set_role НЕ');
+ // қулф → бекор + cancel_staff_removal
+ await PP.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>'hidden'});document.dispatchEvent(new Event('visibilitychange'))});await PP.waitForTimeout(250);
+ t.ok(await PP.evaluate(()=>!SD.on&&window.__rp.some(x=>x[0]==='cancel_staff_removal')&&!window.__rp.some(x=>x[0]==='set_role')),'қулф: бекор, cancel_staff_removal, набардошт');
+ await PP.evaluate(()=>{delete document.visibilityState});
+ // 60 сония гузашт → set_role
+ await PP.evaluate(()=>{window.__rp=[];S.sheet='sadel2';render()});await PP.waitForTimeout(150);
+ await PP.click('[data-sd-next="3"]');await PP.waitForTimeout(300);
+ await PP.evaluate(()=>{SD.t0=Date.now()-59700});await PP.waitForTimeout(1200);
+ t.ok(await PP.evaluate(()=>window.__rp.some(x=>x[0]==='set_role'&&x[1]==='old@x.co'&&x[2]==='user')),'60 сония гузашт: ёрдамчии доимӣ бардошта шуд (set_role)');
 })(module.exports);

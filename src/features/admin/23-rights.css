@@ -10,3 +10,8 @@
 .hq-r i{font-style:normal;font-weight:800;width:20px;flex:none}
 .hq-y{color:#0b9f5f}.hq-n{color:#d6453a}
 .hq-r small{font-weight:600;font-size:11.5px;opacity:.85}
+
+/* нишони ёрдамчӣ: доимӣ — квадрати кичики сабз (® услуб), нав — «Бета» */
+.sbd{display:inline-block;vertical-align:super;font-size:10px;line-height:1;margin-left:4px;font-weight:800;letter-spacing:.2px}
+.sbd.perm{background:#0b7d57;color:#fff;border-radius:3px;width:14px;height:14px;line-height:14px;text-align:center;font-size:10px;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sbd.beta{color:#9a5b00;background:#ffe9b8;border:1px solid #e9b44c;border-radius:6px;padding:2px 5px;font-size:9.5px}

@@ -1066,6 +1066,11 @@ select.pe-i{appearance:auto}
 .hq-r i{font-style:normal;font-weight:800;width:20px;flex:none}
 .hq-y{color:#0b9f5f}.hq-n{color:#d6453a}
 .hq-r small{font-weight:600;font-size:11.5px;opacity:.85}
+
+/* нишони ёрдамчӣ: доимӣ — квадрати кичики сабз (® услуб), нав — «Бета» */
+.sbd{display:inline-block;vertical-align:super;font-size:10px;line-height:1;margin-left:4px;font-weight:800;letter-spacing:.2px}
+.sbd.perm{background:#0b7d57;color:#fff;border-radius:3px;width:14px;height:14px;line-height:14px;text-align:center;font-size:10px;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sbd.beta{color:#9a5b00;background:#ffe9b8;border:1px solid #e9b44c;border-radius:6px;padding:2px 5px;font-size:9.5px}
 /* ---------- Панели идоракунӣ: тугмаҳои торӣ ---------- */
 .adm-tag{font-size:10px;font-weight:800;background:var(--orange-soft);color:var(--orange-3);padding:3px 9px;border-radius:10px;margin-right:auto;margin-left:8px;align-self:center}
 .adm-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 8px}
@@ -2019,7 +2024,18 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["МАНЪ АСТ", "ЗАПРЕЩЕНО", "TAQIQLANGAN", "NOT ALLOWED"],
 ["Фаҳмидам", "Понятно", "Tushundim", "Got it"],
 ["Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед", "Вы сегодня ещё не читали. Зайдите в Китобхона и начните чтение", "Bugun hali kitob o‘qimadingiz. Kitobxonaga kiring va o‘qishni boshlang", "You haven’t read today yet. Open Kitobkhona and start reading"],
-["Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?", "Молодец, сегодня вы читали! Прочтёте ещё несколько страниц?", "Barakalla, bugun kitob o‘qidingiz! Yana bir necha sahifa o‘qimaysizmi?", "Well done, you read today! Read a few more pages?"]
+["Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?", "Молодец, сегодня вы читали! Прочтёте ещё несколько страниц?", "Barakalla, bugun kitob o‘qidingiz! Yana bir necha sahifa o‘qimaysizmi?", "Well done, you read today! Read a few more pages?"],
+["Ёрдамчии доимиро бардоштан", "Снять постоянного помощника", "Doimiy yordamchini olib tashlash", "Remove a permanent assistant"],
+["Ин ёрдамчӣ нав аст (Бета). Бардоред?", "Это новый помощник (Бета). Снять?", "Bu yordamchi yangi (Beta). Olib tashlaysizmi?", "This assistant is new (Beta). Remove?"],
+["Бардоштан бекор шуд", "Снятие отменено", "Olib tashlash bekor qilindi", "Removal cancelled"],
+["Ёрдамчӣ дар зудӣ бардошта мешавад", "Помощник скоро будет снят", "Yordamchi tez orada olib tashlanadi", "The assistant will be removed soon"],
+["Ёрдамчии доимӣ", "Постоянный помощник", "Doimiy yordamchi", "Permanent assistant"],
+["Ёрдамчии нав: ҳанӯз дар санҷиш", "Новый помощник: ещё на проверке", "Yangi yordamchi: hali tekshiruvda", "New assistant: still on trial"],
+["Бета", "Бета", "Beta", "Beta"],
+["Ёдоварӣ: ҳар 2 соат", "Напоминание: каждые 2 часа", "Eslatma: har 2 soatda", "Reminder: every 2 hours"],
+["Ба ҳамаи сабтномкардагон (хонанда ва нахонда) худкор меравад", "Автоматически идёт всем зарегистрированным (читающим и нет)", "Ro‘yxatdan o‘tgan hammaga (o‘qiyotgan va o‘qimagan) avtomatik boradi", "Sent automatically to every registered user (readers and non-readers)"],
+["08:00 то 22:00, 8 маротиба дар рӯз (Android). Бо забони барнома", "С 08:00 до 22:00, 8 раз в день (Android). На языке приложения", "08:00 dan 22:00 gacha, kuniga 8 marta (Android). Ilova tilida", "08:00 to 22:00, 8 times a day (Android). In the app language"],
+["Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.", "Удаление админа или его замена помощнику никогда недоступны.", "Admin‘ni o‘chirish yoki almashtirish yordamchi uchun hech qachon mumkin emas.", "A helper can never remove or replace the admin."]
 ]
 </script>
 <script>
@@ -2412,7 +2428,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindStaffDel($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));
@@ -3229,7 +3245,7 @@ function me(){
   <div class="pad" style="position:relative;display:flex;flex-direction:column;gap:20px;padding-top:0">
    <div class="prow"><div class="av">${avInner(S.pAv)}</div><div class="btns"><button class="pill" data-pedit>Таҳрири профил</button></div></div>
    <div><h1 class="name">${escH(S.uname||"Номи шумо")}${S.role==="admin"||S.role==="subadmin"?VBADGE:""}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>${S.pBio?`<p class="pbio">${escH(S.pBio)}</p>`:""}
-    <div class="meta2"><span>${P(I.brief,1.8)}${S.role==="admin"?"Админи Китобхона":S.role==="subadmin"?"Ёрдамчии админ":"Ҳисоби ройгон"}</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
+    <div class="meta2"><span>${P(I.brief,1.8)}${S.role==="admin"?"Админи Китобхона":S.role==="subadmin"?"Ёрдамчии админ"+stMeBadge():"Ҳисоби ройгон"}</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
    ${PREM()&&FEAT("buy")?`<div class="banner2"><svg class="ico" style="width:40px;height:40px" viewBox="0 0 24 24" fill="#fff" fill-opacity=".9"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg><div><b>Китобхона Премиум</b><span>Имкониятҳои махсусро кашф кунед</span></div><button class="cta" data-toast="Харид — қадами оянда">Премиум ›</button></div>`:""}
    <div class="stats">
     <button class="stat" data-sheet="khirad"><small translate="no">Тавозуни хирад</small><b>${FEAT("coin")?COIN_I+(S.coins||0):"Ба зудӣ"}</b></button>
@@ -3787,12 +3803,12 @@ const CAPS=[
 const ADMIN_ONLY=[["Ёрдамчиёнро таъин ва бардоштан","Фақат админ"],["Тугмаи Премиум","Фақат админ"],["Версияи ҳадди ақали APK","Фақат админ"],["Ҳуқуқҳои ёрдамчиёнро иваз кардан","Фақат админ"],["Админро бардоштан ё иваз кардан","Ҳеҷ кас, ба ҷуз худи админ"]];
 const capOn=(p,k)=>{const d=CAPS.find(x=>x[0]===k);if(!d)return false;const v=(p||{})[k];return v===undefined||v===null?d[3]:!!v};
 const canPerm=k=>S.role==="admin"||(S.role==="subadmin"&&capOn(S.perms,k));
-async function loadPerms(c){S.perms={};try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;const{data,error}=await c.from("profiles").select("perms").eq("id",u.id).maybeSingle();if(!error&&data&&data.perms&&typeof data.perms==="object")S.perms=data.perms}catch(_){}}
+async function loadPerms(c){S.perms={};try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;const{data,error}=await c.from("profiles").select("perms").eq("id",u.id).maybeSingle();if(!error&&data&&data.perms&&typeof data.perms==="object")S.perms=data.perms;if(S.role==="subadmin"){const r=await c.rpc("my_staff");if(!r.error&&r.data)S.myStaff=r.data}}catch(_){}}
 async function loadStaff(){if(S.role!=="admin")return;const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.rpc("staff_list");if(!error&&Array.isArray(data)&&JSON.stringify(data)!==JSON.stringify(S.staff)){S.staff=data;if(S.view==="me"&&!S.sheet)render()}}catch(_){}}
 async function setStaff(email,role){const c=await sbLoad();if(!c){toast("Интернет нест");return false}
  try{const{data,error}=await c.rpc("set_role",{p_email:email,p_role:role});
-  if(error){toast("Иҷозат дода нашуд. Аввал SQL-ро иҷро кунед");return false}
+  if(error){toast(/permanent_staff/.test(error.message||"")?"Ёрдамчии доимиро фавран бардошта намешавад. Аз нав оғоз кунед ва 60 сония интизор шавед":"Иҷозат дода нашуд. Аввал SQL-ро иҷро кунед");return false}
   if(data==="ok"){toast(role==="subadmin"?"Ёрдамчии админ таъин шуд":"Ёрдамчӣ бардошта шуд");await loadStaff();return true}
   toast(data==="no_user"?"Бо ин почта ҳисоб ёфт нашуд. Бигӯед, ки аввал дар барнома дохил шавад":data==="no_profile"?"Ин шахс ҳоло ном сабт накардааст. Бигӯед, ки аввал дохил шуда, номашро нависад":data==="is_admin"?"Ин шахс админ аст":"Иҷозат дода нашуд");return false}
  catch(_){toast("Интернет нест ё сервер ҷавоб намедиҳад");return false}}
@@ -3907,7 +3923,7 @@ function admStaffHTML(X){
  return `<div class="sh-head"><b class="sh-t">Ёрдамчиёни админ</b>${gear}${X}</div>
   <p class="set-note" style="margin-top:0">Почтаи шахсро нависед, то ӯ ёрдамчӣ шавад. Ҳар ёрдамчиро алоҳида танзим кунед: ҳуқуқро фурӯзон кунед — ӯ мебинад, хомӯш кунед — фавран нест мешавад. ⚙ — ҳуқуқҳои умумӣ.</p>
   <div class="sa-row"><input id="sa_mail" type="email" inputmode="email" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="nom@gmail.com"><button class="pill" data-sa-add>Таъин кардан</button></div>
-  ${(S.staff||[]).filter(x=>x.role==="subadmin").map(x=>`<div class="sa-card"><div class="plan"><div><b translate="no">${escH(x.name||"")}</b><span translate="no">${escH(x.email||"")}</span></div><button class="pill" data-sa-del="${esc(x.email||"")}">Бардоштан</button></div>
+  ${(S.staff||[]).filter(x=>x.role==="subadmin").map(x=>`<div class="sa-card"><div class="plan"><div><b translate="no">${escH(x.name||"")}</b>${stBadge(x)}<span translate="no">${escH(x.email||"")}</span></div><button class="pill" data-sa-del="${esc(x.email||"")}">Бардоштан</button></div>
    <div class="sa-all"><button class="pill" data-permall="${esc(x.email||"")}|1">Ҳамаро фурӯзон</button><button class="pill" data-permall="${esc(x.email||"")}|0">Ҳамаро хомӯш</button></div>
    ${CAPS.map(([k,t,s])=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${s}</small></div><button class="swt${capOn(x.perms,k)?" on":""}" data-perm="${k}" data-pm="${esc(x.email||"")}" role="switch" aria-label="${t}"></button></div>`).join("")}</div>`).join("")}`}
 function admRightsHTML(X){
@@ -3921,9 +3937,9 @@ function admRightsHTML(X){
 function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{remind_text:{...(c.remind_text||{})},congrats_tpl:{...(c.congrats_tpl||{})}};
  const sw=(k,t,s)=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${s}</small></div><button class="swt${(k==="sub_can_edit"?!!c[k]:c[k]!==false)?" on":""}" data-nc="${k}" role="switch" aria-label="${t}"></button></div>`;
  return `<div class="sh-head"><b class="sh-t">Огоҳиномаҳо</b>${X}</div>
-  ${sw("remind_on","Ёдоварии ҳаррӯза","Агар имрӯз ҳатто 1 дақиқа нахонда бошанд, ба ҳама худкор меравад")}
+  ${sw("remind_on","Ёдоварии ҳаррӯза","Ба ҳамаи сабтномкардагон (хонанда ва нахонда) худкор меравад")}
   ${sw("congrats_on","Табрики хондан","Баъди баромадан аз барнома, дақиқаҳои имрӯзро мегӯяд")}
-  <div class="nrow"><div class="ntx"><b>Ёдоварӣ: 5 маротиба дар рӯз</b><small>09:30 · 12:30 · 15:30 · 18:30 · 20:30. Агар имрӯз ба барнома даромада бошад — ҳамагӣ 3</small></div></div>
+  <div class="nrow"><div class="ntx"><b>Ёдоварӣ: ҳар 2 соат</b><small>08:00 то 22:00, 8 маротиба дар рӯз (Android). Бо забони барнома</small></div></div>
   ${S.role==="admin"?sw("sub_can_edit","Ёрдамчиён ҳам таҳрир кунанд","Агар хомӯш бошад, ёрдамчӣ ин бахшро намебинад"):""}
   <p class="set-cap" style="margin-top:14px">Матнҳо</p>
   <div class="seg sm" style="margin-bottom:8px">${LANGS.map(([k,n])=>`<button class="${L===k?"on":""}" data-ndl="${k}" translate="no">${n}</button>`).join("")}</div>
@@ -3980,7 +3996,9 @@ function bindAdmin($$){
  $$("[data-permall]",b=>b.onclick=async()=>{const[em,on]=b.dataset.permall.split("|"),o={};CAPS.forEach(x=>o[x[0]]=on==="1");
   try{const c=await sbLoad();const{error}=await c.rpc("set_perms",{p_email:em,p:o});if(error){toast("Иҷозат дода нашуд. Аввал SQL-и ҳуқуқҳоро иҷро кунед");return}toast(on==="1"?"Ҳамаи ҳуқуқҳо дода шуд":"Ҳамаи ҳуқуқҳо гирифта шуд");const r=(S.staff||[]).find(x=>x.email===em);if(r)r.perms={...o};render()}catch(_){toast("Интернет нест")}});
  $$("[data-perm]",b=>b.onclick=async()=>{const on=!b.classList.contains("on");b.classList.toggle("on",on);try{const c=await sbLoad();const{error}=await c.rpc("set_perm",{p_email:b.dataset.pm,p_key:b.dataset.perm,p_on:on});if(error){b.classList.toggle("on",!on);toast("Иҷозат дода нашуд. Аввал SQL-и иҷозатҳоро иҷро кунед")}else loadStaff()}catch(_){b.classList.toggle("on",!on);toast("Интернет нест")}});
- $$("[data-sa-del]",b=>b.onclick=async()=>{if(!confirm("Ин ёрдамчиро бардоред?"))return;await setStaff(b.dataset.saDel,"user")});
+ $$("[data-sa-del]",b=>b.onclick=async()=>{const e=b.dataset.saDel,x=staffByEmail(e);
+  if(x&&x.permanent){SD.email=e;SD.name=x.name||e;S.sheet="sadel1";render();return}   // ДОИМӢ: 3 ойна + 60 сония
+  if(!confirm("Ин ёрдамчӣ нав аст (Бета). Бардоред?"))return;await setStaff(e,"user")});
 }
 
 /* ---- варақҳои панели нав ---- */
@@ -4052,6 +4070,48 @@ function bindAdminDeleted($$){
   try{const c=await sbLoad();const{data,error}=await c.rpc("restore_account",{p_id:b.dataset.delRestore});
    if(error||data!=="ok")throw 0;toast("Ҳисоб барқарор шуд");DEL.list=null;loadDeleted()}
   catch(_){b.disabled=false;toast("Барқарор нашуд. Интернет ё ҳуқуқро санҷед")}});}
+/* ---- Админ: ёрдамчиро бардоштан ----
+   НАВ ёрдамчи (Бета, <30 рӯз): як тасдиқ. ДОИМӢ ёрдамчи: 3 ойнаи ҳушдор + 60 сония, фақат «Бекор кардан»; қулф/баромад → бекор.
+   Сервер ҳам 60 сонияро талаб мекунад (docs/sql-yordamchi.sql: request_staff_removal + set_role). */
+const SD={email:"",name:"",on:false,t0:0,iv:0},SD_SEC=60;
+const sdW=t=>`<div class="del-w">⚠ ${t}</div>`;
+const staffByEmail=e=>(S.staff||[]).find(x=>x.email===e);
+/* нишони ёрдамчи: доимӣ — квадрати кичики сабз; нав — «Бета» */
+const stBadge=x=>!x||x.permanent===undefined?"":x.permanent?`<sup class="sbd perm" title="Ёрдамчии доимӣ" aria-label="Ёрдамчии доимӣ">✓</sup>`:`<sup class="sbd beta" title="Ёрдамчии нав: ҳанӯз дар санҷиш">Бета</sup>`;
+const stMeBadge=()=>S.role==="subadmin"&&S.myStaff&&S.myStaff.permanent!==undefined?stBadge({permanent:!!S.myStaff.permanent}):"";
+SHEETS.sadel1=X=>`<div class="sh-head"><b class="sh-t">Ёрдамчии доимиро бардоштан</b>${X}</div>${sdW("ХАТАРНОК!")}
+ <p class="hint"><b>${escH(SD.name)}</b> ёрдамчии <b>доимӣ</b> аст (30 рӯзи бештар ё аз асос). Бардоштани ӯ қарори ҷиддӣ аст: ҳуқуқҳои ӯ фавран гирифта мешаванд.</p>
+ <p class="hint">Барои эҳтиёт ин амал якбора нест: пас аз се ойна, 60 сония вақти бекор кардан дода мешавад.</p>
+ <button class="pay-btn del-b" data-sd-next="2">Давом додан (хатарнок)</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
+SHEETS.sadel2=X=>`<div class="sh-head"><b class="sh-t">Боз як бор фикр кунед</b>${X}</div>${sdW("ХАТАРНОК! Ин ёрдамчӣ дар Китобхона вақти зиёд кор кардааст.")}
+ <p class="hint">Баъд аз бардоштан <b>${escH(SD.name)}</b> дигар ба Идоракунӣ ворид шуда наметавонад. Агар хато шавад, ӯро аз нав таъин кардан лозим меояд.</p>
+ <button class="pay-btn del-b" data-sd-next="3">Ман хатарро медонам, идома диҳед</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
+SHEETS.sadel3=X=>{if(!SD.on)return SHEETS.sadel1(X);const left=Math.max(0,Math.ceil(SD_SEC-(Date.now()-SD.t0)/1000));
+ return `<div class="sh-head"><b class="sh-t">Охирин огоҳӣ</b></div>${sdW("ХАТАРНОК! Ёрдамчӣ дар зудӣ бардошта мешавад")}
+ <p class="del-t">${escH(SD.name)} баъди</p><div class="del-n"><span id="sdc">${left}</span> сония</div><div class="del-bar"><i id="sdbar" style="width:${left/SD_SEC*100}%"></i></div><p class="del-t">бардошта мешавад.</p>
+ <p class="hint">Танҳо як роҳи боздоштан ҳаст: тугмаи поён. Агар экранро қулф кунед, аз барнома барояд ё ойнаро пӯшед, бардоштан <b>бекор мешавад</b>.</p>
+ <button class="pay-btn" data-sd-cancel>Бекор кардан</button>`};
+function sdStop(){clearInterval(SD.iv);SD.iv=0;SD.on=false}
+async function sdCancelServer(){try{const c=await sbLoad();if(c)await c.rpc("cancel_staff_removal",{p_email:SD.email})}catch(_){}}
+function sdAbort(msg){const was=SD.on;sdStop();if(!was)return;sdCancelServer();if(/^sadel/.test(S.sheet||"")){S.sheet="admstaff";render()}if(msg)toast(msg)}
+async function sdTick(){if(!SD.on)return;
+ if(document.visibilityState!=="visible"||S.sheet!=="sadel3"){sdAbort(S.sheet==="sadel3"?"Бардоштан бекор шуд":"");return}
+ const el=(Date.now()-SD.t0)/1000;
+ if(el>=SD_SEC){sdStop();const ok=await setStaff(SD.email,"user");S.sheet="admstaff";render();if(!ok)sdCancelServer();return}
+ const n=Math.max(0,Math.ceil(SD_SEC-el)),c=document.getElementById("sdc"),b=document.getElementById("sdbar");
+ if(c)c.textContent=n;if(b)b.style.width=(100-el/SD_SEC*100)+"%"}
+async function sdBegin(){const c=await sbLoad();if(!c||!navigator.onLine){toast("Интернет нест");return false}
+ try{const{data,error}=await c.rpc("request_staff_removal",{p_email:SD.email});if(error||data!=="ok")throw 0}
+ catch(_){toast("Оғоз нашуд. Аввал SQL-ро иҷро кунед ё интернетро санҷед");return false}
+ SD.on=true;SD.t0=Date.now();clearInterval(SD.iv);SD.iv=setInterval(sdTick,250);return true}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")sdAbort("Бардоштан бекор шуд")});
+window.addEventListener("pagehide",()=>sdAbort());
+function bindStaffDel($$){
+ $$("[data-sd-next]",b=>b.onclick=async()=>{const n=b.dataset.sdNext;
+  if(n==="3"){b.disabled=true;if(!await sdBegin()){b.disabled=false;return}S.sheet="sadel3";render();return}
+  S.sheet="sadel2";render()});
+ $$("[data-sd-cancel]",b=>b.onclick=()=>{const was=SD.on;sdStop();if(was)sdCancelServer();S.sheet="admstaff";render();toast("Бардоштан бекор шуд")});
+ if(SD.on&&S.sheet!=="sadel3")sdAbort()}
 // ===== Версияи ҳадди ақали APK: агар кӯҳна бошад, ба навсозӣ даъват мекунем =====
 function checkMin(){const m=(S.flags&&S.flags.min)||0,v=NATIVE.ver();let el=document.getElementById("minv_ov");
  if(!(v>0&&m>v)){if(el)el.remove();return}
@@ -4101,7 +4161,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="a9a2465a77";
+const WEB_H="cad8a724e8";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

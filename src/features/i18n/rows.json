@@ -689,5 +689,16 @@
 ["МАНЪ АСТ", "ЗАПРЕЩЕНО", "TAQIQLANGAN", "NOT ALLOWED"],
 ["Фаҳмидам", "Понятно", "Tushundim", "Got it"],
 ["Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед", "Вы сегодня ещё не читали. Зайдите в Китобхона и начните чтение", "Bugun hali kitob o‘qimadingiz. Kitobxonaga kiring va o‘qishni boshlang", "You haven’t read today yet. Open Kitobkhona and start reading"],
-["Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?", "Молодец, сегодня вы читали! Прочтёте ещё несколько страниц?", "Barakalla, bugun kitob o‘qidingiz! Yana bir necha sahifa o‘qimaysizmi?", "Well done, you read today! Read a few more pages?"]
+["Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?", "Молодец, сегодня вы читали! Прочтёте ещё несколько страниц?", "Barakalla, bugun kitob o‘qidingiz! Yana bir necha sahifa o‘qimaysizmi?", "Well done, you read today! Read a few more pages?"],
+["Ёрдамчии доимиро бардоштан", "Снять постоянного помощника", "Doimiy yordamchini olib tashlash", "Remove a permanent assistant"],
+["Ин ёрдамчӣ нав аст (Бета). Бардоред?", "Это новый помощник (Бета). Снять?", "Bu yordamchi yangi (Beta). Olib tashlaysizmi?", "This assistant is new (Beta). Remove?"],
+["Бардоштан бекор шуд", "Снятие отменено", "Olib tashlash bekor qilindi", "Removal cancelled"],
+["Ёрдамчӣ дар зудӣ бардошта мешавад", "Помощник скоро будет снят", "Yordamchi tez orada olib tashlanadi", "The assistant will be removed soon"],
+["Ёрдамчии доимӣ", "Постоянный помощник", "Doimiy yordamchi", "Permanent assistant"],
+["Ёрдамчии нав: ҳанӯз дар санҷиш", "Новый помощник: ещё на проверке", "Yangi yordamchi: hali tekshiruvda", "New assistant: still on trial"],
+["Бета", "Бета", "Beta", "Beta"],
+["Ёдоварӣ: ҳар 2 соат", "Напоминание: каждые 2 часа", "Eslatma: har 2 soatda", "Reminder: every 2 hours"],
+["Ба ҳамаи сабтномкардагон (хонанда ва нахонда) худкор меравад", "Автоматически идёт всем зарегистрированным (читающим и нет)", "Ro‘yxatdan o‘tgan hammaga (o‘qiyotgan va o‘qimagan) avtomatik boradi", "Sent automatically to every registered user (readers and non-readers)"],
+["08:00 то 22:00, 8 маротиба дар рӯз (Android). Бо забони барнома", "С 08:00 до 22:00, 8 раз в день (Android). На языке приложения", "08:00 dan 22:00 gacha, kuniga 8 marta (Android). Ilova tilida", "08:00 to 22:00, 8 times a day (Android). In the app language"],
+["Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.", "Удаление админа или его замена помощнику никогда недоступны.", "Admin‘ni o‘chirish yoki almashtirish yordamchi uchun hech qachon mumkin emas.", "A helper can never remove or replace the admin."]
 ]

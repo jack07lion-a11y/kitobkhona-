@@ -71,7 +71,7 @@ function me(){
   <div class="pad" style="position:relative;display:flex;flex-direction:column;gap:20px;padding-top:0">
    <div class="prow"><div class="av">${avInner(S.pAv)}</div><div class="btns"><button class="pill" data-pedit>Таҳрири профил</button></div></div>
    <div><h1 class="name">${escH(S.uname||"Номи шумо")}${S.role==="admin"||S.role==="subadmin"?VBADGE:""}</h1><p class="sub">${S.email?escH(S.email):"Ҳисоб сабт нашудааст"}</p>${S.pBio?`<p class="pbio">${escH(S.pBio)}</p>`:""}
-    <div class="meta2"><span>${P(I.brief,1.8)}${S.role==="admin"?"Админи Китобхона":S.role==="subadmin"?"Ёрдамчии админ":"Ҳисоби ройгон"}</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
+    <div class="meta2"><span>${P(I.brief,1.8)}${S.role==="admin"?"Админи Китобхона":S.role==="subadmin"?"Ёрдамчии админ"+stMeBadge():"Ҳисоби ройгон"}</span><span>${P(I.cal,1.8)}Имрӯз пайваст шуд</span></div></div>
    ${PREM()&&FEAT("buy")?`<div class="banner2"><svg class="ico" style="width:40px;height:40px" viewBox="0 0 24 24" fill="#fff" fill-opacity=".9"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg><div><b>Китобхона Премиум</b><span>Имкониятҳои махсусро кашф кунед</span></div><button class="cta" data-toast="Харид — қадами оянда">Премиум ›</button></div>`:""}
    <div class="stats">
     <button class="stat" data-sheet="khirad"><small translate="no">Тавозуни хирад</small><b>${FEAT("coin")?COIN_I+(S.coins||0):"Ба зудӣ"}</b></button>
