@@ -60,6 +60,25 @@ public class Notify {
         schedule(c, ACT_REMIND, 2, RemindPlan.next(System.currentTimeMillis(), java.util.TimeZone.getDefault()));
     }
 
+    /** Матни эслатма: хонанда (имрӯз ≥1 дақиқа) — табрикӣ; нахонда — даъват. Забон аз барнома (JS) меояд. */
+    static String remindText(Context c) {
+        SharedPreferences s = sp(c);
+        boolean readToday = today().equals(s.getString("read_day", "")) && s.getInt("read_min", 0) >= 1;
+        return readToday ? s.getString("remind_text_read", "Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?")
+                         : s.getString("remind_text", "Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед");
+    }
+
+    /** Баъди навсозии APK як маротиба огоҳинома мефиристем (барои ҳамаи сабтномкардагон, ҳатто бе кушодани барнома). */
+    static void announceOnce(Context c) {
+        SharedPreferences s = sp(c);
+        int v = 0;
+        try { v = c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode; } catch (Exception ignored) { }
+        if (v == 0 || s.getInt("ping_v", 0) == v) return;
+        s.edit().putInt("ping_v", v).apply();
+        if (!s.getBoolean("remind", true) || !s.getBoolean("reg", false) || s.getBoolean("fg", false)) return;
+        show(c, ID_REMIND, remindText(c));
+    }
+
     static String today() {
         Calendar k = Calendar.getInstance();
         return k.get(Calendar.YEAR) + "-" + (k.get(Calendar.MONTH) + 1) + "-" + k.get(Calendar.DAY_OF_MONTH);

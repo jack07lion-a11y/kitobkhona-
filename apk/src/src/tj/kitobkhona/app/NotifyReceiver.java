@@ -28,7 +28,7 @@ public class NotifyReceiver extends BroadcastReceiver {
             boolean opened = day.equals(s.getString("open_day", ""));
             if (!RemindPlan.allow(opened, sent)) return;
             s.edit().putInt("rem_n", sent + 1).apply();
-            Notify.show(c, Notify.ID_REMIND, s.getString("remind_text", "Вақти китоб хондан расид. Ба Китобхона ворид шавед"));
+            Notify.show(c, Notify.ID_REMIND, Notify.remindText(c));
         }
     }
 }

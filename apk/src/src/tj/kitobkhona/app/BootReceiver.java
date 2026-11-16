@@ -9,5 +9,6 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context c, Intent in) {
         Notify.sp(c).edit().putBoolean("fg", false).apply();
         Notify.scheduleDaily(c);
+        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(in.getAction())) Notify.announceOnce(c);
     }
 }

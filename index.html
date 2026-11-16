@@ -2017,7 +2017,9 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["сония", "секунд", "soniya", "seconds"],
 ["Ҳисоби нест шуда", "Удалённые аккаунты", "O‘chirilgan hisoblar", "Deleted accounts"],
 ["МАНЪ АСТ", "ЗАПРЕЩЕНО", "TAQIQLANGAN", "NOT ALLOWED"],
-["Фаҳмидам", "Понятно", "Tushundim", "Got it"]
+["Фаҳмидам", "Понятно", "Tushundim", "Got it"],
+["Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед", "Вы сегодня ещё не читали. Зайдите в Китобхона и начните чтение", "Bugun hali kitob o‘qimadingiz. Kitobxonaga kiring va o‘qishni boshlang", "You haven’t read today yet. Open Kitobkhona and start reading"],
+["Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?", "Молодец, сегодня вы читали! Прочтёте ещё несколько страниц?", "Barakalla, bugun kitob o‘qidingiz! Yana bir necha sahifa o‘qimaysizmi?", "Well done, you read today! Read a few more pages?"]
 ]
 </script>
 <script>
@@ -3707,11 +3709,11 @@ function fbqShow(){if(document.getElementById("fbq")||S.view==="read"||S.view===
 function bindFeedbackQuick($$){
  $$("[data-fab]",b=>b.onclick=e=>{e.stopPropagation();fabOpen()});
  $$("[data-rpi-pen]",b=>b.onclick=annoOpen)}
-const DEF_REMIND="Вақти китоб хондан расид. Ба Китобхона ворид шавед",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
+const DEF_REMIND="Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед",DEF_REMIND_READ="Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?",DEF_CONGRATS="Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!";
 const cfgTxt=(o,d)=>(o&&o[I18N.lang])||I18N.tr(d);
 const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&(canPerm("notif")||!!(S.ncfg&&S.ncfg.sub_can_edit)));
 function pushNotifyCfg(){const A=window.KitobAndroid;if(!A||!A.config)return;const c=S.ncfg||{};
- try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,reg:!!S.uid,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
+ try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,reg:!!S.uid,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),remindTextRead:I18N.tr(DEF_REMIND_READ),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
 async function loadNotifCfg(){const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.from("notif_cfg").select("*").eq("id",1).maybeSingle();if(!error&&data){S.ncfg=data;save();pushNotifyCfg();if(S.view==="me"&&(S.sheet==="admnotif"||!S.sheet))render()}}catch(_){}}
 async function saveNotif(p){const c=await sbLoad();if(!c){toast("Интернет нест");return false}
@@ -4097,7 +4099,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="5f33037945";
+const WEB_H="61c1da347e";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
