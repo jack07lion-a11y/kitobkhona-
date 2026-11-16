@@ -22,7 +22,7 @@ module.exports=(prev=>async t=>{
  t.eq(await P.evaluate(()=>[document.getElementById('a_pub').disabled,document.getElementById('a_pub').checked]),[false,false],'боз pending: галочка хомӯш');
  // қоидаҳои санҷиш (ҳамон қоидаи сервер)
  const r=await P.evaluate(()=>[rightsCheck({rights_status:'pending'}),rightsCheck({rights_status:'public_domain',source:null}),rightsCheck({rights_status:'licensed',source:'С',rights_holder:null}),rightsCheck({rights_status:'licensed',source:'С',rights_holder:'Н'}),rightsCheck({rights_status:'public_domain',source:'С'})]);
- t.ok(r[0]&&r[1]&&r[2]&&r[3]===''&&r[4]==='','rightsCheck: pending, бе манба, licensed бе соҳиб — рад; дигарҳо — қабул');
+ t.ok(r[0]&&r[1]&&r[2]&&r[3]===''&&r[4]==='','rightsCheck: pending, бе манба, licensed бе соҳиб — огоҳӣ (на рад); дигарҳо — холӣ');
  t.eq(await P.evaluate(()=>[rightsServerMsg('rights_pending')!=='',rightsServerMsg('source_required')!=='',rightsServerMsg('x')]),[true,true,''],'хабарҳои хатои сервер ба тоҷикӣ');
  // «Китоб ясаш» ҳам майдонҳоро дорад
  await P.evaluate(()=>{S.perms={maker:true,books:true};S.sheet='admmake';render()});await P.waitForTimeout(400);
@@ -33,19 +33,25 @@ module.exports=(prev=>async t=>{
  t.eq(await P.evaluate(()=>document.querySelectorAll('[data-feat]').length),9,'панели админ: тугмаи ҳар бахши «Ба зудӣ»');
 })(module.exports);
 
-// китоби пинҳон: галочкаи «нашр» бе ҳуқуқ — хатои инлайн; бо ҳуқуқ — мемонад
+// китоби пинҳон: галочкаи «нашр» бе ҳуқуқ — як маротиба «Тасдиқ» (ойна), баъд нашр мешавад
 module.exports=(prev=>async t=>{
  await prev(t);
  const P=t.page;
  await t.open({view:'me'});
  await P.evaluate(()=>{S.role='admin';S.view='me';BOOKS.push({id:501,t:'Санҷиш',a:'Муаллиф',c:'fiction',col:['#2d6a8f','#143a57'],db:true,pub:false,rs:'pending'});S.adm={id:501,t:'Санҷиш',a:'Муаллиф',c:'fiction',col:['#2d6a8f','#143a57'],pub:false,rs:'pending'};S.sheet='adm';render()});
  await P.waitForSelector('#a_pub');
- t.eq(await P.evaluate(()=>[document.getElementById('a_pub').disabled,document.getElementById('a_pub').checked]),[false,false],'галочка фаъол, аввал хомӯш');
- await P.click('#a_pub');await P.waitForTimeout(300);
- t.ok(await P.evaluate(()=>!document.getElementById('a_pub').checked&&!document.getElementById('a_err').hidden&&/ҳуқуқ/i.test(document.getElementById('a_err').textContent)&&document.getElementById('a_rs').classList.contains('a-bad')),'ҳуқуқ пур нест → хато дар худи варақ ва майдон ранг мешавад');
- await P.selectOption('#a_rs','public_domain');await P.fill('#a_sr','Нашри соли 1960');
- await P.click('#a_pub');await P.waitForTimeout(200);
- t.ok(await P.evaluate(()=>document.getElementById('a_pub').checked&&document.getElementById('a_err').hidden),'ҳуқуқ ва манба пур → галочка мемонад');
+ // рад кардан: галочка хомӯш мешавад
+ await P.evaluate(()=>{window.__cf=[];window.confirm=m=>{window.__cf.push(m);return false}});
+ await P.click('#a_pub');await P.waitForTimeout(250);
+ t.ok(await P.evaluate(()=>!document.getElementById('a_pub').checked&&window.__cf.length===1&&/ҳуқуқ/i.test(window.__cf[0])&&/Нашр кунем/.test(window.__cf[0])),'нашр бе ҳуқуқ: ойнаи «Тасдиқ» (Нашр кунем?), рад → галочка хомӯш');
+ // тасдиқ кардан: галочка мемонад, дубора напурсад
+ await P.evaluate(()=>{window.__cf=[];window.confirm=m=>{window.__cf.push(m);return true}});
+ await P.click('#a_pub');await P.waitForTimeout(250);
+ t.ok(await P.evaluate(()=>document.getElementById('a_pub').checked&&!document.getElementById('a_err').textContent&&window.__cf.length===1),'тасдиқ: галочка мемонад, хато нест');
+ // захира кардан: фиристода мешавад (нашр бо pending); дубора ойна НЕ
+ await P.evaluate(()=>{window.__rows=[];window.__cf=[];sbLoad=async()=>({from:()=>({update:r=>{window.__rows.push(r);return{eq:async()=>({error:null})}},insert:r=>{window.__rows.push(r);return{select:()=>({single:async()=>({data:{id:1,slug:'x'},error:null})})}}}),storage:{from:()=>({upload:async()=>({error:null}),getPublicUrl:()=>({data:{publicUrl:''}})})},rpc:async()=>({data:null,error:null})})});
+ await P.click('[data-admsave]');await P.waitForTimeout(500);
+ t.ok(await P.evaluate(()=>window.__rows.some(r=>r.published===true&&r.rights_status==='pending')&&window.__cf.length===0),'захира: нашр бо ҳолати pending фиристода шуд, ойна дубора набуд');
 })(module.exports);
 
 // Панели нав (торӣ): тугма → варақ → пӯшидан ба панел бармегардад

@@ -15,16 +15,11 @@ do $t$
 declare r jsonb; n int;
 begin
   -- ===== ҳуқуқи китоб =====
-  begin insert into public.books(t,a,c,published,slug) values ('x','x','fiction',true,'tb-1'); raise exception 'ФАЛ: pending нашр шуд';
-  exception when others then if sqlerrm <> 'rights_pending' then raise; end if; end;
-  begin insert into public.books(t,a,c,published,slug,rights_status) values ('x','x','fiction',true,'tb-2','public_domain'); raise exception 'ФАЛ: бе манба нашр шуд';
-  exception when others then if sqlerrm <> 'source_required' then raise; end if; end;
-  begin insert into public.books(t,a,c,published,slug,rights_status,source) values ('x','x','fiction',true,'tb-3','licensed','манба'); raise exception 'ФАЛ: licensed бе соҳиб нашр шуд';
-  exception when others then if sqlerrm <> 'rights_holder_required' then raise; end if; end;
+  -- нашр бе ҳуқуқ ҳоло мумкин (sql-nashr.sql): сервер ҳолатро pending нигоҳ медорад
+  insert into public.books(t,a,c,published,slug) values ('x','x','fiction',true,'tb-1');
   insert into public.books(t,a,c,published,slug,rights_status,source,rights_holder) values ('x','x','fiction',true,'tb-4','licensed','манба','Нашриёт');
   insert into public.books(t,a,c,published,slug) values ('draft','x','fiction',false,'tb-5');   -- пешнавис бо pending мешавад
-  begin update public.books set published = true where slug = 'tb-5'; raise exception 'ФАЛ: пешнависи pending нашр шуд';
-  exception when others then if sqlerrm <> 'rights_pending' then raise; end if; end;
+  update public.books set published = true where slug = 'tb-5';
 
   -- ===== байроқ =====
   perform set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-0000000000c3', true);
