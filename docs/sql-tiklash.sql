@@ -25,3 +25,16 @@ begin
 end $$;
 revoke all on function public.restore_account(uuid) from public, anon;
 grant execute on function public.restore_account(uuid) to authenticated;
+
+-- Админ ВА ёрдамчӣ ҳисоби худро нест карда наметавонанд (асосгузорон ва роҳбарият)
+create or replace function public.delete_me() returns void
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  if public.is_staff() then raise exception 'admin_cannot_delete'; end if;
+  update public.profiles set deleted_at = now() where id = uid;
+  update auth.users set banned_until = now() + interval '100 years' where id = uid;
+end $$;
+revoke all on function public.delete_me() from public, anon;
+grant execute on function public.delete_me() to authenticated;
