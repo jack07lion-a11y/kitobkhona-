@@ -34,7 +34,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindFeedbackQuick($$);bindAdmin($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindStaffDel($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));

@@ -48,7 +48,7 @@ function openDetail(id){if(S.view!=="book"){S.prev=S.view;S.prevSearch=S.search}
 function detail(){
  const b=BOOKS.find(x=>x.id===S.bookId);const pr=S.prog[b.id]||0;
  const sim=BOOKS.filter(x=>x.c===b.c&&x.id!==b.id).slice(0,6);
- const qs=[`«${escH(b.t)}» дар бораи чист?`,"Аз рӯи китоб флешкарта сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
+ const qs=[`«${escH(b.t)}» дар бораи чист?`,"Аз рӯи китоб кортчаи ёддошт сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
  const spark='<path d="M12 3l1.900 5.100L19 10l-5.100 1.900L12 17l-1.900-5.100L5 10l5.100-1.900zM19 15l.8 2.200L22 18l-2.200.8L19 21l-.8-2.200L16 18l2.200-.8z" fill="currentColor" stroke="none"/>';
  return `<section class="bd" style="--bc:${b.col[0]}">
   <div class="bd-top pad"><button class="bd-ic" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><span class="bd-tt">${b.t}</span>

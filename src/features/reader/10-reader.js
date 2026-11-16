@@ -19,6 +19,7 @@ function reader(){
    ${fabHTML("rd-ic")}<button class="rd-ic" id="rdmark" aria-label="Хатчӯб">${P(IC_MARK,2)}</button><button class="rd-ic rd-aa" data-sheet="set" aria-label="Танзимоти хондан"><b translate="no">Аа</b></button></div>
   <div class="rd-view${vm?" vm":""}" id="rdview"><div class="rd-flow" id="rdflow">${vm?"":chHTML(b,ci)}</div>${vm?"":`<i class="rd-dim" id="rddim"></i><div class="rd-tsheet" id="rdtop" aria-hidden="true"></div>`}</div>
   <span class="rd-mini" id="rdmini"></span>
+  <button class="rd-gl" id="rdgl" aria-label="Гузариш ба саҳифа"><b id="rdgln">1</b></button><div class="rd-gc" id="rdgc" aria-hidden="true"><i class="rd-gk" id="rdgk"></i></div><div class="rd-gp" id="rdgcn" aria-hidden="true">1 / 1</div>
   <div class="rd-foot"><div class="rf-t"><span id="rdnum" class="rd-pg">1/1</span><span id="rdpct" class="rd-pc">0%</span></div><div class="rd-sw"><input type="range" class="rd-scr big" id="rdscr" min="0" max="1000" step="1" value="0" aria-label="Гузариш ба саҳифа"><i class="rd-sh" id="rdsh" aria-hidden="true"></i></div><div class="rf-b"><button class="rd-ic" data-sheet="rds" aria-label="Ҷустуҷӯ дар китоб">${P(I.search,2)}</button><button class="rd-ic" data-sheet="toc" aria-label="Мундариҷа">${P(I.list,2)}</button></div></div>
   <div class="rd-sbar"><b id="rdsn" translate="no">${RQ&&HI>=0?`${HI+1} / ${HITS.length}`:""}</b><button class="rd-ic" data-hit="-1" aria-label="Пешина">${CH('<path d="M15 5l-7 7 7 7"/>')}</button><button class="rd-ic" data-hit="1" aria-label="Оянда">${CH('<path d="M9 5l7 7-7 7"/>')}</button><button class="rd-ic" data-hitx aria-label="Пӯшидани ҷустуҷӯ">${P(IC_X,2.2)}</button></div>
  </section>`;
@@ -34,7 +35,7 @@ function rdUpdate(b,ci,fr,frE){const R=RD,inf=rdInfo(b);let gf,gfE;
  const M=R.M=drag&&window.__MF?window.__MF:inf.tc?Math.max(1,Math.round(inf.tot/R.cpp)):Math.max(1,R.total||1);
  const N=Math.min(M,Math.floor(gf*M+1e-6)+1),pct=Math.min(100,Math.round(gfE*100));S.prog[b.id]=pct;R.gf=gf;
  const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
- set("rdch",inf.tc&&inf.tc[ci].n?inf.tc[ci].n:b.t);if(!drag){set("rdnum",N+"/"+M);set("rdmini",N+" / "+M);set("rdpct",pct+"%")}
+ set("rdch",inf.tc&&inf.tc[ci].n?inf.tc[ci].n:b.t);if(!drag){set("rdnum",N+"/"+M);set("rdmini",N+" / "+M);set("rdpct",pct+"%");set("rdgln",N)}
  const s=document.getElementById("rdscr");if(s&&!s.dataset.drag){s.value=Math.round(gf*1000);s.style.setProperty("--p",gf*100+"%")}
  const m=document.getElementById("rdmark");if(m)m.classList.toggle("on",(S.marks[b.id]||[]).includes(mkey(b.id)))}
 let TK=null,SCRN=-1,PAYASK=0,SVT=0;
@@ -84,6 +85,33 @@ function bindScr(){const s=document.getElementById("rdscr");if(!s)return;
   st={id:e.pointerId,x:e.clientX,cx:e.clientX,cy:e.clientY,lx:e.clientX,acc:0,p0:Math.max(0,Math.min(M-1,Math.floor(g0*M+1e-6))),extra:0,t:performance.now()};
   window.__MF=RD.M||1;s.dataset.drag=1;s.classList.add("zoom");try{H.setPointerCapture(e.pointerId)}catch(_){}
   cancelAnimationFrame(loop);loop=requestAnimationFrame(step)};
+ /* ---- «Суюқ шиша»: думалоқи рақами саҳифа (ҷойи рост); пахш → капсулаи вертикалӣ; боло/поён кашидан — саҳифаҳо, ҳар саҳифа тик-тик ---- */
+ const G=document.getElementById("rdgl"),GC=document.getElementById("rdgc"),GP=document.getElementById("rdgcn");
+ if(G&&GC&&!G.__gl){G.__gl=1;let gs=null,gloop=0,ght=0;const PPV=12; // 12 пиксел = 1 саҳифа
+  const gfine=d=>d<46?1:d<120?.4:.12;  // ангушт ба чап дур шавад — аниқтар
+  const gopen=()=>{clearTimeout(ght);G.classList.add("open");GC.classList.add("on");GP.classList.add("on")};
+  const gclose=ms=>{clearTimeout(ght);ght=setTimeout(()=>{G.classList.remove("open");GC.classList.remove("on");GP.classList.remove("on")},ms)};
+  const gpaint=(N,M,g)=>{const a=document.getElementById("rdgln"),p=document.getElementById("rdgcn"),k=document.getElementById("rdgk");if(a)a.textContent=N;if(p)p.textContent=N+" / "+M;if(k)k.style.setProperty("--g",Math.max(0,Math.min(1,g))*100+"%")};
+  const gstop=()=>{if(!gs)return;const id=gs.id,el=gs.el;gs=null;cancelAnimationFrame(gloop);try{el.releasePointerCapture(id)}catch(_){}
+   window.__MF=0;delete s.dataset.drag;SCRN=-1;if(PAYASK){PAYASK=0;payNow()}gclose(900)};
+  const gstep=t=>{if(!gs)return;const M=MM(),dt=Math.min(.05,(t-gs.t)/1000||0);gs.t=t;
+   const rc=GC.getBoundingClientRect(),gr=G.getBoundingClientRect(),fk=gfine(Math.max(0,gr.left-gs.cx));
+   gs.acc+=(gs.cy-gs.ly)/PPV*fk;gs.ly=gs.cy;
+   const zone=36,top=rc.top,bot=rc.bottom;let dir=0,prox=0;
+   if(gs.cy<top+zone){dir=-1;prox=Math.min(1,(top+zone-gs.cy)/zone)}else if(gs.cy>bot-zone){dir=1;prox=Math.min(1,(gs.cy-(bot-zone))/zone)}
+   if(dir)gs.extra+=dir*prox*prox*Math.max(120,M/6)*dt;
+   gs.extra=Math.max(-gs.p0-gs.acc,Math.min(M-1-gs.p0-gs.acc,gs.extra));
+   const page=Math.max(0,Math.min(M-1,Math.round(gs.p0+gs.acc+gs.extra))),res=apply((page+.5)/M);
+   gpaint(res.N,M,res.g);GP.classList.toggle("fine",fk<1);
+   gloop=requestAnimationFrame(gstep)};
+  const gdown=e=>{if(gs||(e.button!=null&&e.button>0))return;e.preventDefault();const M=RD.M||1,el=e.currentTarget;
+   gs={id:e.pointerId,el,cy:e.clientY,ly:e.clientY,cx:e.clientX,acc:0,extra:0,p0:Math.max(0,Math.min(M-1,Math.floor((R.gf||0)*M+1e-6))),t:performance.now()};
+   window.__MF=M;s.dataset.drag=1;gpaint(gs.p0+1,M,R.gf||0);gopen();try{el.setPointerCapture(e.pointerId)}catch(_){}
+   cancelAnimationFrame(gloop);gloop=requestAnimationFrame(gstep)};
+  for(const el of [G,GC]){el.addEventListener("pointerdown",gdown);
+   el.addEventListener("pointermove",e=>{if(gs&&e.pointerId===gs.id){gs.cy=e.clientY;gs.cx=e.clientX}});
+   ["pointerup","pointercancel","lostpointercapture"].forEach(n=>el.addEventListener(n,e=>{if(gs&&e.pointerId===gs.id)gstop()}));
+   el.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});el.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});el.addEventListener("mousedown",e=>e.preventDefault())}}
  if(H.__scrBound)return;H.__scrBound=1; // фақат як бор: бе ин ҳар setupReader гӯшкунаки нав илова мекард ва слайдер часпида мемонд
  H.addEventListener("pointerdown",down);
  H.addEventListener("pointermove",e=>{if(st&&e.pointerId===st.id){st.cx=e.clientX;st.cy=e.clientY}});
@@ -131,9 +159,11 @@ function setupReader(){
  top.innerHTML=`<div class="rd-flow">${f.innerHTML}</div>`;const tf=top.firstChild;tf.style.columnWidth=f.style.columnWidth;tf.style.columnGap=f.style.columnGap;
  const last=f.lastElementChild,total=Math.max(1,Math.floor((last.offsetLeft+last.offsetWidth-1)/W)+1);
  const heads=[...f.querySelectorAll("[data-ch]")].map(h=>Math.floor(h.offsetLeft/W));
- const ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),key=W+"|"+S.pref.fs+"|"+(S.pref.lh||1.6)+"|"+S.pref.ff+"|"+v.clientHeight;
- if(inf.tc&&total>=4)CAL={key,cpp:Math.max(100,inf.tc[ci]._len/total)};
- const cpp=CAL&&CAL.key===key?CAL.cpp:cppEst(W,v.clientHeight);
+ const ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),key=W+"|"+S.pref.fs+"|"+(S.pref.lh||1.6)+"|"+S.pref.ff+"|"+v.clientHeight+"|"+b.id;
+ /* «ҳарф дар як саҳифа» ФАҚАТ як бор (барои ҳар ҳолати экран ва танзимот) ҳисоб мешавад ва мемонад: ҷамъи саҳифа (N/M) дар бобҳо иваз намешавад */
+ const CL=S.cal=S.cal||{};
+ if(inf.tc&&total>=4&&!CL[key]){CL[key]=Math.max(100,inf.tc[ci]._len/total);const ks=Object.keys(CL);if(ks.length>12)delete CL[ks[0]];save()}
+ const cpp=CL[key]||cppEst(W,v.clientHeight);
  RD={b,W,total,heads,f,v,top,tf,busy:false,cpp,ci};
  let p;const go=S.rdGo;S.rdGo=null;
  if(go&&go.k!=null){const el=f.querySelectorAll(".rd-hit")[go.k];p=el?Math.floor(el.offsetLeft/W):0}

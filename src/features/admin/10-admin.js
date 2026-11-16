@@ -12,7 +12,7 @@ async function uploadCover(c,id,slug,file){
 // Ҳуқуқҳо: [калид, ном, тавсиф, пешфарзи ёрдамчӣ]. Админ ҳамаашро дорад. «Танҳо админ» ҳуқуқҳо ба ёрдамчӣ дода намешаванд.
 const CAPS=[
  ["books","Китобҳо: илова, таҳрир, нест кардан","Идоракунӣ → Китобҳо",true],
- ["maker","Сохтани китоб (PDF, Word → .kitob)","Идоракунӣ → Сохтани китоб",false],
+ ["maker","Омода кардани китоб (PDF, Word → .kitob)","Идоракунӣ → Омода кардани китоб",false],
  ["reports","Хатоҳо ва пешниҳодҳо","Дидан ва «Ҳал шуд» кардан",true],
  ["stats","Омор (корбарон, хондан)","Рақамҳо дар Идоракунӣ",true],
  ["notif","Огоҳиномаҳо (ёдоварӣ, табрик)","Матн ва вақтро таҳрир кардан",false],
@@ -22,12 +22,12 @@ const CAPS=[
 const ADMIN_ONLY=[["Ёрдамчиёнро таъин ва бардоштан","Фақат админ"],["Тугмаи Премиум","Фақат админ"],["Версияи ҳадди ақали APK","Фақат админ"],["Ҳуқуқҳои ёрдамчиёнро иваз кардан","Фақат админ"],["Админро бардоштан ё иваз кардан","Ҳеҷ кас, ба ҷуз худи админ"]];
 const capOn=(p,k)=>{const d=CAPS.find(x=>x[0]===k);if(!d)return false;const v=(p||{})[k];return v===undefined||v===null?d[3]:!!v};
 const canPerm=k=>S.role==="admin"||(S.role==="subadmin"&&capOn(S.perms,k));
-async function loadPerms(c){S.perms={};try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;const{data,error}=await c.from("profiles").select("perms").eq("id",u.id).maybeSingle();if(!error&&data&&data.perms&&typeof data.perms==="object")S.perms=data.perms}catch(_){}}
+async function loadPerms(c){S.perms={};try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;const{data,error}=await c.from("profiles").select("perms").eq("id",u.id).maybeSingle();if(!error&&data&&data.perms&&typeof data.perms==="object")S.perms=data.perms;if(S.role==="subadmin"){const r=await c.rpc("my_staff");if(!r.error&&r.data)S.myStaff=r.data}}catch(_){}}
 async function loadStaff(){if(S.role!=="admin")return;const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.rpc("staff_list");if(!error&&Array.isArray(data)&&JSON.stringify(data)!==JSON.stringify(S.staff)){S.staff=data;if(S.view==="me"&&!S.sheet)render()}}catch(_){}}
 async function setStaff(email,role){const c=await sbLoad();if(!c){toast("Интернет нест");return false}
  try{const{data,error}=await c.rpc("set_role",{p_email:email,p_role:role});
-  if(error){toast("Иҷозат дода нашуд. Аввал SQL-ро иҷро кунед");return false}
+  if(error){toast(/permanent_staff/.test(error.message||"")?"Ёрдамчии доимиро фавран бардошта намешавад. Аз нав оғоз кунед ва 60 сония интизор шавед":"Иҷозат дода нашуд. Аввал SQL-ро иҷро кунед");return false}
   if(data==="ok"){toast(role==="subadmin"?"Ёрдамчии админ таъин шуд":"Ёрдамчӣ бардошта шуд");await loadStaff();return true}
   toast(data==="no_user"?"Бо ин почта ҳисоб ёфт нашуд. Бигӯед, ки аввал дар барнома дохил шавад":data==="no_profile"?"Ин шахс ҳоло ном сабт накардааст. Бигӯед, ки аввал дохил шуда, номашро нависад":data==="is_admin"?"Ин шахс админ аст":"Иҷозат дода нашуд");return false}
  catch(_){toast("Интернет нест ё сервер ҷавоб намедиҳад");return false}}
@@ -86,7 +86,7 @@ const ADM_I={chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',book:'<path d
 function admTiles(){const nb=BOOKS.filter(x=>x.db).length,ns=(S.staff||[]).length;
  return[["admstat","Омор","chart","c1",canPerm("stats"),""],
   ["admbooks","Китобҳо","book","c5",canPerm("books"),nb?String(nb):""],
-  ["admmake","Сохтани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
+  ["admmake","Омода кардани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
   ["admrep","Хатоҳо","warn","c4",canPerm("reports"),""],
   ["admnews","Хабар","bell","c3",canPerm("news"),""],
   ["admnotif","Огоҳиномаҳо","bell","c3",canNotif(),""],
@@ -142,7 +142,7 @@ function admStaffHTML(X){
  return `<div class="sh-head"><b class="sh-t">Ёрдамчиёни админ</b>${gear}${X}</div>
   <p class="set-note" style="margin-top:0">Почтаи шахсро нависед, то ӯ ёрдамчӣ шавад. Ҳар ёрдамчиро алоҳида танзим кунед: ҳуқуқро фурӯзон кунед — ӯ мебинад, хомӯш кунед — фавран нест мешавад. ⚙ — ҳуқуқҳои умумӣ.</p>
   <div class="sa-row"><input id="sa_mail" type="email" inputmode="email" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="nom@gmail.com"><button class="pill" data-sa-add>Таъин кардан</button></div>
-  ${(S.staff||[]).filter(x=>x.role==="subadmin").map(x=>`<div class="sa-card"><div class="plan"><div><b translate="no">${escH(x.name||"")}</b><span translate="no">${escH(x.email||"")}</span></div><button class="pill" data-sa-del="${esc(x.email||"")}">Бардоштан</button></div>
+  ${(S.staff||[]).filter(x=>x.role==="subadmin").map(x=>`<div class="sa-card"><div class="plan"><div><b translate="no">${escH(x.name||"")}</b>${stBadge(x)}<span translate="no">${escH(x.email||"")}</span></div><button class="pill" data-sa-del="${esc(x.email||"")}">Бардоштан</button></div>
    <div class="sa-all"><button class="pill" data-permall="${esc(x.email||"")}|1">Ҳамаро фурӯзон</button><button class="pill" data-permall="${esc(x.email||"")}|0">Ҳамаро хомӯш</button></div>
    ${CAPS.map(([k,t,s])=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${s}</small></div><button class="swt${capOn(x.perms,k)?" on":""}" data-perm="${k}" data-pm="${esc(x.email||"")}" role="switch" aria-label="${t}"></button></div>`).join("")}</div>`).join("")}`}
 function admRightsHTML(X){
@@ -152,13 +152,13 @@ function admRightsHTML(X){
   ${CAPS.map(c=>li(c[1],true)).join("")}${ADMIN_ONLY.slice(0,4).map(c=>li(c[0],true)).join("")}${li("Админро бардоштан ё иваз кардан",true,"танҳо админ")}
   <p class="hq-h">Ёрдамчӣ <small>(пешфарз; ҳар ёрдамчиро алоҳида иваз кардан мумкин)</small></p>
   ${CAPS.map(c=>li(c[1],c[3])).join("")}${ADMIN_ONLY.map(c=>li(c[0],false,c[1])).join("")}
-  <p class="set-note">Сабз — метавонад. Сурх — наметавонад. Ёрдамчӣ ҳеҷ гоҳ админро ҳазф ё иваз карда наметавонад.</p>`}
+  <p class="set-note">Сабз — метавонад. Сурх — наметавонад. Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.</p>`}
 function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{remind_text:{...(c.remind_text||{})},congrats_tpl:{...(c.congrats_tpl||{})}};
  const sw=(k,t,s)=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${s}</small></div><button class="swt${(k==="sub_can_edit"?!!c[k]:c[k]!==false)?" on":""}" data-nc="${k}" role="switch" aria-label="${t}"></button></div>`;
  return `<div class="sh-head"><b class="sh-t">Огоҳиномаҳо</b>${X}</div>
-  ${sw("remind_on","Ёдоварии ҳаррӯза","Агар имрӯз ҳатто 1 дақиқа нахонда бошанд, ба ҳама худкор меравад")}
+  ${sw("remind_on","Ёдоварии ҳаррӯза","Ба ҳамаи сабтномкардагон (хонанда ва нахонда) худкор меравад")}
   ${sw("congrats_on","Табрики хондан","Баъди баромадан аз барнома, дақиқаҳои имрӯзро мегӯяд")}
-  <div class="nrow"><div class="ntx"><b>Ёдоварӣ: 5 маротиба дар рӯз</b><small>09:30 · 12:30 · 15:30 · 18:30 · 20:30. Агар имрӯз ба барнома даромада бошад — ҳамагӣ 3</small></div></div>
+  <div class="nrow"><div class="ntx"><b>Ёдоварӣ: ҳар 2 соат</b><small>08:00 то 22:00, 8 маротиба дар рӯз (Android). Бо забони барнома</small></div></div>
   ${S.role==="admin"?sw("sub_can_edit","Ёрдамчиён ҳам таҳрир кунанд","Агар хомӯш бошад, ёрдамчӣ ин бахшро намебинад"):""}
   <p class="set-cap" style="margin-top:14px">Матнҳо</p>
   <div class="seg sm" style="margin-bottom:8px">${LANGS.map(([k,n])=>`<button class="${L===k?"on":""}" data-ndl="${k}" translate="no">${n}</button>`).join("")}</div>
@@ -190,7 +190,7 @@ function bindAdmin($$){
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
   const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked,ebook:v("a_eb").checked,premium:v("a_pr").checked};
-  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё галочкаро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
+  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё аломатро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const cvf=v("a_cv").files&&v("a_cv").files[0];
   let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null,sqlMiss=false;
@@ -215,7 +215,9 @@ function bindAdmin($$){
  $$("[data-permall]",b=>b.onclick=async()=>{const[em,on]=b.dataset.permall.split("|"),o={};CAPS.forEach(x=>o[x[0]]=on==="1");
   try{const c=await sbLoad();const{error}=await c.rpc("set_perms",{p_email:em,p:o});if(error){toast("Иҷозат дода нашуд. Аввал SQL-и ҳуқуқҳоро иҷро кунед");return}toast(on==="1"?"Ҳамаи ҳуқуқҳо дода шуд":"Ҳамаи ҳуқуқҳо гирифта шуд");const r=(S.staff||[]).find(x=>x.email===em);if(r)r.perms={...o};render()}catch(_){toast("Интернет нест")}});
  $$("[data-perm]",b=>b.onclick=async()=>{const on=!b.classList.contains("on");b.classList.toggle("on",on);try{const c=await sbLoad();const{error}=await c.rpc("set_perm",{p_email:b.dataset.pm,p_key:b.dataset.perm,p_on:on});if(error){b.classList.toggle("on",!on);toast("Иҷозат дода нашуд. Аввал SQL-и иҷозатҳоро иҷро кунед")}else loadStaff()}catch(_){b.classList.toggle("on",!on);toast("Интернет нест")}});
- $$("[data-sa-del]",b=>b.onclick=async()=>{if(!confirm("Ин ёрдамчиро бардоред?"))return;await setStaff(b.dataset.saDel,"user")});
+ $$("[data-sa-del]",b=>b.onclick=async()=>{const e=b.dataset.saDel,x=staffByEmail(e);
+  if(x&&x.permanent){SD.email=e;SD.name=x.name||e;S.sheet="sadel1";render();return}   // ДОИМӢ: 3 ойна + 60 сония
+  if(!confirm("Ин ёрдамчӣ нав аст (Бета). Бардоред?"))return;await setStaff(e,"user")});
 }
 
 /* ---- варақҳои панели нав ---- */
