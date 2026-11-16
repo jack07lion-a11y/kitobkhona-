@@ -687,5 +687,7 @@
 ["сония", "секунд", "soniya", "seconds"],
 ["Ҳисоби нест шуда", "Удалённые аккаунты", "O‘chirilgan hisoblar", "Deleted accounts"],
 ["МАНЪ АСТ", "ЗАПРЕЩЕНО", "TAQIQLANGAN", "NOT ALLOWED"],
-["Фаҳмидам", "Понятно", "Tushundim", "Got it"]
+["Фаҳмидам", "Понятно", "Tushundim", "Got it"],
+["Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед", "Вы сегодня ещё не читали. Зайдите в Китобхона и начните чтение", "Bugun hali kitob o‘qimadingiz. Kitobxonaga kiring va o‘qishni boshlang", "You haven’t read today yet. Open Kitobkhona and start reading"],
+["Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?", "Молодец, сегодня вы читали! Прочтёте ещё несколько страниц?", "Barakalla, bugun kitob o‘qidingiz! Yana bir necha sahifa o‘qimaysizmi?", "Well done, you read today! Read a few more pages?"]
 ]

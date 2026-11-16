@@ -293,7 +293,8 @@ public class MainActivity extends Activity {
                     e.putInt("hour", o.optInt("hour", 20));
                     e.putString("role", o.optString("role", ""));
                     e.putString("title", o.optString("title", "Китобхона"));
-                    e.putString("remind_text", o.optString("remindText", "Вақти китоб хондан расид. Ба Китобхона ворид шавед"));
+                    e.putString("remind_text", o.optString("remindText", "Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед"));
+                    e.putString("remind_text_read", o.optString("remindTextRead", "Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?"));
                     // Supabase URL танҳо https://*.supabase.co (ҳамлагар калитро ба сервери худаш гузаронда наметавонад)
                     if (o.has("sbUrl") && o.optString("sbUrl", "").matches("^https://[a-z0-9-]+\\.supabase\\.co/?$")) e.putString("sb_url", o.optString("sbUrl", ""));
                     if (o.has("sbKey")) e.putString("sb_key", o.optString("sbKey", ""));
@@ -301,6 +302,7 @@ public class MainActivity extends Activity {
                     e.putString("tpl", o.optString("tpl", "Табрик шумо имрӯз {n} дақиқа хондед!🎉 боз хонда боз доно шавед!"));
                     e.apply();
                     Notify.scheduleDaily(MainActivity.this);
+                    Notify.announceOnce(MainActivity.this);
                     NewsJob.schedule(MainActivity.this);
                 } catch (Exception ignored) { }
             }

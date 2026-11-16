@@ -21,27 +21,23 @@ public class RemindPlanTest {
     public static void main(String[] x) {
         for (String id : new String[]{"Asia/Dushanbe", "Europe/Moscow", "UTC"}) {
             TimeZone tz = TimeZone.getTimeZone(id);
-            eq(hm(RemindPlan.next(at(tz, 10, 8, 0), tz), tz), "10 9:30", id + ": 08:00 → 09:30");
-            eq(hm(RemindPlan.next(at(tz, 10, 9, 30), tz), tz), "10 12:30", id + ": дар 09:30 → 12:30 (худи ҳамон дақиқа не)");
-            eq(hm(RemindPlan.next(at(tz, 10, 13, 0), tz), tz), "10 15:30", id + ": 13:00 → 15:30");
-            eq(hm(RemindPlan.next(at(tz, 10, 20, 30), tz), tz), "11 9:30", id + ": баъди охирин → пагоҳ 09:30");
-            eq(hm(RemindPlan.next(at(tz, 30, 22, 0), tz), tz), "1 9:30", id + ": охири моҳ → моҳи оянда");
+            eq(hm(RemindPlan.next(at(tz, 10, 7, 0), tz), tz), "10 8:00", id + ": 07:00 → 08:00");
+            eq(hm(RemindPlan.next(at(tz, 10, 8, 0), tz), tz), "10 10:00", id + ": дар 08:00 → 10:00 (худи ҳамон дақиқа не)");
+            eq(hm(RemindPlan.next(at(tz, 10, 13, 0), tz), tz), "10 14:00", id + ": 13:00 → 14:00");
+            eq(hm(RemindPlan.next(at(tz, 10, 22, 0), tz), tz), "11 8:00", id + ": баъди охирин (22:00) → пагоҳ 08:00");
+            eq(hm(RemindPlan.next(at(tz, 10, 23, 30), tz), tz), "11 8:00", id + ": шабона → пагоҳ 08:00");
+            eq(hm(RemindPlan.next(at(tz, 30, 22, 0), tz), tz), "1 8:00", id + ": охири моҳ → моҳи оянда");
         }
-        eq(RemindPlan.SLOTS.length, 5, "5 слот дар як рӯз");
-        // ҳеҷ гоҳ даромада нашуд: 5 маротиба
-        int n = 0; for (int i = 0; i < 10; i++) if (RemindPlan.allow(false, i)) n++;
-        eq(n, 5, "надаромада: ҳамагӣ 5");
-        // даромада: 3
-        n = 0; for (int i = 0; i < 10; i++) if (RemindPlan.allow(true, i)) n++;
-        eq(n, 3, "даромада: ҳамагӣ 3");
-        // як маротиба фиристода шуда, баъд даромад → боз 2 то
-        int left = 0; for (int sent = 1; sent < 10; sent++) if (RemindPlan.allow(true, sent)) left++;
-        eq(left, 2, "1 фиристода + даромад → боз 2 то мемонад");
-        // ҳамаи 5 слот дар як рӯз ба 5 хабар мерасонад
+        eq(RemindPlan.SLOTS.length, 8, "8 слот дар як рӯз (ҳар 2 соат, 08:00–22:00)");
+        for (int i = 1; i < RemindPlan.SLOTS.length; i++) eq(RemindPlan.SLOTS[i] - RemindPlan.SLOTS[i - 1], 120, "фосила 2 соат (слот " + i + ")");
+        int n = 0; for (int i = 0; i < 20; i++) if (RemindPlan.allow(false, i)) n++;
+        eq(n, 8, "нахонда: 8 дар рӯз");
+        n = 0; for (int i = 0; i < 20; i++) if (RemindPlan.allow(true, i)) n++;
+        eq(n, 8, "хонда: ҳам 8 (ба ҳама)");
         TimeZone tz = TimeZone.getTimeZone("Asia/Dushanbe");
         long t = at(tz, 10, 0, 5); int cnt = 0;
         while (true) { t = RemindPlan.next(t, tz); if (!hm(t, tz).startsWith("10 ")) break; cnt++; }
-        eq(cnt, 5, "дар як рӯз 5 слот");
+        eq(cnt, 8, "дар як рӯз 8 слот");
         System.exit(bad == 0 ? 0 : 1);
     }
 }

@@ -5,10 +5,10 @@ import java.util.TimeZone;
 
 /** Нақшаи эслатмаҳои ҳаррӯза (мантиқи тоза, бе Android — санҷиш: tests/RemindPlanTest.java). */
 final class RemindPlan {
-    /** Вақтҳои муайян (дақиқа аз нимашаб): 09:30, 12:30, 15:30, 18:30, 20:30. */
-    static final int[] SLOTS = {9 * 60 + 30, 12 * 60 + 30, 15 * 60 + 30, 18 * 60 + 30, 20 * 60 + 30};
-    /** Агар имрӯз ба барнома надаромада бошад — 5 маротиба; агар даромада бошад — ҳамагӣ 3 маротиба. */
-    static final int MAX_IDLE = 5, MAX_OPENED = 3;
+    /** Ҳар 2 соат аз 08:00 то 22:00 (дақиқа аз нимашаб): 08, 10, 12, 14, 16, 18, 20, 22. Шабона (22:00–08:00) хабар нест. */
+    static final int[] SLOTS = {8 * 60, 10 * 60, 12 * 60, 14 * 60, 16 * 60, 18 * 60, 20 * 60, 22 * 60};
+    /** Ба ҳама: ҳам ба хонанда, ҳам ба касе, ки намехонад. Ҳадди рӯзона = шумораи слот. */
+    static final int MAX_IDLE = 8, MAX_OPENED = 8;
 
     static boolean allow(boolean openedToday, int sentToday) {
         return sentToday < (openedToday ? MAX_OPENED : MAX_IDLE);
