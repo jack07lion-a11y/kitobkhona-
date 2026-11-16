@@ -28,7 +28,7 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.uid='u1';S.sheet='app';render()});await P.waitForTimeout(250);
  t.ok(await P.evaluate(()=>!!document.querySelector('[data-sheet=delacc]')),'Танзимот: «Ҳисобро нест кардан» барои воридшуда');
  await P.evaluate(()=>{S.sheet='delacc';render()});await P.waitForTimeout(250);
- t.ok(await P.evaluate(()=>!!document.querySelector('[data-delacc-go]')&&/баста мешавад/.test(document.querySelector('.sheet').innerText)),'варақи нест кардан: огоҳӣ ва тугма');
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-delacc-next="2"]')&&/баста мешавад/.test(document.querySelector('.sheet').innerText)&&/ХАТАРНОК/.test(document.querySelector('.sheet').innerText)),'варақи нест кардан (1): огоҳӣ «ХАТАРНОК» ва тугмаи «Давом додан»');
  // сервер ҷавоб надиҳад: ҳисоб нест намешавад, корбар воридшуда мемонад
  await P.evaluate(()=>{window.__rpc=[];sbLoad=async()=>({storage:{from:()=>({list:async()=>({data:[]}),remove:async()=>({})})},rpc:async n=>{window.__rpc.push(n);return{error:{message:'net'}}},auth:{signOut:async()=>{window.__so=1}}})});
  await P.evaluate(()=>deleteAccount());await P.waitForTimeout(300);
@@ -37,4 +37,23 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.prog={5:40};sbLoad=async()=>({storage:{from:()=>({list:async()=>({data:[{name:'a.webp'}]}),remove:async()=>({})})},rpc:async n=>{window.__rpc.push(n);return{error:null}},auth:{signOut:async()=>{window.__so=1}}})});
  await P.evaluate(()=>deleteAccount());await P.waitForTimeout(400);
  t.eq(await P.evaluate(()=>[S.uid,S.view,Object.keys(S.prog).length,!!window.__so,window.__rpc.slice(-1)[0],S.step]),['','login',0,true,'delete_me','deleted'],'нест шуд: баромад, «Ҳисоб баста шудааст», маълумоти маҳаллӣ пок');
+ // 4 босқич ва ҳисобкунаки 45 сония
+ await P.evaluate(()=>{S.uid='u1';S.sheet='delacc';render()});await P.waitForTimeout(200);
+ await P.click('[data-delacc-next="2"]');await P.waitForTimeout(200);
+ t.ok(await P.evaluate(()=>S.sheet==='delacc2'&&/ХАТАРНОК/.test(document.querySelector('.sheet').innerText)&&/Боз як бор/.test(document.querySelector('.sheet').innerText)&&!!document.querySelector('[data-delacc-next="3"]')),'босқичи 2: матни дигар ва боз «ХАТАРНОК»');
+ await P.evaluate(()=>{window.__rpc2=[];sbLoad=async()=>({storage:{from:()=>({list:async()=>({data:[]}),remove:async()=>({})})},rpc:async n=>{window.__rpc2.push(n);return{error:null}},auth:{signOut:async()=>{}}})});
+ await P.click('[data-delacc-next="3"]');await P.waitForTimeout(400);
+ t.ok(await P.evaluate(()=>S.sheet==='delacc3'&&DF.on&&!!document.querySelector('[data-delacc-cancel]')&&document.querySelectorAll('.sheet button').length===1&&/45|44/.test(document.getElementById('delc').textContent)),'босқичи 3: ҳисобкунак 45, ФАҚАТ як тугма «Бекор кардан»');
+ // экранро қулф кардан (hidden) → нест намешавад
+ await P.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>'hidden'});document.dispatchEvent(new Event('visibilitychange'))});await P.waitForTimeout(200);
+ t.eq(await P.evaluate(()=>[DF.on,S.sheet,window.__rpc2.filter(x=>x==='delete_me').length]),[false,null,0],'қулф/баромад: ҳисобкунак бекор, нест НАШУД');
+ await P.evaluate(()=>{delete document.visibilityState});
+ // «Бекор кардан» тугмаи ягона
+ await P.evaluate(()=>{S.sheet='delacc2';render()});await P.waitForTimeout(150);await P.click('[data-delacc-next="3"]');await P.waitForTimeout(300);
+ await P.click('[data-delacc-cancel]');await P.waitForTimeout(250);
+ t.eq(await P.evaluate(()=>[DF.on,S.sheet,window.__rpc2.filter(x=>x==='delete_me').length]),[false,null,0],'«Бекор кардан»: нест нашуд');
+ // 45 сония гузашт ва экран равшан → нест мешавад
+ await P.evaluate(()=>{S.sheet='delacc2';render()});await P.waitForTimeout(150);await P.click('[data-delacc-next="3"]');await P.waitForTimeout(300);
+ await P.evaluate(()=>{DF.t0=Date.now()-44700});await P.waitForTimeout(1200);
+ t.ok(await P.evaluate(()=>window.__rpc2.includes('delete_me')),'45 сония гузашт: ҳисоб худкор нест шуд (delete_me)');
 };

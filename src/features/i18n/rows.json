@@ -675,5 +675,15 @@
 ["Матн ва вақтро таҳрир кардан","Редактировать текст и время","Matn va vaqtni tahrirlash","Edit text and time"],
 ["Огоҳинома ба ҳамаи APK-ҳо","Уведомление всем APK","Barcha APK larga bildirishnoma","Notification to all APKs"],
 ["Ҳеҷ кас, ба ҷуз худи админ","Никто, кроме админа","Adminning oʻzidan boshqa hech kim","No one but the admin"],
-["Яке аз асосгузорони ғоя", "Один из основателей идеи", "G‘oya asoschilaridan biri", "One of the idea’s founders"]
+["Яке аз асосгузорони ғоя", "Один из основателей идеи", "G‘oya asoschilaridan biri", "One of the idea’s founders"],
+["Давом додан (хатарнок)", "Продолжить (опасно)", "Davom etish (xavfli)", "Continue (dangerous)"],
+["Боз як бор фикр кунед", "Подумайте ещё раз", "Yana bir bor o‘ylab ko‘ring", "Think once more"],
+["Ман хатарро медонам, идома диҳед", "Я знаю о риске, продолжить", "Xavfni bilaman, davom ettiring", "I know the risk, continue"],
+["Охирин огоҳӣ", "Последнее предупреждение", "So‘nggi ogohlantirish", "Final warning"],
+["Бекор кардан", "Отмена", "Bekor qilish", "Cancel"],
+["Нест кардан бекор шуд", "Удаление отменено", "O‘chirish bekor qilindi", "Deletion cancelled"],
+["Ҳисоб нест карда истодааст…", "Аккаунт удаляется…", "Hisob o‘chirilmoqda…", "Deleting the account…"],
+["Ҳисоби шумо баъди", "Ваш аккаунт будет удалён через", "Hisobingiz", "Your account will be deleted in"],
+["сония", "секунд", "soniya", "seconds"],
+["Ҳисоби нест шуда", "Удалённые аккаунты", "O‘chirilgan hisoblar", "Deleted accounts"]
 ]

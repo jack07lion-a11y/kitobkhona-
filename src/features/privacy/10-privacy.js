@@ -22,21 +22,44 @@ async function checkConsent(c){
   if(data.consent_at){S.consentV=CONSENT_V;save();return}
   if(!S.sheet&&!["login","read","audio"].includes(S.view)){S.cons={};S.sheet="cons";render()}}catch(_){}}
 SHEETS.cons=X=>`<div class="sh-head"><b class="sh-t">Розигӣ ва синну сол</b></div><p class="hint">Барои идомаи кор розигии худро тасдиқ кунед.</p>${consBlock()}<button class="pay-btn" data-cons-ok>Тасдиқ кардан</button>`;
-SHEETS.delacc=X=>`<div class="sh-head"><b class="sh-t">Ҳисобро нест кардан</b>${X}</div>
- <p class="hint">Ҳисоби шумо ҳамон дам <b>баста мешавад</b>: ворид шуда наметавонед ва дар рейтинг нишон дода намешавед. Маълумоти шумо (профил, пешравӣ, токчаҳо, дақиқаҳои хондан) то <b>30 рӯз</b> дар сервер мемонад: дар ин муддат ҳисобро танҳо бунёдгузорони Китобхона тикла метавонанд. Баъд аз 30 рӯз ҳамаи маълумот ПУРРА нест мешавад.</p>
- <p class="hint">Шумо худатон онро бозгардонида наметавонед.</p>
- <button class="pay-btn" style="background:var(--orange)" data-delacc-go>Ҳа, ҳисобро нест кунед</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
+/* ---- Ҳисобро нест кардан: 4 босқич, ҳар кадом бо ҳушдор; охирин — 45 сония, фақат «Бекор кардан»; қулф/баромад → нест намешавад ---- */
+const DEL_SEC=45,DF={on:false,t0:0,iv:0};
+const delW=t=>`<div class="del-w">⚠ ${t}</div>`;
+SHEETS.delacc=X=>`<div class="sh-head"><b class="sh-t">Ҳисобро нест кардан</b>${X}</div>${delW("ХАТАРНОК!")}
+ <p class="hint">Ҳисоби шумо ҳамон дам <b>баста мешавад</b>: ворид шуда наметавонед ва дар рейтинг нишон дода намешавед. Профил, пешравӣ, токчаҳо ва дақиқаҳои хондан аз дастрасии шумо мебароянд.</p>
+ <p class="hint">Ҳисобро танҳо бунёдгузорони Китобхона тикла карда метавонанд. Худатон онро баргардонида наметавонед.</p>
+ <button class="pay-btn del-b" data-delacc-next="2">Давом додан (хатарнок)</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
+SHEETS.delacc2=X=>`<div class="sh-head"><b class="sh-t">Боз як бор фикр кунед</b>${X}</div>${delW("ХАТАРНОК! Аз ин амал баргаштан душвор аст.")}
+ <p class="hint">Шумо ин чизҳоро аз даст медиҳед: <b>ҷойи худатон дар рейтинг</b>, <b>дақиқаҳои хондаатон</b>, <b>китобҳои нигоҳдошташуда</b> ва <b>пешравии хондан</b>.</p>
+ <p class="hint">Агар ҳоло ҳам мехоҳед, тугмаи поёнро пахш кунед. Баъд 45 сония вақти бекор кардан медиҳем.</p>
+ <button class="pay-btn del-b" data-delacc-next="3">Ман хатарро медонам, идома диҳед</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
+SHEETS.delacc3=X=>{if(!DF.on)return SHEETS.delacc(X);const left=Math.max(0,Math.ceil(DEL_SEC-(Date.now()-DF.t0)/1000));
+ return `<div class="sh-head"><b class="sh-t">Охирин огоҳӣ</b></div>${delW("ХАТАРНОК! Ҳисоб дар зудӣ нест мешавад")}
+ <p class="del-t">Ҳисоби шумо баъди</p><div class="del-n"><span id="delc">${left}</span> сония</div><div class="del-bar"><i id="delbar" style="width:${left/DEL_SEC*100}%"></i></div><p class="del-t">нест карда мешавад.</p>
+ <p class="hint">Нест кардан худ ба худ оғоз мешавад. Танҳо як роҳи боздоштан ҳаст: тугмаи поён. Агар экранро қулф кунед, аз барнома барояд ё ин ойнаро пӯшед, ҳисоб <b>нест намешавад</b>.</p>
+ <button class="pay-btn" data-delacc-cancel>Бекор кардан</button>`};
+function delStop(){clearInterval(DF.iv);DF.iv=0;DF.on=false}
+function delAbort(msg){const was=DF.on;delStop();if(!was)return;if(/^delacc/.test(S.sheet||"")){S.sheet=null;render()}if(msg)toast(msg)}
+function delTick(){if(!DF.on)return;
+ if(document.visibilityState!=="visible"||S.sheet!=="delacc3"){delAbort(S.sheet==="delacc3"?"Нест кардан бекор шуд":"");return}
+ const el=(Date.now()-DF.t0)/1000;
+ if(el>=DEL_SEC){delStop();deleteAccount();return}
+ const n=Math.max(0,Math.ceil(DEL_SEC-el)),c=document.getElementById("delc"),b=document.getElementById("delbar");
+ if(c)c.textContent=n;if(b)b.style.width=(100-el/DEL_SEC*100)+"%"}
+function delStart(){delStop();DF.on=true;DF.t0=Date.now();DF.iv=setInterval(delTick,250)}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")delAbort("Нест кардан бекор шуд")});
+window.addEventListener("pagehide",()=>delAbort());
 async function deleteAccount(){
  const c=await sbLoad(),btn=document.querySelector("[data-delacc-go]");
  if(!c||!navigator.onLine){toast("Интернет нест. Ҳисобро бе интернет нест кардан мумкин нест");return}
- if(btn){btn.disabled=true;btn.textContent="Нест карда истодааст…"}
+ toast("Ҳисоб нест карда истодааст…")
  try{const uid=S.uid;
   const{error}=await c.rpc("delete_me");
-  if(error){if(btn){btn.disabled=false;btn.textContent="Ҳа, ҳисобро нест кунед"}
+  if(error){
    toast(/admin_cannot_delete/.test(error.message||"")?"Админ ҳисоби худро аз барнома нест карда наметавонад":"Нест нашуд. Интернетро санҷед ё баъдтар кӯшиш кунед");return}
   try{await c.auth.signOut()}catch(_){}
   resetUserData();S.sheet=null;S.consentV="";S.consPend=null;S.cons=null;S.myRank=null;pushNotifyCfg();S.step="deleted";go("login")}
- catch(_){if(btn){btn.disabled=false;btn.textContent="Ҳа, ҳисобро нест кунед"}toast("Нест нашуд. Баъдтар аз нав кӯшиш кунед")}}
+ catch(_){toast("Нест нашуд. Баъдтар аз нав кӯшиш кунед")}}
 function bindPrivacy($$){
  $$("[data-age]",b=>b.onclick=()=>{S.cons=S.cons||{};S.cons.age=b.dataset.age;
   document.querySelectorAll("[data-age]").forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-checked",x===b)});
@@ -44,5 +67,7 @@ function bindPrivacy($$){
  const g=document.getElementById("grd"),c=document.getElementById("cns");
  if(g)g.onchange=()=>{(S.cons=S.cons||{}).g=g.checked};if(c)c.onchange=()=>{(S.cons=S.cons||{}).c=c.checked};
  $$("[data-cons-ok]",b=>b.onclick=async()=>{if(!consOK())return;b.disabled=true;await consSave();S.sheet=null;render()});
- $$("[data-delacc-go]",b=>b.onclick=deleteAccount);
+ $$("[data-delacc-next]",b=>b.onclick=()=>{const n=b.dataset.delaccNext;if(n==="3")delStart();S.sheet=n==="3"?"delacc3":"delacc2";render()});
+ $$("[data-delacc-cancel]",b=>b.onclick=()=>{delStop();S.sheet=null;render();toast("Нест кардан бекор шуд")});
+ if(DF.on&&S.sheet!=="delacc3")delStop();
  $$("[data-ext]",b=>b.onclick=()=>NATIVE.openUrl(b.dataset.ext))}
