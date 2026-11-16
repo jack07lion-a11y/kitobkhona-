@@ -2812,9 +2812,11 @@ function setupReader(){
  top.innerHTML=`<div class="rd-flow">${f.innerHTML}</div>`;const tf=top.firstChild;tf.style.columnWidth=f.style.columnWidth;tf.style.columnGap=f.style.columnGap;
  const last=f.lastElementChild,total=Math.max(1,Math.floor((last.offsetLeft+last.offsetWidth-1)/W)+1);
  const heads=[...f.querySelectorAll("[data-ch]")].map(h=>Math.floor(h.offsetLeft/W));
- const ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),key=W+"|"+S.pref.fs+"|"+(S.pref.lh||1.6)+"|"+S.pref.ff+"|"+v.clientHeight;
- if(inf.tc&&total>=4)CAL={key,cpp:Math.max(100,inf.tc[ci]._len/total)};
- const cpp=CAL&&CAL.key===key?CAL.cpp:cppEst(W,v.clientHeight);
+ const ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),key=W+"|"+S.pref.fs+"|"+(S.pref.lh||1.6)+"|"+S.pref.ff+"|"+v.clientHeight+"|"+b.id;
+ /* «ҳарф дар як саҳифа» ФАҚАТ як бор (барои ҳар ҳолати экран ва танзимот) ҳисоб мешавад ва мемонад: ҷамъи саҳифа (N/M) дар бобҳо иваз намешавад */
+ const CL=S.cal=S.cal||{};
+ if(inf.tc&&total>=4&&!CL[key]){CL[key]=Math.max(100,inf.tc[ci]._len/total);const ks=Object.keys(CL);if(ks.length>12)delete CL[ks[0]];save()}
+ const cpp=CL[key]||cppEst(W,v.clientHeight);
  RD={b,W,total,heads,f,v,top,tf,busy:false,cpp,ci};
  let p;const go=S.rdGo;S.rdGo=null;
  if(go&&go.k!=null){const el=f.querySelectorAll(".rd-hit")[go.k];p=el?Math.floor(el.offsetLeft/W):0}
@@ -4099,7 +4101,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="588345bde0";
+const WEB_H="a9a2465a77";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

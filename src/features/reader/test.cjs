@@ -83,4 +83,7 @@ module.exports=(prev=>async t=>{
  t.ok(s1.n-s0.n>=2&&s1.n-s0.n<=5,'2-юм кашидан кор мекунад: 42px ≈ 3 саҳифа ('+(s1.n-s0.n)+')');
  await P.mouse.up();
  t.eq(await P.evaluate(()=>document.querySelectorAll('#rdsh').length),1,'қабати ламс як нусха');
+ // ҷамъи саҳифа дар бобҳо иваз намешавад
+ const mm=await P.evaluate(async()=>{const out=[];for(const ci of [0,2,4,1,5,3]){rdGoto(ci,0);await new Promise(r=>setTimeout(r,500));out.push([RD&&RD.M,RD&&Math.round(RD.cpp)])}return out});
+ t.ok(mm.every(x=>x[0]===mm[0][0]&&x[1]===mm[0][1]),'ҷамъи саҳифа (M) ва «ҳарф дар саҳифа» дар ҳамаи бобҳо як хел: '+JSON.stringify(mm.map(x=>x[0])));
 })(module.exports);
