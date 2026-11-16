@@ -3832,10 +3832,10 @@ async function gzipBlob(text){return await new Response(new Blob([text]).stream(
 /* ---- Ҳуқуқ ва манба (docs/sql-mulk.sql). Ҳолатро бунёдгузорон муайян мекунанд; «pending» = нашр мумкин нест ---- */
 const RIGHTS=[["pending","Ҳоло номаълум (нашр нашавад)"],["public_domain","Умумиҷамъиятӣ (бунёдгузорон тасдиқ кардаанд)"],["licensed","Иҷозатнома ё розигӣ дорем"]];
 function rightsHTML(p,a){a=a||{};const f=(id,ph,v,mx)=>`<label class="field" for="${p}_${id}"><input id="${p}_${id}" placeholder="${ph}" maxlength="${mx||200}" value="${escH(v||"")}" style="padding-left:6px"></label>`;
- return `<p class="set-cap">Ҳуқуқ ва манба (барои нашр ҳатмӣ)</p>
+ return `<p class="set-cap">Ҳуқуқ ва манба (ихтиёрӣ, баъд пур кардан мумкин)</p>
   <select id="${p}_rs" aria-label="Ҳолати ҳуқуқ">${RIGHTS.map(([k,n])=>`<option value="${k}"${(a.rs||"pending")===k?" selected":""}>${n}</option>`).join("")}</select>
   ${f("rh","Соҳиби ҳуқуқ (нашриёт, муаллиф ё меросхӯр)",a.rh)}${f("sr","Манба (аз куҷо гирифта шуд)",a.src2)}${f("ed","Нашр (нашриёт, сол)",a.ed)}${f("tr","Мутарҷим ё муҳаррир",a.tr)}${f("ln","Эзоҳи иҷозатнома (ихтиёрӣ)",a.ln,300)}
-  <p class="hint">Ин ҷо ҳуқуқӣ хулоса нест: фақат маълумот сабт мешавад. «Ҳоло номаълум» бошад, китобро нашр кардан мумкин нест.</p>`}
+  <p class="hint">Ин ҷо ҳуқуқӣ хулоса нест: фақат маълумот сабт мешавад. «Ҳоло номаълум» бошад ҳам, китобро нашр кардан мумкин: танҳо як маротиба «Тасдиқ» мепурсад.</p>`}
 /* хатои инлайн дар худи варақ (на танҳо toast): ҷойи лозимаро нишон медиҳад */
 function admErr(msg,field){const e=document.getElementById("a_err");if(e){e.textContent=msg;e.hidden=!msg}
  document.querySelectorAll(".a-bad").forEach(x=>x.classList.remove("a-bad"));
@@ -3845,9 +3845,12 @@ function rightsField(r){return !r||r.rights_status==="pending"?"a_rs":!r.source?
 function readRights(p){const v=id=>((document.getElementById(p+"_"+id)||{}).value||"").trim();
  return{rights_status:v("rs")||"pending",rights_holder:v("rh")||null,source:v("sr")||null,edition:v("ed")||null,translator:v("tr")||null,license_note:v("ln")||null}}
 /* ҳамон қоидаи сервер (триггер books_rights_guard): хабар ба тоҷикӣ ё "" */
-function rightsCheck(r){if(!r||r.rights_status==="pending")return"Ҳолати ҳуқуқ «Ҳоло номаълум» аст: китобро нашр кардан мумкин нест";
- if(!r.source)return"Манбаро нависед (китоб аз куҷо гирифта шуд)";if(r.rights_status==="licensed"&&!r.rights_holder)return"Соҳиби ҳуқуқро нависед";return""}
-function rightsServerMsg(m){m=String(m||"");if(/rights_pending/.test(m))return"Ҳолати ҳуқуқ «Ҳоло номаълум» аст: нашр мумкин нест";if(/source_required/.test(m))return"Манбаро нависед";if(/rights_holder_required/.test(m))return"Соҳиби ҳуқуқро нависед";return""}
+function rightsCheck(r){if(!r||r.rights_status==="pending")return"Ҳолати ҳуқуқ «Ҳоло номаълум» аст";
+ if(!r.source)return"Манба навишта нашудааст";if(r.rights_status==="licensed"&&!r.rights_holder)return"Соҳиби ҳуқуқ навишта нашудааст";return""}
+/* Нашр бе ҳуқуқ мумкин аст: танҳо як маротиба «Тасдиқ». Ҳолат «Ҳоло номаълум» мемонад (баъд пур мешавад). */
+const PUBOK={ok:false};
+function pubConfirm(em){return confirm("Диққат: "+em+". Китоб ба ҳама намоён мешавад, лекин ҳуқуқ ҳоло тасдиқ нашудааст (баъд пур мекунед). Нашр кунем?")}
+function rightsServerMsg(m){m=String(m||"");if(/rights_pending/.test(m))return"Сервер ҳоло нашри бе ҳуқуқро намегузорад: SQL-и «нашр»-ро иҷро кунед (docs/sql-nashr.sql)";if(/source_required/.test(m))return"Манбаро нависед";if(/rights_holder_required/.test(m))return"Соҳиби ҳуқуқро нависед";return""}
 const RT_KEYS=["rights_status","rights_holder","source","edition","translator","license_note"];
 async function importZip(file,imgs,meta){
  let z=null,raw;
@@ -3977,8 +3980,8 @@ function bindAdmin($$){
  const acv=document.getElementById("a_cv");
  if(acv)acv.onchange=()=>{const f=acv.files&&acv.files[0],n=document.getElementById("a_cvn");if(f&&n)n.textContent="Интихоб шуд: "+f.name};
  const rsel=document.getElementById("a_rs"),rpub=document.getElementById("a_pub");
- if(rpub)rpub.onchange=()=>{admErr("");if(!rpub.checked)return;const rt=readRights("a"),em=rightsCheck(rt);
-  if(em){rpub.checked=false;admErr("Китобро ҳама бинад, аввал ҳуқуқро пур кунед: «Ҳуқуқ ва манба»-ро интихоб кунед (масалан «Умумиҷамъиятӣ») ва Манбаро нависед. "+em,rightsField(rt))}};
+ if(rpub)rpub.onchange=()=>{admErr("");PUBOK.ok=false;if(!rpub.checked)return;const rt=readRights("a"),em=rightsCheck(rt);
+  if(em){if(pubConfirm(em))PUBOK.ok=true;else rpub.checked=false}};
  ["a_rs","a_sr","a_rh"].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener("input",()=>admErr(""))});
  const asave=document.querySelector("[data-admsave]");
  if(asave)asave.onclick=async()=>{
@@ -3986,7 +3989,7 @@ function bindAdmin($$){
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
   const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked,ebook:v("a_eb").checked,premium:v("a_pr").checked};
-  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё аломатро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
+  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em&&!PUBOK.ok){if(!pubConfirm(em)){toast("Нашр бекор шуд");return}PUBOK.ok=true}}admErr("");PUBOK.ok=false;Object.assign(row,rt);
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const cvf=v("a_cv").files&&v("a_cv").files[0];
   let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null,sqlMiss=false;
@@ -4176,7 +4179,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="5caf595610";
+const WEB_H="755711203e";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
