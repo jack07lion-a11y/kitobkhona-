@@ -1,4 +1,4 @@
-/* ---- «Сохтани китоб»: PDF/Word/EPUB/FB2/TXT → .kitob дар худи браузер, баъд худкор фиристодан (пинҳон) ----
+/* ---- «Омода кардани китоб»: PDF/Word/EPUB/FB2/TXT → .kitob дар худи браузер, баъд худкор фиристодан (пинҳон) ----
    Мантиқ айнан ҳамон tools/kitob_convert.py. Бе AI, бе лимит: танҳо код. */
 const MK={
  HEAD:/^(қисми|боби|қисм|боб|фасли|фасл|глава|часть)(?![\p{L}\d_])/iu,
@@ -12,15 +12,15 @@ const MK={
  DST:["a","b","v","g","d","e","yo","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","kh","ts","ch","sh","sh","","y","","e","yu","ya","gh","i","q","u","h","j"],
  slug(t){const m={};[...MK.SRC].forEach((c,i)=>{if(i<MK.DST.length)m[c]=MK.DST[i]});
   const o=[...String(t).toLowerCase()].map(c=>m[c]!==undefined?m[c]:c).join("").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");return o.slice(0,60)||"kitob"},
- /** Матн сифатро месанҷад: тоҷикии кирилли ҳақиқӣми ё «чиқинди» (шрифти кӯҳна)? */
+ /** Матн сифатро месанҷад: тоҷикии кирилли ҳақиқӣми ё «нодуруст» (шрифти кӯҳна)? */
  quality(text){const s=String(text),ns=s.replace(/\s+/g,"");
   if(ns.length<30)return{ok:false,why:"short"};
   let cyr=0,lat=0,sym=0;for(const ch of ns){if(ch>="\u0400"&&ch<="\u052f")cyr++;else if(/[A-Za-z]/.test(ch))lat++;else if(/[%&'*+<>=\[\]{}@#$^~|\\_]/.test(ch))sym++}
   const letters=cyr+lat,symF=sym/ns.length,cyrF=letters?cyr/letters:0;
   if(cyrF<.6||symF>.05)return{ok:false,why:"garbled",cyrF,symF};
   return{ok:true,cyrF,symF}},
- GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа чиқинди мешавад. «Сохтани китоб» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав ясаед.",
- SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Сохтани китоб» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
+ GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа нодуруст мешавад. «Омода кардани китоб» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав созед.",
+ SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Омода кардани китоб» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
  async docx(file){const z=await (await loadJSZip()).loadAsync(file);const W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
   const dx=await z.file("word/document.xml").async("string"),doc=new DOMParser().parseFromString(dx,"application/xml");
   const styles={};if(z.file("word/styles.xml")){const sx=new DOMParser().parseFromString(await z.file("word/styles.xml").async("string"),"application/xml");
@@ -146,10 +146,10 @@ const MK={
   return{book,blob,file:new File([blob],book.id+".kitob"),rep,hasCover:!!cb}}
 };
 
-// ===== Тирезаи «Сохтани китоб» (админ ва ёрдамчӣ) =====
+// ===== Тирезаи «Омода кардани китоб» (админ ва ёрдамчӣ) =====
 let MKS={file:null,title:"",author:"",cat:"fiction",cover:null,busy:false,res:null,err:""};
 function admMakeHTML(X){const d=MKS;
- return `<div class="sh-head"><b class="sh-t">Сохтани китоб</b>${X}</div>
+ return `<div class="sh-head"><b class="sh-t">Омода кардани китоб</b>${X}</div>
   <p class="set-note" style="margin-top:0">Файли китобро интихоб кунед (PDF, Word, EPUB, FB2, TXT). Барнома дар худи браузер .kitob месозад ва худкор <b>пинҳон</b> фиристода мешавад. Матн ҳеҷ гоҳ тағйир намеёбад.</p>
   <label class="mk-file${d.file?" on":""}" for="mkf">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}<span id="mkfn">${d.file?escH(d.file.name):"Файлро интихоб кунед"}</span></label><input type="file" id="mkf" accept=".pdf,.docx,.epub,.fb2,.txt" hidden>
   <label class="pe-l" for="mkt">Номи китоб</label><input class="pe-i" id="mkt" value="${escH(d.title)}" autocomplete="off" placeholder="Масалан: Гулистон">

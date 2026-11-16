@@ -12,7 +12,7 @@ async function uploadCover(c,id,slug,file){
 // Ҳуқуқҳо: [калид, ном, тавсиф, пешфарзи ёрдамчӣ]. Админ ҳамаашро дорад. «Танҳо админ» ҳуқуқҳо ба ёрдамчӣ дода намешаванд.
 const CAPS=[
  ["books","Китобҳо: илова, таҳрир, нест кардан","Идоракунӣ → Китобҳо",true],
- ["maker","Сохтани китоб (PDF, Word → .kitob)","Идоракунӣ → Сохтани китоб",false],
+ ["maker","Омода кардани китоб (PDF, Word → .kitob)","Идоракунӣ → Омода кардани китоб",false],
  ["reports","Хатоҳо ва пешниҳодҳо","Дидан ва «Ҳал шуд» кардан",true],
  ["stats","Омор (корбарон, хондан)","Рақамҳо дар Идоракунӣ",true],
  ["notif","Огоҳиномаҳо (ёдоварӣ, табрик)","Матн ва вақтро таҳрир кардан",false],
@@ -86,7 +86,7 @@ const ADM_I={chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',book:'<path d
 function admTiles(){const nb=BOOKS.filter(x=>x.db).length,ns=(S.staff||[]).length;
  return[["admstat","Омор","chart","c1",canPerm("stats"),""],
   ["admbooks","Китобҳо","book","c5",canPerm("books"),nb?String(nb):""],
-  ["admmake","Сохтани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
+  ["admmake","Омода кардани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
   ["admrep","Хатоҳо","warn","c4",canPerm("reports"),""],
   ["admnews","Хабар","bell","c3",canPerm("news"),""],
   ["admnotif","Огоҳиномаҳо","bell","c3",canNotif(),""],
@@ -152,7 +152,7 @@ function admRightsHTML(X){
   ${CAPS.map(c=>li(c[1],true)).join("")}${ADMIN_ONLY.slice(0,4).map(c=>li(c[0],true)).join("")}${li("Админро бардоштан ё иваз кардан",true,"танҳо админ")}
   <p class="hq-h">Ёрдамчӣ <small>(пешфарз; ҳар ёрдамчиро алоҳида иваз кардан мумкин)</small></p>
   ${CAPS.map(c=>li(c[1],c[3])).join("")}${ADMIN_ONLY.map(c=>li(c[0],false,c[1])).join("")}
-  <p class="set-note">Сабз — метавонад. Сурх — наметавонад. Ёрдамчӣ ҳеҷ гоҳ админро ҳазф ё иваз карда наметавонад.</p>`}
+  <p class="set-note">Сабз — метавонад. Сурх — наметавонад. Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.</p>`}
 function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{remind_text:{...(c.remind_text||{})},congrats_tpl:{...(c.congrats_tpl||{})}};
  const sw=(k,t,s)=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${s}</small></div><button class="swt${(k==="sub_can_edit"?!!c[k]:c[k]!==false)?" on":""}" data-nc="${k}" role="switch" aria-label="${t}"></button></div>`;
  return `<div class="sh-head"><b class="sh-t">Огоҳиномаҳо</b>${X}</div>
@@ -190,7 +190,7 @@ function bindAdmin($$){
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
   const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked,ebook:v("a_eb").checked,premium:v("a_pr").checked};
-  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё галочкаро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
+  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё аломатро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const cvf=v("a_cv").files&&v("a_cv").files[0];
   let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null,sqlMiss=false;

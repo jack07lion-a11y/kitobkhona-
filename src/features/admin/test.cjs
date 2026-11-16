@@ -4,7 +4,7 @@ module.exports=async t=>{
  await t.page.evaluate(()=>{S.role='admin';render()});
  t.ok((await vis()).includes('Ёрдамчиён')&&(await vis()).length===11,'админ ҳамаро мебинад (11 тугма)');
  await t.page.evaluate(()=>{S.role='subadmin';S.perms={maker:true,books:true,news:false};render()});
- const v=await vis();t.ok(v.includes('Сохтани китоб')&&!v.includes('Хабар')&&!v.includes('Ёрдамчиён'),'ёрдамчӣ танҳо иҷозатдодаро мебинад');
+ const v=await vis();t.ok(v.includes('Омода кардани китоб')&&!v.includes('Хабар')&&!v.includes('Ёрдамчиён'),'ёрдамчӣ танҳо иҷозатдодаро мебинад');
  await t.page.evaluate(()=>{S.role='user';S.perms={};render()});
  t.eq(await vis(),[],'корбари оддӣ ҳеҷ чизи админро намебинад');
 };
@@ -63,5 +63,5 @@ module.exports=(prev=>async t=>{
  await P.click('.sh-x');await P.waitForTimeout(700);
  t.eq(await P.evaluate(()=>S.sheet),null,'аз худи панел пӯшидан — ба «Ҳисоб»');
  await P.evaluate(()=>{S.sheet='admmake';render()});await P.waitForTimeout(400);
- t.ok(await P.evaluate(()=>{const x=document.getElementById('app').innerText;return /Сохтани китоб/.test(x)&&!/ясаш|Ясаш|Ўрнатиш|воронка|Воронка/.test(x)}),'матнҳои ғайритоҷикӣ (ясаш, Ўрнатиш…) дар намуд нест');
+ t.ok(await P.evaluate(()=>{const x=document.getElementById('app').innerText;return /Омода кардани китоб/.test(x)&&!/ясаш|Ясаш|Ўрнатиш|воронка|Воронка/.test(x)}),'матнҳои ғайритоҷикӣ (ясаш, Ўрнатиш…) дар намуд нест');
 })(module.exports);

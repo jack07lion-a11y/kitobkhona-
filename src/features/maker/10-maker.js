@@ -1,4 +1,4 @@
-/* ---- Сохтани китоб (танҳо барои админ/ёрдамчӣ): коди вазнин дар maker.lazy.js — фақат бори аввал, ки лозим шавад, иҷро мешавад ---- */
+/* ---- Омода кардани китоб (танҳо барои админ/ёрдамчӣ): коди вазнин дар maker.lazy.js — фақат бори аввал, ки лозим шавад, иҷро мешавад ---- */
 function admMakeHTML(X){lazy("maker");return admMakeHTML(X)}
 function bindMake(){if(S.sheet!=="admmake")return;lazy("maker");bindMake()}
 

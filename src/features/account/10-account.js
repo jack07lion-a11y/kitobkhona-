@@ -6,7 +6,7 @@ function login(){
  const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
  <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
- const deleted=`<h2>Ҳисоб баста шудааст</h2><p class="hint">Ин ҳисоб нест карда шудааст. Маълумот дар сервер мемонад. Агар хато шуда бошад ё хоҳед ҳисобро баргардонед, ба бунёдгузорони Китобхона паём нависед: онҳо ҳисобро тикла метавонанд.</p>
+ const deleted=`<h2>Ҳисоб баста шудааст</h2><p class="hint">Ин ҳисоб нест карда шудааст. Маълумот дар сервер мемонад. Агар хато шуда бошад ё хоҳед ҳисобро баргардонед, ба бунёдгузорони Китобхона паём нависед: онҳо ҳисобро барқарор карда метавонанд.</p>
  <button class="btn" data-ext="https://t.me/kitobkhona_official">Навиштан дар Телеграм</button><button class="btn-t" id="back">Бозгашт</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>

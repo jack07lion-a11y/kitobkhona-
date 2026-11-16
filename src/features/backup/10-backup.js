@@ -10,7 +10,7 @@ function bkCheck(){if(!(S.role==="admin"||S.role==="subadmin")||!bkDue())return;
  S.bkShown.done=[...new Set([...S.bkShown.done,...passed])];save();bkShow()}
 function bkShow(){if(document.getElementById("bkb"))return;const el=document.createElement("div");el.id="bkb";el.className="bkb";
  el.innerHTML=`<div class="bkb-c"><b>Вақти нусхаи захира расид</b>
-  <p>Нусхаи дуюми код дар GitLab ${bkDays()} рӯз пеш нав шуда буд. Лутфан нав кунед (5 дақиқа): GitLab → лоиҳа → Settings → General → Advanced → <i>Delete project</i>; баъд New project → Import project → Repository by URL ва ин ҳаволаро ёпиштиред:</p>
+  <p>Нусхаи дуюми код дар GitLab ${bkDays()} рӯз пеш нав шуда буд. Лутфан нав кунед (5 дақиқа): GitLab → лоиҳа → Settings → General → Advanced → <i>Delete project</i>; баъд New project → Import project → Repository by URL ва ин ҳаволаро гузоред:</p>
   <code translate="no">${GH_URL}</code>
   <div class="bkb-a"><button class="pill" data-bk="later">Баъдтар</button><button class="pill" data-bk="done" style="background:var(--orange);color:#fff">Анҷом шуд</button></div></div>`;
  document.body.appendChild(el);

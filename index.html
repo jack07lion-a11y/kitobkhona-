@@ -1152,7 +1152,7 @@ select.pe-i{appearance:auto}
 <div class="app" id="app"></div>
 <div class="toast" id="toast" hidden></div>
 
-<script type="text/plain" id="lazy-maker">/* ---- «Сохтани китоб»: PDF/Word/EPUB/FB2/TXT → .kitob дар худи браузер, баъд худкор фиристодан (пинҳон) ----
+<script type="text/plain" id="lazy-maker">/* ---- «Омода кардани китоб»: PDF/Word/EPUB/FB2/TXT → .kitob дар худи браузер, баъд худкор фиристодан (пинҳон) ----
    Мантиқ айнан ҳамон tools/kitob_convert.py. Бе AI, бе лимит: танҳо код. */
 const MK={
  HEAD:/^(қисми|боби|қисм|боб|фасли|фасл|глава|часть)(?![\p{L}\d_])/iu,
@@ -1166,15 +1166,15 @@ const MK={
  DST:["a","b","v","g","d","e","yo","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","kh","ts","ch","sh","sh","","y","","e","yu","ya","gh","i","q","u","h","j"],
  slug(t){const m={};[...MK.SRC].forEach((c,i)=>{if(i<MK.DST.length)m[c]=MK.DST[i]});
   const o=[...String(t).toLowerCase()].map(c=>m[c]!==undefined?m[c]:c).join("").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");return o.slice(0,60)||"kitob"},
- /** Матн сифатро месанҷад: тоҷикии кирилли ҳақиқӣми ё «чиқинди» (шрифти кӯҳна)? */
+ /** Матн сифатро месанҷад: тоҷикии кирилли ҳақиқӣми ё «нодуруст» (шрифти кӯҳна)? */
  quality(text){const s=String(text),ns=s.replace(/\s+/g,"");
   if(ns.length<30)return{ok:false,why:"short"};
   let cyr=0,lat=0,sym=0;for(const ch of ns){if(ch>="\u0400"&&ch<="\u052f")cyr++;else if(/[A-Za-z]/.test(ch))lat++;else if(/[%&'*+<>=\[\]{}@#$^~|\\_]/.test(ch))sym++}
   const letters=cyr+lat,symF=sym/ns.length,cyrF=letters?cyr/letters:0;
   if(cyrF<.6||symF>.05)return{ok:false,why:"garbled",cyrF,symF};
   return{ok:true,cyrF,symF}},
- GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа чиқинди мешавад. «Сохтани китоб» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав ясаед.",
- SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Сохтани китоб» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
+ GARBLED:"Ин файлро худкор ба .kitob табдил додан мумкин нест: матни дохили он «шикаста» аст (шрифти кӯҳна, ҳарфҳо рамзи нодуруст доранд), ва натиҷа нодуруст мешавад. «Омода кардани китоб» танҳо вақте кор мекунад, ки ҳарфҳоро 100% дуруст хонад. Лутфан китобро дар шакли Word (.docx), EPUB ё TXT бо ҳарфҳои тоҷикии кирилл ёбед ва бор кунед, ё худатон аз нав созед.",
+ SCAN:"Дар файл матн ёфт нашуд (шояд расм/скан аст). «Омода кардани китоб» танҳо матни ҳақиқиро мехонад. Китобро дар шакли Word, EPUB ё TXT ёбед.",
  async docx(file){const z=await (await loadJSZip()).loadAsync(file);const W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
   const dx=await z.file("word/document.xml").async("string"),doc=new DOMParser().parseFromString(dx,"application/xml");
   const styles={};if(z.file("word/styles.xml")){const sx=new DOMParser().parseFromString(await z.file("word/styles.xml").async("string"),"application/xml");
@@ -1300,10 +1300,10 @@ const MK={
   return{book,blob,file:new File([blob],book.id+".kitob"),rep,hasCover:!!cb}}
 };
 
-// ===== Тирезаи «Сохтани китоб» (админ ва ёрдамчӣ) =====
+// ===== Тирезаи «Омода кардани китоб» (админ ва ёрдамчӣ) =====
 let MKS={file:null,title:"",author:"",cat:"fiction",cover:null,busy:false,res:null,err:""};
 function admMakeHTML(X){const d=MKS;
- return `<div class="sh-head"><b class="sh-t">Сохтани китоб</b>${X}</div>
+ return `<div class="sh-head"><b class="sh-t">Омода кардани китоб</b>${X}</div>
   <p class="set-note" style="margin-top:0">Файли китобро интихоб кунед (PDF, Word, EPUB, FB2, TXT). Барнома дар худи браузер .kitob месозад ва худкор <b>пинҳон</b> фиристода мешавад. Матн ҳеҷ гоҳ тағйир намеёбад.</p>
   <label class="mk-file${d.file?" on":""}" for="mkf">${P('<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',2)}<span id="mkfn">${d.file?escH(d.file.name):"Файлро интихоб кунед"}</span></label><input type="file" id="mkf" accept=".pdf,.docx,.epub,.fb2,.txt" hidden>
   <label class="pe-l" for="mkt">Номи китоб</label><input class="pe-i" id="mkt" value="${escH(d.title)}" autocomplete="off" placeholder="Масалан: Гулистон">
@@ -1646,7 +1646,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҳоло фикр нест. Аввалин шуда нависед.","Отзывов пока нет. Напишите первым.","Hozircha fikr yoʻq. Birinchi boʻlib yozing.","No reviews yet. Be the first to write one."],
 ["Ёрдамчӣ","Помощник","Yordamchi","Assistant"],
 ["Аз рӯи китоб савол диҳед","Задайте вопрос по книге","Kitob boʻyicha savol bering","Ask a question about the book"],
-["Аз рӯи китоб флешкарта сохтан","Создать флешкарты по книге","Kitob asosida fleshkarta yaratish","Make flashcards from the book"],
+["Аз рӯи китоб кортчаи ёддошт сохтан","Создать флешкарты по книге","Kitob asosida fleshkarta yaratish","Make flashcards from the book"],
 ["Қаҳрамон ё фикри асосии китоб кист?","Кто главный герой или основная мысль книги?","Kitobning qahramoni yoki asosiy gʻoyasi kim/nima?","Who is the main character or main idea of the book?"],
 ["Ёрдамчии китоб — қадами оянда","Помощник по книге — на следующем шаге","Kitob yordamchisi — keyingi bosqichda","Book assistant — coming next"],
 ["Мубодила — қадами оянда","Поделиться — на следующем шаге","Ulashish — keyingi bosqichda","Share — coming next"],
@@ -1871,7 +1871,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Анҷом шуд","Готово","Bajarildi","Done"],
 ["Баъдтар","Позже","Keyinroq","Later"],
 ["Ташаккур! Эслатма 30 рӯзи дигар меояд","Спасибо! Напоминание придёт через 30 дней","Rahmat! Eslatma 30 kundan keyin keladi","Thanks! The reminder returns in 30 days"],
-["Сохтани китоб","Создать книгу","Kitob yasash","Create a book","x"],
+["Омода кардани китоб","Создать книгу","Kitob yasash","Create a book","x"],
 ["PDF, Word, EPUB → худкор ба барнома","PDF, Word, EPUB → автоматически в приложение","PDF, Word, EPUB → avtomatik ilovaga","PDF, Word, EPUB → straight into the app"],
 ["Файлро интихоб кунед","Выберите файл","Faylni tanlang","Choose a file"],
 ["Номи китоб","Название книги","Kitob nomi","Book title"],
@@ -1884,7 +1884,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҳамаро фурӯзон","Включить все","Hammasini yoqish","Enable all"],
 ["Ҳамаро хомӯш","Выключить все","Hammasini o‘chirish","Disable all"],
 ["Китобҳо: илова, таҳрир, нест кардан","Книги: добавление, правка, удаление","Kitoblar: qo‘shish, tahrirlash, o‘chirish","Books: add, edit, delete"],
-["Сохтани китоб (PDF, Word → .kitob)","Создание книги (PDF, Word → .kitob)","Kitob yasash (PDF, Word → .kitob)","Create books (PDF, Word → .kitob)"],
+["Омода кардани китоб (PDF, Word → .kitob)","Создание книги (PDF, Word → .kitob)","Kitob yasash (PDF, Word → .kitob)","Create books (PDF, Word → .kitob)"],
 ["Омор (корбарон, хондан)","Статистика (пользователи, чтение)","Statistika (foydalanuvchilar, o‘qish)","Statistics (users, reading)"],
 ["Огоҳиномаҳо (ёдоварӣ, табрик)","Уведомления (напоминание, поздравление)","Bildirishnomalar (eslatma, tabrik)","Notifications (reminder, congrats)"],
 ["Нашри навсозии APK","Публикация обновления APK","APK yangilanishini e’lon qilish","Publish APK update"],
@@ -2585,7 +2585,7 @@ function openDetail(id){if(S.view!=="book"){S.prev=S.view;S.prevSearch=S.search}
 function detail(){
  const b=BOOKS.find(x=>x.id===S.bookId);const pr=S.prog[b.id]||0;
  const sim=BOOKS.filter(x=>x.c===b.c&&x.id!==b.id).slice(0,6);
- const qs=[`«${escH(b.t)}» дар бораи чист?`,"Аз рӯи китоб флешкарта сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
+ const qs=[`«${escH(b.t)}» дар бораи чист?`,"Аз рӯи китоб кортчаи ёддошт сохтан","Қаҳрамон ё фикри асосии китоб кист?"];
  const spark='<path d="M12 3l1.900 5.100L19 10l-5.100 1.900L12 17l-1.900-5.100L5 10l5.100-1.900zM19 15l.8 2.200L22 18l-2.200.8L19 21l-.8-2.200L16 18l2.200-.8z" fill="currentColor" stroke="none"/>';
  return `<section class="bd" style="--bc:${b.col[0]}">
   <div class="bd-top pad"><button class="bd-ic" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><span class="bd-tt">${b.t}</span>
@@ -3162,7 +3162,7 @@ function login(){
  const code=`<h2>Рамз аз почта</h2><p class="hint">Рамзи ${OTPN}-рақама ба <b>${escH(S.email||"")}</b> фиристода шуд. Агар набошад, ҷузвдони «Спам»-ро бинед.${demo?' <span class="demo">Намуна: ҳар ${OTPN} рақам</span>':''}</p>
  <div class="code">${Array.from({length:OTPN},(_,i)=>i).map(i=>`<input id="c${i}" inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="${i?1:OTPN}" aria-label="Рақами ${i+1}">`).join("")}</div>
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
- const deleted=`<h2>Ҳисоб баста шудааст</h2><p class="hint">Ин ҳисоб нест карда шудааст. Маълумот дар сервер мемонад. Агар хато шуда бошад ё хоҳед ҳисобро баргардонед, ба бунёдгузорони Китобхона паём нависед: онҳо ҳисобро тикла метавонанд.</p>
+ const deleted=`<h2>Ҳисоб баста шудааст</h2><p class="hint">Ин ҳисоб нест карда шудааст. Маълумот дар сервер мемонад. Агар хато шуда бошад ё хоҳед ҳисобро баргардонед, ба бунёдгузорони Китобхона паём нависед: онҳо ҳисобро барқарор карда метавонанд.</p>
  <button class="btn" data-ext="https://t.me/kitobkhona_official">Навиштан дар Телеграм</button><button class="btn-t" id="back">Бозгашт</button>`;
  const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
@@ -3461,7 +3461,7 @@ const delNo=X=>`<div class="sh-head"><b class="sh-t">Ҳисобро нест к�
  <button class="pay-btn" data-shclose>Фаҳмидам</button>`;
 SHEETS.delacc=X=>delStaff()?delNo(X):`<div class="sh-head"><b class="sh-t">Ҳисобро нест кардан</b>${X}</div>${delW("ХАТАРНОК!")}
  <p class="hint">Ҳисоби шумо ҳамон дам <b>баста мешавад</b>: ворид шуда наметавонед ва дар рейтинг нишон дода намешавед. Профил, пешравӣ, токчаҳо ва дақиқаҳои хондан аз дастрасии шумо мебароянд.</p>
- <p class="hint">Ҳисобро танҳо бунёдгузорони Китобхона тикла карда метавонанд. Худатон онро баргардонида наметавонед.</p>
+ <p class="hint">Ҳисобро танҳо бунёдгузорони Китобхона барқарор карда метавонанд. Худатон онро баргардонида наметавонед.</p>
  <button class="pay-btn del-b" data-delacc-next="2">Давом додан (хатарнок)</button><button class="pay-later" data-shclose>Не, бозгашт</button>`;
 SHEETS.delacc2=X=>delStaff()?delNo(X):`<div class="sh-head"><b class="sh-t">Боз як бор фикр кунед</b>${X}</div>${delW("ХАТАРНОК! Аз ин амал баргаштан душвор аст.")}
  <p class="hint">Шумо ин чизҳоро аз даст медиҳед: <b>ҷойи худатон дар рейтинг</b>, <b>дақиқаҳои хондаатон</b>, <b>китобҳои нигоҳдошташуда</b> ва <b>пешравии хондан</b>.</p>
@@ -3740,7 +3740,7 @@ function bkCheck(){if(!(S.role==="admin"||S.role==="subadmin")||!bkDue())return;
  S.bkShown.done=[...new Set([...S.bkShown.done,...passed])];save();bkShow()}
 function bkShow(){if(document.getElementById("bkb"))return;const el=document.createElement("div");el.id="bkb";el.className="bkb";
  el.innerHTML=`<div class="bkb-c"><b>Вақти нусхаи захира расид</b>
-  <p>Нусхаи дуюми код дар GitLab ${bkDays()} рӯз пеш нав шуда буд. Лутфан нав кунед (5 дақиқа): GitLab → лоиҳа → Settings → General → Advanced → <i>Delete project</i>; баъд New project → Import project → Repository by URL ва ин ҳаволаро ёпиштиред:</p>
+  <p>Нусхаи дуюми код дар GitLab ${bkDays()} рӯз пеш нав шуда буд. Лутфан нав кунед (5 дақиқа): GitLab → лоиҳа → Settings → General → Advanced → <i>Delete project</i>; баъд New project → Import project → Repository by URL ва ин ҳаволаро гузоред:</p>
   <code translate="no">${GH_URL}</code>
   <div class="bkb-a"><button class="pill" data-bk="later">Баъдтар</button><button class="pill" data-bk="done" style="background:var(--orange);color:#fff">Анҷом шуд</button></div></div>`;
  document.body.appendChild(el);
@@ -3755,7 +3755,7 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 function bindBackup($$){
  $$("[data-bkdone]",b=>b.onclick=bkDone);
 }
-/* ---- Сохтани китоб (танҳо барои админ/ёрдамчӣ): коди вазнин дар maker.lazy.js — фақат бори аввал, ки лозим шавад, иҷро мешавад ---- */
+/* ---- Омода кардани китоб (танҳо барои админ/ёрдамчӣ): коди вазнин дар maker.lazy.js — фақат бори аввал, ки лозим шавад, иҷро мешавад ---- */
 function admMakeHTML(X){lazy("maker");return admMakeHTML(X)}
 function bindMake(){if(S.sheet!=="admmake")return;lazy("maker");bindMake()}
 
@@ -3775,7 +3775,7 @@ async function uploadCover(c,id,slug,file){
 // Ҳуқуқҳо: [калид, ном, тавсиф, пешфарзи ёрдамчӣ]. Админ ҳамаашро дорад. «Танҳо админ» ҳуқуқҳо ба ёрдамчӣ дода намешаванд.
 const CAPS=[
  ["books","Китобҳо: илова, таҳрир, нест кардан","Идоракунӣ → Китобҳо",true],
- ["maker","Сохтани китоб (PDF, Word → .kitob)","Идоракунӣ → Сохтани китоб",false],
+ ["maker","Омода кардани китоб (PDF, Word → .kitob)","Идоракунӣ → Омода кардани китоб",false],
  ["reports","Хатоҳо ва пешниҳодҳо","Дидан ва «Ҳал шуд» кардан",true],
  ["stats","Омор (корбарон, хондан)","Рақамҳо дар Идоракунӣ",true],
  ["notif","Огоҳиномаҳо (ёдоварӣ, табрик)","Матн ва вақтро таҳрир кардан",false],
@@ -3849,7 +3849,7 @@ const ADM_I={chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',book:'<path d
 function admTiles(){const nb=BOOKS.filter(x=>x.db).length,ns=(S.staff||[]).length;
  return[["admstat","Омор","chart","c1",canPerm("stats"),""],
   ["admbooks","Китобҳо","book","c5",canPerm("books"),nb?String(nb):""],
-  ["admmake","Сохтани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
+  ["admmake","Омода кардани китоб","maker","c2",canPerm("maker")&&canPerm("books"),""],
   ["admrep","Хатоҳо","warn","c4",canPerm("reports"),""],
   ["admnews","Хабар","bell","c3",canPerm("news"),""],
   ["admnotif","Огоҳиномаҳо","bell","c3",canNotif(),""],
@@ -3915,7 +3915,7 @@ function admRightsHTML(X){
   ${CAPS.map(c=>li(c[1],true)).join("")}${ADMIN_ONLY.slice(0,4).map(c=>li(c[0],true)).join("")}${li("Админро бардоштан ё иваз кардан",true,"танҳо админ")}
   <p class="hq-h">Ёрдамчӣ <small>(пешфарз; ҳар ёрдамчиро алоҳида иваз кардан мумкин)</small></p>
   ${CAPS.map(c=>li(c[1],c[3])).join("")}${ADMIN_ONLY.map(c=>li(c[0],false,c[1])).join("")}
-  <p class="set-note">Сабз — метавонад. Сурх — наметавонад. Ёрдамчӣ ҳеҷ гоҳ админро ҳазф ё иваз карда наметавонад.</p>`}
+  <p class="set-note">Сабз — метавонад. Сурх — наметавонад. Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.</p>`}
 function admNotifHTML(X){const c=S.ncfg||{},L=S.ndl||I18N.lang,d=S.nd=S.nd||{remind_text:{...(c.remind_text||{})},congrats_tpl:{...(c.congrats_tpl||{})}};
  const sw=(k,t,s)=>`<div class="nrow"><div class="ntx"><b>${t}</b><small>${s}</small></div><button class="swt${(k==="sub_can_edit"?!!c[k]:c[k]!==false)?" on":""}" data-nc="${k}" role="switch" aria-label="${t}"></button></div>`;
  return `<div class="sh-head"><b class="sh-t">Огоҳиномаҳо</b>${X}</div>
@@ -3953,7 +3953,7 @@ function bindAdmin($$){
   if(!t||!a){toast("Ном ва муаллифро нависед");return}
   const col=ADM_COLS[+v("a_col").value]||ADM_COLS[0];
   const row={t,a,c:v("a_c").value,col1:col[0],col2:col[1],audio:v("a_au").checked,descr:v("a_d").value.trim(),published:v("a_pub").checked,ebook:v("a_eb").checked,premium:v("a_pr").checked};
-  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё галочкаро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
+  const rt=readRights("a");if(row.published){const em=rightsCheck(rt);if(em){admErr("Нашр нашуд: "+em+". Ҳуқуқ ва манбаро пур кунед ё аломатро бардоред (китоб пинҳон захира мешавад).",rightsField(rt));toast(em);return}}admErr("");Object.assign(row,rt);
   asave.disabled=true;const c=await sbLoad();if(!c){asave.disabled=false;toast("Интернет нест");return}
   const cvf=v("a_cv").files&&v("a_cv").files[0];
   let bid=S.adm&&S.adm.id,bslug=S.adm&&S.adm.slug,error=null,sqlMiss=false;
@@ -4029,7 +4029,7 @@ SHEETS.adm=X=>{let h="";{const a=S.adm||{},ci=Math.max(0,ADM_COLS.findIndex(x=>x
    ${a.id?'<button class="btn-t" data-admdel style="color:#d33">Нест кардани китоб</button>':""}
   </div>`};return h};
 /* ---- Админ: ҳисобҳои нест шуда — тиклаш ва пурра тоза кардан (docs/sql-reyting.sql) ----
-   Корбар ҳисобашро нест мекунад → ҳисоб баста мешавад (кириш манъ), маълумот дар сервер МЕМОНАД. Админ ва ёрдамчӣ ҲАР ВАҚТ тикла карда метавонанд (муҳлат нест). */
+   Корбар ҳисобашро нест мекунад → ҳисоб баста мешавад (кириш манъ), маълумот дар сервер МЕМОНАД. Админ ва ёрдамчӣ ҲАР ВАҚТ барқарор карда метавонанд (муҳлат нест). */
 const DEL={list:null,busy:false,err:false,loaded:false};
 async function loadDeleted(){if(DEL.busy)return;DEL.busy=true;DEL.err=false;
  try{const c=await sbLoad();if(!c)throw 0;const{data,error}=await c.rpc("deleted_list");if(error||!Array.isArray(data))throw 0;DEL.list=data}
@@ -4038,18 +4038,18 @@ async function loadDeleted(){if(DEL.busy)return;DEL.busy=true;DEL.err=false;
 SHEETS.admdel=X=>{const L=DEL.list;
  const rows=!L?(DEL.err?`<p class="hint">Рӯйхат боргирӣ нашуд. Аввал docs/sql-reyting.sql-ро иҷро кунед ё интернетро санҷед.</p>`:`<p class="hint">Боргирӣ…</p>`)
   :!L.length?`<p class="hint">Ҳисоби нест шуда нест.</p>`
-  :L.map(x=>`<div class="nrow"><div class="ntx"><b>${escH(x.name||"—")}</b><small>${escH(x.email||"")} · нест шуд: ${new Date(x.deleted_at).toLocaleDateString()}</small></div><button class="pill" data-del-restore="${escH(x.id)}">Тиклаш</button></div>`).join("");
+  :L.map(x=>`<div class="nrow"><div class="ntx"><b>${escH(x.name||"—")}</b><small>${escH(x.email||"")} · нест шуд: ${new Date(x.deleted_at).toLocaleDateString()}</small></div><button class="pill" data-del-restore="${escH(x.id)}">Барқарор кардан</button></div>`).join("");
  return `<div class="sh-head"><b class="sh-t">Ҳисобҳои нест шуда</b>${X}</div>
- <p class="set-note">Корбар ҳисобашро нест кард: кириш баста, дар рейтинг нест. Маълумот дар сервер мемонад, муҳлати тиклаш нест. «Тиклаш» ҳисобро пурра бармегардонад (профил, пешравӣ, дақиқаҳо).</p>
+ <p class="set-note">Корбар ҳисоби худро нест кард: воридшавӣ баста, дар рейтинг нест. Маълумот дар сервер мемонад, барқарор кардан ҳар вақт мумкин. «Барқарор кардан» ҳисобро пурра бармегардонад (профил, пешравӣ, дақиқаҳо).</p>
  ${rows}`};
 function bindAdminDeleted($$){
  if(S.sheet!=="admdel"){DEL.loaded=false;return}
  if(!DEL.loaded){DEL.loaded=true;DEL.list=null;loadDeleted()}
- $$("[data-del-restore]",b=>b.onclick=async()=>{if(!confirm("Ҳисобро тикла кунем? Корбар аз нав ворид шуда метавонад."))return;
+ $$("[data-del-restore]",b=>b.onclick=async()=>{if(!confirm("Ҳисобро барқарор кунем? Корбар аз нав ворид шуда метавонад."))return;
   b.disabled=true;
   try{const c=await sbLoad();const{data,error}=await c.rpc("restore_account",{p_id:b.dataset.delRestore});
-   if(error||data!=="ok")throw 0;toast("Ҳисоб тикла шуд");DEL.list=null;loadDeleted()}
-  catch(_){b.disabled=false;toast("Тикла нашуд. Интернет ё ҳуқуқро санҷед")}});}
+   if(error||data!=="ok")throw 0;toast("Ҳисоб барқарор шуд");DEL.list=null;loadDeleted()}
+  catch(_){b.disabled=false;toast("Барқарор нашуд. Интернет ё ҳуқуқро санҷед")}});}
 // ===== Версияи ҳадди ақали APK: агар кӯҳна бошад, ба навсозӣ даъват мекунем =====
 function checkMin(){const m=(S.flags&&S.flags.min)||0,v=NATIVE.ver();let el=document.getElementById("minv_ov");
  if(!(v>0&&m>v)){if(el)el.remove();return}
@@ -4099,7 +4099,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="61c1da347e";
+const WEB_H="588345bde0";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
