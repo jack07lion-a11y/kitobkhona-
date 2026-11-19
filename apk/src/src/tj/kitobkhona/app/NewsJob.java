@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class NewsJob extends JobService {
     static final int JOB_ID = 4201;
 
-    /** Аз config() даъват мешавад: ҷадвалро ҳар ~6 соат месанҷем (ҳатто баъди аз нав фурӯзон шудани телефон). */
+    /** Аз config() даъват мешавад: ҷадвалро ҳар ~3 соат месанҷем (ҳатто баъди аз нав фурӯзон шудани телефон). */
     static void schedule(Context c) {
         try {
             JobScheduler js = (JobScheduler) c.getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -25,7 +25,7 @@ public class NewsJob extends JobService {
             for (JobInfo j : js.getAllPendingJobs()) if (j.getId() == JOB_ID) return;
             JobInfo.Builder b = new JobInfo.Builder(JOB_ID, new ComponentName(c, NewsJob.class))
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(6 * 60 * 60 * 1000L)
+                    .setPeriodic(3 * 60 * 60 * 1000L)
                     .setPersisted(true);
             js.schedule(b.build());
         } catch (Exception ignored) { }
@@ -38,6 +38,10 @@ public class NewsJob extends JobService {
             public void run() {
                 try {
                     check(NewsJob.this);
+                } catch (Exception ignored) {
+                }
+                try {
+                    Updater.run(NewsJob.this);   // навсозии паси замина (бе ойна)
                 } catch (Exception ignored) {
                 } finally {
                     jobFinished(p, false);

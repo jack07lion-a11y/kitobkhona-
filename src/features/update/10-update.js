@@ -37,10 +37,6 @@ async function doRefresh(){
 
 /* ---- пайвасти тугмаҳо: update (аз bind() даъват мешавад) ---- */
 function bindUpdate($$){
- $$("[data-upd-go]",b=>b.onclick=()=>{const A=window.KitobAndroid;if(!A||!A.downloadUpdate||!S.upd)return;S.updSt="down";S.updP=0;render();try{A.downloadUpdate(S.upd.url)}catch(_){S.updSt="err";render()}});
- $$("[data-upd-install]",b=>b.onclick=()=>{const A=window.KitobAndroid;let r="err";try{r=A.installUpdate()}catch(_){}
-  if(r==="perm")toast("Иҷозат диҳед ва баргашта аз нав пахш кунед");else if(r!=="ok"){S.updSt="err";render()}});
- $$("[data-updno]",b=>b.onclick=()=>{S.updNo=S.upd&&S.upd.v;render()});
  $$("[data-rel-pub]",b=>b.onclick=async()=>{if(!S.rb||!confirm("Ҳамаро навсозӣ мекунед?"))return;const c=await sbLoad();if(!c){toast("Интернет нест");return}
   try{const{error}=await c.rpc("publish_release",{p_version:+b.dataset.relPub,p_url:S.rb.url});if(error){toast("Иҷозат дода нашуд. Аввал SQL-ро иҷро кунед");return}await loadRelease();toast("Нашр шуд");render()}catch(_){toast("Интернет нест ё сервер ҷавоб намедиҳад")}});
  $$("[data-rel-stop]",b=>b.onclick=async()=>{if(!confirm("Навсозиро қатъ мекунед? Баннер намеояд"))return;const c=await sbLoad();if(!c)return;

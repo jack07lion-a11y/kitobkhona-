@@ -1130,25 +1130,6 @@ select.pe-i{appearance:auto}
 .seg.sm button{flex:1 1 0;white-space:normal;line-height:1.15}
 .set-row{flex-wrap:wrap;row-gap:8px}
 .set-row .seg.sm{flex:1 1 auto;min-width:0}
-
-/* ---------- навсозии саҳифа ---------- */
-.wus{position:fixed;inset:0;z-index:2147482600;pointer-events:none}
-.wus-bg{position:absolute;inset:0;background:rgba(0,0,0,.42);opacity:0;transition:opacity .35s}
-.wus-c{position:absolute;left:0;right:0;bottom:0;max-width:460px;margin:0 auto;background:var(--bg);color:var(--ink);border-radius:26px 26px 0 0;padding:10px 22px calc(26px + env(safe-area-inset-bottom,0px));text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;transform:translateY(105%);transition:transform .42s cubic-bezier(.32,.72,0,1);touch-action:none;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
-.wus.in{pointer-events:auto}.wus.in .wus-bg{opacity:1}.wus.in .wus-c{transform:none}
-.wus-h{width:40px;height:5px;border-radius:3px;background:var(--line);display:block}
-.wus-i{width:56px;height:56px;border-radius:50%;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;margin-top:6px}
-.wus-i .ico{width:26px;height:26px}
-.wus-c h3{margin:0;font-size:19px}.wus-c p{margin:0;color:var(--muted);font-weight:600;line-height:1.5;font-size:14px;max-width:32ch}
-.wus-c .pay-btn{width:100%;margin-top:6px}
-.wup{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 2px);z-index:2147482700;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--bg);box-shadow:0 4px 18px rgba(0,0,0,.22);display:grid;place-items:center;opacity:0;transform:translateY(-30px) scale(.7);transition:opacity .3s,transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
-.wup.in{opacity:1;transform:none}
-.wup svg{position:absolute;inset:2px;width:36px;height:36px;transform:rotate(-90deg)}
-.wup-b{fill:none;stroke:var(--line);stroke-width:3.5}.wup-a{fill:none;stroke:var(--orange);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .3s}
-.wup b{font-size:10.5px;font-weight:800;color:var(--ink);position:relative;font-variant-numeric:tabular-nums}
-.wur{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2147482650;max-width:430px;margin:0 auto;transform:translateY(160%);transition:transform .45s cubic-bezier(.32,.72,0,1)}
-.wur.in{transform:none}.wur .pay-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.28)}
-.wur .ico{width:20px;height:20px}
 .wuadm small{display:block;margin-top:6px;font-size:11px;color:var(--muted)}
 </style>
 
@@ -1866,7 +1847,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Давом додан","Продолжить","Davom etish","Continue"],
 ["Хирад — вожаи куҳани форсӣ-тоҷикӣ буда, маъноҳои «ақл», «ҳуш», «зеҳн», «идрок» ва «дарёфт»-ро ифода мекунад. Ин вожа дар адабиёти классикии форсу тоҷик ҷойгоҳи баланд дорад. Ҳаким Абулқосим Фирдавсӣ «Шоҳнома»-и худро бо байти машҳури «Ба номи Худованди ҷону хирад» оғоз намуда, дар бахши «Ситоиши хирад» ақлу хирадро ситоиш кардааст.","«Хирад» — древнее персидско-таджикское слово, означающее «разум», «рассудок», «ум», «постижение» и «понимание». В классической персидско-таджикской литературе оно занимает высокое место. Хаким Абулкасим Фирдоуси начал свою «Шахнаме» знаменитым бейтом «Ба номи Худованди ҷону хирад» и в разделе «Хвала разуму» воспел разум и мудрость.","«Xirad» — qadimgi fors-tojik so‘zi bo‘lib, «aql», «hush», «zehn», «idrok» va «anglash» ma’nolarini bildiradi. Bu so‘z klassik fors-tojik adabiyotida yuksak o‘rin tutadi. Hakim Abulqosim Firdavsiy «Shohnoma»sini mashhur «Ba nomi Xudovandijonu xirad» baytidan boshlagan va «Aql ta’rifi» bo‘limida aql va donishni madh etgan.","“Khirad” is an ancient Persian-Tajik word meaning “reason”, “mind”, “intellect”, “perception” and “understanding”. It holds a high place in classical Persian-Tajik literature. The sage Abulqasim Firdausi began his “Shahnameh” with the famous verse “Ba nomi Khudovandi jonu khirad” and, in the section “In Praise of Reason”, extolled reason and wisdom."],
 ["Интерфейс нав мешавад…","Интерфейс обновляется…","Interfeys yangilanmoqda…","Updating the interface…"],
-["Интерфейс нав шуд","Интерфейс обновлён","Interfeys yangilandi","Interface updated"],
+["Навсозӣ шуд","Обновлено","Yangilandi","Updated"],
 ["Навсозии барнома ҳаст (версияи ","Есть обновление приложения (версия ","Ilova yangilanishi bor (versiya ","App update available (version "],
 ["Китобҳои нав: ","Новые книги: ","Yangi kitoblar: ","New books: "],
 ["Ҳама чиз нав аст","Всё актуально","Hammasi yangi","Everything is up to date"],
@@ -4171,17 +4152,13 @@ async function doRefresh(){
 
 /* ---- пайвасти тугмаҳо: update (аз bind() даъват мешавад) ---- */
 function bindUpdate($$){
- $$("[data-upd-go]",b=>b.onclick=()=>{const A=window.KitobAndroid;if(!A||!A.downloadUpdate||!S.upd)return;S.updSt="down";S.updP=0;render();try{A.downloadUpdate(S.upd.url)}catch(_){S.updSt="err";render()}});
- $$("[data-upd-install]",b=>b.onclick=()=>{const A=window.KitobAndroid;let r="err";try{r=A.installUpdate()}catch(_){}
-  if(r==="perm")toast("Иҷозат диҳед ва баргашта аз нав пахш кунед");else if(r!=="ok"){S.updSt="err";render()}});
- $$("[data-updno]",b=>b.onclick=()=>{S.updNo=S.upd&&S.upd.v;render()});
  $$("[data-rel-pub]",b=>b.onclick=async()=>{if(!S.rb||!confirm("Ҳамаро навсозӣ мекунед?"))return;const c=await sbLoad();if(!c){toast("Интернет нест");return}
   try{const{error}=await c.rpc("publish_release",{p_version:+b.dataset.relPub,p_url:S.rb.url});if(error){toast("Иҷозат дода нашуд. Аввал SQL-ро иҷро кунед");return}await loadRelease();toast("Нашр шуд");render()}catch(_){toast("Интернет нест ё сервер ҷавоб намедиҳад")}});
  $$("[data-rel-stop]",b=>b.onclick=async()=>{if(!confirm("Навсозиро қатъ мекунед? Баннер намеояд"))return;const c=await sbLoad();if(!c)return;
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="8c538f3187";
+const WEB_H="63c3377b78";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
@@ -4191,32 +4168,12 @@ function webUpdCheck(){const A=wuNative();if(!A)return;
  try{A.setShellAuto(false)}catch(_){}
  if(WU.ready){wuApply();return}
  if(wuDue()&&!WU.busy)wuAuto()}
-/* ХУДКОР: ойна ва тугма нест. Нусха паси замина фаро мешавад, баъд дар вақти баргаштан ба барнома (ё оғози навбатӣ) худ ба худ ишга меафтад. */
+/* ХУДКОР: ойна, тугма ва доира нест. Нусха паси замина фаро мешавад, баъд дар вақти баргаштан ба барнома (ё оғози навбатӣ) худ ба худ ишга меафтад; фақат як хабари хурд: «Навсозӣ шуд». */
 function wuAuto(){const A=wuNative();if(!A||!S.flags||!S.flags.webPub)return;S.webDone=S.flags.webPub;save();WU.busy=true;WU.auto=true;try{A.updateShell()}catch(_){WU.busy=false}}
-function wuApply(){if(!WU.ready||S.view==="read"||S.sheet)return;WU.ready=false;try{location.reload()}catch(_){}}
+function wuApply(){if(!WU.ready||S.view==="read"||S.sheet)return;WU.ready=false;try{sessionStorage.setItem("kitob_upd","1")}catch(_){}try{location.reload()}catch(_){}}
 let WU_HID=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")WU_HID=Date.now();else if(WU.ready&&Date.now()-WU_HID>8000)wuApply()});
-function wuSheet(){if(document.getElementById("wus"))return;const el=document.createElement("div");el.id="wus";el.className="wus";
- el.innerHTML=`<div class="wus-bg"></div><div class="wus-c"><i class="wus-h"></i><div class="wus-i">${P('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',2)}</div><h3>Навсозии нав тайёр аст</h3><p>Барнома беҳтар шуд. Навсозӣ чанд сонияро мегирад ва шумо метавонед хондани китобро давом диҳед.</p><button class="pay-btn" id="wus-go">Навсозӣ</button></div>`;
- document.body.appendChild(el);const c=el.querySelector(".wus-c"),bg=el.querySelector(".wus-bg");
- requestAnimationFrame(()=>el.classList.add("in"));
- const close=()=>{el.classList.remove("in");setTimeout(()=>el.remove(),380)};
- bg.onclick=close;document.getElementById("wus-go").onclick=()=>{close();wuStart()};
- let y0=null,dy=0;c.onpointerdown=e=>{if(e.target.closest("button"))return;y0=e.clientY;dy=0;try{c.setPointerCapture(e.pointerId)}catch(_){}c.style.transition="none"};
- c.onpointermove=e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);c.style.transform=`translateY(${dy}px)`};
- c.onpointerup=c.onpointercancel=()=>{if(y0===null)return;y0=null;c.style.transition="";if(dy>80)close();else c.style.transform=""}}
-function wuStart(){const A=wuNative();if(!A)return;S.webDone=S.flags.webPub;save();WU.busy=true;WU.pct=0;wuRing(0);try{A.updateShell()}catch(_){WU.busy=false;wuRingOff()}}
-function wuRing(p,done){let r=document.getElementById("wup");
- if(!r){r=document.createElement("div");r.id="wup";r.className="wup";r.innerHTML=`<svg viewBox="0 0 40 40"><circle class="wup-b" cx="20" cy="20" r="15"/><circle class="wup-a" cx="20" cy="20" r="15" pathLength="100"/></svg><b></b>`;document.body.appendChild(r);requestAnimationFrame(()=>r.classList.add("in"))}
- r.querySelector(".wup-a").style.strokeDashoffset=String(100-p);r.querySelector("b").textContent=done?"✓":Math.round(p)+"%"}
-function wuRingOff(){const r=document.getElementById("wup");if(r){r.classList.remove("in");setTimeout(()=>r.remove(),300)}}
-function wuRestartUI(){if(document.getElementById("wur"))return;const el=document.createElement("div");el.id="wur";el.className="wur";
- el.innerHTML=`<button class="pay-btn" id="wur-go">${P('<path d="M4 12a8 8 0 1 0 3-6.200M4 4v4h4"/>',2)}Аз нав оғоз кардан</button>`;document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("in"));
- document.getElementById("wur-go").onclick=()=>{try{window.KitobAndroid.restartApp()}catch(_){location.reload()}}}
-window.__shellP=(p,st)=>{if(wuStaff())return;
- if(WU.auto){if(st==="ready"){WU.busy=false;WU.ready=true}else if(st==="err"){WU.busy=false;WU.auto=false;S.webDone=null;save()}return}
- if(st==="down"){WU.pct=p;wuRing(p)}
- else if(st==="ready"){WU.busy=false;WU.ready=true;wuRing(100,true);setTimeout(wuRingOff,1800);wuRestartUI()}
- else if(st==="err"){WU.busy=false;S.webDone=null;save();wuRingOff();toast("Навсозӣ нашуд. Баъдтар аз нав кӯшиш кунед")}};
+window.__shellP=(p,st)=>{if(wuStaff()||!WU.auto)return;
+ if(st==="ready"){WU.busy=false;WU.ready=true}else if(st==="err"){WU.busy=false;WU.auto=false;S.webDone=null;save()}};
 
 // ===== Админ: нашри нусхаи сайт ба корбарони APK =====
 async function webLatest(){try{const r=await fetch(SITE_URL+"version.json?nc="+Date.now(),{cache:"no-store"});if(!r.ok)return null;const j=await r.json();return j&&j.h||null}catch(_){return null}}
@@ -4227,22 +4184,11 @@ function admWebHTML(){const pub=(S.flags&&S.flags.webPub)||"",last=S.webLast||""
 function bindWebPub(){const b=document.querySelector("[data-webpub]");if(!b)return;
  b.onclick=async()=>{b.disabled=true;const h=await webLatest();if(!h){toast("Версияи сайт хонда нашуд");b.disabled=false;return}
   try{const c=await sbLoad();const{error}=await c.rpc("publish_web",{p_hash:h});if(error){toast("Иҷозат дода нашуд. Аввал SQL-и «веб»-ро иҷро кунед");b.disabled=false;return}
-   S.flags.webPub=h;S.webLast=h;save();render();toast("Нашр шуд: корбарон навсозиро мебинанд")}catch(_){toast("Интернет нест");b.disabled=false}}}/* ---- Навсозии APK: ойна аз поён, ҳар 5 дақиқа то навсозӣ нашавад; фоиз дар боло; тугмаи «Насб кардан» ----
-   Админ ва ёрдамчӣ охирин APK-и сохташударо худкор мебинанд; корбарони оддӣ — танҳо баъди «Нашр кардан». */
-const AU={busy:false,ready:false,last:0,every:5*60*1000};
+   S.flags.webPub=h;S.webLast=h;save();render();toast("Нашр шуд: корбарон навсозиро мебинанд")}catch(_){toast("Интернет нест");b.disabled=false}}}
+/* ---- Навсозии APK: пурра худкор — бе ойна, бе тугма, бе доира. Танҳо як хабари хурд: «Навсозӣ шуд».
+   Админ ва ёрдамчӣ охирин APK-и сохташударо худкор мебинанд; корбарони оддӣ — танҳо баъди «Нашр кардан». ---- */
+const AU={busy:false,ready:false};
 const apkNative=()=>{const A=window.KitobAndroid;return A&&A.downloadUpdate&&A.installUpdate&&!NATIVE.isPlay()?A:null};
-function apkNag(force){const A=apkNative();if(!A||!S.upd||AU.busy||AU.ready)return;if(S.view==="login")return;
- if(document.getElementById("aus")||document.getElementById("wus")||(typeof WU!=="undefined"&&WU.busy))return;
- if(!force&&Date.now()-AU.last<AU.every)return;AU.last=Date.now();apkSheet()}
-function apkSheet(){if(document.getElementById("aus"))return;const el=document.createElement("div");el.id="aus";el.className="wus";
- el.innerHTML=`<div class="wus-bg"></div><div class="wus-c"><i class="wus-h"></i><div class="wus-i">${P('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',2)}</div><h3>Навсозии барнома тайёр аст</h3><p>Версияи нави барнома омода шуд. Навсозӣ чанд сонияро мегирад. Дар вақти боргирӣ шумо метавонед хондани китобро давом диҳед.</p><button class="pay-btn" id="aus-go">Навсозӣ</button></div>`;
- document.body.appendChild(el);const c=el.querySelector(".wus-c"),bg=el.querySelector(".wus-bg");
- requestAnimationFrame(()=>el.classList.add("in"));
- const close=()=>{el.classList.remove("in");setTimeout(()=>el.remove(),380)};
- bg.onclick=close;document.getElementById("aus-go").onclick=()=>{close();apkStart()};
- let y0=null,dy=0;c.onpointerdown=e=>{if(e.target.closest("button"))return;y0=e.clientY;dy=0;try{c.setPointerCapture(e.pointerId)}catch(_){}c.style.transition="none"};
- c.onpointermove=e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);c.style.transform=`translateY(${dy}px)`};
- c.onpointerup=c.onpointercancel=()=>{if(y0===null)return;y0=null;c.style.transition="";if(dy>80)close();else c.style.transform=""}}
 /* ХУДКОР: APK паси замина фаро мешавад ва худ насб мешавад (Android 12+: бе савол; пештар/бори аввал: як зарби системавӣ). */
 function apkAuto(){const A=apkNative();if(!A||!S.upd||AU.busy||AU.ready||AU.installing||!navigator.onLine||S.view==="login")return;
  const k=S.upd.v,t=(S.apkTry&&S.apkTry.v===k)?S.apkTry:{v:k,n:0,t:0};if(t.n>=3&&Date.now()-t.t<6*3600*1000)return;
@@ -4254,21 +4200,15 @@ function apkInstallIdle(){const A=apkNative();if(!A||!AU.ready||AU.installing||S
  if(r==="perm"){AU.installing=false;S.permAsk=Date.now();save()}
  else if(r==="ok"){setTimeout(()=>{AU.installing=false},90000)}
  else{AU.installing=false;AU.ready=false}}
-function apkStart(){const A=apkNative();if(!A||!S.upd)return;AU.busy=true;S.updSt="down";S.updP=0;wuRing(0);try{A.downloadUpdate(S.upd.url)}catch(_){AU.busy=false;wuRingOff();toast("Навсозӣ нашуд")}}
-function apkInstallUI(){if(document.getElementById("aur"))return;const el=document.createElement("div");el.id="aur";el.className="wur";
- el.innerHTML=`<button class="pay-btn" id="aur-go">${P('<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',2)}Насб кардан</button>`;document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("in"));
- document.getElementById("aur-go").onclick=()=>{let r="err";try{r=apkNative().installUpdate()}catch(_){}
-  if(r==="perm")toast("Иҷозат диҳед («Насби барнома»), баъд боз «Насб кардан»-ро пахш кунед");
-  else if(r==="nofile"||r==="err"){toast("Файл ёфт нашуд. Аз нав кӯшиш кунед");el.remove();AU.ready=false;AU.busy=false}}}
-// ҷавоби Android: фоизи боргирӣ
-window.__upd=(p,st)=>{S.updSt=st;S.updP=p;
- if(AU.auto){if(st==="ready"){AU.busy=false;AU.ready=true;apkInstallIdle()}else if(st==="err"){AU.busy=false;AU.ready=false;AU.auto=false}return}
- if(st==="down"){AU.busy=true;wuRing(p)}
- else if(st==="ready"){AU.busy=false;AU.ready=true;wuRing(100,true);setTimeout(wuRingOff,1800);apkInstallUI()}
- else if(st==="err"){AU.busy=false;AU.ready=false;wuRingOff();toast("Боргирӣ нашуд. Интернетро санҷед");AU.last=0}};
-// санҷиши даврӣ: ҳатто дар вақти хондан; ҳангоми баргаштан ба барнома; бо ба поён кашидан
+// ҷавоби Android: фоизи боргирӣ (нишон дода намешавад)
+window.__upd=(p,st)=>{S.updSt=st;S.updP=p;if(!AU.auto)return;
+ if(st==="ready"){AU.busy=false;AU.ready=true;apkInstallIdle()}else if(st==="err"){AU.busy=false;AU.ready=false;AU.auto=false}};
+// баъди насби версияи нав (ё дар Android аз нав оғоз шудан): як хабари хурд
+setTimeout(()=>{try{const A=window.KitobAndroid;if(!A||!A.version)return;const v=String(A.version()),o=localStorage.getItem("kitob_apkv");localStorage.setItem("kitob_apkv",v);if(o&&o!==v&&typeof afterSplash==="function")afterSplash(()=>toast("Навсозӣ шуд"))}catch(_){}},0);
+// санҷиши даврӣ: ҳатто дар вақти хондан; ҳангоми баргаштан ба барнома
 setInterval(()=>{if(document.visibilityState!=="visible")return;try{checkUpdate().then(()=>{apkAuto();apkInstallIdle()})}catch(_){}},60*1000);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(()=>{try{checkUpdate().then(()=>{apkAuto();apkInstallIdle()})}catch(_){}},900)});/* ===== Забонҳо: тарҷумаи намуди барнома (китобҳо тағйир намеёбанд) ===== */
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(()=>{try{checkUpdate().then(()=>{apkAuto();apkInstallIdle()})}catch(_){}},900)});
+/* ===== Забонҳо: тарҷумаи намуди барнома (китобҳо тағйир намеёбанд) ===== */
 const LANGS=[["tg","Тоҷикӣ"],["ru","Русский"],["uz","Oʻzbekcha"],["en","English"]];
 const I18N=(()=>{
  const COL={ru:1,uz:2,en:3};
@@ -4398,8 +4338,8 @@ if(/[?&]doira\b/.test(location.search)&&S.role==="admin")cxEditOn();
   msg.style.opacity=0;setY(0,true);await wait(420);const t=tg();if(t)t.style.transition="";busy=false};
  addEventListener("touchend",end,{passive:true});addEventListener("touchcancel",end,{passive:true});
 })();
-try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Интерфейс нав шуд"))}}catch(_){}
-afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck();webUpdCheck();setTimeout(()=>{try{checkUpdate().then(()=>apkNag(true))}catch(_){}},1500)});
+try{if(sessionStorage.getItem("kitob_upd")){sessionStorage.removeItem("kitob_upd");afterSplash(()=>toast("Навсозӣ шуд"))}}catch(_){}
+afterSplash(()=>{checkShell(true);try{const A=window.KitobAndroid;if(A&&A.takeCrash){const cr=A.takeCrash();if(cr)logErr("native",cr.split("\n")[0],cr)}}catch(_){}flushErrs();flushReports();sendRead();trackActive();tryRef();checkMin();bkCheck();webUpdCheck();setTimeout(()=>{try{checkUpdate().then(()=>{apkAuto();apkInstallIdle()})}catch(_){}},1500)});
 afterSplash(checkUpdate);/* PWA (iPhone/Safari «Ба экрани асосӣ» ва офлайн): service worker фақат дар браузер, на дар APK */
 try{if("serviceWorker" in navigator&&!window.KitobAndroid&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}catch(_){}
 </script>
