@@ -27,12 +27,16 @@ const ARTS={};
 function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${escH(b.t)}</b><em>${escH(b.a)}</em></div>`}
 let CV_REF=0;
 function coverErr(im){const f=im.closest(".f-front");const b=f&&bk(+im.dataset.cb);if(!b)return;
+ const cp=im.dataset.cp;if(cp&&CVU[cp]&&im.getAttribute("src")!==CVU[cp]){im.src=CVU[cp];return} // нусхаи дар дастгоҳ нигоҳшуда
+ window.__cvErr=1;
  const au=f.querySelector(".au");f.innerHTML=coverFallback(b)+(au?au.outerHTML:"");
  // суроғаи имзошуда шояд кӯҳна шуда бошад: як бор нав мекунем
  if(!CV_REF){CV_REF=1;setTimeout(()=>{sbLoad().then(c=>c&&loadBooks(c)).then(()=>{if(S.view!=="read"&&!S.sheet)render()}).catch(()=>{})},800)}}
 function cover(b){
  const au=b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:"";
- const face=b.cover?`<img src="${escH(b.cover)}" alt="" data-cb="${b.id}" onerror="coverErr(this)">`:coverFallback(b);
+ const cu=(b.cp&&CVU[b.cp])||b.cover;
+ // зери расм ҳамеша муқоваи рангии худи китоб меистад (сиёҳ нест); расм баъди боршавӣ оҳиста пайдо мешавад
+ const face=cu?coverFallback(b)+`<img src="${escH(cu)}" alt="" data-cb="${b.id}" data-cp="${escH(b.cp||"")}" onload="this.classList.add('ld')" onerror="coverErr(this)">`:coverFallback(b);
  return `<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front">${face}${au}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`;
 }
 

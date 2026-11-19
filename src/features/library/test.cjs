@@ -38,3 +38,20 @@ module.exports=(prev=>async t=>{
  await P.waitForTimeout(1500);
  t.ok(await P.evaluate(()=>{const f=document.querySelector('[data-book="888"] .f-front');return !!f&&!f.querySelector('img')&&!!f.querySelector('.cv-t')}),'муқова кушода нашуд → нақшаи худкори китоб намоён мешавад');
 })(module.exports);
+
+// муқоваҳо: зери расм ранги китоб (сиёҳ не); як бор боргирӣ → дар хотираи дастгоҳ; бе интернет ҳам мемонад
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home'});
+ const png='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGD4DwABBAEAHz8m9QAAAABJRU5ErkJggg==';
+ await P.evaluate(u=>{BOOKS.push({id:931,t:'Бо муқова',a:'М',c:'fiction',col:['#0b7d57','#063'],cover:u,cp:'abc/931 cover.png',db:true});render()},png);
+ await P.waitForTimeout(300);
+ t.ok(await P.evaluate(()=>{const f=document.querySelector('[data-book="931"] .f-front');return !!f&&!!f.querySelector('svg')&&!!f.querySelector('img[data-cp]')}),'муқова: зери расм муқоваи рангии китоб ҳаст');
+ await P.evaluate(()=>cvStore());await P.waitForTimeout(600);
+ t.ok(await P.evaluate(()=>!!CVU['abc/931 cover.png']),'муқова як бор боргирӣ шуд ва дар хотира ҳаст');
+ t.ok(await P.evaluate(async()=>!!(await (await caches.open('kitob-covers')).match('https://kitob.local/cover/'+encodeURIComponent('abc/931 cover.png')))),'дар кэши доимӣ нигоҳ дошта шуд');
+ // суроғаи имзошуда кӯҳна шуд (хато) — аз нусхаи дастгоҳ мегирад
+ await P.evaluate(()=>{const b=bk(931);b.cover='https://x.invalid/old.png';render()});await P.waitForTimeout(400);
+ t.ok(await P.evaluate(()=>{const im=document.querySelector('[data-book="931"] img[data-cp]');return !!im&&im.getAttribute('src').startsWith('blob:')}),'бе суроғаи кор: муқова аз нусхаи дастгоҳ меояд');
+})(module.exports);
