@@ -928,6 +928,27 @@ html{overscroll-behavior-y:contain}
 .rd-gp.on{opacity:1;transform:translateY(-50%)}
 .rd-gp.fine:after{content:" · аниқ";font-size:13px;font-weight:700;color:#0b7d57;margin-left:6px}
 .rd.hq .rd-gl,.rd.hq .rd-gc,.rd.hq .rd-gp{display:none}
+/* Хонанда: зарб → тугмаҳо пайдо мешаванд, худ пинҳон мешаванд; хониши худкор; ҳарфи ду ангушт */
+.rd .rd-gl,.rd .rd-as,.rd .rd-asp{transition:opacity .35s ease,transform .18s}
+.rd:not(.ui) .rd-gl,.rd:not(.ui) .rd-as,.rd:not(.ui) .rd-asp{opacity:0;pointer-events:none}
+.rd-gl.open~.rd-as{opacity:0;pointer-events:none}
+.rd-as{position:absolute;z-index:6;right:78px;top:66%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;padding:0;display:grid;place-items:center;color:var(--pgink,#222);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);box-shadow:0 8px 26px rgba(0,0,0,.18),inset 0 1px 1px rgba(255,255,255,.95);-webkit-tap-highlight-color:transparent}
+.rd.dark .rd-as,.dk .rd-as{background:rgba(40,40,44,.55);border-color:rgba(255,255,255,.18);color:#fff}
+.rd-as .ico{width:24px;height:24px}
+.rd-as.run{color:#0b7d57;box-shadow:0 8px 26px rgba(11,125,87,.35),inset 0 1px 1px rgba(255,255,255,.95)}
+.rd-asp{position:absolute;z-index:7;right:12px;top:66%;transform:translateY(calc(-100% - 40px)) scale(.92);transform-origin:100% 100%;width:min(270px,calc(100% - 24px));padding:14px 16px 16px;border-radius:24px;display:flex;flex-direction:column;gap:10px;color:var(--pgink,#222);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.9);box-shadow:0 12px 36px rgba(0,0,0,.24);opacity:0;pointer-events:none}
+.rd.dark .rd-asp,.dk .rd-asp{background:rgba(40,40,44,.86);border-color:rgba(255,255,255,.18);color:#fff}
+.rd.ui .rd-asp.on{opacity:1;pointer-events:auto;transform:translateY(calc(-100% - 40px))}
+.rd-asp .asp-t{font-size:16px}
+.asp-r{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px}
+.asp-r output{font:800 20px/1 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#0b7d57}
+.rd-asp .rd-scr{width:100%}
+.asp-c{display:flex;gap:6px;flex-wrap:wrap}
+.asp-c button{flex:1;min-width:38px;padding:8px 0;border-radius:12px;border:1.5px solid rgba(0,0,0,.14);background:transparent;color:inherit;font-weight:700;font-size:13px}
+.asp-c button.on{background:#0b7d57;border-color:#0b7d57;color:#fff}
+.asp-go{width:100%;margin-top:2px}
+.rd-pz{position:absolute;z-index:9;left:50%;top:44%;transform:translate(-50%,-50%);padding:14px 26px;border-radius:22px;background:rgba(20,20,22,.78);color:#fff;font:800 34px/1 Inter,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none;transition:opacity .3s}
+.rd-pz.out{opacity:0}
 /* Бо Google ворид шудан */
 .or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mut,#8a8a8a);font-size:13px}
 .or:before,.or:after{content:"";flex:1;height:1px;background:currentColor;opacity:.25}
@@ -2035,7 +2056,10 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ба ҳамаи сабтномкардагон (хонанда ва нахонда) худкор меравад", "Автоматически идёт всем зарегистрированным (читающим и нет)", "Ro‘yxatdan o‘tgan hammaga (o‘qiyotgan va o‘qimagan) avtomatik boradi", "Sent automatically to every registered user (readers and non-readers)"],
 ["08:00 то 22:00, 8 маротиба дар рӯз (Android). Бо забони барнома", "С 08:00 до 22:00, 8 раз в день (Android). На языке приложения", "08:00 dan 22:00 gacha, kuniga 8 marta (Android). Ilova tilida", "08:00 to 22:00, 8 times a day (Android). In the app language"],
 ["Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.", "Удаление админа или его замена помощнику никогда недоступны.", "Admin‘ni o‘chirish yoki almashtirish yordamchi uchun hech qachon mumkin emas.", "A helper can never remove or replace the admin."],
-["· аниқ", "· точно", "· aniq", "· precise"]
+["· аниқ", "· точно", "· aniq", "· precise"],
+["Хониши худкор","Автопрокрутка","Avto-oʻqish","Auto-scroll"],
+["Оғоз кардан","Начать","Boshlash","Start"],
+["Китоб тамом шуд","Книга закончилась","Kitob tugadi","End of the book"]
 ]
 </script>
 <script>
@@ -2482,7 +2506,7 @@ function bind(){
  bindFeedback();
  bindWebPub();
  bindMake();
- setupReader();
+ setupReader();rdExtra();
  setupSheet();
  setupWheel();
  
@@ -2692,7 +2716,6 @@ function reader(){
 let RD=null,CAL=null;
 const EASE="cubic-bezier(.32,.72,0,1)";
 function cppEst(W,H){const fs=S.pref.fs,lh=S.pref.lh||1.6;return Math.max(300,Math.round((W-48)/(fs*.5)*((H-118)/(fs*lh))*.88))}
-function toggleUI(){S.rdUI=!S.rdUI;const r=document.querySelector(".rd");if(r)r.classList.toggle("ui",S.rdUI)}
 function payNow(){S.payId=S.rdId;S.sheet="pay";render()}
 function rdUpdate(b,ci,fr,frE){const R=RD,inf=rdInfo(b);let gf,gfE;
  if(inf.tc){const L=inf.tc[ci]._len,c0=inf.cum[ci];gf=(c0+fr*L)/inf.tot;gfE=(c0+frE*L)/inf.tot}else{gf=fr;gfE=frE}
@@ -2846,8 +2869,8 @@ function setupReader(){
   if(d>0){setTop(p0+1,(1-pr)*W,0);placeBase(p0,-pr*.24*W);dim(pr*.3)}
   else{setTop(p0,pr*W,0);placeBase(p0-1,-(1-pr)*.24*W);dim((1-pr)*.3)}};
  const unprep=()=>{hideTop();dim(0);placeBase(P0(),0)};
- v.onpointerdown=e=>{if(RD.busy||S.sheet||e.button>0)return;g={x0:e.clientX,y0:e.clientY,t:performance.now(),dx:0,dir:0,lock:"",vx:0,p:0,lx:e.clientX,lt:performance.now()};try{v.setPointerCapture(e.pointerId)}catch(_){}};
- v.onpointermove=e=>{if(!g)return;const dx=e.clientX-g.x0,dy=e.clientY-g.y0,now=performance.now();
+ v.onpointerdown=e=>{if(RD.busy||S.sheet||e.button>0||Date.now()-(window.__pz||0)<500)return;g={x0:e.clientX,y0:e.clientY,t:performance.now(),dx:0,dir:0,lock:"",vx:0,p:0,lx:e.clientX,lt:performance.now()};try{v.setPointerCapture(e.pointerId)}catch(_){}};
+ v.onpointermove=e=>{if(!g||Date.now()-(window.__pz||0)<500)return;const dx=e.clientX-g.x0,dy=e.clientY-g.y0,now=performance.now();
   g.vx=.7*g.vx+.3*((e.clientX-g.lx)/Math.max(1,now-g.lt));g.lx=e.clientX;g.lt=now;g.dx=dx;
   if(!g.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;g.lock=Math.abs(dx)>=Math.abs(dy)*1.2?"h":"v"}
   if(g.lock!=="h")return;
@@ -2857,7 +2880,7 @@ function setupReader(){
    if(canGo(d,false)){g.dir=d;prep(d)}else{g.dir=2;g.side=d}}
   if(g.dir===1||g.dir===-1){g.p=RES(Math.min(1,Math.abs(dx)/(W*.95)));frame(g.dir,g.p)}
   else if(g.dir===2)RD.f.style.transform=`translateX(${-P0()*W+dx*.18}px)`};
- v.onpointerup=v.onpointercancel=e=>{if(!g)return;const G0=g;g=null;
+ v.onpointerup=v.onpointercancel=e=>{if(!g)return;const G0=g;g=null;if(Date.now()-(window.__pz||0)<500){try{unprep()}catch(_){}return}
   if(!G0.lock){if(e.type==="pointerup"&&performance.now()-G0.t<400)toggleUI();return} // зарб задан: танҳо панелро нишон/пинҳон мекунад, саҳифа намегардад
   if(G0.lock!=="h"||!G0.dir)return;
   if(G0.dir===2){RD.f.style.transition=`transform .35s ${EASE}`;placeBase(P0());setTimeout(()=>RD&&(RD.f.style.transition="none"),360);canGo(G0.dx<0?1:-1,true);return}
@@ -2889,7 +2912,7 @@ function setupVert(){
    if(v.scrollTop<H*1.2&&R.lo>0){R.lo--;const h0=v.scrollHeight,t0=v.scrollTop;f.insertAdjacentHTML("afterbegin",sec(R.lo));v.scrollTop=t0+(v.scrollHeight-h0)}}
   clearTimeout(sv);sv=setTimeout(save,800)};
  v.onscroll=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if(RD===R)upd()})};
- v.onclick=e=>{if(e.target.closest("button,a"))return;const sl=window.getSelection&&String(window.getSelection());if(sl)return;toggleUI()};
+ v.onclick=e=>{if(Date.now()-(window.__pz||0)<500||e.target.closest("button,a"))return;const sl=window.getSelection&&String(window.getSelection());if(sl)return;toggleUI()};
  R.M=0;upd();bindScr();
 }
 function finishTurn(d,from,done,speed){
@@ -2967,6 +2990,81 @@ SHEETS.rds=X=>{let h="";{
   h=`<div class="sh-head"><b class="sh-t">Ҷустуҷӯ дар китоб</b>${X}</div>
   <label class="rds-in" for="rdsq">${P(I.search,2)}<input id="rdsq" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Калима ё ҳарфҳоро нависед…" value="${escH(RQT)}"></label>
   <p class="rds-cnt" id="rdscnt"></p><div class="rds-res" id="rdsres"></div>`};return h};
+/* ===== Хонанда: (1) кашидани ду ангушт — андозаи ҳарф; (2) хониши худкор (танҳо ҳолати вертикалӣ); (3) зарб — ҳамаи тугмаҳо пайдо мешаванд, баъди 15 сония худ пинҳон ===== */
+const UI_HIDE_MS=15000,FS_STEPS=[13,16,19,22,25,28]; // FS_STEPS — ҳамон қадамҳои слайдери «Андозаи ҳарф»
+let UIT=0;
+const AS={on:false,panel:false,hold:0,loop:0,acc:0,t:0,idle:0,v:null};
+if(!(S.asv>0))S.asv=1;
+/* ---- (3) панели UI: баъди 15 сония худ пинҳон мешавад ---- */
+function uiKeep(){clearTimeout(UIT);if(!S.rdUI||S.view!=="read")return;
+ UIT=setTimeout(()=>{
+  const sc=document.getElementById("rdscr");
+  if(S.view!=="read"||!S.rdUI)return;
+  if(S.sheet||AS.panel||(sc&&sc.dataset.drag)||document.querySelector(".rd-gc.on")){uiKeep();return} // ҳоло корбар бо чизе машғул аст
+  S.rdUI=false;const r=document.querySelector(".rd");if(r)r.classList.remove("ui")},UI_HIDE_MS)}
+function toggleUI(){S.rdUI=!S.rdUI;const r=document.querySelector(".rd");if(r)r.classList.toggle("ui",S.rdUI);if(!S.rdUI)asPanel(false);uiKeep()}
+/* ---- (1) кашидани ду ангушт: андозаи ҳарф ---- */
+function pzSnap(x){let b=FS_STEPS[0];for(const s of FS_STEPS)if(Math.abs(s-x)<Math.abs(b-x))b=s;return b}
+function rdPinch(v){if(v.__pz)return;v.__pz=1;
+ let d0=0,fs0=0,cur=0,on=false,fr0=null,ci0=0,bub=null;
+ const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+ const mark=()=>{window.__pz=Date.now()};
+ v.addEventListener("touchstart",e=>{if(e.touches.length===2&&!S.sheet){on=true;mark();d0=Math.max(10,dist(e.touches));fs0=cur=S.pref.fs;const id=S.rdId;fr0=S.rdFr[id];ci0=S.rdCh[id]}},{passive:true});
+ v.addEventListener("touchmove",e=>{if(!on||e.touches.length<2)return;e.preventDefault();mark();
+  const f=pzSnap(Math.max(FS_STEPS[0],Math.min(FS_STEPS[FS_STEPS.length-1],fs0*dist(e.touches)/d0)));
+  if(!bub){const r=document.querySelector(".rd");if(r){bub=document.createElement("div");bub.className="rd-pz";r.appendChild(bub)}}
+  if(bub)bub.textContent=f;
+  if(f!==cur){cur=f;tick();const r=document.querySelector(".rd");if(r)r.style.setProperty("--fs",f+"px")}},{passive:false});
+ const end=()=>{if(!on)return;on=false;mark();if(bub){const x=bub;bub=null;x.classList.add("out");setTimeout(()=>x.remove(),300)}
+  if(cur!==fs0){const id=S.rdId;S.pref.fs=cur;if(fr0!=null){S.rdFr[id]=fr0;S.rdCh[id]=ci0}save();render()}};
+ v.addEventListener("touchend",e=>{if(e.touches.length<2)end()});v.addEventListener("touchcancel",end);
+ // iPhone Safari: ўзи масштаби саҳифаро иваз накунад
+ ["gesturestart","gesturechange"].forEach(n=>v.addEventListener(n,e=>e.preventDefault()))}
+/* ---- (2) хониши худкор (танҳо вертикалӣ: ҳолати «Аз боло ба поён») ---- */
+const AS_SPEEDS=[.3,.5,1,1.5,2,3],AS_PX=34; // 1× ≈ 34 px/сония
+const asSpd=()=>Math.max(.1,Math.min(5,+S.asv||1));
+function asHTML(){return `<button class="rd-as" id="rdas" aria-label="Хониши худкор">${P('<path d="M12 4v13M6 12l6 6 6-6M5 21h14"/>',2.2)}</button>
+ <div class="rd-asp" id="rdasp" aria-hidden="true"><b class="asp-t">Хониши худкор</b>
+  <div class="asp-r"><span>Суръат</span><output id="asv" translate="no">${asSpd().toFixed(1)}×</output></div>
+  <input type="range" class="rd-scr" id="asr" min="1" max="50" step="1" value="${Math.round(asSpd()*10)}" style="--p:${(Math.round(asSpd()*10)-1)/49*100}%" aria-label="Суръат">
+  <div class="asp-c">${AS_SPEEDS.map(x=>`<button data-asv="${x}" translate="no"${Math.abs(x-asSpd())<.05?' class="on"':""}>${x}×</button>`).join("")}</div>
+  <button class="pay-btn asp-go" id="asgo">Оғоз кардан</button></div>`}
+function asPanel(on){AS.panel=on;const p=document.getElementById("rdasp");if(p){p.classList.toggle("on",on);p.setAttribute("aria-hidden",on?"false":"true")}if(on)uiKeep()}
+function asLabel(){const g=document.getElementById("asgo");if(g)g.textContent=AS.on?"Қатъ кардан":"Оғоз кардан";
+ const b=document.getElementById("rdas");if(b){b.classList.toggle("run",AS.on);b.innerHTML=P(AS.on?'<path d="M8 5v14M16 5v14"/>':'<path d="M12 4v13M6 12l6 6 6-6M5 21h14"/>',2.2)}}
+function asStop(){AS.on=false;cancelAnimationFrame(AS.loop);AS.loop=0;asLabel()}
+function asStart(){const v=document.getElementById("rdview");if(!v||!(RD&&RD.vert))return;
+ AS.on=true;AS.v=v;AS.acc=0;AS.t=performance.now();AS.idle=0;asLabel();asPanel(false);
+ S.rdUI=false;const r=document.querySelector(".rd");if(r)r.classList.remove("ui"); // фақат китоб монад
+ cancelAnimationFrame(AS.loop);AS.loop=requestAnimationFrame(asStep)}
+function asStep(t){if(!AS.on)return;const v=document.getElementById("rdview");
+ if(S.view!=="read"||v!==AS.v||!RD||!RD.vert||document.visibilityState!=="visible"){asStop();return}
+ const dt=Math.min(.05,(t-AS.t)/1000||0);AS.t=t;
+ if(Date.now()>AS.hold&&!S.sheet){AS.acc+=asSpd()*AS_PX*dt;const n=Math.floor(AS.acc);
+  if(n>=1){AS.acc-=n;const y=v.scrollTop;v.scrollTop=y+n;
+   if(Math.abs(v.scrollTop-y)<1){if(++AS.idle>90){asStop();toast("Китоб тамом шуд");return}}else AS.idle=0}}
+ AS.loop=requestAnimationFrame(asStep)}
+function rdAS(r,v){const vert=!!(RD&&RD.vert);
+ if(!vert){asStop();return}
+ if(!document.getElementById("rdas")){const gl=document.getElementById("rdgl");if(!gl)return;gl.insertAdjacentHTML("afterend",asHTML())}
+ asLabel();
+ const bt=document.getElementById("rdas"),pn=document.getElementById("rdasp"),sr=document.getElementById("asr"),sv=document.getElementById("asv");
+ const setV=x=>{S.asv=Math.round(Math.max(.1,Math.min(5,x))*10)/10;if(sv)sv.textContent=S.asv.toFixed(1)+"×";if(sr){sr.value=Math.round(S.asv*10);sr.style.setProperty("--p",(Math.round(S.asv*10)-1)/49*100+"%")}
+  pn.querySelectorAll("[data-asv]").forEach(b=>b.classList.toggle("on",Math.abs(+b.dataset.asv-S.asv)<.05));uiKeep()};
+ bt.onclick=()=>{if(AS.on){asStop();return}asPanel(!AS.panel)};
+ sr.oninput=()=>setV(+sr.value/10);sr.onchange=()=>save();
+ pn.querySelectorAll("[data-asv]").forEach(b=>b.onclick=()=>{setV(+b.dataset.asv);save()});
+ document.getElementById("asgo").onclick=()=>{if(AS.on)asStop();else{save();asStart()}};
+ pn.addEventListener("pointerdown",e=>e.stopPropagation());
+ // ангушт ба экран расад — хониши худкор лаҳзае меистад (то корбар худаш гардонад) ва сипас давом мекунад
+ if(!v.__as){v.__as=1;const h=()=>{AS.hold=Date.now()+900};["touchstart","touchmove","touchend","wheel"].forEach(n=>v.addEventListener(n,h,{passive:true}))}
+ if(AS.panel){pn.classList.add("on")}}
+/* ---- пайвастшавӣ: баъди ҳар render()-и хонанда ---- */
+function rdExtra(){if(S.view!=="read"){asStop();clearTimeout(UIT);return}
+ const r=document.querySelector(".rd"),v=document.getElementById("rdview");if(!r||!v)return;
+ rdPinch(v);
+ if(!r.__ui){r.__ui=1;r.addEventListener("pointerdown",()=>uiKeep(),true)}
+ rdAS(r,v);uiKeep()}
 const PLAY=FILL('<path d="M7 4.5v15l12.5-7.5z"/>'),PAUSE=FILL('<rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/>');
 const B10=P('<path d="M4.5 12a7.5 7.5 0 107.5-7.5H8.5"/><path d="M11 1.5L8 4.5l3 3"/><text x="12.2" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
 const F10=P('<path d="M19.5 12A7.5 7.5 0 1112 4.5h3.5"/><path d="M13 1.5l3 3-3 3"/><text x="11.8" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
@@ -4158,7 +4256,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="63c3377b78";
+const WEB_H="87d78a9c78";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

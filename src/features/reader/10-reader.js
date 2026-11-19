@@ -27,7 +27,6 @@ function reader(){
 let RD=null,CAL=null;
 const EASE="cubic-bezier(.32,.72,0,1)";
 function cppEst(W,H){const fs=S.pref.fs,lh=S.pref.lh||1.6;return Math.max(300,Math.round((W-48)/(fs*.5)*((H-118)/(fs*lh))*.88))}
-function toggleUI(){S.rdUI=!S.rdUI;const r=document.querySelector(".rd");if(r)r.classList.toggle("ui",S.rdUI)}
 function payNow(){S.payId=S.rdId;S.sheet="pay";render()}
 function rdUpdate(b,ci,fr,frE){const R=RD,inf=rdInfo(b);let gf,gfE;
  if(inf.tc){const L=inf.tc[ci]._len,c0=inf.cum[ci];gf=(c0+fr*L)/inf.tot;gfE=(c0+frE*L)/inf.tot}else{gf=fr;gfE=frE}
@@ -181,8 +180,8 @@ function setupReader(){
   if(d>0){setTop(p0+1,(1-pr)*W,0);placeBase(p0,-pr*.24*W);dim(pr*.3)}
   else{setTop(p0,pr*W,0);placeBase(p0-1,-(1-pr)*.24*W);dim((1-pr)*.3)}};
  const unprep=()=>{hideTop();dim(0);placeBase(P0(),0)};
- v.onpointerdown=e=>{if(RD.busy||S.sheet||e.button>0)return;g={x0:e.clientX,y0:e.clientY,t:performance.now(),dx:0,dir:0,lock:"",vx:0,p:0,lx:e.clientX,lt:performance.now()};try{v.setPointerCapture(e.pointerId)}catch(_){}};
- v.onpointermove=e=>{if(!g)return;const dx=e.clientX-g.x0,dy=e.clientY-g.y0,now=performance.now();
+ v.onpointerdown=e=>{if(RD.busy||S.sheet||e.button>0||Date.now()-(window.__pz||0)<500)return;g={x0:e.clientX,y0:e.clientY,t:performance.now(),dx:0,dir:0,lock:"",vx:0,p:0,lx:e.clientX,lt:performance.now()};try{v.setPointerCapture(e.pointerId)}catch(_){}};
+ v.onpointermove=e=>{if(!g||Date.now()-(window.__pz||0)<500)return;const dx=e.clientX-g.x0,dy=e.clientY-g.y0,now=performance.now();
   g.vx=.7*g.vx+.3*((e.clientX-g.lx)/Math.max(1,now-g.lt));g.lx=e.clientX;g.lt=now;g.dx=dx;
   if(!g.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;g.lock=Math.abs(dx)>=Math.abs(dy)*1.2?"h":"v"}
   if(g.lock!=="h")return;
@@ -192,7 +191,7 @@ function setupReader(){
    if(canGo(d,false)){g.dir=d;prep(d)}else{g.dir=2;g.side=d}}
   if(g.dir===1||g.dir===-1){g.p=RES(Math.min(1,Math.abs(dx)/(W*.95)));frame(g.dir,g.p)}
   else if(g.dir===2)RD.f.style.transform=`translateX(${-P0()*W+dx*.18}px)`};
- v.onpointerup=v.onpointercancel=e=>{if(!g)return;const G0=g;g=null;
+ v.onpointerup=v.onpointercancel=e=>{if(!g)return;const G0=g;g=null;if(Date.now()-(window.__pz||0)<500){try{unprep()}catch(_){}return}
   if(!G0.lock){if(e.type==="pointerup"&&performance.now()-G0.t<400)toggleUI();return} // зарб задан: танҳо панелро нишон/пинҳон мекунад, саҳифа намегардад
   if(G0.lock!=="h"||!G0.dir)return;
   if(G0.dir===2){RD.f.style.transition=`transform .35s ${EASE}`;placeBase(P0());setTimeout(()=>RD&&(RD.f.style.transition="none"),360);canGo(G0.dx<0?1:-1,true);return}
@@ -224,7 +223,7 @@ function setupVert(){
    if(v.scrollTop<H*1.2&&R.lo>0){R.lo--;const h0=v.scrollHeight,t0=v.scrollTop;f.insertAdjacentHTML("afterbegin",sec(R.lo));v.scrollTop=t0+(v.scrollHeight-h0)}}
   clearTimeout(sv);sv=setTimeout(save,800)};
  v.onscroll=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if(RD===R)upd()})};
- v.onclick=e=>{if(e.target.closest("button,a"))return;const sl=window.getSelection&&String(window.getSelection());if(sl)return;toggleUI()};
+ v.onclick=e=>{if(Date.now()-(window.__pz||0)<500||e.target.closest("button,a"))return;const sl=window.getSelection&&String(window.getSelection());if(sl)return;toggleUI()};
  R.M=0;upd();bindScr();
 }
 function finishTurn(d,from,done,speed){

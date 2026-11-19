@@ -120,7 +120,7 @@ function bind(){
  bindFeedback();
  bindWebPub();
  bindMake();
- setupReader();
+ setupReader();rdExtra();
  setupSheet();
  setupWheel();
  

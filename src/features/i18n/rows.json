@@ -701,5 +701,8 @@
 ["Ба ҳамаи сабтномкардагон (хонанда ва нахонда) худкор меравад", "Автоматически идёт всем зарегистрированным (читающим и нет)", "Ro‘yxatdan o‘tgan hammaga (o‘qiyotgan va o‘qimagan) avtomatik boradi", "Sent automatically to every registered user (readers and non-readers)"],
 ["08:00 то 22:00, 8 маротиба дар рӯз (Android). Бо забони барнома", "С 08:00 до 22:00, 8 раз в день (Android). На языке приложения", "08:00 dan 22:00 gacha, kuniga 8 marta (Android). Ilova tilida", "08:00 to 22:00, 8 times a day (Android). In the app language"],
 ["Нест кардани админ ё ивази ӯ барои ёрдамчӣ ҳеҷ гоҳ имконнопазир аст.", "Удаление админа или его замена помощнику никогда недоступны.", "Admin‘ni o‘chirish yoki almashtirish yordamchi uchun hech qachon mumkin emas.", "A helper can never remove or replace the admin."],
-["· аниқ", "· точно", "· aniq", "· precise"]
+["· аниқ", "· точно", "· aniq", "· precise"],
+["Хониши худкор","Автопрокрутка","Avto-oʻqish","Auto-scroll"],
+["Оғоз кардан","Начать","Boshlash","Start"],
+["Китоб тамом шуд","Книга закончилась","Kitob tugadi","End of the book"]
 ]
