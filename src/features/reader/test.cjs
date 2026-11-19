@@ -18,7 +18,7 @@ module.exports=(prev=>async t=>{
  await P.evaluate(()=>{const w="китоб ҳаёт модар кӯдакӣ деҳа замон дарё мактаб устод нон об".split(" ");const chs=[];
   for(let c=0;c<80;c++){const bl=[];for(let i=0;i<30;i++){let s="";for(let k=0;k<60;k++)s+=w[(c*7+i*3+k*5)%w.length]+" ";bl.push(["p",s.trim()+"."])}chs.push({title:"Боби "+(c+1),blocks:bl})}
   BOOKS.push({id:778,t:"Калон",a:"М",c:"fiction",col:["#1f4f7a","#123352"],tp:"x"});TX[778]={parts:[{title:"Қисми якум",chapters:chs}]};openBook0(778)});
- await P.waitForTimeout(1500);await P.evaluate(()=>{S.rdUI=true;render()});await P.waitForTimeout(800);
+ await P.waitForTimeout(1500);await P.evaluate(()=>{window.__noDock=1;S.rdUI=true;render();dockSet(false)});await P.waitForTimeout(800);
  t.ok(await P.evaluate(()=>RD.M>500),'китоби калон: саҳифаҳо зиёд (>500)');
  // думалоқи шиша: ҳаст, рақами саҳифа дорад, слайдери кӯҳна пинҳон
  t.ok(await P.evaluate(()=>{const g=document.getElementById('rdgl'),w=document.querySelector('.rd-sw');return !!g&&getComputedStyle(g).display!=='none'&&/^\d+$/.test(document.getElementById('rdgln').textContent)&&getComputedStyle(w).display==='none'}),'думалоқи шиша бо рақами саҳифа; слайдери кӯҳна пинҳон');
@@ -85,4 +85,19 @@ module.exports=(prev=>async t=>{
  await P.waitForTimeout(500);
  t.ok(await P.evaluate(()=>S.pref.fs)<fs1,'ду ангушт ёзидан: ҳарф хурд шуд');
  await P.evaluate(()=>{S.pref.dir='h';save();render()});
+})(module.exports);
+
+// тугмаҳои канор: 2 сония баъд «медароянд», ламс — бармеоянд
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await P.evaluate(()=>{window.__noDock=0;S.pref.dir='v';S.rdUI=false;render()});await P.waitForTimeout(700);
+ await P.evaluate(()=>toggleUI());await P.waitForTimeout(900);
+ t.ok(await P.evaluate(()=>!document.querySelector('.rd').classList.contains('dock')&&document.getElementById('rdgl').getBoundingClientRect().left<innerWidth-40),'зарб: тугмаҳо бонс-барояд');
+ await P.waitForTimeout(2300);
+ t.ok(await P.evaluate(()=>document.querySelector('.rd').classList.contains('dock')),'2 сония баъд: тугмаҳо ба канор даромаданд');
+ t.ok(await P.evaluate(()=>{const e=document.getElementById('rdgl').getBoundingClientRect();return e.left>=innerWidth-12}),'дар канор ялпоқ: матнро намепӯшонад');
+ await P.evaluate(()=>toggleUI());await P.waitForTimeout(800);
+ t.ok(await P.evaluate(()=>!document.querySelector('.rd').classList.contains('dock')&&S.rdUI),'ламс: тугмаҳо боз баромаданд (UI пинҳон нашуд)');
+ await P.evaluate(()=>{window.__noDock=1;S.pref.dir='h';save();render()});
 })(module.exports);

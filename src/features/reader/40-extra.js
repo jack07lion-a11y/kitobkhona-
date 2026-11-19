@@ -9,8 +9,19 @@ function uiKeep(){clearTimeout(UIT);if(!S.rdUI||S.view!=="read")return;
   const sc=document.getElementById("rdscr");
   if(S.view!=="read"||!S.rdUI)return;
   if(S.sheet||AS.panel||(sc&&sc.dataset.drag)||document.querySelector(".rd-gc.on")){uiKeep();return} // ҳоло корбар бо чизе машғул аст
-  S.rdUI=false;const r=document.querySelector(".rd");if(r)r.classList.remove("ui")},UI_HIDE_MS)}
-function toggleUI(){S.rdUI=!S.rdUI;const r=document.querySelector(".rd");if(r)r.classList.toggle("ui",S.rdUI);if(!S.rdUI)asPanel(false);uiKeep()}
+  S.rdUI=false;const r=document.querySelector(".rd");if(r){r.classList.remove("ui");r.classList.add("dock")}},UI_HIDE_MS)}
+/* тугмаҳои канор («гардонка» ва «хониши худкор»): баъди 2 сония ба канори рост «медароянд» (ялпоқ, матнро намепӯшонанд); ламс — бо бонс бармеоянд */
+const DOCK_MS=2000;let DKT=0;
+function dockSet(on){const r=document.querySelector(".rd");if(r)r.classList.toggle("dock",on)}
+function dockKeep(){clearTimeout(DKT);if(!S.rdUI||S.view!=="read"||window.__noDock)return;
+ DKT=setTimeout(()=>{const sc=document.getElementById("rdscr");
+  if(S.view!=="read"||!S.rdUI)return;
+  if(S.sheet||AS.panel||(sc&&sc.dataset.drag)||document.querySelector(".rd-gc.on")){dockKeep();return}
+  dockSet(true)},DOCK_MS)}
+function toggleUI(){const r=document.querySelector(".rd");
+ if(S.rdUI&&r&&r.classList.contains("dock")){dockSet(false);dockKeep();uiKeep();return} // тугмаҳо канор буданд: ламс — бармеоянд
+ S.rdUI=!S.rdUI;if(r)r.classList.toggle("ui",S.rdUI);
+ if(S.rdUI){dockSet(false);dockKeep()}else{asPanel(false);dockSet(true)}uiKeep()}
 /* ---- (1) кашидани ду ангушт: андозаи ҳарф ---- */
 function pzSnap(x){let b=FS_STEPS[0];for(const s of FS_STEPS)if(Math.abs(s-x)<Math.abs(b-x))b=s;return b}
 function rdPinch(v){if(v.__pz)return;v.__pz=1;
@@ -37,13 +48,13 @@ function asHTML(){return `<button class="rd-as" id="rdas" aria-label="Хониш
   <input type="range" class="rd-scr" id="asr" min="1" max="50" step="1" value="${Math.round(asSpd()*10)}" style="--p:${(Math.round(asSpd()*10)-1)/49*100}%" aria-label="Суръат">
   <div class="asp-c">${AS_SPEEDS.map(x=>`<button data-asv="${x}" translate="no"${Math.abs(x-asSpd())<.05?' class="on"':""}>${x}×</button>`).join("")}</div>
   <button class="pay-btn asp-go" id="asgo">Оғоз кардан</button></div>`}
-function asPanel(on){AS.panel=on;const p=document.getElementById("rdasp");if(p){p.classList.toggle("on",on);p.setAttribute("aria-hidden",on?"false":"true")}if(on)uiKeep()}
+function asPanel(on){AS.panel=on;const p=document.getElementById("rdasp");if(p){p.classList.toggle("on",on);p.setAttribute("aria-hidden",on?"false":"true")}if(on){uiKeep();dockSet(false)}else dockKeep()}
 function asLabel(){const g=document.getElementById("asgo");if(g)g.textContent=AS.on?"Қатъ кардан":"Оғоз кардан";
  const b=document.getElementById("rdas");if(b){b.classList.toggle("run",AS.on);b.innerHTML=P(AS.on?'<path d="M8 5v14M16 5v14"/>':'<path d="M12 4v13M6 12l6 6 6-6M5 21h14"/>',2.2)}}
 function asStop(){AS.on=false;cancelAnimationFrame(AS.loop);AS.loop=0;asLabel()}
 function asStart(){const v=document.getElementById("rdview");if(!v||!(RD&&RD.vert))return;
  AS.on=true;AS.v=v;AS.acc=0;AS.t=performance.now();AS.idle=0;asLabel();asPanel(false);
- S.rdUI=false;const r=document.querySelector(".rd");if(r)r.classList.remove("ui"); // фақат китоб монад
+ S.rdUI=false;const r=document.querySelector(".rd");if(r){r.classList.remove("ui");r.classList.add("dock")} // фақат китоб монад
  cancelAnimationFrame(AS.loop);AS.loop=requestAnimationFrame(asStep)}
 function asStep(t){if(!AS.on)return;const v=document.getElementById("rdview");
  if(S.view!=="read"||v!==AS.v||!RD||!RD.vert||document.visibilityState!=="visible"){asStop();return}
@@ -71,5 +82,6 @@ function rdAS(r,v){const vert=!!(RD&&RD.vert);
 function rdExtra(){if(S.view!=="read"){asStop();clearTimeout(UIT);return}
  const r=document.querySelector(".rd"),v=document.getElementById("rdview");if(!r||!v)return;
  rdPinch(v);
- if(!r.__ui){r.__ui=1;r.addEventListener("pointerdown",()=>uiKeep(),true)}
- rdAS(r,v);uiKeep()}
+ if(!r.__ui){r.__ui=1;r.addEventListener("pointerdown",e=>{uiKeep();if(e.target.closest&&e.target.closest(".rd-gl,.rd-gc,.rd-as,.rd-asp"))dockKeep()},true)}
+ if(!S.rdUI)r.classList.add("dock");
+ rdAS(r,v);uiKeep();dockKeep()}

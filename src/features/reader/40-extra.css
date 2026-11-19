@@ -19,3 +19,11 @@
 .asp-go{width:100%;margin-top:2px}
 .rd-pz{position:absolute;z-index:9;left:50%;top:44%;transform:translate(-50%,-50%);padding:14px 26px;border-radius:22px;background:rgba(20,20,22,.78);color:#fff;font:800 34px/1 Inter,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none;transition:opacity .3s}
 .rd-pz.out{opacity:0}
+/* тугмаҳои канор: «дарояд» (ялпоқ, дар канори рост) ва бонс-барояд */
+.rd .rd-gl,.rd .rd-as{transition:opacity .3s ease,transform .6s cubic-bezier(.34,1.7,.5,1)}
+.rd .rd-as{transition-delay:0s,.07s}
+.rd.dock .rd-gl,.rd.dock .rd-as{transition:opacity .3s ease,transform .38s cubic-bezier(.5,0,.75,0);pointer-events:none}
+.rd.dock .rd-gl{transform:translate(58px,-50%) scale(.7,1)}
+.rd.dock .rd-as{transform:translate(124px,calc(-50% - 64px)) scale(.7,1)}
+.rd.dock .rd-gl,.rd.dock .rd-as{transform-origin:100% 50%}
+@media (prefers-reduced-motion:reduce){.rd .rd-gl,.rd .rd-as{transition:opacity .2s}}
