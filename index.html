@@ -902,6 +902,10 @@ html{overscroll-behavior-y:contain}
 @keyframes ptrs{to{transform:rotate(360deg)}}
 .ptr-m{position:absolute;left:18px;right:18px;top:calc(env(safe-area-inset-top,0px) + 26px);text-align:center;font:800 14px var(--font);color:var(--ink);opacity:0;transition:opacity .25s}
 @media (prefers-reduced-motion:reduce){.ptr.spin .ptr-r{animation-duration:1.7s}}
+/* муқова: расм оҳиста пайдо мешавад, зери он муқоваи рангии китоб (сиёҳ не) */
+.b3d .f-front img{opacity:0;transition:opacity .35s ease}
+.b3d .f-front img.ld{opacity:1}
+@media (prefers-reduced-motion:reduce){.b3d .f-front img{transition:none}}
 /* Китоб: ўлчови катта ҳангоми сурилиш */
 .rd-scr.big{touch-action:none;-webkit-tap-highlight-color:transparent}
 .rd-zb{position:absolute;bottom:100%;transform:translateX(-50%);margin-bottom:4px;padding:8px 16px;border-radius:14px;background:var(--orange,#0b7d57);color:#fff;font-weight:800;font-size:22px;letter-spacing:.3px;box-shadow:0 6px 18px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
@@ -2136,8 +2140,8 @@ async function loadBooks(c){try{const{data,error}=await c.from("books").select("
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,2592000);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}
   // ҳар муқовае, ки дар рӯйхати умумӣ наомад, алоҳида меомӯзем (як хато ҳамаро вайрон накунад)
   for(const pth of cp.filter(x=>!urls[x]).slice(0,40)){try{const{data:u1}=await c.storage.from("books").createSignedUrl(pth,2592000);if(u1&&u1.signedUrl)urls[pth]=u1.signedUrl}catch(_){}}}
- BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cover:urls[r.cover_path]||"",cvMiss:!!(r.cover_path&&!urls[r.cover_path]),rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
-S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();
+ BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cp:r.cover_path||"",cover:urls[r.cover_path]||"",cvMiss:!!(r.cover_path&&!urls[r.cover_path]),rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
+S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();try{cvStore()}catch(_){}
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
  const{data}=await c.from("profiles").select("role").eq("id",u.id).maybeSingle();S.role=data?.role==="admin"?"admin":data?.role==="subadmin"?"subadmin":""}catch(_){}}
@@ -2580,12 +2584,16 @@ const ARTS={};
 function coverFallback(b){return `<svg viewBox="0 0 100 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(ARTS[b.id]||(()=>A.bg(b.id,b.col[0],b.col[1])))("c"+b.id)}</svg><div class="cv-t"><b>${escH(b.t)}</b><em>${escH(b.a)}</em></div>`}
 let CV_REF=0;
 function coverErr(im){const f=im.closest(".f-front");const b=f&&bk(+im.dataset.cb);if(!b)return;
+ const cp=im.dataset.cp;if(cp&&CVU[cp]&&im.getAttribute("src")!==CVU[cp]){im.src=CVU[cp];return} // нусхаи дар дастгоҳ нигоҳшуда
+ window.__cvErr=1;
  const au=f.querySelector(".au");f.innerHTML=coverFallback(b)+(au?au.outerHTML:"");
  // суроғаи имзошуда шояд кӯҳна шуда бошад: як бор нав мекунем
  if(!CV_REF){CV_REF=1;setTimeout(()=>{sbLoad().then(c=>c&&loadBooks(c)).then(()=>{if(S.view!=="read"&&!S.sheet)render()}).catch(()=>{})},800)}}
 function cover(b){
  const au=b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:"";
- const face=b.cover?`<img src="${escH(b.cover)}" alt="" data-cb="${b.id}" onerror="coverErr(this)">`:coverFallback(b);
+ const cu=(b.cp&&CVU[b.cp])||b.cover;
+ // зери расм ҳамеша муқоваи рангии худи китоб меистад (сиёҳ нест); расм баъди боршавӣ оҳиста пайдо мешавад
+ const face=cu?coverFallback(b)+`<img src="${escH(cu)}" alt="" data-cb="${b.id}" data-cp="${escH(b.cp||"")}" onload="this.classList.add('ld')" onerror="coverErr(this)">`:coverFallback(b);
  return `<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front">${face}${au}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`;
 }
 
@@ -2695,6 +2703,30 @@ function bindLibrary($$){
 
 /* ---- варақи lib ---- */
 SHEETS.lib=X=>{if(!(S.libK))return "";let h="";h=libSheet(X);;return h};
+/* ===== Муқовоҳо: як бор боргирӣ мешаванд ва дар хотираи дастгоҳ (Cache API) нигоҳ дошта мешаванд ===== */
+/* Бо роҳи (cover_path) — на бо суроғаи имзошуда, ки ҳар дафъа иваз мешавад. Бе интернет ҳам муқоваҳо мемонанд.
+   Ҳар расм якта нигоҳ дошта мешавад (чанд даҳ КБ): китоби нав ҳам худкор илова мешавад, китоби нестшуда — тоза мешавад.
+   Нест мешаванд: вақте ки барнома нест карда шавад ё кэши он тоза шавад. */
+const CVU={};let CVBUSY=false;
+const CV_PFX="https://kitob.local/cover/",CV_MAX=1500000;
+const cvOK=()=>typeof caches!=="undefined"&&typeof URL!=="undefined"&&!!URL.createObjectURL;
+const cvKey=p=>CV_PFX+encodeURIComponent(p),cvPath=u=>decodeURIComponent(u.slice(CV_PFX.length));
+async function cvOpen(){return cvOK()?await caches.open("kitob-covers"):null}
+function cvSwap(){document.querySelectorAll("img[data-cp]").forEach(im=>{const u=CVU[im.dataset.cp];if(u&&im.getAttribute("src")!==u&&!im.classList.contains("ld"))im.src=u});
+ // агар муқоваи расмдор пештар хато карда, ранги китобро нишон дода бошад — як бор аз нав мекашем
+ if(window.__cvErr&&S.view!=="read"&&!S.sheet&&S.view!=="login"){window.__cvErr=0;try{render()}catch(_){}}}
+async function cvLoad(){try{const c=await cvOpen();if(!c)return;
+ for(const rq of await c.keys()){if(!rq.url.startsWith(CV_PFX))continue;const p=cvPath(rq.url);if(CVU[p])continue;const r=await c.match(rq);if(r)CVU[p]=URL.createObjectURL(await r.blob())}
+ cvSwap()}catch(_){}}
+async function cvStore(){if(CVBUSY||!cvOK()||!navigator.onLine)return;CVBUSY=true;
+ try{const c=await cvOpen();if(!c)return;const want=new Set();
+  for(const b of BOOKS){if(!b.cp)continue;want.add(b.cp);if(CVU[b.cp]||!b.cover)continue;
+   try{const r=await fetch(b.cover);if(!r.ok)continue;const bl=await r.blob();if(!bl.size||bl.size>CV_MAX||!/^image\//.test(bl.type))continue;
+    await c.put(cvKey(b.cp),new Response(bl,{headers:{"content-type":bl.type}}));CVU[b.cp]=URL.createObjectURL(bl)}catch(_){}}
+  if(BOOKS.some(b=>b.db)){for(const rq of await c.keys()){if(!rq.url.startsWith(CV_PFX))continue;const p=cvPath(rq.url);
+    if(!want.has(p)){await c.delete(rq);if(CVU[p]){try{URL.revokeObjectURL(CVU[p])}catch(_){}delete CVU[p]}}}}
+  cvSwap()}catch(_){}finally{CVBUSY=false}}
+cvLoad();
 let RQ="",RQT="",HITS=[],HI=-1,HITCI=-1,HITK=-1,HC=0,HCI=0;
 function hl(s){s=String(s);if(!RQ)return escH(s);const l=s.toLowerCase(),q=RQ.toLowerCase();let i=0,o="",j;
  while((j=l.indexOf(q,i))>=0){o+=escH(s.slice(i,j))+`<mark class="rd-hit${HCI===HITCI&&HC===HITK?" cur":""}">`+escH(s.slice(j,j+q.length))+"</mark>";i=j+q.length;HC++}
@@ -4276,7 +4308,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="3a075f7b0e";
+const WEB_H="9c211b8a4a";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

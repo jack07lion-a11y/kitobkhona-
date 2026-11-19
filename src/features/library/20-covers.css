@@ -1,0 +1,4 @@
+/* муқова: расм оҳиста пайдо мешавад, зери он муқоваи рангии китоб (сиёҳ не) */
+.b3d .f-front img{opacity:0;transition:opacity .35s ease}
+.b3d .f-front img.ld{opacity:1}
+@media (prefers-reduced-motion:reduce){.b3d .f-front img{transition:none}}
