@@ -27,7 +27,7 @@ const RC_IDLE=65000,RC_FAST=900,RC_WIN=60000,RC_STEP=20;
 /* Хониши худкор: назорат «ҳанӯз мехонед?» — 3 дақиқа, баъд 7, баъд 15, баъд ҳар 25 дақиқа (экранро ламс накунад). Ҳисоб то ламс меистад. */
 const RC_CHK=[180000,420000,900000],RC_CHK_N=1500000,rcChk=()=>RC.k<RC_CHK.length?RC_CHK[RC.k]:RC_CHK_N;
 let RC_AC=null;
-function rcAlert(){try{toast("Ҳанӯз ҳам мехонед, ҷӯраҷон?")}catch(_){}
+function rcAlert(){try{const nm=String(S.uname||"").trim();toast(nm?I18N.tr("Ҳоло ҳам хонда истодаед, {ном}?").replace("{ном}",nm):I18N.tr("Ҳоло ҳам хонда истодаед?"))}catch(_){}
  try{if(navigator.vibrate)navigator.vibrate([250,120,250,120,400])}catch(_){}
  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;RC_AC=RC_AC||new AC();if(RC_AC.resume)RC_AC.resume();const t0=RC_AC.currentTime;
   [[880,0],[660,.28]].forEach(([f,d])=>{const o=RC_AC.createOscillator(),g=RC_AC.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,t0+d);g.gain.exponentialRampToValueAtTime(.35,t0+d+.03);g.gain.exponentialRampToValueAtTime(.0001,t0+d+.25);o.connect(g);g.connect(RC_AC.destination);o.start(t0+d);o.stop(t0+d+.27)})}catch(_){}}
