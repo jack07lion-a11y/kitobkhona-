@@ -22,7 +22,7 @@ module.exports=async t=>{
  t.ok(await P.evaluate(()=>!!document.getElementById('ob1')),'баромада баргашт: розигӣ боз пайдо шуд');
  await P.evaluate(()=>{obClose()});await P.waitForTimeout(700);
  // ҷинс: баъди 30 сония
- await P.evaluate(()=>{S.gender=undefined;OB.shown={};S.consentV='2026-11';S.obFg=29;obTick()});await P.waitForTimeout(700);
+ await P.evaluate(()=>{S.gender=undefined;OB.shown={};S.consentV='2026-11';OB.fg=29;obTick()});await P.waitForTimeout(700);
  t.ok(await P.evaluate(()=>!!document.querySelector('[data-og=girl]')),'30 сония: интихоби ҷинс пайдо шуд');
  await P.evaluate(()=>{obClose()});await P.waitForTimeout(700);
  // ҳисобро нест кардан: сатр дар Танзимот (танҳо воридшуда)
@@ -68,3 +68,23 @@ module.exports=async t=>{
  }
  await P.evaluate(()=>{S.role='user';S.sheet=null});
 };
+
+// ҷинс интихоб нашавад: нишони бетараф; ҳар кушодани барнома боз мепурсад (бе «баъдтар»)
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home',email:'a@b.c',uname:'Х'});
+ await P.evaluate(()=>{S.uid='u1';S.gender=undefined;S.consentV='2026-11';S.sheet=null;OB.shown={};OB.fg=0;render()});await P.waitForTimeout(300);
+ t.ok(await P.evaluate(()=>/^data:image\/svg\+xml/.test(art().match(/src="([^"]+)"/)[1])&&gi()===GNEUTRAL),'ҷинс нест: расм ва нишони менюи бетараф');
+ await P.evaluate(()=>{OB.fg=29;obTick()});await P.waitForTimeout(700);
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-og=boy]')&&!document.querySelector('[data-ogl]')),'30 сония: ойнаи ҷинс, «баъдтар» нест');
+ await P.evaluate(()=>{obClose()});await P.waitForTimeout(700);
+ // барнома аз нав кушода шуд (OB аз нав): боз 30 сония ва боз мепурсад
+ await P.evaluate(()=>{OB.shown={};OB.fg=0;for(let i=0;i<29;i++)obTick()});
+ t.eq(await P.evaluate(()=>!!document.getElementById('obm')),false,'29 сония: ҳанӯз нест');
+ await P.evaluate(()=>obTick());await P.waitForTimeout(700);
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-og=girl]')),'кушодани навбатӣ: баъди 30 сония боз пурсид');
+ await P.click('[data-og=boy]');await P.waitForTimeout(900);
+ await P.evaluate(()=>{OB.shown={};OB.fg=500;obTick()});await P.waitForTimeout(500);
+ t.eq(await P.evaluate(()=>[S.gender,!!document.getElementById('obm')]),['boy',false],'интихоб шуд: дигар намепурсад');
+})(module.exports);

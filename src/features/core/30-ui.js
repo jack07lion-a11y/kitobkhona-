@@ -50,7 +50,8 @@ const LOGO=`<svg viewBox="0 0 100 100"><defs>
 <path d="M5 89Q28 81 49 94M95 89Q72 81 51 94" fill="none" stroke="#4fd391" stroke-width="2.600" stroke-linecap="round"/></g></svg>`;
 const fmt=s=>{s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
 const IC_DL='<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',IC_OK='<path d="M5 12.5l4.5 4.5L19 7"/>',IC_X='<path d="M6 6l12 12M18 6L6 18"/>',IC_MARK='<path d="M6 3h12v18l-6-4-6 4z"/>';
-function gi(){return S.gender==="boy"?GLOVE:TAB[2][2]}
+const GNEUTRAL='<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>';
+function gi(){return S.gender==="boy"?GLOVE:S.gender==="girl"?TAB[2][2]:GNEUTRAL}
 /* ---- Коди «танбал»: *.lazy.js дар index.html ҳамчун матни хомӯш (text/plain) мемонад ва фақат бо lazy("ном") иҷро мешавад ---- */
 const LAZYD={};
 function lazy(n){if(LAZYD[n])return;LAZYD[n]=1;const el=document.getElementById("lazy-"+n);if(!el){LAZYD[n]=0;throw new Error("lazy: "+n)}
