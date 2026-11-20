@@ -8,11 +8,10 @@ function login(){
  <button class="btn" id="verify">Тасдиқ кардан</button><button class="btn-t" id="pastecode">Рамзи нусхашударо гузоштан</button><button class="btn-t" id="resend" disabled>Рамзи нав</button><button class="btn-t" id="back">Почтаро иваз кардан</button>`;
  const deleted=`<h2>Ҳисоб баста шудааст</h2><p class="hint">Ин ҳисоб нест карда шудааст. Маълумот дар сервер мемонад. Агар хато шуда бошад ё хоҳед ҳисобро баргардонед, ба бунёдгузорони Китобхона паём нависед: онҳо ҳисобро барқарор карда метавонанд.</p>
  <button class="btn" data-ext="https://t.me/kitobkhona_official">Навиштан дар Телеграм</button><button class="btn-t" id="back">Бозгашт</button>`;
- const gender=`<h2>Шумо кистед?</h2><p class="hint">Ном ва ҷинс барои профил ва ҷоизаи Озмун лозим аст.</p>
+ const nameStep=`<h2>Номи шумо</h2><p class="hint">Бо ин ном дар профил ва рейтинг намоён мешавед. Баъд онро иваз карда метавонед.</p>
  <label class="field" for="uname"><input id="uname" autocomplete="given-name" placeholder="Номи шумо" maxlength="40" value="${escH(S.uname||"")}" style="padding-left:18px"></label>
- ${consBlock()}<p class="hint">Ҷинси худро интихоб кунед (бо пахш кардан давом мекунед):</p>
- <div class="gopts"><button class="gopt" data-g="girl"><span class="gart"><img src="${GART_G}" alt=""></span><b>Духтар</b></button><button class="gopt" data-g="boy"><span class="gart"><img src="${GART_B}" alt=""></span><b>Писар</b></button></div>`;
- return `<section class="login"><div class="hero pad"><div class="lg">${LOGO}</div><h1 translate="no">Китобхона</h1><p>Китобҳои тоҷикӣ ва аудиокитобҳо дар телефони шумо, ҳатто бе интернет.</p></div><div class="pad" style="display:flex;flex-direction:column;gap:16px">${S.step==="code"?code:S.step==="gender"?gender:S.step==="deleted"?deleted:email}</div></section>`;
+ <button class="btn" id="nmgo">Идома додан</button>`;
+ return `<section class="login"><div class="hero pad"><div class="lg">${LOGO}</div><h1 translate="no">Китобхона</h1><p>Китобҳои тоҷикӣ ва аудиокитобҳо дар телефони шумо, ҳатто бе интернет.</p></div><div class="pad" style="display:flex;flex-direction:column;gap:16px">${S.step==="code"?code:S.step==="name"?nameStep:S.step==="deleted"?deleted:email}</div></section>`;
 }/* ---- Профил: сурат, баннер, ном, маълумот ---- */
 const BGS=["linear-gradient(135deg,#4a52b4,#8a8fe0)","linear-gradient(135deg,#0b7d57,#63d48f)","linear-gradient(135deg,#c47a12,#f5b53c)","linear-gradient(135deg,#b4476a,#f09abb)","linear-gradient(135deg,#1f4f7a,#5fb0e6)","linear-gradient(135deg,#2b2b2b,#6b6b6b)"];
 // Аватарҳо барои духтарон: бе рӯй. Баъд расмҳои ҳақиқӣ ба папкаи avatars/ меоянд (img:"avatars/1.png")
@@ -62,7 +61,7 @@ async function pushProfile(){try{const c=await sbLoad();if(!c||!S.uid)return;let
   av=await up(av,"avatar");bn=await up(bn,"banner");
   await c.rpc("save_profile",{p_avatar:isImg(av)&&av.startsWith("data:")?null:av,p_banner:isImg(bn)&&bn.startsWith("data:")?null:bn,p_bio:S.pBio||null})}catch(_){}}
 async function loadProfile(c){try{if(!S.uid)return;const{data}=await c.from("profiles").select("name,avatar,banner,bio").eq("id",S.uid).maybeSingle();
-  if(!data){if(S.gender&&S.uname&&!S.healTried){S.healTried=1;const r=await c.rpc("claim_name",{p_name:S.uname});if(!r.error&&r.data)S.uname=r.data}return}
+  if(!data){if(S.uname&&!S.healTried){S.healTried=1;const r=await c.rpc("claim_name",{p_name:S.uname});if(!r.error&&r.data)S.uname=r.data}return}
   if(data.name)S.uname=data.name;if(!S.pAv&&data.avatar)S.pAv=data.avatar;if(!S.pBn&&data.banner)S.pBn=data.banner;if(!S.pBio&&data.bio)S.pBio=data.bio}catch(_){}}
 
 function me(){
@@ -80,7 +79,7 @@ function me(){
     <div class="stat"><small>7 рӯзи охир</small><b><span style="color:#6a63e0">${P(I.cal,2)}</span>${read7()} дақ</b></div>
    </div>
    ${admHTML()}
-   <div class="sec"><div class="sec-h"><h2>Ҷинс</h2></div><div class="plan"><span class="gart sm">${art()}</span><div><b>${S.gender==="boy"?"Писар":S.gender==="girl"?"Духтар":"Интихоб нашудааст"}</b><span>${S.gender?"Ҷинсро иваз кардан мумкин нест. Фақат аз ҳисоб баромада, аз нав сабти ном кунед.":"Ҷинс ҳангоми сабти ном интихоб мешавад."}</span></div></div>
+   <div class="sec"><div class="sec-h"><h2>Ҷинс</h2></div><div class="plan"><span class="gart sm">${art()}</span><div><b>${S.gender==="boy"?"Писар":S.gender==="girl"?"Духтар":"Интихоб нашудааст"}</b><span>${gNote()}</span>${gCan()?`<div class="seg sm gchg">${[["girl","Духтар"],["boy","Писар"]].map(([k,n])=>`<button class="${S.gender===k?"on":""}" data-gchg="${k}">${n}</button>`).join("")}</div>`:""}</div></div>
     ${S.confirmOut?`<div class="empty-card" style="flex-direction:column;align-items:stretch"><b>Аз ҳисоб мебароед?</b><span>Ҷинс ва ҷамъоварӣ нест мешавад. Бозгашт аз нав сабти ном аст.</span><div style="display:flex;gap:10px"><button class="pill" style="flex:1;background:var(--orange);color:#fff" data-logout-yes>Ҳа, мебароям</button><button class="pill" style="flex:1" data-logout-no>Бекор</button></div></div>`:`<button class="pill" style="width:100%;height:48px;justify-content:center" data-logout>Аз ҳисоб баромадан</button>`}</div>
       ${PREM()&&FEAT("buy")?`<div class="sec"><div class="sec-h"><h2>Тарифҳо</h2></div>
     <div class="plan"><span class="round">${P('<circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.500 20c.5-4 2.800-6 5.500-6s5 2 5.500 6M14 15.200c.8-.5 1.700-.7 2.600-.7 2.200 0 3.900 1.600 4.400 5"/>')}</span><div><b>Тарифи оилавӣ</b><span>Як обуна барои 3–5 аъзои оила</span></div><button class="pill" data-toast="Тарифи оилавӣ — қадами оянда">Дидан</button></div>
@@ -95,6 +94,7 @@ function coin3d(){let l="";for(let i=0;i<22;i++)l+=`<i class="c3-l" style="trans
 
 /* ---- пайвасти тугмаҳо: account (аз bind() даъват мешавад) ---- */
 function bindAccount($$){
+ $$("[data-gchg]",b=>b.onclick=()=>setGender(b.dataset.gchg));
  $$("[data-pedit]",b=>b.onclick=()=>{S.pe={name:S.uname||"",bio:S.pBio||"",av:S.pAv||"",bn:S.pBn||"",pend:null};S.sheet="pedit";render()});
  if(S.sheet==="pedit"&&S.pe){const d=S.pe,f=document.getElementById("pef"),n=document.getElementById("pen"),t=document.getElementById("peb");
   if(n)n.oninput=()=>{d.name=n.value};if(t)t.oninput=()=>{d.bio=t.value};
@@ -143,24 +143,22 @@ function bindAccount($$){
   if(c){const{data,error}=await c.auth.verifyOtp({email:S.email,token:t,type:"email"});
    if(error&&(/ban/i.test(error.message||"")||error.code==="user_banned")){S.step="deleted";render();return}
    if(error){ver.disabled=false;ver.textContent="Тасдиқ кардан";toast("Рамз нодуруст ё кӯҳна аст");return}
-   const m=data.user?.user_metadata||{};S.uid=data.user?.id||"";syncServer();
-   if(m.gender){S.gender=m.gender;S.uname=m.name||"";S.step="email";go("home");return}}
-  S.step="gender";render()};
- $$("[data-g]",b=>b.onclick=async()=>{const n=(document.getElementById("uname").value||"").trim();
-  if(!n){toast("Номатонро нависед");return}if(!consOK())return;
-  S.gender=b.dataset.g;S.uname=n;
+   if(data.user){await authDone(data.user,true);return}}
+  S.step="name";render()};
+ $$("#nmgo",b=>b.onclick=async()=>{const n=(document.getElementById("uname").value||"").trim();
+  if(!n){toast("Номатонро нависед");return}
+  b.disabled=true;
   const c=await sbLoad();if(c){
    let nm=null,why="";
-   /* 1) метадата → триггери сервер профилро худкор месозад (номи беҳамто); ба claim_name вобаста нест */
-   try{const{error:ue}=await c.auth.updateUser({data:{gender:S.gender,name:n}});if(ue)why=ue.message||ue.code||"updateUser"}catch(e){why=String(e&&e.message||e)}
-   try{const ss=(await c.auth.getSession()).data.session,id=ss&&ss.user&&ss.user.id;
-    if(id){S.uid=id;const{data}=await c.from("profiles").select("name").eq("id",id).maybeSingle();if(data&&data.name)nm=data.name}}catch(_){}
-   /* 2) нашуд → claim_name */
-   if(!nm){try{const r=await c.rpc("claim_name",{p_name:n});if(r.error)why=r.error.message||r.error.code||why;else if(r.data)nm=r.data}catch(e){why=why||String(e&&e.message||e)}}
-   if(!nm){S.gender=undefined;toast("Профил сохта нашуд"+(why?" ("+String(why).slice(0,70)+")":"")+". Аз нав кӯшиш кунед");return}
+   try{const r=await c.rpc("claim_name",{p_name:n});if(r.error)why=r.error.message||r.error.code||"";else if(r.data)nm=r.data}catch(e){why=String(e&&e.message||e)}
+   if(!nm){try{const ss=(await c.auth.getSession()).data.session,id=ss&&ss.user&&ss.user.id;
+     if(id){S.uid=id;const{data}=await c.from("profiles").select("name").eq("id",id).maybeSingle();if(data&&data.name)nm=data.name}}catch(_){}}
+   if(!nm){b.disabled=false;toast("Профил сохта нашуд"+(why?" ("+String(why).slice(0,70)+")":"")+". Аз нав кӯшиш кунед");return}
    if(nm!==n)toast("Ин ном банд буд. Ба шумо «"+nm+"» дода шуд");S.uname=nm;
-   await consSave();await syncServer()}
-  S.step="email";go("home")});
+   try{await c.auth.updateUser({data:{name:nm}})}catch(_){}
+   await syncServer()}
+  else S.uname=n;
+  S.genderAt=Date.now();S.obFg=0;S.step="email";go("home")});
  const rs=document.getElementById("resend");
  if(rs){
   const tick=()=>{if(!rs.isConnected)return clearInterval(S.rsT);const left=Math.ceil(((S.resendAt||0)-Date.now())/1000);
@@ -201,7 +199,19 @@ SHEETS.founders=X=>{
 /* бозгашт аз Chrome (Android): токенҳо аз tj.kitobkhona.app://auth#access_token=… */
 window.__oauth=async frag=>{try{const p=new URLSearchParams(String(frag||"").replace(/^[#?]/,"")),at=p.get("access_token"),rt=p.get("refresh_token");
   if(!at||!rt)throw 0;const c=await sbLoad();const{data,error}=await c.auth.setSession({access_token:at,refresh_token:rt});if(error||!data||!data.user)throw 0;
-  const u=data.user,m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;
-  if(m.gender){S.gender=m.gender;S.uname=m.name||S.uname;S.step="email";syncServer();go("home")}
-  else{S.view="login";S.step="gender";if(!S.uname)S.uname=String(m.full_name||m.name||"").slice(0,40);render()}}
+  await authDone(data.user,true)}
  catch(_){toast("Ворид шуда нашуд. Аз нав кӯшиш кунед")}};
+/* ---- Воридшавӣ: ном худкор (Google), ҷинс ва розигӣ баъдтар (ойнаи хурд, нигаред 40-onboard.js) ---- */
+const cleanName=x=>String(x||"").replace(/[^\p{L}\s'’\-]/gu," ").replace(/\s+/g," ").trim().slice(0,40);
+async function authDone(u,explicit){const c=await sbLoad(),m=u.user_metadata||{};S.uid=u.id;S.email=u.email||S.email;
+ if(explicit){S.genderAt=Date.now();S.obFg=0}
+ if(m.gender)S.gender=m.gender;
+ const nm=cleanName(m.name||m.full_name);
+ if(!nm){S.view="login";S.step="name";S.uname="";render();return}
+ let fin=nm;
+ if(c){try{const r=await c.rpc("claim_name",{p_name:nm});if(!r.error&&r.data)fin=r.data}catch(_){}
+  if(fin!==m.name){try{await c.auth.updateUser({data:{name:fin}})}catch(_){}}}
+ S.uname=fin;S.step="email";syncServer();go("home")}
+const G_DAYS=3,gWin=()=>!!S.genderAt&&Date.now()-S.genderAt<G_DAYS*864e5;
+const gCan=()=>!!S.uid&&(!S.gender||gWin());
+const gNote=()=>!S.gender?"Ҷинс ҳанӯз интихоб нашудааст.":gWin()?I18N.tr("Ҷинсро то {n} рӯзи дигар иваз кардан мумкин.").replace("{n}",Math.max(1,Math.ceil((G_DAYS*864e5-(Date.now()-S.genderAt))/864e5))):"Барои иваз кардан аз ҳисоб баромада, аз нав бо Google ворид шавед.";

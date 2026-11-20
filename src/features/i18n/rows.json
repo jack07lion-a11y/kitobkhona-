@@ -825,5 +825,15 @@
 ["Аз рейтинг дур кардан","Убрать из рейтинга","Reytingdan chetlatish","Remove from rating"],
 ["Танҳо админ","Только админ","Faqat admin","Admin only"],
 ["Ҳоло ҳам хонда истодаед, {ном}?","Вы всё ещё читаете, {ном}?","Hali ham oʻqiyapsizmi, {ном}?","Still reading, {ном}?"],
-["Ҳоло ҳам хонда истодаед?","Вы всё ещё читаете?","Hali ham oʻqiyapsizmi?","Still reading?"]
+["Ҳоло ҳам хонда истодаед?","Вы всё ещё читаете?","Hali ham oʻqiyapsizmi?","Still reading?"],
+["Бо ин ном дар профил ва рейтинг намоён мешавед. Баъд онро иваз карда метавонед.","Под этим именем вы будете видны в профиле и рейтинге. Позже его можно изменить.","Shu nom bilan profil va reytingda koʻrinasiz. Keyin uni oʻzgartirish mumkin.","You will appear in your profile and the rating under this name. You can change it later."],
+["Ду аломатро гузоред, шумо давом медиҳед","Поставьте две отметки, и вы продолжите","Ikkita belgini qoʻying, davom etasiz","Tick both boxes to continue"],
+["Ман 18-сола ва болотарам, ё падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст","Мне 18 лет или больше, либо мой родитель или опекун знает об использовании Китобхоны","Men 18 yosh yoki undan kattaman, yoki ota-onam yoki vasiyim Kitobxonadan foydalanishimdan xabardor","I am 18 or older, or my parent or guardian knows I use Kitobkhona"],
+["Расм ва ҷоизаҳои профил аз рӯи ин интихоб мешаванд. 3 рӯз иваз кардан мумкин.","Картинки и награды профиля зависят от этого выбора. 3 дня можно изменить.","Profil rasmlari va sovrinlar shu tanlovga bogʻliq. 3 kun ichida oʻzgartirish mumkin.","Profile pictures and prizes depend on this choice. You can change it for 3 days."],
+["Интихоб шуд","Выбрано","Tanlandi","Selected"],
+["Иваз шуд","Изменено","Oʻzgartirildi","Changed"],
+["Ҷинс ҳанӯз интихоб нашудааст.","Пол пока не выбран.","Jins hali tanlanmagan.","Gender is not selected yet."],
+["Ҷинсро то {n} рӯзи дигар иваз кардан мумкин.","Пол можно изменить ещё {n} дн.","Jinsni yana {n} kun oʻzgartirish mumkin.","You can change your gender for {n} more days."],
+["Барои иваз кардан аз ҳисоб баромада, аз нав бо Google ворид шавед.","Чтобы изменить, выйдите из аккаунта и войдите снова через Google.","Oʻzgartirish uchun hisobdan chiqib, Google orqali qayta kiring.","To change it, sign out and sign in again with Google."],
+["Розигӣ ва синну сол","Согласие и возраст","Rozilik va yosh","Consent and age"]
 ]
