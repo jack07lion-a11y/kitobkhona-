@@ -812,5 +812,16 @@
 ["{n} дақиқа! Беш аз ҳашт соат бо китоб! Шумо аз афсонаҳо ҳам бузургтаред 👑","{n} мин! Больше восьми часов с книгой! Вы величественнее легенд 👑","{n} daqiqa! Sakkiz soatdan ortiq kitob bilan! Siz afsonalardan ham buyuksiz 👑","{n} min! Over eight hours with a book! You are greater than legends 👑"],
 ["{n} дақиқа! Даҳ соат дар олами китоб, шуморо «Шоҳи мутолиа» меномем 👑","{n} мин! Десять часов в мире книг, мы зовём вас «Королём чтения» 👑","{n} daqiqa! Oʻn soat kitoblar olamida, sizni «Mutolaa shohi» deymiz 👑","{n} min! Ten hours in the world of books, we call you the «King of Reading» 👑"],
 ["{n} дақиқа! Дувоздаҳу ним соат! Ин дигар мутолиа не, ин ҳунар аст 🏛️","{n} мин! Двенадцать с половиной часов! Это уже не чтение, а искусство 🏛️","{n} daqiqa! Oʻn ikki yarim soat! Bu endi mutolaa emas, bu sanʼat 🏛️","{n} min! Twelve and a half hours! This is no longer reading, it is art 🏛️"],
-["{n} дақиқа! Ҳазор дақиқа дар як рӯз! Шумо афсонаи зинда ва фахри Китобхона ҳастед 🌟👑🏆","{n} мин! Тысяча минут за день! Вы живая легенда и гордость Китобхоны 🌟👑🏆","{n} daqiqa! Bir kunda ming daqiqa! Siz tirik afsona va Kitobxonaning faxrisiz 🌟👑🏆","{n} min! A thousand minutes in a day! You are a living legend and the pride of Kitobkhona 🌟👑🏆"]
+["{n} дақиқа! Ҳазор дақиқа дар як рӯз! Шумо афсонаи зинда ва фахри Китобхона ҳастед 🌟👑🏆","{n} мин! Тысяча минут за день! Вы живая легенда и гордость Китобхоны 🌟👑🏆","{n} daqiqa! Bir kunda ming daqiqa! Siz tirik afsona va Kitobxonaning faxrisiz 🌟👑🏆","{n} min! A thousand minutes in a day! You are a living legend and the pride of Kitobkhona 🌟👑🏆"],
+["Барои ҳисоби дақиқаҳо экранро ламс кунед","Коснитесь экрана, чтобы минуты засчитывались","Daqiqalar hisoblanishi uchun ekranga tegining","Touch the screen so your minutes keep counting"],
+["Шубҳанокони рейтинг","Подозрительные в рейтинге","Reytingdagi shubhalilar","Suspicious in the rating"],
+["Огоҳӣ дошта ё дар як рӯз 6+ соат хондагон, 7 рӯзи охир","С предупреждением или читавшие 6+ часов в день, последние 7 дней","Ogohlantirish olgan yoki kuniga 6+ soat oʻqiganlar, oxirgi 7 kun","With a warning or reading 6+ hours a day, last 7 days"],
+["Санҷидан","Проверить","Tekshirish","Check"],
+["Хато. Аввал SQL-и «ҳалол»-ро иҷро кунед","Ошибка. Сначала выполните SQL «halol»","Xato. Avval «halol» SQL ni bajaring","Error. Run the «halol» SQL first"],
+["Шубҳанок нест","Подозрительных нет","Shubhalilar yoʻq","No suspicious readers"],
+["Огоҳӣ","Предупреждения","Ogohlantirish","Warnings"],
+["Дар рӯз","В день","Kuniga","Per day"],
+["Ба рейтинг баргардонидан","Вернуть в рейтинг","Reytingga qaytarish","Return to rating"],
+["Аз рейтинг дур кардан","Убрать из рейтинга","Reytingdan chetlatish","Remove from rating"],
+["Танҳо админ","Только админ","Faqat admin","Admin only"]
 ]

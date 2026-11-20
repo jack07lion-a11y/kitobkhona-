@@ -2179,7 +2179,18 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["{n} дақиқа! Беш аз ҳашт соат бо китоб! Шумо аз афсонаҳо ҳам бузургтаред 👑","{n} мин! Больше восьми часов с книгой! Вы величественнее легенд 👑","{n} daqiqa! Sakkiz soatdan ortiq kitob bilan! Siz afsonalardan ham buyuksiz 👑","{n} min! Over eight hours with a book! You are greater than legends 👑"],
 ["{n} дақиқа! Даҳ соат дар олами китоб, шуморо «Шоҳи мутолиа» меномем 👑","{n} мин! Десять часов в мире книг, мы зовём вас «Королём чтения» 👑","{n} daqiqa! Oʻn soat kitoblar olamida, sizni «Mutolaa shohi» deymiz 👑","{n} min! Ten hours in the world of books, we call you the «King of Reading» 👑"],
 ["{n} дақиқа! Дувоздаҳу ним соат! Ин дигар мутолиа не, ин ҳунар аст 🏛️","{n} мин! Двенадцать с половиной часов! Это уже не чтение, а искусство 🏛️","{n} daqiqa! Oʻn ikki yarim soat! Bu endi mutolaa emas, bu sanʼat 🏛️","{n} min! Twelve and a half hours! This is no longer reading, it is art 🏛️"],
-["{n} дақиқа! Ҳазор дақиқа дар як рӯз! Шумо афсонаи зинда ва фахри Китобхона ҳастед 🌟👑🏆","{n} мин! Тысяча минут за день! Вы живая легенда и гордость Китобхоны 🌟👑🏆","{n} daqiqa! Bir kunda ming daqiqa! Siz tirik afsona va Kitobxonaning faxrisiz 🌟👑🏆","{n} min! A thousand minutes in a day! You are a living legend and the pride of Kitobkhona 🌟👑🏆"]
+["{n} дақиқа! Ҳазор дақиқа дар як рӯз! Шумо афсонаи зинда ва фахри Китобхона ҳастед 🌟👑🏆","{n} мин! Тысяча минут за день! Вы живая легенда и гордость Китобхоны 🌟👑🏆","{n} daqiqa! Bir kunda ming daqiqa! Siz tirik afsona va Kitobxonaning faxrisiz 🌟👑🏆","{n} min! A thousand minutes in a day! You are a living legend and the pride of Kitobkhona 🌟👑🏆"],
+["Барои ҳисоби дақиқаҳо экранро ламс кунед","Коснитесь экрана, чтобы минуты засчитывались","Daqiqalar hisoblanishi uchun ekranga tegining","Touch the screen so your minutes keep counting"],
+["Шубҳанокони рейтинг","Подозрительные в рейтинге","Reytingdagi shubhalilar","Suspicious in the rating"],
+["Огоҳӣ дошта ё дар як рӯз 6+ соат хондагон, 7 рӯзи охир","С предупреждением или читавшие 6+ часов в день, последние 7 дней","Ogohlantirish olgan yoki kuniga 6+ soat oʻqiganlar, oxirgi 7 kun","With a warning or reading 6+ hours a day, last 7 days"],
+["Санҷидан","Проверить","Tekshirish","Check"],
+["Хато. Аввал SQL-и «ҳалол»-ро иҷро кунед","Ошибка. Сначала выполните SQL «halol»","Xato. Avval «halol» SQL ni bajaring","Error. Run the «halol» SQL first"],
+["Шубҳанок нест","Подозрительных нет","Shubhalilar yoʻq","No suspicious readers"],
+["Огоҳӣ","Предупреждения","Ogohlantirish","Warnings"],
+["Дар рӯз","В день","Kuniga","Per day"],
+["Ба рейтинг баргардонидан","Вернуть в рейтинг","Reytingga qaytarish","Return to rating"],
+["Аз рейтинг дур кардан","Убрать из рейтинга","Reytingdan chetlatish","Remove from rating"],
+["Танҳо админ","Только админ","Faqat admin","Admin only"]
 ]
 </script>
 <script>
@@ -2540,7 +2551,7 @@ function bind(){
  if(S.sheet==="admrel"&&!S._rl){S._rl=1;loadRelAdmin()}
  Object.keys(DLP).forEach(k=>setDLP(+k,DLP[k]));
  const $$=(s,f)=>app.querySelectorAll(s).forEach(f);
- bindFeedbackQuick($$);bindAdmin($$);bindStaffDel($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
+ bindFeedbackQuick($$);bindAdmin($$);bindSusp($$);bindStaffDel($$);bindPlayer($$);bindReader($$);bindBackup($$);bindLibrary($$);bindAccount($$);bindUpdate($$);bindNotifications($$);bindI18n($$);bindPremium($$);bindCategory($$);bindPrivacy($$);bindRating($$);bindAdminDeleted($$); // тугмаҳои ҳар феатур: функсияи bindXxx($$) дар папкаи феатури худ
  $$("[data-go]",b=>b.onclick=()=>go(b.dataset.go));
  $$("[data-toast]",b=>b.onclick=()=>toast(b.dataset.toast));
  $$("[data-book]",b=>b.onclick=()=>openDetail(+b.dataset.book));
@@ -3857,8 +3868,31 @@ const readMin=k=>Math.floor(((S.rsec||{})[k||todayKey()]||0)/60);
 const readTotal=()=>Math.floor(Object.values(S.rsec||{}).reduce((a,b)=>a+b,0)/60);
 const read7=()=>{let t=0;for(let i=0;i<7;i++){const d=new Date(Date.now()-i*864e5),k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");t+=(S.rsec||{})[k]||0}return Math.floor(t/60)};
 ["pointerdown","touchstart","scroll","keydown"].forEach(ev=>addEventListener(ev,()=>{RDG.act=Date.now()},{passive:true,capture:true}));
-setInterval(()=>{if(S.view==="read"&&document.visibilityState==="visible"&&Date.now()-RDG.act<120000){const k=todayKey();S.rsec=S.rsec||{};S.rsec[k]=(S.rsec[k]||0)+1;RDG.sess++;trackTick();if(RDG.sess%15===0)save()}},1000);
-function rdLeave(){flushRead();if(Date.now()-RDG.lt<3000)return;RDG.lt=Date.now();save();const A=window.KitobAndroid;if(A&&A.leave){try{A.leave(readMin(),RDG.sess)}catch(_){}}RDG.sess=0}
+/* ===== Ҳисоби ҳалол: вақт танҳо ҳангоми воқеан хондан ҳисоб мешавад (алдашро манъ мекунад) =====
+   1) Ҷои китоб бояд иваз шавад (саҳифа гашт/матн сурилид). 65 сония ҷой иваз нашавад — ҳисоб меистад, то бори навбатии ҷунбиш.
+   2) Суръат аз 900 калима/дақиқа зиёд бошад (варақ задани тез, ҷаҳиш) — он дақиқа ҳисоб намешавад.
+   3) Хониши худкор: ҳар 10 дақиқа як ламс лозим, вагарна ҳисоб меистад.
+   Рӯзона 8 соат ва санҷиши сервер: docs/sql-halol.sql */
+const RC={mv:0,mvg:null,wg:null,wt:0,lg:null,pend:0,touch:Date.now(),warned:false};
+const RC_IDLE=65000,RC_FAST=900,RC_TOUCH=600000,RC_WIN=60000,RC_STEP=20;
+function rcAdd(n){if(n<=0)return;const k=todayKey();S.rsec=S.rsec||{};S.rsec[k]=(S.rsec[k]||0)+n;RDG.sess+=n;ST.sec+=n;ST.b=S.rdId||ST.b;save();if(ST.sec>=60)flushRead()}
+function rcCommit(now,g){const el=Math.max(RC_WIN,now-RC.wt);
+ if(RC.pend>0&&RC.wg!=null&&g!=null){const adv=Math.max(0,g-RC.wg),wpm=adv/6/(el/60000);if(wpm<=RC_FAST)rcAdd(RC.pend)}
+ RC.pend=0;RC.wg=g;RC.wt=now}
+/* ҳар сония: now — вақт, g — ҷои китоб (ҳарф), e: {read,vis,as} */
+function rcStep(now,g,e){
+ if(!e.read||!e.vis||g==null){if(RC.pend)rcCommit(now,RC.lg);RC.mvg=null;RC.wg=null;RC.warned=false;return}
+ RC.lg=g;
+ if(RC.mvg==null){RC.mvg=g;RC.mv=now;RC.wg=g;RC.wt=now;RC.pend=0}
+ if(Math.abs(g-RC.mvg)>=RC_STEP){RC.mvg=g;RC.mv=now}
+ let ok=now-RC.mv<RC_IDLE;
+ if(e.as&&now-RC.touch>=RC_TOUCH){ok=false;if(!RC.warned){RC.warned=true;try{toast("Барои ҳисоби дақиқаҳо экранро ламс кунед")}catch(_){}}}
+ if(ok)RC.pend++;
+ if(now-RC.wt>=RC_WIN)rcCommit(now,g)}
+const rcG=()=>{try{if(!RD||!RD.b||RD.gf==null)return null;return RD.gf*rdInfo(RD.b).tot}catch(_){return null}};
+["pointerdown","touchstart","touchmove","wheel","keydown"].forEach(ev=>addEventListener(ev,()=>{RC.touch=Date.now()},{passive:true,capture:true}));
+setInterval(()=>{const vis=document.visibilityState==="visible",rd=S.view==="read"&&vis&&!!RD&&!!RD.b;rcStep(Date.now(),rd?rcG():null,{read:rd,vis,as:typeof AS!=="undefined"&&!!AS.on})},1000);
+function rdLeave(){try{rcStep(Date.now(),null,{read:false,vis:false})}catch(_){}flushRead();if(Date.now()-RDG.lt<3000)return;RDG.lt=Date.now();save();const A=window.KitobAndroid;if(A&&A.leave){try{A.leave(readMin(),RDG.sess)}catch(_){}}RDG.sess=0}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")rdLeave();else{RDG.sess=0;RDG.act=Date.now()}});
 addEventListener("pagehide",rdLeave);window.__leave=rdLeave;// ===== Хато/пешниҳод аз корбар =====
 const RPK="kitob_rep";
@@ -4158,6 +4192,7 @@ function admStatHTML(X){const st=S.stats||{};return `<div class="sh-head"><b cla
   <p class="set-cap">Роҳи корбар, 30 рӯзи охир</p>
   <div class="stg"><div><small>Насб карданд</small><b id="fn_installs">${(S.fn||{}).installs??"–"}</b></div><div><small>Сабти ном карданд</small><b id="fn_registered">${(S.fn||{}).registered??"–"}</b></div><div><small>1 дақиқа хонданд</small><b id="fn_read1">${(S.fn||{}).read1??"–"}</b></div><div class="all"><small>Баргаштанд: рӯзи 1+ / рӯзи 7+</small><b><span id="fn_back1">${(S.fn||{}).back1??"–"}</span> / <span id="fn_back7">${(S.fn||{}).back7??"–"}</span></b></div></div>
   ${S.rs&&S.rs.top&&S.rs.top.length?`<p class="set-note" translate="no">${S.rs.top.map((t,i)=>(i+1)+". "+escH(t.title)+" — "+fmtT(t.sec)).join("<br>")}</p>`:""}
+  ${suspHTML()}
  `}
 function admBkHTML(X){return `<div class="sh-head"><b class="sh-t">Нусхаи захира</b>${X}</div>
   <div class="nrow"><div class="ntx"><b>Нусхаи захира (GitLab)</b><small>Охирин нав кардан: ${new Date(bkLast()).toLocaleDateString()} · ${bkDays()} рӯз пеш${bkDue()?" · НАВ КАРДАН ЛОЗИМ":""}</small></div><button class="pill" data-bkdone>Анҷом шуд</button></div>
@@ -4310,6 +4345,19 @@ SHEETS.adm=X=>{let h="";{const a=S.adm||{},ci=Math.max(0,ADM_COLS.findIndex(x=>x
    <button class="btn" data-admsave>Захира кардан</button>
    ${a.id?'<button class="btn-t" data-admdel style="color:#d33">Нест кардани китоб</button>':""}
   </div>`};return h};
+/* ===== Идоракунӣ → Омор: хонандагони шубҳанок (docs/sql-halol.sql). Танҳо ном ва рақамҳо; почта нест. ===== */
+function suspHTML(){const L=S.susp;
+ return `<p class="set-cap">Шубҳанокони рейтинг</p>
+ <p class="set-note">Огоҳӣ дошта ё дар як рӯз 6+ соат хондагон, 7 рӯзи охир</p>
+ <button class="pill" data-susp-load>Санҷидан</button>
+ ${L===undefined?"":L===null?`<p class="set-note">Хато. Аввал SQL-и «ҳалол»-ро иҷро кунед</p>`:!L.length?`<p class="set-note">Шубҳанок нест</p>`:L.map(r=>`<div class="nrow"><div class="ntx"><b translate="no">${escH(r.name||"—")}</b><small><span>Огоҳӣ</span> ${+r.strikes||0} · <span>Дар рӯз</span> ${fmtT(+r.max_day_sec||0)} · ${fmtT(+r.total_sec||0)}</small></div><button class="pill" data-susp-ban="${escH(r.user_id)}" data-v="${r.banned?0:1}">${r.banned?"Ба рейтинг баргардонидан":"Аз рейтинг дур кардан"}</button></div>`).join("")}`}
+function bindSusp($$){
+ $$("[data-susp-load]",b=>b.onclick=async()=>{const c=await sbLoad();if(!c){toast("Интернет нест");return}
+  try{const{data,error}=await c.rpc("suspicious_readers",{p_days:7});S.susp=error?null:(data||[]);render()}catch(_){toast("Интернет нест")}});
+ $$("[data-susp-ban]",b=>b.onclick=async()=>{if(S.role!=="admin"){toast("Танҳо админ");return}const c=await sbLoad();if(!c)return;
+  try{const{error}=await c.rpc("set_rating_ban",{p_id:b.dataset.suspBan,p_ban:b.dataset.v==="1"});if(error){toast("Иҷозат дода нашуд");return}
+   const r=(S.susp||[]).find(x=>x.user_id===b.dataset.suspBan);if(r)r.banned=b.dataset.v==="1";render()}catch(_){toast("Интернет нест")}});
+}
 /* ---- Админ: ҳисобҳои нест шуда — тиклаш ва пурра тоза кардан (docs/sql-reyting.sql) ----
    Корбар ҳисобашро нест мекунад → ҳисоб баста мешавад (кириш манъ), маълумот дар сервер МЕМОНАД. Админ ва ёрдамчӣ ҲАР ВАҚТ барқарор карда метавонанд (муҳлат нест). */
 const DEL={list:null,busy:false,err:false,loaded:false};
@@ -4419,7 +4467,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="315dedd746";
+const WEB_H="7fbf50bc72";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
