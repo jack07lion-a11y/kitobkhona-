@@ -2,7 +2,7 @@ const DEF_REMIND="Имрӯз ҳанӯз китоб нахондаед. Ба Ки
 const cfgTxt=(o,d)=>(o&&o[I18N.lang])||I18N.tr(d);
 const canNotif=()=>S.role==="admin"||(S.role==="subadmin"&&(canPerm("notif")||!!(S.ncfg&&S.ncfg.sub_can_edit)));
 function pushNotifyCfg(){const A=window.KitobAndroid;if(!A||!A.config)return;const c=S.ncfg||{};
- try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,reg:!!S.uid,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),remindTextRead:I18N.tr(DEF_REMIND_READ),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
+ try{A.config(JSON.stringify({remind:c.remind_on!==false,congrats:c.congrats_on!==false,reg:!!S.uid,hour:c.remind_hour||20,role:S.role==="admin"?"АДМИН":S.role==="subadmin"?"СУБАДМИН":"",title:"Китобхона",remindText:cfgTxt(c.remind_text,DEF_REMIND),remindTextRead:I18N.tr(DEF_REMIND_READ),tpl:cfgTxt(c.congrats_tpl,DEF_CONGRATS),custom:!!(c.congrats_tpl&&c.congrats_tpl[I18N.lang]),cm:{m:CONG_MIN.map(s=>I18N.tr(s)),b:CONG_BIG.map(([t,s])=>[t,I18N.tr(s)])},sbUrl:SB_URL,sbKey:SB_KEY,news:true}))}catch(_){}}
 async function loadNotifCfg(){const c=await sbLoad();if(!c)return;
  try{const{data,error}=await c.from("notif_cfg").select("*").eq("id",1).maybeSingle();if(!error&&data){S.ncfg=data;save();pushNotifyCfg();if(S.view==="me"&&(S.sheet==="admnotif"||!S.sheet))render()}}catch(_){}}
 async function saveNotif(p){const c=await sbLoad();if(!c){toast("Интернет нест");return false}
