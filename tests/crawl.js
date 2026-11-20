@@ -70,7 +70,7 @@ const TAJ = /[ӣӯқғҳҷӢӮҚҒҲҶ]/;
               const cs = getComputedStyle(el);
               if (cs.position === 'fixed' || cs.display === 'none') return;
               const rc = el.getBoundingClientRect();
-              if (rc.width > 0 && rc.right > innerWidth + 2 && !el.closest('.hscroll,.chips,.shelf,.wheel,.wh,.rd-view,.rd-flow,.tb,.tabs,.sheet-x,[class*=scroll]') && bad.length < 3) bad.push(el.tagName + '.' + (el.className || '').toString().slice(0, 30));
+              if (rc.width > 0 && rc.right > innerWidth + 2 && !el.closest('.hscroll,.chips,.shelf,.wheel,.wh,.rd-view,.rd-flow,.rd-gl,.rd-as,.tb,.tabs,.sheet-x,[class*=scroll]') && bad.length < 3) bad.push(el.tagName + '.' + (el.className || '').toString().slice(0, 30));
             });
             // матни тоҷикӣ дар забони дигар
             const lang = I18N.lang, un = [];

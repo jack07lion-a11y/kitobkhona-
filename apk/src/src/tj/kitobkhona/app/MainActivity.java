@@ -293,6 +293,8 @@ public class MainActivity extends Activity {
                     e.putInt("hour", o.optInt("hour", 20));
                     e.putString("role", o.optString("role", ""));
                     e.putString("title", o.optString("title", "Китобхона"));
+                    e.putBoolean("tpl_custom", o.optBoolean("custom", false));
+                    if (o.has("cm")) e.putString("cm", o.optJSONObject("cm") != null ? o.optJSONObject("cm").toString() : "");
                     e.putString("remind_text", o.optString("remindText", "Имрӯз ҳанӯз китоб нахондаед. Ба Китобхона ворид шавед ва мутолиаро оғоз кунед"));
                     e.putString("remind_text_read", o.optString("remindTextRead", "Афарин, имрӯз китоб хондед! Боз якчанд саҳифа бихонед?"));
                     // Supabase URL танҳо https://*.supabase.co (ҳамлагар калитро ба сервери худаш гузаронда наметавонад)

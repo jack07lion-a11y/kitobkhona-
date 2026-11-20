@@ -32,6 +32,8 @@ jobs:
           mkdir -p /tmp/rp
           javac -encoding UTF-8 -d /tmp/rp apk/src/src/tj/kitobkhona/app/RemindPlan.java tests/RemindPlanTest.java
           java -cp /tmp/rp tj.kitobkhona.app.RemindPlanTest
+          javac -encoding UTF-8 -d /tmp/cg apk/src/src/tj/kitobkhona/app/Congrats.java tests/CongratsTest.java
+          java -cp /tmp/cg tj.kitobkhona.app.CongratsTest
 
   # SQL (docs/sql-*.sql) дар PostgreSQL-и вақтинчаи CI бо Supabase-тақлид; ба Supabase-и воқеӣ дахл надорад
   sql:
