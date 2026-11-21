@@ -13,7 +13,7 @@ description: Super kitob sozanda — китобҳои скан/PDF/Word/EPUB-р�
 1. **ҚАДАМИ 1 — PDF**: матн + расмҳо + ҳуқуқ ба PDF, фиристодан ба Ҷасурбек (`SendUserFile`). Ба сервер ҲЕҶ чиз намегузорем.
 2. **ҚАДАМИ 2 — Китобхона**: фақат баъди ҷавоби «ҳа» (ё «бошла/гузор»). Китоб ПИНҲОН (`published=false`) мегузорем. Пинҳонро НАМОЁН кардан — фақат бо иҷозати алоҳида.
 
-Дар охири ҳар ҷавоб ЯК қадами навбатиро нависед (масалан: «Ба Китобхона мегузорам (пинҳон)? ҳа/не»). Саволи дигар надеҳ.
+Дар охири ҳар ҷавоб ЯК қадами навбатиро нависед (масалан: «Жанр: Барои кӯдакон (тавсия). Ба Китобхона мегузорам (пинҳон)? ҳа/не»). Саволи дигар надеҳ, ғайр аз жанр.
 
 ## Қадами 1: PDF
 Талаб: `poppler-utils`, `tesseract-ocr`, `tesseract-ocr-tgk`, `python3` бо `Pillow`, `numpy`, `scipy`, `reportlab` (агар нест: `apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-tgk` ва `pip install scipy`).
@@ -38,9 +38,16 @@ description: Super kitob sozanda — китобҳои скан/PDF/Word/EPUB-р�
 - Ҳолати ночаспон: `pending`. Барои ҳар китоб навиштед: `rights_status`, `rights_holder`, `source`, `edition`, `translator`, `license_note`.
 Ҳар китоби нав ба `docs/kitob-huquq.md` илова шавад (commit + push ба шохаи кории худ).
 
+## ЖАНР (ҳамеша аввал)
+Жанри китоб ҲАМЕША бояд ошкоро бошад. Ҳеҷ гоҳ худ ба худ «kids» ё дигар жанрро пешфарз нагиред.
+- **Ҷасурбек жанрро гуфт** → ҳамонро истифода баред.
+- **Нагуфт ё номаълум** → китобро ТАҲЛИЛ кунед: мазмуни матн (сарсухан, чанд боб, забон, синну соли хонанда: «барои бачагони синни…»), нашриёт («Адабиёти бачагона» → кӯдакон), навъ (достон/шеър/ҳикоя/повест/дарсӣ/илмӣ), муаллиф. Агар боварӣ нест, номи китоб ва муаллифро дар интернет ҷустуҷӯ кунед (`WebSearch`) ва бо матн муқоиса кунед. Баъд ЯК жанри мувофиқро бо сабаби кӯтоҳ пешниҳод кунед: «Тавсия: Барои кӯдакон (сабаб: …). Дуруст аст?»
+- Ҳатто агар шумо боварӣ дошта бошед, дар Қадами 1 (ҳангоми фиристодани PDF) жанри пешниҳодшударо нависед; пеш аз боргирӣ ба сервер Ҷасурбек онро тасдиқ мекунад (ё иваз мекунад).
+Жанрҳо (калид — ном): `fiction` Адабиёти бадеӣ · `poetry` Шеър ва достон · `classic` Классикаи тоҷик · `science` Илмӣ-оммавӣ · `history` Таърих · `religion` Динӣ-маърифатӣ · `kids` Барои кӯдакон · `text` Китобҳои дарсӣ · `exam` Омодагӣ ба ММТ · `self` Рушди шахсӣ · `bio` Тарҷумаи ҳол. Агар ягон жанр мувофиқ набошад, ба Ҷасурбек бигӯед (метавон жанри нав илова кард: `src/features/category/10-category.js`).
+Ҷасурбек якчанд китобро якбора партояд — ҳар китобро алоҳида таҳлил кунед (жанрҳо гуногун шуда метавонанд).
+
 ## Қадами 2: ба Китобхона (ПИНҲОН)
-Фақат баъди «ҳа». Жанр: `kids` (кӯдакон) ё аз рӯйхат: fiction, poetry, classic, science, history, religion, kids, text, exam, self, bio (аз Ҷасурбек пурсед, агар равшан набошад).
-1. `python3 -I scripts/mkpayload.py spec1.json spec2.json …` → `payload.json`, `tok.txt`, ҳэши токен (spec: `slug`, `author`, `category`, `col`, `rights`).
+Пеш аз ин: жанр тасдиқ шудааст (боло). 1. `python3 -I scripts/mkpayload.py spec1.json spec2.json …` → `payload.json`, `tok.txt`, ҳэши токен (spec: `slug`, `author`, `category` = калиди жанри тасдиқшуда, `col`, `rights`).
 2. Supabase MCP: `list_projects` (лоиҳаи «Kitobkhona»). `scripts/edge_import.ts`-ро бо ҳэши токен `deploy_edge_function` кунед (`name: tmp-import-books`, `verify_jwt: false`).
 3. `curl -X POST https://<ref>.supabase.co/functions/v1/tmp-import-books -H "x-import-token: $(cat tok.txt)" -H "content-type: application/json" --data-binary @payload.json` — ҳар китоб `err:null` бошад.
 4. ДАРҲОЛ функсияро `Deno.serve(()=>new Response("gone",{status:410}))` ва `verify_jwt:true` кунед. Токенро дар чат нанависед.

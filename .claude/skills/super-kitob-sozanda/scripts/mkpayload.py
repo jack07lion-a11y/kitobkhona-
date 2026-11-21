@@ -18,9 +18,9 @@ for f in sys.argv[1:]:
     # як боби бузург (>150 сархат) -> қисмҳо
     if len(ch)==1 and len(ch[0]['blocks'])>150:
         b=ch[0]['blocks'];k=(len(b)+2)//3;ch=[{'id':f'c{i+1}','title':f'Қисми {i+1}','blocks':b[i*k:(i+1)*k]} for i in range(3)]
-    book={'id':s['slug'],'title':s['title'],'author':s['author'],'category':s.get('category','kids'),'lang':'tg','parts':[{'title':'','chapters':ch}]}
+    book={'id':s['slug'],'title':s['title'],'author':s['author'],'category':s['category'],'lang':'tg','parts':[{'title':'','chapters':ch}]}
     r=s['rights']
-    row={'t':s['title'],'a':s['author'],'c':s.get('category','kids'),'slug':s['slug'],'text_path':s['slug']+'/book.json.gz','col1':s.get('col',['#24443a','#122a22'])[0],'col2':s.get('col',['#24443a','#122a22'])[1],
+    row={'t':s['title'],'a':s['author'],'c':s['category'],'slug':s['slug'],'text_path':s['slug']+'/book.json.gz','col1':s.get('col',['#24443a','#122a22'])[0],'col2':s.get('col',['#24443a','#122a22'])[1],
          'published':False,'rights_status':r.get('status','pending'),'rights_holder':r.get('holder',''),'source':r.get('source',''),'edition':r.get('edition',''),'translator':r.get('translator',''),'license_note':r.get('note','')}
     items.append({'book':book,'row':row})
 tok=secrets.token_hex(24);open('tok.txt','w').write(tok)
