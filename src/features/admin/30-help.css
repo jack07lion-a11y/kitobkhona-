@@ -1,0 +1,9 @@
+/* Идоракунӣ: шарҳи рақамҳо */
+.adm-kpi em{font-style:normal;font-size:9.5px;font-weight:700;color:var(--muted);opacity:.85}
+.adm-help{display:block;width:100%;text-align:left;background:none;border:0;padding:4px 2px 10px;color:#0b7d57;font:700 13px var(--font);text-decoration:underline;text-underline-offset:3px}
+.hlp-n{margin:0 0 10px;color:var(--muted);font-size:12.5px;font-weight:600;line-height:1.45}
+.hlp{display:flex;flex-direction:column;gap:8px}
+.hlp-r{background:var(--card);border-radius:14px;padding:10px 12px}
+.hlp-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.hlp-h b{font-size:14px}.hlp-h em{font-style:normal;font:800 16px var(--font);font-variant-numeric:tabular-nums;color:#0b7d57;white-space:nowrap}
+.hlp-r p{margin:4px 0 0;color:var(--muted);font-size:12.5px;line-height:1.45;font-weight:600}

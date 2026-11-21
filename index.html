@@ -1141,6 +1141,15 @@ select.pe-i{appearance:auto}
 .sbd{display:inline-block;vertical-align:super;font-size:10px;line-height:1;margin-left:4px;font-weight:800;letter-spacing:.2px}
 .sbd.perm{background:#0b7d57;color:#fff;border-radius:3px;width:14px;height:14px;line-height:14px;text-align:center;font-size:10px;box-shadow:0 1px 2px rgba(0,0,0,.25)}
 .sbd.beta{color:#9a5b00;background:#ffe9b8;border:1px solid #e9b44c;border-radius:6px;padding:2px 5px;font-size:9.5px}
+/* Идоракунӣ: шарҳи рақамҳо */
+.adm-kpi em{font-style:normal;font-size:9.5px;font-weight:700;color:var(--muted);opacity:.85}
+.adm-help{display:block;width:100%;text-align:left;background:none;border:0;padding:4px 2px 10px;color:#0b7d57;font:700 13px var(--font);text-decoration:underline;text-underline-offset:3px}
+.hlp-n{margin:0 0 10px;color:var(--muted);font-size:12.5px;font-weight:600;line-height:1.45}
+.hlp{display:flex;flex-direction:column;gap:8px}
+.hlp-r{background:var(--card);border-radius:14px;padding:10px 12px}
+.hlp-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.hlp-h b{font-size:14px}.hlp-h em{font-style:normal;font:800 16px var(--font);font-variant-numeric:tabular-nums;color:#0b7d57;white-space:nowrap}
+.hlp-r p{margin:4px 0 0;color:var(--muted);font-size:12.5px;line-height:1.45;font-weight:600}
 /* ---------- Панели идоракунӣ: тугмаҳои торӣ ---------- */
 .adm-tag{font-size:10px;font-weight:800;background:var(--orange-soft);color:var(--orange-3);padding:3px 9px;border-radius:10px;margin-right:auto;margin-left:8px;align-self:center}
 .adm-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 8px}
@@ -2221,7 +2230,31 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҷинс ҳанӯз интихоб нашудааст.","Пол пока не выбран.","Jins hali tanlanmagan.","Gender is not selected yet."],
 ["Ҷинсро то {n} рӯзи дигар иваз кардан мумкин.","Пол можно изменить ещё {n} дн.","Jinsni yana {n} kun oʻzgartirish mumkin.","You can change your gender for {n} more days."],
 ["Барои иваз кардан аз ҳисоб баромада, аз нав бо Google ворид шавед.","Чтобы изменить, выйдите из аккаунта и войдите снова через Google.","Oʻzgartirish uchun hisobdan chiqib, Google orqali qayta kiring.","To change it, sign out and sign in again with Google."],
-["Розигӣ ва синну сол","Согласие и возраст","Rozilik va yosh","Consent and age"]
+["Розигӣ ва синну сол","Согласие и возраст","Rozilik va yosh","Consent and age"],
+["ҳамагӣ","всего","jami","total"],
+["имрӯз","сегодня","bugun","today"],
+["30 рӯз","30 дней","30 kun","30 days"],
+["Ин рақамҳо чӣ маъно доранд?","Что означают эти цифры?","Bu raqamlar nimani anglatadi?","What do these numbers mean?"],
+["Рақамҳо чӣ маъно доранд?","Что означают цифры?","Raqamlar nimani anglatadi?","What the numbers mean"],
+["Рақамҳо аз сервер ҳар дафъа нав мешаванд.","Цифры каждый раз обновляются с сервера.","Raqamlar har safar serverdan yangilanadi.","The numbers refresh from the server each time."],
+["Ҳисобҳое, ки рамзи почтаро тасдиқ кардаанд (воридшавӣ бо рамз ё бо Google). Ҳамагӣ, аз рӯзи аввал.","Аккаунты, подтвердившие код из почты (вход по коду или через Google). Всего, с первого дня.","Pochta kodini tasdiqlagan hisoblar (kod yoki Google orqali kirish). Jami, birinchi kundan.","Accounts that confirmed the email code (code or Google sign-in). Total, since day one."],
+["Имрӯз ақаллан як бор барномаро кушода, воридшуда будаанд. Ҳар нафар як маротиба ҳисоб мешавад.","Сегодня хотя бы раз открыли приложение, будучи вошедшими. Каждый считается один раз.","Bugun kamida bir marta ilovani ochgan, kirgan holda. Har kim bir marta hisoblanadi.","Opened the app at least once today while signed in. Each person is counted once."],
+["Имрӯз ҳамаи корбарон дар экрани хондан чӣ қадар вақт сарф кардаанд. Танҳо китоб хондан; аудио ҳисоб намешавад.","Сколько времени сегодня все пользователи провели на экране чтения. Только чтение книг; аудио не считается.","Bugun barcha foydalanuvchilar oʻqish ekranida qancha vaqt sarflagan. Faqat kitob oʻqish; audio hisoblanmaydi.","How much time all users spent on the reading screen today. Reading books only; audio is not counted."],
+["Дастгоҳҳое, ки дар 30 рӯзи охир барномаро БОРИ АВВАЛ кушодаанд (APK ё сайт/iPhone). Ин шумораи дастгоҳҳост, на одамон: барнома нест шуда аз нав насб шавад ё ҳам аз APK ва ҳам аз сайт кушода шавад, боз ҳисоб мешавад. Ба сабти ном вобаста нест.","Устройства, впервые открывшие приложение за последние 30 дней (APK или сайт/iPhone). Это число устройств, а не людей: если приложение удалить и поставить заново, либо открыть и из APK, и с сайта, оно посчитается снова. От регистрации не зависит.","Oxirgi 30 kunda ilovani BIRINCHI marta ochgan qurilmalar (APK yoki sayt/iPhone). Bu qurilmalar soni, odamlar emas: ilova oʻchirilib qayta oʻrnatilsa yoki ham APK, ham saytdan ochilsa, yana hisoblanadi. Roʻyxatdan oʻtishga bogʻliq emas.","Devices that opened the app for the first time in the last 30 days (APK or site/iPhone). This counts devices, not people: if the app is deleted and installed again, or opened from both the APK and the site, it is counted again. It does not depend on registration."],
+["Шумораи админҳо.","Количество админов.","Adminlar soni.","Number of admins."],
+["Шумораи ёрдамчиён.","Количество помощников.","Yordamchilar soni.","Number of helpers."],
+["Корбарони оддӣ, ки профили тайёр доранд (нестшудагон не).","Обычные пользователи с готовым профилем (удалённые не считаются).","Tayyor profili bor oddiy foydalanuvchilar (oʻchirilganlar hisoblanmaydi).","Regular users with a ready profile (deleted ones are not counted)."],
+["Ҳамон «Корбар»: ҳисобҳое, ки воридшавиро анҷом додаанд.","То же, что «Пользователь»: аккаунты, завершившие вход.","Xuddi «Foydalanuvchi»: kirishni tugatgan hisoblar.","Same as «User»: accounts that completed sign-in."],
+["Почта навиштанд ва рамз гирифтанд, вале онро ворид накарданд: воридшавӣ тамом нашуд.","Ввели почту и получили код, но не ввели его: вход не завершён.","Pochta kiritib kod oldi, lekin uni kiritmadi: kirish tugamadi.","Entered an email and got a code but did not enter it: sign-in unfinished."],
+["Рамз тасдиқ шуд, лекин профил (ном) ҳанӯз сохта нашудааст.","Код подтверждён, но профиль (имя) ещё не создан.","Kod tasdiqlandi, lekin profil (nom) hali yaratilmagan.","Code confirmed, but the profile (name) has not been created yet."],
+["Ҳамон «Фаъол»: имрӯз кушодагон.","То же, что «Активные»: открывшие сегодня.","Xuddi «Faol»: bugun ochganlar.","Same as «Active»: those who opened today."],
+["7 рӯзи охир ақаллан як бор кушодагон (ҳар нафар як маротиба).","Открывшие хотя бы раз за последние 7 дней (каждый один раз).","Oxirgi 7 kunda kamida bir marta ochganlar (har kim bir marta).","Opened at least once in the last 7 days (each person once)."],
+["Ҳамон «Хондан»: вақти имрӯзаи хондани ҳама.","То же, что «Чтение»: время чтения сегодня у всех.","Xuddi «Oʻqish»: bugun hammaning oʻqish vaqti.","Same as «Reading»: everyone's reading time today."],
+["Вақти хондани ҳамаи корбарон дар 7 рӯзи охир.","Время чтения всех пользователей за последние 7 дней.","Barcha foydalanuvchilarning oxirgi 7 kundagi oʻqish vaqti.","Reading time of all users in the last 7 days."],
+["Ҳамон «Насб» (30 рӯз).","То же, что «Установки» (30 дней).","Xuddi «Oʻrnatish» (30 kun).","Same as «Installs» (30 days)."],
+["Дар 30 рӯзи охир профил сохтаанд.","Создали профиль за последние 30 дней.","Oxirgi 30 kunda profil yaratganlar.","Created a profile in the last 30 days."],
+["Аз ҳамон сабтномкардагон, ки ақаллан 1 дақиқа китоб хондаанд.","Из этих зарегистрированных те, кто прочитал хотя бы 1 минуту.","Shu roʻyxatdan oʻtganlardan kamida 1 daqiqa kitob oʻqiganlar.","Of those registered, the ones who read at least 1 minute."],
+["Аз ҳамон сабтномкардагон, ки пас аз 1 рӯз ё 7 рӯз аз рӯзи сабти ном боз омадаанд.","Из этих зарегистрированных те, кто вернулся через 1 или 7 дней после регистрации.","Shu roʻyxatdan oʻtganlardan roʻyxatdan oʻtgan kundan 1 yoki 7 kun keyin qaytganlar.","Of those registered, the ones who came back 1 or 7 days after signing up."]
 ]
 </script>
 <script>
@@ -4272,15 +4305,16 @@ function admHTML(){if(S.role!=="admin"&&S.role!=="subadmin")return "";
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
   <div class="plan"><span class="round">${P(ADM_I.flag,2)}</span><div><b>Панели идоракунӣ${alert?'<i class="rel-dot"></i>':""}</b><span>${n} бахш · ${S.role==="admin"?"админ":"ёрдамчӣ"}</span></div><button class="pill" data-sheet="admhub">Кушодан</button></div></div>`}
 const fmtShort=sec=>{const m=Math.round((sec||0)/60);return m>=60?Math.floor(m/60)+"с "+String(m%60).padStart(2,"0")+"д":m+"д"};
-const admKpi=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};return[["Корбар","hk_u",st.total],["Фаъол","hk_dau",rs.dau],["Хондан","hk_mt",S.rs?fmtShort(rs.sec_today):null],["Насб","hk_in",fn.installs]]};
+const admKpi=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};return[["Корбар","hk_u",st.total,"ҳамагӣ"],["Фаъол","hk_dau",rs.dau,"имрӯз"],["Хондан","hk_mt",S.rs?fmtShort(rs.sec_today):null,"имрӯз"],["Насб","hk_in",fn.installs,"30 рӯз"]]};
 function admKpiUpdate(){const m={hk_u:(S.stats||{}).total,hk_dau:(S.rs||{}).dau,hk_mt:S.rs?fmtShort(S.rs.sec_today):null,hk_in:(S.fn||{}).installs};Object.keys(m).forEach(k=>{const e=document.getElementById(k);if(e)e.textContent=m[k]??"–"})}
 function admHubHTML(X){const T=admTiles(),role=S.role==="admin"?"АДМИН":"ЁРДАМЧӢ";
  return `<div class="sh-head"><b class="sh-t">Идоракунӣ</b><span class="adm-tag">${role}</span>${X}</div>
-  ${canPerm("stats")?`<div class="adm-kpi">${admKpi().map(([t,id,v])=>`<div><small>${t}</small><b id="${id}">${v??"–"}</b></div>`).join("")}</div>`:""}
+  ${canPerm("stats")?`<div class="adm-kpi">${admKpi().map(([t,id,v,per])=>`<div><small>${t}</small><b id="${id}">${v??"–"}</b><em>${per}</em></div>`).join("")}</div><button class="adm-help" data-adm-go="admhelp">Ин рақамҳо чӣ маъно доранд?</button>`:""}
   <p class="adm-cap"><b>Бахшҳо</b><span>${T.length}</span></p>
   <div class="adm-grid">${T.map(([sh,t,ic,c,,bd])=>`<button class="adm-tile" data-adm-go="${sh}"><span class="adm-ic ${c}">${P(ADM_I[ic],1.8)}</span><b>${t}</b>${bd?`<i class="adm-bd${bd==="!"?" r":""}">${bd}</i>`:""}</button>`).join("")}</div>
   ${canPerm("release")?`<button class="adm-apk" data-adm-go="admrel"><span class="adm-ic c5">${P(ADM_I.dl,1.8)}</span><div><b>Навсозии APK${S.rel&&S.rel.version?" #"+S.rel.version:""}</b><span>${relNew()?"Версияи нав тайёр: нашр кардан мумкин":S.rel&&S.rel.version?"Нашр шудааст":"Нашр ва қатъ кардани навсозӣ"}</span></div>${relNew()?'<i class="adm-bd r">!</i>':""}</button>`:""}`}
 function admStatHTML(X){const st=S.stats||{};return `<div class="sh-head"><b class="sh-t">Омор</b>${X}</div>
+  <button class="adm-help" data-adm-go="admhelp">Ин рақамҳо чӣ маъно доранд?</button>
 
   <div class="stg"><div><small>Админ</small><b id="st_admin">${st.admins??"–"}</b></div><div><small>Ёрдамчӣ</small><b id="st_sub">${st.subadmins??"–"}</b></div><div><small>Истифодабарандагон</small><b id="st_user">${st.users??"–"}</b></div><div class="all"><small>Рамзро тасдиқ кардаанд</small><b id="st_all">${st.total??"–"}</b></div><div><small>Рамз тасдиқ нашудааст</small><b id="st_unv">${st.unverified??"–"}</b></div><div><small>Профил тайёр нест</small><b id="st_np">${st.no_profile??"–"}</b></div></div>
   <div class="stg"><div><small>Имрӯз фаъол</small><b id="st_dau">${(S.rs||{}).dau??"–"}</b></div><div><small>7 рӯз фаъол</small><b id="st_wau">${(S.rs||{}).wau??"–"}</b></div><div><small>Хондан имрӯз</small><b id="st_mt" class="sm">${S.rs?fmtT(S.rs.sec_today):"–"}</b></div><div class="all"><small>Хондан дар 7 рӯз</small><b id="st_m7">${S.rs?fmtT(S.rs.sec_7d):"–"}</b></div></div>
@@ -4475,6 +4509,32 @@ function bindAdminDeleted($$){
   try{const c=await sbLoad();const{data,error}=await c.rpc("restore_account",{p_id:b.dataset.delRestore});
    if(error||data!=="ok")throw 0;toast("Ҳисоб барқарор шуд");DEL.list=null;loadDeleted()}
   catch(_){b.disabled=false;toast("Барқарор нашуд. Интернет ё ҳуқуқро санҷед")}});}
+/* ===== Идоракунӣ: «Ин рақамҳо чӣ маъно доранд?» — ҳар як рақам бо шарҳ ва давр (админ ва ёрдамчии дорои ҳуқуқи «омор») ===== */
+const ADM_HELP=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};
+ // [ном, қимат, шарҳ]
+ return [
+ ["Корбар",st.total,"Ҳисобҳое, ки рамзи почтаро тасдиқ кардаанд (воридшавӣ бо рамз ё бо Google). Ҳамагӣ, аз рӯзи аввал."],
+ ["Фаъол",rs.dau,"Имрӯз ақаллан як бор барномаро кушода, воридшуда будаанд. Ҳар нафар як маротиба ҳисоб мешавад."],
+ ["Хондан",S.rs?fmtT(rs.sec_today):null,"Имрӯз ҳамаи корбарон дар экрани хондан чӣ қадар вақт сарф кардаанд. Танҳо китоб хондан; аудио ҳисоб намешавад."],
+ ["Насб",fn.installs,"Дастгоҳҳое, ки дар 30 рӯзи охир барномаро БОРИ АВВАЛ кушодаанд (APK ё сайт/iPhone). Ин шумораи дастгоҳҳост, на одамон: барнома нест шуда аз нав насб шавад ё ҳам аз APK ва ҳам аз сайт кушода шавад, боз ҳисоб мешавад. Ба сабти ном вобаста нест."],
+ ["Админ",st.admins,"Шумораи админҳо."],
+ ["Ёрдамчӣ",st.subadmins,"Шумораи ёрдамчиён."],
+ ["Истифодабарандагон",st.users,"Корбарони оддӣ, ки профили тайёр доранд (нестшудагон не)."],
+ ["Рамзро тасдиқ кардаанд",st.total,"Ҳамон «Корбар»: ҳисобҳое, ки воридшавиро анҷом додаанд."],
+ ["Рамз тасдиқ нашудааст",st.unverified,"Почта навиштанд ва рамз гирифтанд, вале онро ворид накарданд: воридшавӣ тамом нашуд."],
+ ["Профил тайёр нест",st.no_profile,"Рамз тасдиқ шуд, лекин профил (ном) ҳанӯз сохта нашудааст."],
+ ["Имрӯз фаъол",rs.dau,"Ҳамон «Фаъол»: имрӯз кушодагон."],
+ ["7 рӯз фаъол",rs.wau,"7 рӯзи охир ақаллан як бор кушодагон (ҳар нафар як маротиба)."],
+ ["Хондан имрӯз",S.rs?fmtT(rs.sec_today):null,"Ҳамон «Хондан»: вақти имрӯзаи хондани ҳама."],
+ ["Хондан дар 7 рӯз",S.rs?fmtT(rs.sec_7d):null,"Вақти хондани ҳамаи корбарон дар 7 рӯзи охир."],
+ ["Насб карданд",fn.installs,"Ҳамон «Насб» (30 рӯз)."],
+ ["Сабти ном карданд",fn.registered,"Дар 30 рӯзи охир профил сохтаанд."],
+ ["1 дақиқа хонданд",fn.read1,"Аз ҳамон сабтномкардагон, ки ақаллан 1 дақиқа китоб хондаанд."],
+ ["Баргаштанд: рӯзи 1+ / рӯзи 7+",(fn.back1??"–")+" / "+(fn.back7??"–"),"Аз ҳамон сабтномкардагон, ки пас аз 1 рӯз ё 7 рӯз аз рӯзи сабти ном боз омадаанд."]]};
+function admHelpHTML(X){return `<div class="sh-head"><b class="sh-t">Рақамҳо чӣ маъно доранд?</b>${X}</div>
+ <p class="hlp-n">Рақамҳо аз сервер ҳар дафъа нав мешаванд.</p>
+ <div class="hlp">${ADM_HELP().map(([n,v,t])=>`<div class="hlp-r"><div class="hlp-h"><b>${n}</b><em translate="no">${v??"–"}</em></div><p>${t}</p></div>`).join("")}</div>`}
+SHEETS.admhelp=X=>canPerm("stats")?admHelpHTML(X):"";
 /* ---- Админ: ёрдамчиро бардоштан ----
    НАВ ёрдамчи (Бета, <30 рӯз): як тасдиқ. ДОИМӢ ёрдамчи: 3 ойнаи ҳушдор + 60 сония, фақат «Бекор кардан»; қулф/баромад → бекор.
    Сервер ҳам 60 сонияро талаб мекунад (docs/sql-yordamchi.sql: request_staff_removal + set_role). */
@@ -4562,7 +4622,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="7bb71c408c";
+const WEB_H="f71322aa02";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

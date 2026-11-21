@@ -103,15 +103,16 @@ function admHTML(){if(S.role!=="admin"&&S.role!=="subadmin")return "";
  return `<div class="sec"><div class="sec-h"><h2>Идоракунӣ</h2></div>
   <div class="plan"><span class="round">${P(ADM_I.flag,2)}</span><div><b>Панели идоракунӣ${alert?'<i class="rel-dot"></i>':""}</b><span>${n} бахш · ${S.role==="admin"?"админ":"ёрдамчӣ"}</span></div><button class="pill" data-sheet="admhub">Кушодан</button></div></div>`}
 const fmtShort=sec=>{const m=Math.round((sec||0)/60);return m>=60?Math.floor(m/60)+"с "+String(m%60).padStart(2,"0")+"д":m+"д"};
-const admKpi=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};return[["Корбар","hk_u",st.total],["Фаъол","hk_dau",rs.dau],["Хондан","hk_mt",S.rs?fmtShort(rs.sec_today):null],["Насб","hk_in",fn.installs]]};
+const admKpi=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};return[["Корбар","hk_u",st.total,"ҳамагӣ"],["Фаъол","hk_dau",rs.dau,"имрӯз"],["Хондан","hk_mt",S.rs?fmtShort(rs.sec_today):null,"имрӯз"],["Насб","hk_in",fn.installs,"30 рӯз"]]};
 function admKpiUpdate(){const m={hk_u:(S.stats||{}).total,hk_dau:(S.rs||{}).dau,hk_mt:S.rs?fmtShort(S.rs.sec_today):null,hk_in:(S.fn||{}).installs};Object.keys(m).forEach(k=>{const e=document.getElementById(k);if(e)e.textContent=m[k]??"–"})}
 function admHubHTML(X){const T=admTiles(),role=S.role==="admin"?"АДМИН":"ЁРДАМЧӢ";
  return `<div class="sh-head"><b class="sh-t">Идоракунӣ</b><span class="adm-tag">${role}</span>${X}</div>
-  ${canPerm("stats")?`<div class="adm-kpi">${admKpi().map(([t,id,v])=>`<div><small>${t}</small><b id="${id}">${v??"–"}</b></div>`).join("")}</div>`:""}
+  ${canPerm("stats")?`<div class="adm-kpi">${admKpi().map(([t,id,v,per])=>`<div><small>${t}</small><b id="${id}">${v??"–"}</b><em>${per}</em></div>`).join("")}</div><button class="adm-help" data-adm-go="admhelp">Ин рақамҳо чӣ маъно доранд?</button>`:""}
   <p class="adm-cap"><b>Бахшҳо</b><span>${T.length}</span></p>
   <div class="adm-grid">${T.map(([sh,t,ic,c,,bd])=>`<button class="adm-tile" data-adm-go="${sh}"><span class="adm-ic ${c}">${P(ADM_I[ic],1.8)}</span><b>${t}</b>${bd?`<i class="adm-bd${bd==="!"?" r":""}">${bd}</i>`:""}</button>`).join("")}</div>
   ${canPerm("release")?`<button class="adm-apk" data-adm-go="admrel"><span class="adm-ic c5">${P(ADM_I.dl,1.8)}</span><div><b>Навсозии APK${S.rel&&S.rel.version?" #"+S.rel.version:""}</b><span>${relNew()?"Версияи нав тайёр: нашр кардан мумкин":S.rel&&S.rel.version?"Нашр шудааст":"Нашр ва қатъ кардани навсозӣ"}</span></div>${relNew()?'<i class="adm-bd r">!</i>':""}</button>`:""}`}
 function admStatHTML(X){const st=S.stats||{};return `<div class="sh-head"><b class="sh-t">Омор</b>${X}</div>
+  <button class="adm-help" data-adm-go="admhelp">Ин рақамҳо чӣ маъно доранд?</button>
 
   <div class="stg"><div><small>Админ</small><b id="st_admin">${st.admins??"–"}</b></div><div><small>Ёрдамчӣ</small><b id="st_sub">${st.subadmins??"–"}</b></div><div><small>Истифодабарандагон</small><b id="st_user">${st.users??"–"}</b></div><div class="all"><small>Рамзро тасдиқ кардаанд</small><b id="st_all">${st.total??"–"}</b></div><div><small>Рамз тасдиқ нашудааст</small><b id="st_unv">${st.unverified??"–"}</b></div><div><small>Профил тайёр нест</small><b id="st_np">${st.no_profile??"–"}</b></div></div>
   <div class="stg"><div><small>Имрӯз фаъол</small><b id="st_dau">${(S.rs||{}).dau??"–"}</b></div><div><small>7 рӯз фаъол</small><b id="st_wau">${(S.rs||{}).wau??"–"}</b></div><div><small>Хондан имрӯз</small><b id="st_mt" class="sm">${S.rs?fmtT(S.rs.sec_today):"–"}</b></div><div class="all"><small>Хондан дар 7 рӯз</small><b id="st_m7">${S.rs?fmtT(S.rs.sec_7d):"–"}</b></div></div>

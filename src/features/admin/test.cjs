@@ -97,3 +97,18 @@ module.exports=(prev=>async t=>{
  await PP.evaluate(()=>{SD.t0=Date.now()-59700});await PP.waitForTimeout(1200);
  t.ok(await PP.evaluate(()=>window.__rp.some(x=>x[0]==='set_role'&&x[1]==='old@x.co'&&x[2]==='user')),'60 сония гузашт: ёрдамчии доимӣ бардошта шуд (set_role)');
 })(module.exports);
+
+// Идоракунӣ: шарҳи рақамҳо (ҳар KPI давр дорад; «Ин рақамҳо чӣ маъно доранд?» варақи шарҳ мекушояд)
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home',role:'admin'});
+ await P.evaluate(()=>{S.role='admin';S.fn={installs:88,registered:5,read1:2,back1:1,back7:0};S.stats={total:10,admins:1,subadmins:0,users:9,unverified:2,no_profile:1};S.rs={dau:1,wau:3,sec_today:0,sec_7d:600};S.sheet='admhub';render()});
+ await P.waitForTimeout(400);
+ t.ok(await P.evaluate(()=>{const k=[...document.querySelectorAll('.adm-kpi>div')];return k.length===4&&k.every(d=>d.querySelector('em'))&&/30 рӯз/.test(k[3].innerText)}),'KPI: ҳар рақам давр дорад (Насб — 30 рӯз)');
+ await P.click('[data-adm-go=admhelp]');await P.waitForTimeout(400);
+ t.ok(await P.evaluate(()=>{const h=document.querySelector('.hlp');return !!h&&h.querySelectorAll('.hlp-r').length>=16&&/BORI AVVAL|БОРИ АВВАЛ/.test(h.innerText)&&/88/.test(h.innerText)}),'шарҳ: ҳамаи рақамҳо бо маъно ва қимат, «Насб» = дастгоҳи нав дар 30 рӯз');
+ // ёрдамчӣ бе ҳуқуқи «омор» намебинад
+ await P.evaluate(()=>{S.role='subadmin';S.perms={stats:false};S.sheet='admhelp';render()});await P.waitForTimeout(300);
+ t.eq(await P.evaluate(()=>!!document.querySelector('.hlp')),false,'ёрдамчӣ бе ҳуқуқи омор шарҳро намебинад');
+})(module.exports);
