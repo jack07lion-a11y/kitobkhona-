@@ -362,19 +362,6 @@ public class MainActivity extends Activity {
             }
 
             @JavascriptInterface
-            public String deviceInfo() {
-                try {
-                    JSONObject o = new JSONObject();
-                    o.put("brand", Build.BRAND).put("model", Build.MODEL).put("android", Build.VERSION.RELEASE).put("sdk", Build.VERSION.SDK_INT);
-                    o.put("app", version()).put("shell", Notify.sp(MainActivity.this).getString("shell_state", "ok"));
-                    o.put("rolled", Notify.sp(MainActivity.this).getBoolean("shell_rolled", false));
-                    return o.toString();
-                } catch (Exception e) {
-                    return "{}";
-                }
-            }
-
-            @JavascriptInterface
             public void keepAwake(final boolean on) {
                 runOnUiThread(new Runnable() {
                     @Override
@@ -651,7 +638,11 @@ public class MainActivity extends Activity {
                     String man = Build.MANUFACTURER == null ? "" : Build.MANUFACTURER;
                     String mod = Build.MODEL == null ? "" : Build.MODEL;
                     String model = mod.toLowerCase().startsWith(man.toLowerCase()) ? mod : (man + " " + mod).trim();
-                    return new JSONObject().put("hw", hw).put("model", model).put("os", "Android " + Build.VERSION.RELEASE).toString();
+                    JSONObject o = new JSONObject().put("hw", hw).put("model", model).put("os", "Android " + Build.VERSION.RELEASE);
+                    o.put("brand", Build.BRAND).put("android", Build.VERSION.RELEASE).put("sdk", Build.VERSION.SDK_INT);
+                    o.put("app", version()).put("shell", Notify.sp(MainActivity.this).getString("shell_state", "ok"));
+                    o.put("rolled", Notify.sp(MainActivity.this).getBoolean("shell_rolled", false));
+                    return o.toString();
                 } catch (Exception e) {
                     return "{}";
                 }
