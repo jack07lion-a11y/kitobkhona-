@@ -7,7 +7,7 @@ verse: ҳамаи сатрҳо шеър (бо сарлавҳа аз ҳарфи �
 import sys,re,json,argparse,collections
 ap=argparse.ArgumentParser();ap.add_argument('src');ap.add_argument('out');ap.add_argument('--mode',default='prose')
 ap.add_argument('--title',default='');ap.add_argument('--skip-pages',type=int,default=0);ap.add_argument('--max-blocks',type=int,default=350)
-ap.add_argument('--trim-regex',default='',help='саҳифаи аввалине, ки ин матн дорад ва ҳама баъдаш бурида мешавад (мундариҷаи охир)');ap.add_argument('--drop-regex',default='',help='сатрҳои дорои ин матн (сарлавҳаи такрорӣ бо хато) бурида мешаванд');ap.add_argument('--show',action='store_true');ap.add_argument('--verse-block',type=int,default=0,help='ҳадди ғайримуқаррарии сатрҳои шеър дар як блок (0=ҳама)')
+ap.add_argument('--trim-regex',default='',help='саҳифаи аввалине, ки ин матн дорад ва ҳама баъдаш бурида мешавад (мундариҷаи охир)');ap.add_argument('--drop-regex',default='',help='сатрҳои дорои ин матн (сарлавҳаи такрорӣ бо хато) бурида мешаванд');ap.add_argument('--ignore-indent',action='store_true',help='скани каҷ: сархатро фақат аз сатри холӣ ва тире муайян кун');ap.add_argument('--show',action='store_true');ap.add_argument('--verse-block',type=int,default=0,help='ҳадди ғайримуқаррарии сатрҳои шеър дар як блок (0=ҳама)')
 a=ap.parse_args()
 pages=open(a.src,encoding='utf8').read().split('\f')[a.skip_pages:]
 if a.trim_regex:
@@ -92,12 +92,12 @@ for L in P:
                 verse.append(t)
             if prev_blank and len(verse)>1 and False: pass
         else:
-            if i>=left+12 and len(t)<78:
+            if i>=left+12 and len(t)<78 and not a.ignore_indent:
                 if cur: secs[-1]['blocks'].append(['p',cur]);cur=''
                 verse.append(t)
             else:
                 if verse: secs[-1]['blocks'].append(['v',verse]);verse=[]
-                newp=(i>=left+3) or prev_blank and cur and EOS.search(cur) is not None
+                newp=((i>=left+3) and not a.ignore_indent) or (prev_blank and cur and EOS.search(cur) is not None) or bool(re.match(r'^[А-ЯЁҒӢҚӮҲҶ]\.\s*[-–—]+',t))
                 t2=re.sub(r'^[-—−–]\s*','– ',t)
                 if cur and newp: secs[-1]['blocks'].append(['p',cur]);cur=''
                 if cur.endswith('-') and not cur.endswith(' -') and t2[:1].islower(): cur=cur[:-1]+t2
