@@ -2255,7 +2255,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҳоло ҳам хонда истодаед?","Вы всё ещё читаете?","Hali ham oʻqiyapsizmi?","Still reading?"],
 ["Бо ин ном дар профил ва рейтинг намоён мешавед. Баъд онро иваз карда метавонед.","Под этим именем вы будете видны в профиле и рейтинге. Позже его можно изменить.","Shu nom bilan profil va reytingda koʻrinasiz. Keyin uni oʻzgartirish mumkin.","You will appear in your profile and the rating under this name. You can change it later."],
 ["Ду аломатро гузоред, шумо давом медиҳед","Поставьте две отметки, и вы продолжите","Ikkita belgini qoʻying, davom etasiz","Tick both boxes to continue"],
-["Ман 18-сола ва болотарам, ё падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст","Мне 18 лет или больше, либо мой родитель или опекун знает об использовании Китобхоны","Men 18 yosh yoki undan kattaman, yoki ota-onam yoki vasiyim Kitobxonadan foydalanishimdan xabardor","I am 18 or older, or my parent or guardian knows I use Kitobkhona"],
+["Ман 13-сола ё калонтарам. Агар аз 18 хурд бошам, падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст","Мне 13 лет или больше. Если мне нет 18, мой родитель или опекун знает об использовании Китобхоны","Men 13 yosh yoki undan kattaman. Agar 18 yoshga to‘lmagan bo‘lsam, ota-onam yoki vasiyim Kitobxonadan foydalanishimdan xabardor","I am 13 or older. If I am under 18, my parent or guardian knows I use Kitobkhona"],
 ["Расм ва ҷоизаҳои профил аз рӯи ин интихоб мешаванд. 3 рӯз иваз кардан мумкин.","Картинки и награды профиля зависят от этого выбора. 3 дня можно изменить.","Profil rasmlari va sovrinlar shu tanlovga bogʻliq. 3 kun ichida oʻzgartirish mumkin.","Profile pictures and prizes depend on this choice. You can change it for 3 days."],
 ["Интихоб шуд","Выбрано","Tanlandi","Selected"],
 ["Иваз шуд","Изменено","Oʻzgartirildi","Changed"],
@@ -3864,7 +3864,7 @@ function obModal(html){const el=document.createElement("div");el.id="obm";el.cla
  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("in")));return el}
 function obConsent(){OB.shown.cons=true;
  const el=obModal(`<h3>Розигӣ ва синну сол</h3><p>Ду аломатро гузоред, шумо давом медиҳед</p>
-  <label class="obc" for="ob1"><input type="checkbox" id="ob1"><i aria-hidden="true"></i><span>Ман 18-сола ва болотарам, ё падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст</span></label>
+  <label class="obc" for="ob1"><input type="checkbox" id="ob1"><i aria-hidden="true"></i><span>Ман 13-сола ё калонтарам. Агар аз 18 хурд бошам, падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст</span></label>
   <label class="obc" for="ob2"><input type="checkbox" id="ob2"><i aria-hidden="true"></i><span>Ман <button class="lnk" type="button" data-obpriv>Сиёсати махфият</button>-ро хондам ва ба нигоҳ доштани маълумотам (почта, ном, омори хондан) розӣ ҳастам</span></label>`);
  const a=el.querySelector("#ob1"),b=el.querySelector("#ob2");
  el.querySelector("[data-obpriv]").onclick=e=>{e.preventDefault();e.stopPropagation();NATIVE.openUrl(SITE_URL+"maxfiyat.html")};
@@ -4781,7 +4781,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="1197b2d126";
+const WEB_H="cd659286d5";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
