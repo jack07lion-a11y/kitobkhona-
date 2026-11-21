@@ -48,6 +48,7 @@ for s in spec['sections']:
         if k=='p':E.append(Paragraph(escape(v),body))
         elif k=='v':E+=[Spacer(1,3)]+[Paragraph(escape(x),verse) for x in v]+[Spacer(1,4)]
         elif k=='fn':E+=[Spacer(1,3)]+[Paragraph('<i>'+escape(x)+'</i>',fnst) for x in v]
+        elif k=='sub':E.append(Paragraph('<b>'+escape(v)+'</b>',st(fontName='SB',fontSize=10.5,leading=14,alignment=TA_CENTER,spaceBefore=6,spaceAfter=3)))
         elif k=='img':E+=[Spacer(1,3),pic(v,maxh=95*mm),Spacer(1,5)]
 L=spec.get('legal')
 if L:
