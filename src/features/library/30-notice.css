@@ -1,0 +1,4 @@
+.bknotice{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:200;max-width:520px;margin:0 auto;border:0;text-align:left;background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:16px;font:600 13px/1.45 inherit;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);animation:bknin .3s ease both}
+.bknotice.out{opacity:0;transform:translateY(-8px);transition:.3s}
+@keyframes bknin{from{opacity:0;transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){.bknotice{animation:none}}
