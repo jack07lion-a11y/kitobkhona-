@@ -2254,7 +2254,13 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҳамон «Насб» (30 рӯз).","То же, что «Установки» (30 дней).","Xuddi «Oʻrnatish» (30 kun).","Same as «Installs» (30 days)."],
 ["Дар 30 рӯзи охир профил сохтаанд.","Создали профиль за последние 30 дней.","Oxirgi 30 kunda profil yaratganlar.","Created a profile in the last 30 days."],
 ["Аз ҳамон сабтномкардагон, ки ақаллан 1 дақиқа китоб хондаанд.","Из этих зарегистрированных те, кто прочитал хотя бы 1 минуту.","Shu roʻyxatdan oʻtganlardan kamida 1 daqiqa kitob oʻqiganlar.","Of those registered, the ones who read at least 1 minute."],
-["Аз ҳамон сабтномкардагон, ки пас аз 1 рӯз ё 7 рӯз аз рӯзи сабти ном боз омадаанд.","Из этих зарегистрированных те, кто вернулся через 1 или 7 дней после регистрации.","Shu roʻyxatdan oʻtganlardan roʻyxatdan oʻtgan kundan 1 yoki 7 kun keyin qaytganlar.","Of those registered, the ones who came back 1 or 7 days after signing up."]
+["Аз ҳамон сабтномкардагон, ки пас аз 1 рӯз ё 7 рӯз аз рӯзи сабти ном боз омадаанд.","Из этих зарегистрированных те, кто вернулся через 1 или 7 дней после регистрации.","Shu roʻyxatdan oʻtganlardan roʻyxatdan oʻtgan kundan 1 yoki 7 kun keyin qaytganlar.","Of those registered, the ones who came back 1 or 7 days after signing up."],
+["Насб карданд, вале ворид нашудаанд","Установили, но не вошли","Oʻrnatgan, lekin kirmaganlar","Installed but not signed in"],
+["Насб: APK","Установки: APK","Oʻrnatish: APK","Installs: APK"],
+["Насб: сайт ва iPhone","Установки: сайт и iPhone","Oʻrnatish: sayt va iPhone","Installs: site and iPhone"],
+["Аз ҳамон «Насб»: дастгоҳҳое, ки барномаро кушоданд, вале ҳоло ҳам бо ҳеҷ ҳисоб ворид нашудаанд (на бо Google, на бо рамзи почта). Дастгоҳи кӯҳна то кушодани навбатӣ ин ҷо мемонад.","Из тех же «Установок»: устройства, открывшие приложение, но так и не вошедшие ни в какой аккаунт (ни через Google, ни по коду из почты). Старое устройство остаётся здесь до следующего открытия.","Xuddi shu «Oʻrnatish»dan: ilovani ochgan, lekin hech bir hisob bilan kirmagan qurilmalar (na Google, na pochta kodi bilan). Eski qurilma keyingi ochilishgacha shu yerda qoladi.","From the same «Installs»: devices that opened the app but have not signed in to any account (neither Google nor email code). An old device stays here until its next open."],
+["Аз ҳамон «Насб»: дастгоҳҳои Android бо барномаи APK.","Из тех же «Установок»: устройства Android с приложением APK.","Xuddi shu «Oʻrnatish»dan: APK ilovali Android qurilmalar.","From the same «Installs»: Android devices with the APK app."],
+["Аз ҳамон «Насб»: сайт ва iPhone (браузер ё «Ба экрани асосӣ»).","Из тех же «Установок»: сайт и iPhone (браузер или «На экран Домой»).","Xuddi shu «Oʻrnatish»dan: sayt va iPhone (brauzer yoki «Bosh ekranga»).","From the same «Installs»: site and iPhone (browser or «Add to Home Screen»)."]
 ]
 </script>
 <script>
@@ -3965,8 +3971,9 @@ function resetUserData(){
  S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";syncLast="";save()}
 /* дастгоҳи беном (воронка: «ўрнатган»): ID-и тасодуфӣ, бе почта ва ном; docs/sql-metrika.sql */
 function devId(){try{let d=localStorage.getItem("kitob_dev");if(!d){d=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():("d"+Date.now().toString(36)+Math.random().toString(36).slice(2,12));localStorage.setItem("kitob_dev",d)}return d}catch(_){return""}}
-async function trackInstall(c){try{const d=devId();if(!d||!navigator.onLine)return;const k=todayKey();if(localStorage.getItem("kitob_inst")===k)return;
- const{error}=await c.rpc("track_install",{p_device:d,p_native:!!window.KitobAndroid});if(!error)localStorage.setItem("kitob_inst",k)}catch(_){}}
+async function trackInstall(c){try{const d=devId();if(!d||!navigator.onLine)return;const k=todayKey(),u=S.uid||"";
+ if(localStorage.getItem("kitob_inst")===k&&(!u||localStorage.getItem("kitob_inst_u")===u))return; // ҳар рӯз як бор; воридшавӣ — дарҳол (дастгоҳ ба ҳисоб пайваст мешавад)
+ const{error}=await c.rpc("track_install",{p_device:d,p_native:!!window.KitobAndroid});if(!error){localStorage.setItem("kitob_inst",k);if(u)localStorage.setItem("kitob_inst_u",u)}}catch(_){}}
 /* ---- Алоқа бо корбарон: хато/пешниҳод, омори хондан, хабарҳо, версияи ҳадди ақал, ҳавола ---- */
 // ===== Омори хондан (рақамҳои беном: барои админ танҳо ҷамъбаст) =====
 const RSK="kitob_rs",ST={sec:0,b:0};
@@ -4320,6 +4327,7 @@ function admStatHTML(X){const st=S.stats||{};return `<div class="sh-head"><b cla
   <div class="stg"><div><small>Имрӯз фаъол</small><b id="st_dau">${(S.rs||{}).dau??"–"}</b></div><div><small>7 рӯз фаъол</small><b id="st_wau">${(S.rs||{}).wau??"–"}</b></div><div><small>Хондан имрӯз</small><b id="st_mt" class="sm">${S.rs?fmtT(S.rs.sec_today):"–"}</b></div><div class="all"><small>Хондан дар 7 рӯз</small><b id="st_m7">${S.rs?fmtT(S.rs.sec_7d):"–"}</b></div></div>
   <p class="set-cap">Роҳи корбар, 30 рӯзи охир</p>
   <div class="stg"><div><small>Насб карданд</small><b id="fn_installs">${(S.fn||{}).installs??"–"}</b></div><div><small>Сабти ном карданд</small><b id="fn_registered">${(S.fn||{}).registered??"–"}</b></div><div><small>1 дақиқа хонданд</small><b id="fn_read1">${(S.fn||{}).read1??"–"}</b></div><div class="all"><small>Баргаштанд: рӯзи 1+ / рӯзи 7+</small><b><span id="fn_back1">${(S.fn||{}).back1??"–"}</span> / <span id="fn_back7">${(S.fn||{}).back7??"–"}</span></b></div></div>
+  <div class="stg"><div class="all"><small>Насб карданд, вале ворид нашудаанд</small><b id="fn_anon">${(S.fn||{}).installs_anon??"–"}</b></div><div><small>Насб: APK</small><b id="fn_apk">${(S.fn||{}).installs_apk??"–"}</b></div><div><small>Насб: сайт ва iPhone</small><b id="fn_web">${(S.fn||{}).installs_web??"–"}</b></div></div>
   ${S.rs&&S.rs.top&&S.rs.top.length?`<p class="set-note" translate="no">${S.rs.top.map((t,i)=>(i+1)+". "+escH(t.title)+" — "+fmtT(t.sec)).join("<br>")}</p>`:""}
   ${suspHTML()}
  `}
@@ -4517,6 +4525,9 @@ const ADM_HELP=()=>{const st=S.stats||{},rs=S.rs||{},fn=S.fn||{};
  ["Фаъол",rs.dau,"Имрӯз ақаллан як бор барномаро кушода, воридшуда будаанд. Ҳар нафар як маротиба ҳисоб мешавад."],
  ["Хондан",S.rs?fmtT(rs.sec_today):null,"Имрӯз ҳамаи корбарон дар экрани хондан чӣ қадар вақт сарф кардаанд. Танҳо китоб хондан; аудио ҳисоб намешавад."],
  ["Насб",fn.installs,"Дастгоҳҳое, ки дар 30 рӯзи охир барномаро БОРИ АВВАЛ кушодаанд (APK ё сайт/iPhone). Ин шумораи дастгоҳҳост, на одамон: барнома нест шуда аз нав насб шавад ё ҳам аз APK ва ҳам аз сайт кушода шавад, боз ҳисоб мешавад. Ба сабти ном вобаста нест."],
+ ["Насб карданд, вале ворид нашудаанд",fn.installs_anon,"Аз ҳамон «Насб»: дастгоҳҳое, ки барномаро кушоданд, вале ҳоло ҳам бо ҳеҷ ҳисоб ворид нашудаанд (на бо Google, на бо рамзи почта). Дастгоҳи кӯҳна то кушодани навбатӣ ин ҷо мемонад."],
+ ["Насб: APK",fn.installs_apk,"Аз ҳамон «Насб»: дастгоҳҳои Android бо барномаи APK."],
+ ["Насб: сайт ва iPhone",fn.installs_web,"Аз ҳамон «Насб»: сайт ва iPhone (браузер ё «Ба экрани асосӣ»)."],
  ["Админ",st.admins,"Шумораи админҳо."],
  ["Ёрдамчӣ",st.subadmins,"Шумораи ёрдамчиён."],
  ["Истифодабарандагон",st.users,"Корбарони оддӣ, ки профили тайёр доранд (нестшудагон не)."],
@@ -4622,7 +4633,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="f71322aa02";
+const WEB_H="8914a4a63a";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

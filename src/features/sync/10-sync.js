@@ -33,5 +33,6 @@ function resetUserData(){
  S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";syncLast="";save()}
 /* дастгоҳи беном (воронка: «ўрнатган»): ID-и тасодуфӣ, бе почта ва ном; docs/sql-metrika.sql */
 function devId(){try{let d=localStorage.getItem("kitob_dev");if(!d){d=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():("d"+Date.now().toString(36)+Math.random().toString(36).slice(2,12));localStorage.setItem("kitob_dev",d)}return d}catch(_){return""}}
-async function trackInstall(c){try{const d=devId();if(!d||!navigator.onLine)return;const k=todayKey();if(localStorage.getItem("kitob_inst")===k)return;
- const{error}=await c.rpc("track_install",{p_device:d,p_native:!!window.KitobAndroid});if(!error)localStorage.setItem("kitob_inst",k)}catch(_){}}
+async function trackInstall(c){try{const d=devId();if(!d||!navigator.onLine)return;const k=todayKey(),u=S.uid||"";
+ if(localStorage.getItem("kitob_inst")===k&&(!u||localStorage.getItem("kitob_inst_u")===u))return; // ҳар рӯз як бор; воридшавӣ — дарҳол (дастгоҳ ба ҳисоб пайваст мешавад)
+ const{error}=await c.rpc("track_install",{p_device:d,p_native:!!window.KitobAndroid});if(!error){localStorage.setItem("kitob_inst",k);if(u)localStorage.setItem("kitob_inst_u",u)}}catch(_){}}

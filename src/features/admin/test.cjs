@@ -112,3 +112,18 @@ module.exports=(prev=>async t=>{
  await P.evaluate(()=>{S.role='subadmin';S.perms={stats:false};S.sheet='admhelp';render()});await P.waitForTimeout(300);
  t.eq(await P.evaluate(()=>!!document.querySelector('.hlp')),false,'ёрдамчӣ бе ҳуқуқи омор шарҳро намебинад');
 })(module.exports);
+
+// насб ва воридшавӣ: ворид нашудагон дар Омор ва шарҳ
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home',role:'admin'});
+ await P.evaluate(()=>{S.role='admin';S.fn={installs:88,installs_anon:70,installs_apk:60,installs_web:28,registered:5,read1:2,back1:1,back7:0};S.sheet='admstat';render()});await P.waitForTimeout(400);
+ t.eq(await P.evaluate(()=>[document.getElementById('fn_anon').textContent,document.getElementById('fn_apk').textContent,document.getElementById('fn_web').textContent]),['70','60','28'],'Омор: насб карданд, вале ворид нашудаанд (70), APK (60), сайт (28)');
+ // дастгоҳ ба ҳисоб пайваст мешавад: баъди воридшавӣ track_install боз фиристода мешавад
+ await P.evaluate(()=>{localStorage.removeItem('kitob_inst_u');localStorage.setItem('kitob_inst',todayKey());S.uid='u5';window.__ti=0;return trackInstall({rpc:async n=>{if(n==='track_install')window.__ti++;return{error:null}}})});
+ await P.waitForTimeout(200);
+ t.eq(await P.evaluate(()=>[window.__ti,localStorage.getItem('kitob_inst_u')]),[1,'u5'],'воридшавӣ: имрӯз боз фиристод ҳам, дастгоҳ ба ҳисоб пайваст шуд');
+ await P.evaluate(()=>{window.__ti=0;return trackInstall({rpc:async()=>{window.__ti++;return{error:null}}})});
+ t.eq(await P.evaluate(()=>window.__ti),0,'ҳамон корбар: такрор нафиристод');
+})(module.exports);
