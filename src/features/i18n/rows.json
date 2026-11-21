@@ -880,5 +880,13 @@
 ["Аз телефонҳои нав: Android бо барномаи APK.","Из новых телефонов: Android с приложением APK.","Yangi telefonlardan: APK ilovali Android.","Of the new phones: Android with the APK app."],
 ["Аз телефонҳои нав: сайт ва iPhone (браузер ё «Ба экрани асосӣ»).","Из новых телефонов: сайт и iPhone (браузер или «На экран Домой»).","Yangi telefonlardan: sayt va iPhone (brauzer yoki «Bosh ekranga»).","Of the new phones: site and iPhone (browser or «Add to Home Screen»)."],
 ["Ҳамон як телефони Android, ки пештар насб шуда буд ва барнома нест карда аз нав насб шуд. Ба шумораи «Насб» илова намешавад.","Тот же телефон Android, на котором приложение уже стояло, было удалено и поставлено заново. К числу «Установки» не добавляется.","Oldin oʻrnatilgan, ilova oʻchirilib qayta oʻrnatilgan xuddi shu Android telefon. «Oʻrnatish» soniga qoʻshilmaydi.","The same Android phone that already had the app, deleted it and installed it again. It is not added to «Installs»."],
-["Чанд бор файли APK аз GitHub гирифта шудааст. Тахминӣ: гирифтан ҳатто бе насб ҳисоб мешавад ва Телеграм ё дигар роҳҳо ҳисоб намешаванд.","Сколько раз файл APK скачали с GitHub. Примерно: скачивание считается даже без установки, а Telegram и другие пути не считаются.","APK fayli GitHub dan necha marta olingan. Taxminiy: yuklab olish oʻrnatilmasa ham hisoblanadi, Telegram va boshqa yoʻllar hisoblanmaydi.","How many times the APK file was downloaded from GitHub. Approximate: a download counts even without installing, and Telegram or other routes are not counted."]
+["Чанд бор файли APK аз GitHub гирифта шудааст. Тахминӣ: гирифтан ҳатто бе насб ҳисоб мешавад ва Телеграм ё дигар роҳҳо ҳисоб намешаванд.","Сколько раз файл APK скачали с GitHub. Примерно: скачивание считается даже без установки, а Telegram и другие пути не считаются.","APK fayli GitHub dan necha marta olingan. Taxminiy: yuklab olish oʻrnatilmasa ham hisoblanadi, Telegram va boshqa yoʻllar hisoblanmaydi.","How many times the APK file was downloaded from GitHub. Approximate: a download counts even without installing, and Telegram or other routes are not counted."],
+["НАВ","НОВОЕ","YANGI","NEW"],
+["Китобҳои нав","Новые книги","Yangi kitoblar","New books"],
+["Ин ҳафта илова шуд","Добавлено на этой неделе","Shu hafta qoʻshildi","Added this week"],
+["Ин ҳафта","На этой неделе","Shu hafta","This week"],
+["китоби нав","новых книг","ta yangi kitob","new books"],
+["Аз рӯи хондан ва ҷустуҷӯи шумо","По вашему чтению и поиску","Oʻqishingiz va qidiruvingiz asosida","Based on your reading and searches"],
+["Барои оғоз, китобҳои гуногун","Для начала — разные книги","Boshlash uchun turli kitoblar","To start, a mix of books"],
+["Ҳоло китоб нест","Пока книг нет","Hozircha kitob yoʻq","No books yet"]
 ]

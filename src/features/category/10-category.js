@@ -32,5 +32,6 @@ function bindCategory($$){
  $$("[data-chip]",b=>b.onclick=()=>{S.chip=b.dataset.chip;render()});
  $$("[data-chip2]",b=>b.onclick=()=>{S.chip=b.dataset.chip2;S.q="";openSearch()});
  const q=document.getElementById("q");
- if(q)q.oninput=()=>{S.q=q.value;render(true)};
+ if(q)q.oninput=()=>{S.q=q.value;render(true);clearTimeout(window.__qhT);window.__qhT=setTimeout(()=>pushQ(S.q),1500)};
+ bindHome($$);
 }
