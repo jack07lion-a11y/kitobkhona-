@@ -9,6 +9,9 @@
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
   <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <!-- Тик экран ва ламс мажбурӣ нест (Play: дастрасӣ ба ҳамаи дастгоҳҳо) -->
+  <uses-feature android:name="android.hardware.screen.portrait" android:required="false"/>
+  <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
   <application android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round"
       android:theme="@style/AppTheme" android:allowBackup="false" android:hardwareAccelerated="true" android:supportsRtl="false">
     <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:launchMode="singleTask"
