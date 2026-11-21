@@ -1,0 +1,19 @@
+/* ойнаи хурд дар миёнаи экран: розигӣ ва ҷинс (оҳиста пайдо мешавад / худ мебарояд) */
+.obm{position:fixed;inset:0;z-index:2147482700;display:grid;place-items:center;padding:20px;pointer-events:none}
+.obm-bg{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .5s ease}
+.obm-c{position:relative;width:min(380px,100%);max-height:90%;overflow:auto;background:var(--bg);color:var(--ink);border-radius:26px;padding:24px 20px 20px;text-align:center;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.35);opacity:0;transform:translateY(14px) scale(.96);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.obm.in{pointer-events:auto}.obm.in .obm-bg{opacity:1}.obm.in .obm-c{opacity:1;transform:none}
+.obm-c h3{margin:0;font-size:21px}
+.obm-c>p{margin:0;color:var(--muted);font-weight:600;font-size:14px;line-height:1.5}
+.obc{display:flex;gap:14px;align-items:flex-start;text-align:left;padding:14px;border-radius:18px;background:var(--card,rgba(0,0,0,.05));cursor:pointer;font-size:15px;line-height:1.45;font-weight:600}
+.obc input{position:absolute;opacity:0;pointer-events:none}
+.obc i{flex:none;width:30px;height:30px;border-radius:9px;border:2.5px solid var(--line,rgba(0,0,0,.3));display:grid;place-items:center;transition:background .2s,border-color .2s}
+.obc i::after{content:"";width:9px;height:16px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) scale(0);margin-top:-3px;transition:transform .2s cubic-bezier(.34,1.7,.5,1)}
+.obc input:checked+i{background:#0b7d57;border-color:#0b7d57}.obc input:checked+i::after{transform:rotate(45deg) scale(1)}
+.obc .lnk{background:none;border:0;padding:0;color:#0b7d57;font:inherit;font-weight:800;text-decoration:underline}
+.obm-c.ok{animation:obok .6s ease both}
+@keyframes obok{0%{transform:none}40%{transform:scale(1.03)}100%{transform:scale(.97);opacity:.0}}
+.obm .gopts{display:flex;gap:12px;justify-content:center}
+.obm .gopt{flex:1}
+.gchg{margin-top:8px}
+@media (prefers-reduced-motion:reduce){.obm-c,.obm-bg{transition:opacity .2s}.obm-c.ok{animation:none}}

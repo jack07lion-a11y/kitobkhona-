@@ -1,28 +1,30 @@
 // Розигӣ ва синну сол (сабти ном), нест кардани ҳисоб
 module.exports=async t=>{
  const P=t.page;
- await t.open({view:'login',step:'gender',gender:''});
- await P.waitForTimeout(300);
- t.ok(await P.evaluate(()=>!!document.getElementById('cns')&&!!document.querySelector('[data-age=under18]')),'сабти ном: розигӣ ва синну сол ҳастанд');
- await P.fill('#uname','Санҷиш');
- await P.evaluate(()=>{sbLoad=async()=>({rpc:async(n,x)=>n==='claim_name'?{data:x.p_name,error:null}:{data:null,error:{message:'net'}},auth:{updateUser:async()=>({error:null})}})});
- // бе синну сол ва розигӣ — идома намедиҳад
- await P.click('[data-g=boy]');await P.waitForTimeout(150);
- t.eq(await P.evaluate(()=>[S.gender,S.view]),['','login'],'бе розигӣ идома надод');
- // хурдсол бе огоҳии волидон
- await P.click('[data-age=under18]');
- t.eq(await P.evaluate(()=>document.getElementById('grdrow').hidden),false,'«аз 18 хурд»: сатри огоҳии ота-она пайдо шуд');
- await P.check('#cns');await P.click('[data-g=boy]');await P.waitForTimeout(150);
- t.eq(await P.evaluate(()=>S.view),'login','хурдсол бе тасдиқи ота-она идома надод');
- // бо тасдиқ — идома медиҳад; сервер набошад ҳам розигӣ дар навбат мемонад
- await P.check('#grd');await P.click('[data-g=boy]');await P.waitForTimeout(800);
- const r=await P.evaluate(()=>({g:S.gender,v:S.view,p:S.consPend}));
- t.ok(r.g==='boy'&&r.v==='home'&&r.p&&r.p.age==='under18'&&r.p.g===true,'бо розигӣ ва тасдиқи ота-она идома дод; розигӣ барои фиристодан дар навбат');
- // калонсол: огоҳии волидон лозим нест
- await t.open({view:'login',step:'gender',gender:''});await P.waitForTimeout(300);
- await P.evaluate(()=>{sbLoad=async()=>({rpc:async(n,x)=>n==='claim_name'?{data:x.p_name,error:null}:{data:null,error:{message:'net'}},auth:{updateUser:async()=>({error:null})}})});
- await P.fill('#uname','Калон');await P.click('[data-age=adult]');await P.check('#cns');await P.click('[data-g=girl]');await P.waitForTimeout(800);
- t.eq(await P.evaluate(()=>[S.gender,S.consPend&&S.consPend.age]),['girl','adult'],'калонсол: бе огоҳии волидон идома дод');
+ // розигӣ: ойнаи хурд, ду аломат, худ захира мешавад (бе тугма)
+ await t.open({view:'home',email:'a@b.c',uname:'Х'});
+ await P.evaluate(()=>{S.uid='u1';S.consentV='';S.consPend=null;S.obFg=0;OB.shown={};OB.ret=false;S.sheet=null;
+  window.__sc=[];sbLoad=async()=>({rpc:async(n,x)=>{window.__sc.push([n,x]);return{error:null}},auth:{}})});
+ // 10 дақиқа нагузашт ва баромада баргашт нест — ойна нест
+ await P.evaluate(()=>{S.obFg=60;obTick()});await P.waitForTimeout(300);
+ t.eq(await P.evaluate(()=>!!document.getElementById('obm')),false,'1 дақиқа: ойнаи розигӣ ҳанӯз нест');
+ // 10 дақиқа дар барнома → ойна
+ await P.evaluate(()=>{S.obFg=OB_CONS_SEC;obTick()});await P.waitForTimeout(700);
+ t.ok(await P.evaluate(()=>!!document.getElementById('ob1')&&!!document.getElementById('ob2')&&document.getElementById('obm').classList.contains('in')),'10 дақиқа: ойна бо ду аломат пайдо шуд');
+ await P.click('label[for=ob1] i');await P.waitForTimeout(200);
+ t.eq(await P.evaluate(()=>[!!document.getElementById('obm'),window.__sc.length]),[true,0],'як аломат: ҳанӯз захира нашуд');
+ await P.click('label[for=ob2] i');await P.waitForTimeout(1500);
+ const r=await P.evaluate(()=>({m:!!document.getElementById('obm'),v:S.consentV,c:window.__sc.filter(x=>x[0]==='save_consent').length}));
+ t.ok(!r.m&&r.v==='2026-11'&&r.c===1,'ду аломат: захира шуд, ойна рафт (бе тугма)');
+ // баромада баргашт: ойна пайдо мешавад
+ await P.evaluate(()=>{S.consentV='';S.consPend=null;OB.shown={};OB.ret=false;S.obFg=5;document.dispatchEvent(new Event('visibilitychange'))});
+ await P.evaluate(()=>obTick());await P.waitForTimeout(600);
+ t.ok(await P.evaluate(()=>!!document.getElementById('ob1')),'баромада баргашт: розигӣ боз пайдо шуд');
+ await P.evaluate(()=>{obClose()});await P.waitForTimeout(700);
+ // ҷинс: баъди 30 сония
+ await P.evaluate(()=>{S.gender=undefined;OB.shown={};S.consentV='2026-11';OB.fg=29;obTick()});await P.waitForTimeout(700);
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-og=girl]')),'30 сония: интихоби ҷинс пайдо шуд');
+ await P.evaluate(()=>{obClose()});await P.waitForTimeout(700);
  // ҳисобро нест кардан: сатр дар Танзимот (танҳо воридшуда)
  await t.open({view:'home'});
  await P.evaluate(()=>{S.uid='u1';S.sheet='app';render()});await P.waitForTimeout(250);
@@ -66,3 +68,23 @@ module.exports=async t=>{
  }
  await P.evaluate(()=>{S.role='user';S.sheet=null});
 };
+
+// ҷинс интихоб нашавад: нишони бетараф; ҳар кушодани барнома боз мепурсад (бе «баъдтар»)
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home',email:'a@b.c',uname:'Х'});
+ await P.evaluate(()=>{S.uid='u1';S.gender=undefined;S.consentV='2026-11';S.sheet=null;OB.shown={};OB.fg=0;render()});await P.waitForTimeout(300);
+ t.ok(await P.evaluate(()=>/^data:image\/svg\+xml/.test(art().match(/src="([^"]+)"/)[1])&&gi()===GNEUTRAL),'ҷинс нест: расм ва нишони менюи бетараф');
+ await P.evaluate(()=>{OB.fg=29;obTick()});await P.waitForTimeout(700);
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-og=boy]')&&!document.querySelector('[data-ogl]')),'30 сония: ойнаи ҷинс, «баъдтар» нест');
+ await P.evaluate(()=>{obClose()});await P.waitForTimeout(700);
+ // барнома аз нав кушода шуд (OB аз нав): боз 30 сония ва боз мепурсад
+ await P.evaluate(()=>{OB.shown={};OB.fg=0;for(let i=0;i<29;i++)obTick()});
+ t.eq(await P.evaluate(()=>!!document.getElementById('obm')),false,'29 сония: ҳанӯз нест');
+ await P.evaluate(()=>obTick());await P.waitForTimeout(700);
+ t.ok(await P.evaluate(()=>!!document.querySelector('[data-og=girl]')),'кушодани навбатӣ: баъди 30 сония боз пурсид');
+ await P.click('[data-og=boy]');await P.waitForTimeout(900);
+ await P.evaluate(()=>{OB.shown={};OB.fg=500;obTick()});await P.waitForTimeout(500);
+ t.eq(await P.evaluate(()=>[S.gender,!!document.getElementById('obm')]),['boy',false],'интихоб шуд: дигар намепурсад');
+})(module.exports);

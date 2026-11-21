@@ -635,6 +635,28 @@ public class MainActivity extends Activity {
                 return Flavor.PLAY ? "play" : "direct";
             }
 
+            /** Шиносаи телефон барои омори насб: ҳисоби яширини ANDROID_ID (SHA-256), модел ва Android. Шахсро нишон намедиҳад. */
+            @JavascriptInterface
+            public String deviceInfo() {
+                try {
+                    String id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                    String hw = "";
+                    if (id != null && id.length() > 3) {
+                        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+                        byte[] h = md.digest((id + ":kitobkhona").getBytes("UTF-8"));
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < 16; i++) sb.append(String.format("%02x", h[i]));
+                        hw = sb.toString();
+                    }
+                    String man = Build.MANUFACTURER == null ? "" : Build.MANUFACTURER;
+                    String mod = Build.MODEL == null ? "" : Build.MODEL;
+                    String model = mod.toLowerCase().startsWith(man.toLowerCase()) ? mod : (man + " " + mod).trim();
+                    return new JSONObject().put("hw", hw).put("model", model).put("os", "Android " + Build.VERSION.RELEASE).toString();
+                } catch (Exception e) {
+                    return "{}";
+                }
+            }
+
             @JavascriptInterface
             public String version() {
                 try {

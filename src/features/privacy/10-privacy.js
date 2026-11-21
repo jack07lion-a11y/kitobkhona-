@@ -20,7 +20,7 @@ async function checkConsent(c){
  try{if(!S.uid||S.consentV===CONSENT_V||S.consPend)return;
   const{data,error}=await c.from("profiles").select("consent_at").eq("id",S.uid).maybeSingle();if(error||!data)return;
   if(data.consent_at){S.consentV=CONSENT_V;save();return}
-  if(!S.sheet&&!["login","read","audio"].includes(S.view)){S.cons={};S.sheet="cons";render()}}catch(_){}}
+  /* ойнаи розигӣ худаш пайдо мешавад (40-onboard.js): 10 дақиқа баъд ё баъди баромада баргаштан */}catch(_){}}
 SHEETS.cons=X=>`<div class="sh-head"><b class="sh-t">Розигӣ ва синну сол</b></div><p class="hint">Барои идомаи кор розигии худро тасдиқ кунед.</p>${consBlock()}<button class="pay-btn" data-cons-ok>Тасдиқ кардан</button>`;
 /* ---- Ҳисобро нест кардан: 4 босқич, ҳар кадом бо ҳушдор; охирин — 45 сония, фақат «Бекор кардан»; қулф/баромад → нест намешавад ---- */
 const DEL_SEC=45,DF={on:false,t0:0,iv:0};
