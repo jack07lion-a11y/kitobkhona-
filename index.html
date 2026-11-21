@@ -961,6 +961,26 @@ html{overscroll-behavior-y:contain}
 .rd.dock .rd-as{transform:translate(124px,calc(-50% - 64px)) scale(.7,1)}
 .rd.dock .rd-gl,.rd.dock .rd-as{transform-origin:100% 50%}
 @media (prefers-reduced-motion:reduce){.rd .rd-gl,.rd .rd-as{transition:opacity .2s}}
+/* Асосӣ: тугмаҳои жанр, корти «Нав», нишони НАВ дар муқова */
+.hchips{margin-top:2px}
+.chip .cnt{margin-left:8px;background:#f4b73c;color:#3a2700;border-radius:999px;font-size:11px;font-weight:800;padding:2px 7px;vertical-align:middle}
+.newsb{position:relative;display:grid;grid-template-columns:1fr 104px;gap:10px;align-items:center;border-radius:22px;padding:18px 14px 18px 18px;color:#fff;overflow:hidden;background:linear-gradient(135deg,var(--orange),color-mix(in srgb,var(--orange) 62%,#000))}
+.newsb .nt{min-width:0}
+.newsb h2{font-size:21px;line-height:1.18;margin:0 0 6px;font-weight:800}
+.newsb h2 b{color:#ffd978}
+.newsb p{margin:0 0 14px;font-size:13px;line-height:1.4;opacity:.92}
+.newsb p b{font-weight:800}
+.newsb .ntag{display:inline-block;background:#f4b73c;color:#3a2700;font-weight:800;font-size:11px;letter-spacing:.06em;padding:3px 9px;border-radius:999px;margin-bottom:8px}
+.newsb .ngo{border:0;border-radius:999px;background:#fff;color:#0b5a3f;font-weight:700;font-size:14px;padding:0 16px;height:40px;display:inline-flex;gap:6px;align-items:center}
+.newsb .ngo .ico{width:14px;height:14px}
+.newsb .nx{position:absolute;top:8px;right:10px;border:0;background:rgba(0,0,0,.2);color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;line-height:1}
+.nfan{position:relative;height:150px}
+.nfan img,.nfan .nfc{position:absolute;width:76px;height:114px;object-fit:cover;border-radius:10px;box-shadow:0 8px 16px -6px rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.9);display:block}
+.nfan>:nth-child(1){left:0;top:22px;transform:rotate(-9deg)}
+.nfan>:nth-child(2){left:20px;top:8px;transform:rotate(2deg);z-index:2}
+.nfan>:nth-child(3){left:40px;top:24px;transform:rotate(11deg);z-index:1}
+.book.isnew{position:relative}
+.book .nw{position:absolute;left:8px;top:8px;z-index:4;background:#f4b73c;color:#3a2700;font-weight:800;font-size:10.5px;letter-spacing:.06em;padding:3px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
 /* Бо Google ворид шудан */
 .or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mut,#8a8a8a);font-size:13px}
 .or:before,.or:after{content:"";flex:1;height:1px;background:currentColor;opacity:.25}
@@ -2287,7 +2307,15 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Аз телефонҳои нав: Android бо барномаи APK.","Из новых телефонов: Android с приложением APK.","Yangi telefonlardan: APK ilovali Android.","Of the new phones: Android with the APK app."],
 ["Аз телефонҳои нав: сайт ва iPhone (браузер ё «Ба экрани асосӣ»).","Из новых телефонов: сайт и iPhone (браузер или «На экран Домой»).","Yangi telefonlardan: sayt va iPhone (brauzer yoki «Bosh ekranga»).","Of the new phones: site and iPhone (browser or «Add to Home Screen»)."],
 ["Ҳамон як телефони Android, ки пештар насб шуда буд ва барнома нест карда аз нав насб шуд. Ба шумораи «Насб» илова намешавад.","Тот же телефон Android, на котором приложение уже стояло, было удалено и поставлено заново. К числу «Установки» не добавляется.","Oldin oʻrnatilgan, ilova oʻchirilib qayta oʻrnatilgan xuddi shu Android telefon. «Oʻrnatish» soniga qoʻshilmaydi.","The same Android phone that already had the app, deleted it and installed it again. It is not added to «Installs»."],
-["Чанд бор файли APK аз GitHub гирифта шудааст. Тахминӣ: гирифтан ҳатто бе насб ҳисоб мешавад ва Телеграм ё дигар роҳҳо ҳисоб намешаванд.","Сколько раз файл APK скачали с GitHub. Примерно: скачивание считается даже без установки, а Telegram и другие пути не считаются.","APK fayli GitHub dan necha marta olingan. Taxminiy: yuklab olish oʻrnatilmasa ham hisoblanadi, Telegram va boshqa yoʻllar hisoblanmaydi.","How many times the APK file was downloaded from GitHub. Approximate: a download counts even without installing, and Telegram or other routes are not counted."]
+["Чанд бор файли APK аз GitHub гирифта шудааст. Тахминӣ: гирифтан ҳатто бе насб ҳисоб мешавад ва Телеграм ё дигар роҳҳо ҳисоб намешаванд.","Сколько раз файл APK скачали с GitHub. Примерно: скачивание считается даже без установки, а Telegram и другие пути не считаются.","APK fayli GitHub dan necha marta olingan. Taxminiy: yuklab olish oʻrnatilmasa ham hisoblanadi, Telegram va boshqa yoʻllar hisoblanmaydi.","How many times the APK file was downloaded from GitHub. Approximate: a download counts even without installing, and Telegram or other routes are not counted."],
+["НАВ","НОВОЕ","YANGI","NEW"],
+["Китобҳои нав","Новые книги","Yangi kitoblar","New books"],
+["Ин ҳафта илова шуд","Добавлено на этой неделе","Shu hafta qoʻshildi","Added this week"],
+["Ин ҳафта","На этой неделе","Shu hafta","This week"],
+["китоби нав","новых книг","ta yangi kitob","new books"],
+["Аз рӯи хондан ва ҷустуҷӯи шумо","По вашему чтению и поиску","Oʻqishingiz va qidiruvingiz asosida","Based on your reading and searches"],
+["Барои оғоз, китобҳои гуногун","Для начала — разные книги","Boshlash uchun turli kitoblar","To start, a mix of books"],
+["Ҳоло китоб нест","Пока книг нет","Hozircha kitob yoʻq","No books yet"]
 ]
 </script>
 <script>
@@ -2356,7 +2384,7 @@ async function loadBooks(c){try{const{data,error}=await c.from("books").select("
  if(cp.length){try{const{data:su}=await c.storage.from("books").createSignedUrls(cp,2592000);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}catch(_){}
   // ҳар муқовае, ки дар рӯйхати умумӣ наомад, алоҳида меомӯзем (як хато ҳамаро вайрон накунад)
   for(const pth of cp.filter(x=>!urls[x]).slice(0,40)){try{const{data:u1}=await c.storage.from("books").createSignedUrl(pth,2592000);if(u1&&u1.signedUrl)urls[pth]=u1.signedUrl}catch(_){}}}
- BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,slug:r.slug||"",tp:r.text_path||"",cp:r.cover_path||"",cover:urls[r.cover_path]||"",cvMiss:!!(r.cover_path&&!urls[r.cover_path]),rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
+ BOOKS.length=0;LOCALS.forEach(b=>BOOKS.push(b));const sl=new Set(data.map(x=>x.slug).filter(Boolean));for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].local&&BOOKS[i].slug&&sl.has(BOOKS[i].slug))BOOKS.splice(i,1);data.forEach(r=>BOOKS.push({id:+r.id,t:r.t,a:r.a,c:r.c,col:[r.col1,r.col2],audio:!!r.audio,prem:!!r.premium,ebook:r.ebook!==false,desc:r.descr||"",db:true,pub:r.published!==false,ts:Date.parse(r.created_at)||0,slug:r.slug||"",tp:r.text_path||"",cp:r.cover_path||"",cover:urls[r.cover_path]||"",cvMiss:!!(r.cover_path&&!urls[r.cover_path]),rs:r.rights_status||"",rh:r.rights_holder||"",src2:r.source||"",ed:r.edition||"",tr:r.translator||"",ln:r.license_note||""}));BOOKS.forEach(mkAud);
 S.bkCache=BOOKS.filter(b=>b.db).map(b=>({...b}));save();try{cvStore()}catch(_){}
  S.recent=S.recent.filter(id=>bk(id))}catch(_){}}
 async function loadRole(c){S.role="";try{const{data:s}=await c.auth.getSession();const u=s.session?.user;if(!u)return;
@@ -3462,7 +3490,46 @@ function cxEditOn(){if(cxEd||S.role!=="admin")return;cxEd=true;if(!["home","lib"
 function cxSet(k,o){S.cxPos=S.cxPos||{};const g=cxGeo();CXF.goal.forEach(([kk],i)=>{if(!S.cxPos[kk])S.cxPos[kk]=cxOff(i,g)});S.cxPos[k]=o;save();cxPlace();cxSync&&cxSync()}
 function cxEditOff(){cxEd=false;cxSync=null;document.documentElement.classList.remove("cx-editing");cxEl.classList.remove("edit");const g=cxEl.querySelector(".cx-grid");g&&g.remove();const p=document.getElementById("cxp");p&&p.remove();
  cxEl.querySelectorAll(".cx-b").forEach(b=>{b.onpointerdown=b.onpointermove=b.onpointerup=b.onpointercancel=null});cxClose();try{history.replaceState(null,"",location.pathname+location.hash)}catch(_){}}
-function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="rating")openRating();else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}function home(){
+function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="rating")openRating();else if(k==="goal"){if(S.view!=="goal")go("goal")}else toast(FEAT("contest")?"Ин саҳифа ҳоло омода мешавад":"Ба зудӣ кушода мешавад")}/* ---- Асосӣ: қисмҳои тақсимшуда (Ҳама / Барои шумо / Нав / жанр) ---- */
+const bookN=b=>{let h=book(b);if(!isNewB(b))return h;h=h.replace('class="book"','class="book isnew"');const k=h.lastIndexOf("</button>");return h.slice(0,k)+'<span class="nw">НАВ</span>'+h.slice(k)};
+function homeChips(){
+ const hf=S.hf||"all",nn=unseenNew().length,gs=GENRES.filter(g=>BOOKS.some(x=>x.c===g[0]));
+ const L=[["all","Ҳама"],["foryou","Барои шумо"]];if(newBooks().length)L.push(["new","Нав",nn]);
+ gs.forEach(g=>L.push([g[0],g[1]]));if(FEAT("audio")&&BOOKS.some(x=>x.audio))L.push(["audio","Аудио дар роҳ"]);
+ return `<div class="chips hchips">${L.map(([k,n,c])=>`<button class="chip ${hf===k?"on":""}" data-hf="${k}">${n}${c?`<b class="cnt">${c}</b>`:""}</button>`).join("")}</div>`}
+function newsBanner(){
+ const u=unseenNew();if(!u.length)return "";const all=newBooks(),cnt={};all.forEach(b=>cnt[b.c]=(cnt[b.c]||0)+1);
+ const sum=GENRES.filter(g=>cnt[g[0]]).sort((a,b)=>cnt[b[0]]-cnt[a[0]]).slice(0,2).map(g=>`<span>${g[1]}</span> <b>${cnt[g[0]]}</b>`).join(" · ");
+ const fan=all.slice(0,3).map(b=>{const cu=(b.cp&&CVU[b.cp])||b.cover;return cu?`<img src="${escH(cu)}" alt="">`:`<span class="nfc" style="background:linear-gradient(135deg,${escH((b.col&&b.col[0])||"#24443a")},${escH((b.col&&b.col[1])||"#122a22")})"></span>`}).join("");
+ return `<div class="newsb"><button class="nx" data-newx aria-label="Пӯшидан">×</button><div class="nt"><span class="ntag">НАВ</span><h2>Ин ҳафта <b>${all.length}</b> китоби нав</h2><p>${sum}</p><button class="ngo" data-newgo>Дидан ${P(I.chev,2.4)}</button></div><div class="nfan">${fan}</div></div>`}
+function gridOf(list,sub,h){return `<div class="sec"><div class="sec-h"><h2>${h}</h2></div>${sub?`<p class="hint">${sub}</p>`:""}${list.length?`<div class="grid">${list.map(bookN).join("")}</div>`:`<p class="empty">Ҳоло китоб нест</p>`}</div>`}
+function homeShelf(h,sub,list,go){return `<div class="sec"><div class="sec-h"><h2>${h}</h2><button data-hf="${go}">Ҳама</button></div>${sub?`<p class="hint" style="margin-top:-8px">${sub}</p>`:""}<div class="shelf">${list.map(bookN).join("")}</div></div>`}
+function homeBody(){
+ if(!BOOKS.length)return `<div class="empty-card"><span class="round">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div>${S.uid?`<b>Китобҳо ба зудӣ илова мешаванд</b><span>Китобхона ҳоло пурра карда мешавад</span>`:`<b>Барои дидани китобҳо ворид шавед</b><span>Бо почтаи худ ворид шавед: рамз ба почта меояд, парол лозим нест</span><button class="pill" data-go="login" style="margin-top:10px">Ворид шудан</button>`}</div></div>`;
+ let hf=S.hf||"all";const gs=GENRES.filter(g=>BOOKS.some(x=>x.c===g[0]));
+ if(hf!=="all"&&hf!=="foryou"&&hf!=="new"&&hf!=="audio"&&!gs.some(g=>g[0]===hf))hf=S.hf="all";
+ const byTs=(a,b)=>(b.ts||0)-(a.ts||0);
+ if(hf==="foryou")return gridOf(reco(24),recoSub(),"Барои шумо");
+ if(hf==="new")return gridOf(newBooks(),"Ин ҳафта илова шуд","Китобҳои нав");
+ if(hf==="audio")return gridOf(BOOKS.filter(x=>x.audio).sort(byTs),"","Аудио дар роҳ");
+ if(hf!=="all"){const g=gs.find(x=>x[0]===hf);return gridOf(BOOKS.filter(x=>x.c===hf).sort(byTs),"",g[1])}
+ const nw=newBooks(),rc=reco(10);
+ return `${newsBanner()}
+   <div class="sec-h" style="margin-bottom:-6px"><h2>Охирин хондаам</h2><span class="demo">${S.recent.length}/10</span></div>
+   ${wheelHTML()}
+   ${rc.length?homeShelf("Барои шумо",recoSub(),rc,"foryou"):""}
+   ${nw.length?homeShelf("Китобҳои нав","Ин ҳафта илова шуд",nw.slice(0,12),"new"):""}
+   ${gs.map(g=>homeShelf(g[1],"",BOOKS.filter(x=>x.c===g[0]).sort(byTs).slice(0,10),g[0])).join("")}
+   ${BOOKS.some(x=>x.audio)?`<div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-hf="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>`:""}
+   <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${GENRES.filter(g=>BOOKS.some(x=>x.c===g[0])).map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
+   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${escH(x.a)}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${escH(x.a)}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
+   `}
+function bindHome($$){
+ $$("[data-hf]",b=>b.onclick=()=>{S.hf=b.dataset.hf;if(S.hf==="new")markNewSeen();save();render()});
+ $$("[data-newgo]",b=>b.onclick=()=>{S.hf="new";markNewSeen();render()});
+ $$("[data-newx]",b=>b.onclick=()=>{markNewSeen();render()});
+}
+function home(){
  const b=BOOKS[0];
  const EMPTY=`<div class="empty-card"><span class="round">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div><b>Ҳоло китобе нахондаед</b><span>Китобро интихоб кунед ва хониш оғоз мешавад</span></div><button class="pill" data-opensearch>Интихоб</button></div>`;
  if(S.search){
@@ -3480,15 +3547,8 @@ function cxPick(k){cxClose();if(k==="edit")setTimeout(cxEditOn,70);else if(k==="
    ${PREM()&&FEAT("buy")?`<div class="promo hp"><h2>Китобхона Премиум</h2><p>Ҳамаи китобҳои пулакиро бепул хонед</p>
     <button class="cta" data-toast="Харид — қадами оянда">Гузаштан ба Премиум ${P(I.chev,2.4)}</button>
     <svg class="art" viewBox="0 0 150 140" aria-hidden="true"><path d="M50 110l-8-60 28 26 22-44 24 44 26-26-8 60z" fill="#fff" fill-opacity=".92"/><path d="M75 62l5 10 11 1-8 7 2 11-10-6-10 6 2-11-8-7 11-1z" fill="#63d48f"/></svg></div>`:""}
-   <div class="sec-h" style="margin-bottom:-6px"><h2>Охирин хондаам</h2><span class="demo">${S.recent.length}/10</span></div>
-   ${wheelHTML()}
-   <div class="chips">${chipList().map(([k,n])=>`<button class="chip ${k==="all"?"on":""}" data-chip2="${k}">${n}</button>`).join("")}</div>
-   ${BOOKS.length?"":`<div class="empty-card"><span class="round">${P('<path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0zM21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/>')}</span><div>${S.uid?`<b>Китобҳо ба зудӣ илова мешаванд</b><span>Китобхона ҳоло пурра карда мешавад</span>`:`<b>Барои дидани китобҳо ворид шавед</b><span>Бо почтаи худ ворид шавед: рамз ба почта меояд, парол лозим нест</span><button class="pill" data-go="login" style="margin-top:10px">Ворид шудан</button>`}</div></div>`}
-   ${BOOKS.length?`<div class="sec"><div class="sec-h"><h2>Барои шумо</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice(0,8).map(book).join("")}</div></div>`:""}
-   ${BOOKS.some(x=>x.audio)?`<div class="sec"><div class="sec-h"><h2>Аудио дар роҳ</h2><button data-chip2="audio">Ҳама</button></div><div class="shelf">${BOOKS.filter(x=>x.audio).slice(0,8).map(book).join("")}</div></div>`:""}
-   <div class="sec"><div class="sec-h"><h2>Маҷмӯаҳо</h2></div><div class="hscroll">${GENRES.filter(g=>BOOKS.some(x=>x.c===g[0])).map(([k,n])=>{const bs=BOOKS.filter(x=>x.c===k);return `<button class="colc" data-chip2="${k}"><span class="col-fan">${bs.slice(0,3).map((x,i)=>`<span class="cf cf${i}">${cover(x)}</span>`).join("")}</span><b>${n}</b><em>${bs.length} китоб</em></button>`}).join("")}</div></div>
-   <div class="sec"><div class="sec-h"><h2>Муаллифон</h2></div><div class="hscroll">${BOOKS.filter((x,i,a)=>a.findIndex(y=>y.a===x.a)===i).map(x=>{const w=x.a.split(" ");return `<button class="au-c" data-author="${escH(x.a)}"><span class="au-av" style="background:linear-gradient(135deg,${x.col[0]},${x.col[1]})">${w.map(y=>y[0]).slice(0,2).join("")}</span><b>${escH(x.a)}</b><em>${BOOKS.filter(y=>y.a===x.a).length} китоб</em></button>`}).join("")}</div></div>
-   ${BOOKS.length>8?`<div class="sec"><div class="sec-h"><h2>Навтарин</h2><button data-opensearch>Ҳама</button></div><div class="shelf">${BOOKS.slice().reverse().slice(0,8).map(book).join("")}</div></div>`:""}
+   ${BOOKS.length?homeChips():""}
+   ${homeBody()}
    ${S.premium||!PREM()||!FEAT("buy")?"":`<button class="ppill ${S.au?"up":""}" data-paywall>${CROWN}Премиум ${P(I.chev,2.4)}</button>`}
   </section>${tabs()}`;
 }
@@ -3503,7 +3563,42 @@ function goal(){
   </section>${tabs()}`;
 }
 
-function soon(ic,t,p){return `<section class="screen pad"><h1 class="title">${t}</h1><div class="soon"><span class="big">${P(ic,1.8)}</span><h2>Дар қадами оянда</h2><p>${p}</p></div></section>${tabs()}`}const GENRES=[
+function soon(ic,t,p){return `<section class="screen pad"><h1 class="title">${t}</h1><div class="soon"><span class="big">${P(ic,1.8)}</span><h2>Дар қадами оянда</h2><p>${p}</p></div></section>${tabs()}`}/* ===== Асосӣ: «Нав» (китобҳои ин ҳафта) ва «Барои шумо» (тавсия аз рӯи хондан ва ҷустуҷӯ) ===== */
+const DAY7=7*864e5;
+const newBooks=()=>{const t=Date.now();return BOOKS.filter(b=>b.db&&b.pub!==false&&b.ts&&t-b.ts<=DAY7).sort((a,b)=>b.ts-a.ts)};
+const unseenNew=()=>newBooks().filter(b=>b.ts>(S.newSeen||0));
+const isNewB=b=>!!(b&&b.db&&b.ts&&Date.now()-b.ts<=DAY7);
+function markNewSeen(){const n=newBooks();if(n.length){S.newSeen=n[0].ts;save()}}
+/* ҷустуҷӯи шумо: танҳо пас аз таваққуф (на ҳар ҳарф) ва ҳадди 12 то */
+function pushQ(q){q=String(q||"").trim();if(q.length<3)return;S.qh=[q,...(S.qh||[]).filter(x=>x!==q)].slice(0,12);save()}
+/* Нишонаҳои шумо: китобҳои кушодашуда, хондашуда, дар навбат, ҷустуҷӯ. Гуфтаҳо: жанр ва муаллиф */
+function recoSignals(){
+ const g={},a={};const add=(m,k,w)=>{if(k)m[k]=(m[k]||0)+w};
+ (S.recent||[]).forEach((id,i)=>{const b=bk(id);if(b){add(g,b.c,2-i*.1);add(a,b.a,2-i*.1)}});
+ Object.keys(S.prog||{}).forEach(id=>{const b=bk(+id);if(b&&S.prog[id]>0){add(g,b.c,3);add(a,b.a,3)}});
+ [...((S.lib&&S.lib.q)||[]),...((S.lib&&S.lib.d)||[])].forEach(id=>{const b=bk(id);if(b){add(g,b.c,2);add(a,b.a,2)}});
+ (S.qh||[]).forEach(q=>{const ts=q.toLowerCase().split(/\s+/).filter(x=>x.length>=3);
+  GENRES.forEach(x=>{if(ts.some(w=>x[1].toLowerCase().includes(w)))add(g,x[0],1.5)});
+  BOOKS.forEach(b=>{const h=(b.t+" "+b.a).toLowerCase();if(ts.some(w=>h.includes(w))){add(g,b.c,.6);add(a,b.a,.6)}})});
+ return{g,a,has:Object.keys(g).length>0}}
+function reco(n){
+ n=n||12;const sg=recoSignals();
+ const pool=BOOKS.filter(b=>b.pub!==false&&!isDone(b.id)&&!((S.prog&&S.prog[b.id])>0)).sort((x,y)=>(y.ts||0)-(x.ts||0));
+ if(!pool.length)return[];
+ if(!sg.has){ /* ҳанӯз нишона нест: жанрҳоро навбат ба навбат омехта мекунем, то ки танҳо як жанр набошад */
+  const by={};pool.forEach(b=>(by[b.c]=by[b.c]||[]).push(b));const ks=Object.keys(by),out=[];
+  for(let i=0;out.length<Math.min(n,pool.length);i++){let any=false;ks.forEach(k=>{if(by[k][i]&&out.length<n){out.push(by[k][i]);any=true}});if(!any)break}
+  return out}
+ const sc=b=>(sg.g[b.c]||0)+(sg.a[b.a]||0)*1.5+(isNewB(b)?1:0)+(b.ts||0)/1e14;
+ const L=pool.slice().sort((x,y)=>sc(y)-sc(x));
+ const top=Object.entries(sg.g).sort((x,y)=>y[1]-x[1])[0][0];
+ const pref=L.filter(b=>b.c===top||(sg.a[b.a]||0)>0),oth=L.filter(b=>!pref.includes(b));
+ const out=[];let pi=0,oi=0;
+ while(out.length<n&&(pi<pref.length||oi<oth.length)){ /* ҳар чорумӣ — аз жанри дигар, то ки ҷаҳон танг нашавад */
+  if(out.length%4===3&&oi<oth.length)out.push(oth[oi++]);else if(pi<pref.length)out.push(pref[pi++]);else out.push(oth[oi++])}
+ return out}
+const recoSub=()=>recoSignals().has?"Аз рӯи хондан ва ҷустуҷӯи шумо":"Барои оғоз, китобҳои гуногун";
+const GENRES=[
  ["fiction","Адабиёти бадеӣ","Роман, ҳикоя ва повест",'<path d="M4 5c3-1.500 6-1.500 8 0v14c-2-1.500-5-1.500-8 0zM20 5c-3-1.500-6-1.500-8 0v14c2-1.500 5-1.500 8 0z"/>'],
  ["poetry","Шеър ва достон","Ғазал, рубоӣ, достон",'<path d="M5 20c4-1 8-5 11-13M9 14h6M12 11h6"/>'],
  ["classic","Классикаи тоҷик","Рӯдакӣ, Фирдавсӣ, Ҷомӣ, Айнӣ",'<path d="M3 9l9-5 9 5-9 5zM7 11.500V16c3 2 7 2 10 0v-4.500"/>'],
@@ -3537,7 +3632,8 @@ function bindCategory($$){
  $$("[data-chip]",b=>b.onclick=()=>{S.chip=b.dataset.chip;render()});
  $$("[data-chip2]",b=>b.onclick=()=>{S.chip=b.dataset.chip2;S.q="";openSearch()});
  const q=document.getElementById("q");
- if(q)q.oninput=()=>{S.q=q.value;render(true)};
+ if(q)q.oninput=()=>{S.q=q.value;render(true);clearTimeout(window.__qhT);window.__qhT=setTimeout(()=>pushQ(S.q),1500)};
+ bindHome($$);
 }
 function login(){
  const demo=!SB_URL||!SB_KEY;
@@ -3993,7 +4089,7 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 /* чиқиш / ҳисобро нест кардан: маълумоти корбар аз телефон пок мешавад (то ки корбари дигар онро ба сервер нафиристад) */
 function resetUserData(){
  S.role="";S.perms={};S.staff=null;S.bkCache=[];for(let i=BOOKS.length-1;i>=0;i--)if(BOOKS[i].db)BOOKS.splice(i,1);
- S.gender=undefined;S.genderAt=0;S.obFg=0;S.recent=[];S.prog={};S.pages={};S.rdCh={};S.rdFr={};S.marks={};S.aprog={};S.apos={};S.mode={};S.lib={q:[],d:[],c:[]};
+ S.gender=undefined;S.genderAt=0;S.obFg=0;S.recent=[];S.newSeen=0;S.qh=[];S.hf="all";S.prog={};S.pages={};S.rdCh={};S.rdFr={};S.marks={};S.aprog={};S.apos={};S.mode={};S.lib={q:[],d:[],c:[]};
  S.libT=0;S.marksT=0;S._lh=undefined;S._mh=undefined;S.pu=0;S.premium=false;S.pAv="";S.pBn="";S.pBio="";
  S.confirmOut=false;S.step="email";S.email="";S.uname="";S.uid="";syncLast="";save()}
 /* дастгоҳи беном (воронка: «ўрнатган»): ID-и тасодуфӣ, бе почта ва ном; docs/sql-metrika.sql */
@@ -4685,7 +4781,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="29b466e3c9";
+const WEB_H="1197b2d126";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
