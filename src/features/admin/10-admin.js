@@ -118,7 +118,7 @@ function admStatHTML(X){const st=S.stats||{};return `<div class="sh-head"><b cla
   <div class="stg"><div><small>Имрӯз фаъол</small><b id="st_dau">${(S.rs||{}).dau??"–"}</b></div><div><small>7 рӯз фаъол</small><b id="st_wau">${(S.rs||{}).wau??"–"}</b></div><div><small>Хондан имрӯз</small><b id="st_mt" class="sm">${S.rs?fmtT(S.rs.sec_today):"–"}</b></div><div class="all"><small>Хондан дар 7 рӯз</small><b id="st_m7">${S.rs?fmtT(S.rs.sec_7d):"–"}</b></div></div>
   <p class="set-cap">Роҳи корбар, 30 рӯзи охир</p>
   <div class="stg"><div><small>Насб карданд</small><b id="fn_installs">${(S.fn||{}).installs??"–"}</b></div><div><small>Сабти ном карданд</small><b id="fn_registered">${(S.fn||{}).registered??"–"}</b></div><div><small>1 дақиқа хонданд</small><b id="fn_read1">${(S.fn||{}).read1??"–"}</b></div><div class="all"><small>Баргаштанд: рӯзи 1+ / рӯзи 7+</small><b><span id="fn_back1">${(S.fn||{}).back1??"–"}</span> / <span id="fn_back7">${(S.fn||{}).back7??"–"}</span></b></div></div>
-  <div class="stg"><div class="all"><small>Насб карданд, вале ворид нашудаанд</small><b id="fn_anon">${(S.fn||{}).installs_anon??"–"}</b></div><div><small>Насб: APK</small><b id="fn_apk">${(S.fn||{}).installs_apk??"–"}</b></div><div><small>Насб: сайт ва iPhone</small><b id="fn_web">${(S.fn||{}).installs_web??"–"}</b></div></div>
+  ${admInstallHTML()}
   ${S.rs&&S.rs.top&&S.rs.top.length?`<p class="set-note" translate="no">${S.rs.top.map((t,i)=>(i+1)+". "+escH(t.title)+" — "+fmtT(t.sec)).join("<br>")}</p>`:""}
   ${suspHTML()}
  `}

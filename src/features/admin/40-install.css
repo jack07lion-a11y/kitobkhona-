@@ -1,0 +1,12 @@
+/* Омор: диаграммаи насб */
+.ins{background:var(--card);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.ins-t{display:flex;align-items:baseline;gap:8px}.ins-t b{font:800 26px var(--font);font-variant-numeric:tabular-nums}.ins-t span{color:var(--muted);font-size:12.5px;font-weight:700}
+.ins-b{display:flex;height:22px;border-radius:11px;overflow:hidden;background:rgba(0,0,0,.08);gap:2px}
+.ins-b i{display:grid;place-items:center;min-width:26px;color:#fff;font:800 11px var(--font);font-style:normal}.ins-b i span{padding:0 4px}
+.ins .g,.ins-l .g{background:#0b7d57}.ins .a,.ins-l .a{background:#e0902b}.ins .b,.ins-l .b{background:#2f6fd0}.ins .w,.ins-l .w{background:#8a63c9}
+.ins-l{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;font-weight:700;color:var(--muted)}
+.ins-l span{display:inline-flex;align-items:center;gap:6px}.ins-l i{width:10px;height:10px;border-radius:3px;display:inline-block}.ins-l b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ins-r{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:700;border-top:1px solid var(--line);padding-top:8px}.ins-r span{color:var(--muted)}.ins-r b{font-variant-numeric:tabular-nums}
+.mdl{display:flex;flex-direction:column;gap:5px}
+.mdl-r{display:grid;grid-template-columns:minmax(80px,38%) 1fr auto;align-items:center;gap:8px;font-size:12.5px;font-weight:700}
+.mdl-r span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mdl-r i{height:8px;border-radius:4px;background:#0b7d57;opacity:.75}.mdl-r b{font-variant-numeric:tabular-nums}

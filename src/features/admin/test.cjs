@@ -107,19 +107,20 @@ module.exports=(prev=>async t=>{
  await P.waitForTimeout(400);
  t.ok(await P.evaluate(()=>{const k=[...document.querySelectorAll('.adm-kpi>div')];return k.length===4&&k.every(d=>d.querySelector('em'))&&/30 рӯз/.test(k[3].innerText)}),'KPI: ҳар рақам давр дорад (Насб — 30 рӯз)');
  await P.click('[data-adm-go=admhelp]');await P.waitForTimeout(400);
- t.ok(await P.evaluate(()=>{const h=document.querySelector('.hlp');return !!h&&h.querySelectorAll('.hlp-r').length>=16&&/BORI AVVAL|БОРИ АВВАЛ/.test(h.innerText)&&/88/.test(h.innerText)}),'шарҳ: ҳамаи рақамҳо бо маъно ва қимат, «Насб» = дастгоҳи нав дар 30 рӯз');
+ t.ok(await P.evaluate(()=>{const h=document.querySelector('.hlp');return !!h&&h.querySelectorAll('.hlp-r').length>=16&&/бори аввал/.test(h.innerText)&&/88/.test(h.innerText)}),'шарҳ: ҳамаи рақамҳо бо маъно ва қимат, «Насб» = дастгоҳи нав дар 30 рӯз');
  // ёрдамчӣ бе ҳуқуқи «омор» намебинад
  await P.evaluate(()=>{S.role='subadmin';S.perms={stats:false};S.sheet='admhelp';render()});await P.waitForTimeout(300);
  t.eq(await P.evaluate(()=>!!document.querySelector('.hlp')),false,'ёрдамчӣ бе ҳуқуқи омор шарҳро намебинад');
 })(module.exports);
 
-// насб ва воридшавӣ: ворид нашудагон дар Омор ва шарҳ
+// насб ва воридшавӣ: телефони ҳақиқӣ, ворид нашудагон, қайта насб, моделҳо
 module.exports=(prev=>async t=>{
  await prev(t);
  const P=t.page;
  await t.open({view:'home',role:'admin'});
- await P.evaluate(()=>{S.role='admin';S.fn={installs:88,installs_anon:70,installs_apk:60,installs_web:28,registered:5,read1:2,back1:1,back7:0};S.sheet='admstat';render()});await P.waitForTimeout(400);
- t.eq(await P.evaluate(()=>[document.getElementById('fn_anon').textContent,document.getElementById('fn_apk').textContent,document.getElementById('fn_web').textContent]),['70','60','28'],'Омор: насб карданд, вале ворид нашудаанд (70), APK (60), сайт (28)');
+ await P.evaluate(()=>{S.role='admin';S.ghDl=12;S.fn={installs:88,phones:88,phones_reg:18,phones_anon:70,phones_apk:60,phones_web:28,reinstalls:7,installs_anon:70,installs_apk:60,installs_web:28,models:[{model:'Samsung A15',n:20},{model:'Xiaomi Redmi 12',n:9}],registered:5,read1:2,back1:1,back7:0};S.sheet='admstat';render()});await P.waitForTimeout(400);
+ t.eq(await P.evaluate(()=>['fn_phones','fn_reg2','fn_anon','fn_apk','fn_web','fn_re','gh_dl'].map(i=>document.getElementById(i).textContent)),['88','18','70','60','28','7','12'],'Омор: телефони нав 88, ворид шуданд 18, нашуданд 70, APK 60, сайт 28, қайта насб 7, GitHub 12');
+ t.ok(await P.evaluate(()=>document.querySelectorAll('.ins-b i').length===4&&document.querySelectorAll('.mdl-r').length===2&&/Samsung A15/.test(document.querySelector('.mdl').innerText)),'диаграмма: 2 тасма (4 қисм) ва рӯйхати моделҳо');
  // дастгоҳ ба ҳисоб пайваст мешавад: баъди воридшавӣ track_install боз фиристода мешавад
  await P.evaluate(()=>{localStorage.removeItem('kitob_inst_u');localStorage.setItem('kitob_inst',todayKey());S.uid='u5';window.__ti=0;return trackInstall({rpc:async n=>{if(n==='track_install')window.__ti++;return{error:null}}})});
  await P.waitForTimeout(200);
