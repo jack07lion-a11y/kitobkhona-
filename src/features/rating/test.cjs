@@ -15,7 +15,13 @@ module.exports=async t=>{
  await P.evaluate(list=>{S.uid='u1';S.myRank={pos:27,sec:5400,n:130};window.__rpc=[];
   sbLoad=async()=>({rpc:async(n,a)=>{window.__rpc.push([n,a]);if(n==='leaderboard')return{data:list.slice(0,a.p_limit),error:null};if(n==='my_rank')return{data:{pos:27,sec:5400,n:130},error:null};return{data:null,error:null}}})},mk(12));
  await P.click('.rbadge');await P.waitForSelector('.rt-row');
- t.eq(await P.evaluate(()=>[S.view,document.querySelectorAll('.rt-row').length,window.__rpc.some(x=>x[0]==='leaderboard'&&x[1].p_limit===10)]),['rating',10,true],'рейтинг: саҳифа кушода, аниқ 10 сатр (Top 10)');
+ t.eq(await P.evaluate(()=>[S.view,document.querySelectorAll('.rt-row').length,window.__rpc.some(x=>x[0]==='leaderboard'&&x[1].p_limit>=100000)]),['rating',12,true],'рейтинг: «Ҳама» — ҳамаи 12 нафар, бе ҳадди 10');
+ t.eq(await P.evaluate(()=>[...document.querySelectorAll('.rt-tab')].map(b=>b.innerText)),['Ҳама','Топ 10','Топ 100','Топ 1000'],'табҳо: Ҳама, Топ 10, Топ 100, Топ 1000');
+ await P.click('[data-rt-tab="10"]');
+ t.eq(await P.evaluate(()=>document.querySelectorAll('.rt-row').length),10,'Топ 10: аниқ 10 сатр');
+ await P.click('[data-rt-tab="100"]');
+ t.eq(await P.evaluate(()=>document.querySelectorAll('.rt-row').length),12,'Топ 100: 12 нафар бошад — 12 сатр');
+ await P.click('[data-rt-tab="0"]');
  t.eq(await P.evaluate(()=>[...document.querySelectorAll('.rt-row')].slice(0,4).map(r=>r.className.replace('rt-row','').trim())),['m1','m2','m3',''],'1-2-3: тилло, нуқра, биринҷӣ; боқӣ оддӣ');
  t.eq(await P.evaluate(()=>document.querySelector('.rt-row .rt-nm small').textContent),await P.evaluate(()=>fmtNum(Math.floor((12*3600+90)/60))+' дақ'),'дақиқа дуруст ҳисоб шуд (3600·12+90 сония)');
  t.ok(await P.evaluate(()=>document.querySelector('.rt-row').innerText.includes('Хонанда 1')),'сатр: ном ҳаст');

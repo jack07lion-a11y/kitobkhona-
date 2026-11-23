@@ -24,7 +24,7 @@ language sql stable security definer set search_path = public as $$
 $$;
 revoke all on function public.rating_pool(int) from public, anon, authenticated;
 
--- Рӯйхати беҳтаринҳо (пешфарз 10, ҳадди аксар 50)
+-- Рӯйхати беҳтаринҳо (пешфарз 10; ҳадди аксар 100000 — амалан бечегара)
 create or replace function public.leaderboard(p_limit int default 10, p_days int default null)
 returns table(pos bigint, name text, avatar text, bio text, sec bigint)
 language sql stable security definer set search_path = public as $$
@@ -32,7 +32,7 @@ language sql stable security definer set search_path = public as $$
     from public.rating_pool(p_days) r
    where auth.uid() is not null
    order by pos
-   limit least(greatest(coalesce(p_limit, 10), 1), 50)
+   limit least(greatest(coalesce(p_limit, 10), 1), 100000)
 $$;
 revoke all on function public.leaderboard(int, int) from public, anon;
 grant execute on function public.leaderboard(int, int) to authenticated;
