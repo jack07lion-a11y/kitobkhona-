@@ -888,5 +888,8 @@
 ["китоби нав","новых книг","ta yangi kitob","new books"],
 ["Аз рӯи хондан ва ҷустуҷӯи шумо","По вашему чтению и поиску","Oʻqishingiz va qidiruvingiz asosida","Based on your reading and searches"],
 ["Барои оғоз, китобҳои гуногун","Для начала — разные книги","Boshlash uchun turli kitoblar","To start, a mix of books"],
-["Ҳоло китоб нест","Пока книг нет","Hozircha kitob yoʻq","No books yet"]
+["Ҳоло китоб нест","Пока книг нет","Hozircha kitob yoʻq","No books yet"],
+["Топ 10", "Топ 10", "Top 10", "Top 10"],
+["Топ 100", "Топ 100", "Top 100", "Top 100"],
+["Топ 1000", "Топ 1000", "Top 1000", "Top 1000"]
 ]
