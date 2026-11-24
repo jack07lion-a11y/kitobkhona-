@@ -55,3 +55,14 @@ module.exports=(prev=>async t=>{
  await P.evaluate(()=>{const b=bk(931);b.cover='https://x.invalid/old.png';render()});await P.waitForTimeout(400);
  t.ok(await P.evaluate(()=>{const im=document.querySelector('[data-book="931"] img[data-cp]');return !!im&&im.getAttribute('src').startsWith('blob:')}),'бе суроғаи кор: муқова аз нусхаи дастгоҳ меояд');
 })(module.exports);
+
+// огоҳӣ ҳангоми кушодани китоб: як бор, 5 сония
+module.exports=(prev=>async t=>{
+ await prev(t);
+ await t.open({view:'home'});
+ const R=await t.page.evaluate(()=>{S.nsn={};BOOKS.length=0;BOOKS.push({id:7,t:'Т',a:'А',c:'adab',col:['#111','#222'],db:true,pub:true,cover:'',cp:''});
+  openBook0(7);const a=!!document.getElementById('bknotice');S.view='home';render();openBook0(7);return{a,seen:!!S.nsn[7]}});
+ t.ok(R.a&&R.seen,'огоҳӣ ҳангоми кушодани китоб пайдо мешавад');
+ await t.page.waitForTimeout(5600);
+ t.ok(await t.page.evaluate(()=>!document.getElementById('bknotice')),'баъди 5 сония нест мешавад (ва дубора нест)');
+})(module.exports);
