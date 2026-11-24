@@ -10,6 +10,9 @@
 .rbadge.b{color:#7a4318;box-shadow:0 0 14px rgba(185,112,58,.45)}.rbadge.b::before{background:conic-gradient(from 210deg,#8a4a1c,#f6c79a 32%,#b9703a 58%,#f6c79a 82%,#8a4a1c)}
 .rt-top{display:flex;align-items:center;gap:14px;margin:6px 0 2px}.rt-top h1{margin:0;font:700 30px/1.1 Lora,Georgia,serif}
 .rt-sub{margin:0 0 16px;color:var(--muted);font-size:15px}
+.rt-tabs{display:flex;gap:8px;margin:0 0 14px;overflow-x:auto;scrollbar-width:none}.rt-tabs::-webkit-scrollbar{display:none}
+.rt-tab{flex:none;border:0;border-radius:99px;padding:9px 16px;background:var(--card);color:var(--ink);font:700 15px Inter,system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rt-tab.on{background:linear-gradient(135deg,#0b7d57,#13a56d);color:#fff}
 .rt-list{display:flex;flex-direction:column;gap:10px}
 .rt-row{display:grid;grid-template-columns:44px 50px 1fr 20px;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:22px;padding:11px 14px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
 .rt-row:active{transform:scale(.98)}

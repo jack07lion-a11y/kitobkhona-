@@ -10,7 +10,7 @@ function obModal(html){const el=document.createElement("div");el.id="obm";el.cla
  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("in")));return el}
 function obConsent(){OB.shown.cons=true;
  const el=obModal(`<h3>Розигӣ ва синну сол</h3><p>Ду аломатро гузоред, шумо давом медиҳед</p>
-  <label class="obc" for="ob1"><input type="checkbox" id="ob1"><i aria-hidden="true"></i><span>Ман 18-сола ва болотарам, ё падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст</span></label>
+  <label class="obc" for="ob1"><input type="checkbox" id="ob1"><i aria-hidden="true"></i><span>Ман 13-сола ё калонтарам. Агар аз 18 хурд бошам, падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст</span></label>
   <label class="obc" for="ob2"><input type="checkbox" id="ob2"><i aria-hidden="true"></i><span>Ман <button class="lnk" type="button" data-obpriv>Сиёсати махфият</button>-ро хондам ва ба нигоҳ доштани маълумотам (почта, ном, омори хондан) розӣ ҳастам</span></label>`);
  const a=el.querySelector("#ob1"),b=el.querySelector("#ob2");
  el.querySelector("[data-obpriv]").onclick=e=>{e.preventDefault();e.stopPropagation();NATIVE.openUrl(SITE_URL+"maxfiyat.html")};

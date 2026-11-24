@@ -1028,6 +1028,9 @@ html{overscroll-behavior-y:contain}
 .rbadge.b{color:#7a4318;box-shadow:0 0 14px rgba(185,112,58,.45)}.rbadge.b::before{background:conic-gradient(from 210deg,#8a4a1c,#f6c79a 32%,#b9703a 58%,#f6c79a 82%,#8a4a1c)}
 .rt-top{display:flex;align-items:center;gap:14px;margin:6px 0 2px}.rt-top h1{margin:0;font:700 30px/1.1 Lora,Georgia,serif}
 .rt-sub{margin:0 0 16px;color:var(--muted);font-size:15px}
+.rt-tabs{display:flex;gap:8px;margin:0 0 14px;overflow-x:auto;scrollbar-width:none}.rt-tabs::-webkit-scrollbar{display:none}
+.rt-tab{flex:none;border:0;border-radius:99px;padding:9px 16px;background:var(--card);color:var(--ink);font:700 15px Inter,system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rt-tab.on{background:linear-gradient(135deg,#0b7d57,#13a56d);color:#fff}
 .rt-list{display:flex;flex-direction:column;gap:10px}
 .rt-row{display:grid;grid-template-columns:44px 50px 1fr 20px;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:22px;padding:11px 14px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
 .rt-row:active{transform:scale(.98)}
@@ -2259,7 +2262,7 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҳоло ҳам хонда истодаед?","Вы всё ещё читаете?","Hali ham oʻqiyapsizmi?","Still reading?"],
 ["Бо ин ном дар профил ва рейтинг намоён мешавед. Баъд онро иваз карда метавонед.","Под этим именем вы будете видны в профиле и рейтинге. Позже его можно изменить.","Shu nom bilan profil va reytingda koʻrinasiz. Keyin uni oʻzgartirish mumkin.","You will appear in your profile and the rating under this name. You can change it later."],
 ["Ду аломатро гузоред, шумо давом медиҳед","Поставьте две отметки, и вы продолжите","Ikkita belgini qoʻying, davom etasiz","Tick both boxes to continue"],
-["Ман 18-сола ва болотарам, ё падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст","Мне 18 лет или больше, либо мой родитель или опекун знает об использовании Китобхоны","Men 18 yosh yoki undan kattaman, yoki ota-onam yoki vasiyim Kitobxonadan foydalanishimdan xabardor","I am 18 or older, or my parent or guardian knows I use Kitobkhona"],
+["Ман 13-сола ё калонтарам. Агар аз 18 хурд бошам, падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст","Мне 13 лет или больше. Если мне нет 18, мой родитель или опекун знает об использовании Китобхоны","Men 13 yosh yoki undan kattaman. Agar 18 yoshga to‘lmagan bo‘lsam, ota-onam yoki vasiyim Kitobxonadan foydalanishimdan xabardor","I am 13 or older. If I am under 18, my parent or guardian knows I use Kitobkhona"],
 ["Расм ва ҷоизаҳои профил аз рӯи ин интихоб мешаванд. 3 рӯз иваз кардан мумкин.","Картинки и награды профиля зависят от этого выбора. 3 дня можно изменить.","Profil rasmlari va sovrinlar shu tanlovga bogʻliq. 3 kun ichida oʻzgartirish mumkin.","Profile pictures and prizes depend on this choice. You can change it for 3 days."],
 ["Интихоб шуд","Выбрано","Tanlandi","Selected"],
 ["Иваз шуд","Изменено","Oʻzgartirildi","Changed"],
@@ -2322,7 +2325,10 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Ҳоло китоб нест","Пока книг нет","Hozircha kitob yoʻq","No books yet"],
 ["Ахлоқ ва ҳикмати шарқӣ","Восточная этика и мудрость","Sharq axloqi va hikmati","Eastern ethics and wisdom"],
 ["Андарз, ҳикмат ва тарбия аз адибони мо","Наставления, мудрость и воспитание от наших классиков","Bizning adiblardan pand, hikmat va tarbiya","Advice, wisdom and upbringing from our own writers"],
-["Дар китоб ҷо-ҷо хатои ҳарфӣ, ҷумла ё сохтор метавонад бошад: бубахшед. Корҳои техникӣ душвор аст ва вақт, қувват, маблағ ва китобҳои аслӣ мехоҳад. Агар хоҳед кумак кунед, ба мо дар Телеграм нависед (@kitobkhona_official) ва нусхаи аслии ин китобро ҳамчун PDF бо МАТНИ электронӣ (на расм) фиристед.","В книге местами возможны опечатки, ошибки в предложениях или в структуре: просим прощения. Технические работы сложны и требуют времени, сил, денег и подлинных книг. Если хотите помочь, напишите нам в Телеграм (@kitobkhona_official) и пришлите оригинал этой книги в виде PDF с ЭЛЕКТРОННЫМ ТЕКСТОМ (не картинкой).","Kitobda ba'zi joylarda harf, gap yoki tuzilish xatolari bo'lishi mumkin: uzr so'raymiz. Texnik ishlar qiyin va vaqt, kuch, mablag' hamda asl kitoblarni talab qiladi. Yordam bermoqchi bo'lsangiz, Telegramda (@kitobkhona_official) yozing va shu kitobning asl nusxasini ELEKTRON MATNLI PDF (rasm emas) shaklida yuboring.","The book may contain occasional typos or errors in sentences or structure: we apologize. Technical work is hard and needs time, effort, money and original books. If you want to help, write to us on Telegram (@kitobkhona_official) and send the original of this book as a PDF with ELECTRONIC TEXT (not an image)."]
+["Дар китоб ҷо-ҷо хатои ҳарфӣ, ҷумла ё сохтор метавонад бошад: бубахшед. Корҳои техникӣ душвор аст ва вақт, қувват, маблағ ва китобҳои аслӣ мехоҳад. Агар хоҳед кумак кунед, ба мо дар Телеграм нависед (@kitobkhona_official) ва нусхаи аслии ин китобро ҳамчун PDF бо МАТНИ электронӣ (на расм) фиристед.","В книге местами возможны опечатки, ошибки в предложениях или в структуре: просим прощения. Технические работы сложны и требуют времени, сил, денег и подлинных книг. Если хотите помочь, напишите нам в Телеграм (@kitobkhona_official) и пришлите оригинал этой книги в виде PDF с ЭЛЕКТРОННЫМ ТЕКСТОМ (не картинкой).","Kitobda ba'zi joylarda harf, gap yoki tuzilish xatolari bo'lishi mumkin: uzr so'raymiz. Texnik ishlar qiyin va vaqt, kuch, mablag' hamda asl kitoblarni talab qiladi. Yordam bermoqchi bo'lsangiz, Telegramda (@kitobkhona_official) yozing va shu kitobning asl nusxasini ELEKTRON MATNLI PDF (rasm emas) shaklida yuboring.","The book may contain occasional typos or errors in sentences or structure: we apologize. Technical work is hard and needs time, effort, money and original books. If you want to help, write to us on Telegram (@kitobkhona_official) and send the original of this book as a PDF with ELECTRONIC TEXT (not an image)."],
+["Топ 10", "Топ 10", "Top 10", "Top 10"],
+["Топ 100", "Топ 100", "Top 100", "Top 100"],
+["Топ 1000", "Топ 1000", "Top 1000", "Top 1000"]
 ]
 </script>
 <script>
@@ -3881,7 +3887,7 @@ function obModal(html){const el=document.createElement("div");el.id="obm";el.cla
  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("in")));return el}
 function obConsent(){OB.shown.cons=true;
  const el=obModal(`<h3>Розигӣ ва синну сол</h3><p>Ду аломатро гузоред, шумо давом медиҳед</p>
-  <label class="obc" for="ob1"><input type="checkbox" id="ob1"><i aria-hidden="true"></i><span>Ман 18-сола ва болотарам, ё падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст</span></label>
+  <label class="obc" for="ob1"><input type="checkbox" id="ob1"><i aria-hidden="true"></i><span>Ман 13-сола ё калонтарам. Агар аз 18 хурд бошам, падар, модар ё васии ман аз истифодаи Китобхона огоҳ аст</span></label>
   <label class="obc" for="ob2"><input type="checkbox" id="ob2"><i aria-hidden="true"></i><span>Ман <button class="lnk" type="button" data-obpriv>Сиёсати махфият</button>-ро хондам ва ба нигоҳ доштани маълумотам (почта, ном, омори хондан) розӣ ҳастам</span></label>`);
  const a=el.querySelector("#ob1"),b=el.querySelector("#ob2");
  el.querySelector("[data-obpriv]").onclick=e=>{e.preventDefault();e.stopPropagation();NATIVE.openUrl(SITE_URL+"maxfiyat.html")};
@@ -3912,14 +3918,16 @@ document.addEventListener("visibilitychange",()=>{
 if((S.obFg||0)>0)OB.ret=true; // барнома аз нав кушода шуд
 /* ---- Рейтинг: китобхонҳои беҳтарин (дақиқаҳои хондан, ҳамаи вақт) ----
    Сервер: docs/sql-reyting.sql (leaderboard, my_rank, set_rating_visible).
-   Нишон: тугмаи доира дар боло (ҷои шумо), саҳифаи рейтинг (Top 10), варақаи профили китобхон, доираи «Рейтинг» дар Озмун. */
-const RT_TOP=10;
+   Нишон: тугмаи доира дар боло (ҷои шумо), саҳифаи рейтинг (Ҳама / Топ 10 / Топ 100 / Топ 1000), варақаи профили китобхон, доираи «Рейтинг» дар Озмун. */
+const RT_ALL=100000; // ҳамаи хонандагон (сервер: бечегара); Топ 10/100/1000 — буриши рӯйхат дар телефон
+const RT_TABS=[0,10,100,1000]; // 0 = Ҳама
 S.rt=null; // ҳолати муваққатӣ (busy ва ғ.) дар localStorage намемонад: «busy» хаста мешуд ва рӯйхат ҳеч гоҳ навсозӣ намешуд
 const RT_TROPHY='<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>';
 const fmtNum=n=>String(Math.round(+n||0)).replace(/\B(?=(\d{3})+(?!\d))/g," ");
 const fmtDur=sec=>fmtNum(Math.floor((+sec||0)/60))+" дақ";   // 0 дақиқа ҳам «0 дақ» (ҳамаи ҳисобҳо рейтингда)
 const fmtDurLong=sec=>{const m=Math.floor((+sec||0)/60),h=Math.floor(m/60);return h?fmtNum(h)+" соат "+(m%60)+" дақиқа":m+" дақиқа"};
-const ratingList=()=>(S.rt&&S.rt.list)||S.rtCache||[];
+const ratingAll=()=>(S.rt&&S.rt.list)||S.rtCache||[];
+const ratingList=()=>{const a=ratingAll(),n=RT_TABS.includes(+S.rtTab)?+S.rtTab:0;return n?a.slice(0,n):a};
 
 /* тугмаи доира: ҷои корбар (1, 2, 3 — тиллоӣ, нуқра, биринҷӣ); ҳеҷ гоҳ 0 нест — ҷой набошад, ҷоми ғолибӣ */
 function ratingBadge(){const p=+((S.myRank||{}).pos)||0,cls=p===1?" g":p===2?" s":p===3?" b":"";
@@ -3929,17 +3937,18 @@ function paintBadge(){const e=document.querySelector(".rbadge");if(!e)return;
  const t=document.createElement("div");t.innerHTML=ratingBadge();const n=t.firstChild;n.onclick=openRating;e.replaceWith(n)}
 
 function ratingView(){
- const T=S.rt||{},L=ratingList();
+ const T=S.rt||{},L=ratingList(),tab=RT_TABS.includes(+S.rtTab)?+S.rtTab:0;
  let body="";
  if(!S.uid)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Барои дидани рейтинг ворид шавед</b><span>Бо почтаи худ ворид шавед: рамз ба почта меояд, парол лозим нест</span><button class="pill" data-go="login" style="margin-top:10px">Ворид шудан</button></div></div>`;
  else{
-  if(!L.length&&T.busy)body=skel();
-  else if(!L.length&&T.err)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг боргирӣ нашуд</b><span>Интернетро санҷед ва аз нав кӯшиш кунед</span><button class="pill" data-rt-retry style="margin-top:10px">Аз нав</button></div></div>`;
-  else if(!L.length)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг ҳоло холӣ аст</b><span>Ҳисобҳо ба қайд гирифта шавад, рӯйхат пайдо мешавад</span></div></div>`;
-  else body=`<div class="rt-list">${L.map(rtRow).join("")}</div>${T.err?`<p class="hint">Интернет нест. Рӯйхати охирин нишон дода шуд.</p>`:""}`;
+  if(!ratingAll().length&&T.busy)body=skel();
+  else if(!ratingAll().length&&T.err)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг боргирӣ нашуд</b><span>Интернетро санҷед ва аз нав кӯшиш кунед</span><button class="pill" data-rt-retry style="margin-top:10px">Аз нав</button></div></div>`;
+  else if(!ratingAll().length)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг ҳоло холӣ аст</b><span>Ҳисобҳо ба қайд гирифта шавад, рӯйхат пайдо мешавад</span></div></div>`;
+  else body=rtTabs(tab)+`<div class="rt-list">${L.map(rtRow).join("")}</div>${T.err?`<p class="hint">Интернет нест. Рӯйхати охирин нишон дода шуд.</p>`:""}`;
   body+=rtMe()}
  return `<section class="screen pad rt"><div class="rt-top"><button class="round" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><h1>Рейтинг</h1></div>
   <p class="rt-sub">Дақиқаҳои хондан дар ҳамаи вақт. Баробар бошад, аввал рӯйхат гузашта баландтар аст.</p>${body}</section>`}
+function rtTabs(tab){return `<div class="rt-tabs" role="tablist">${RT_TABS.map(n=>`<button class="rt-tab${n===tab?" on":""}" role="tab" aria-selected="${n===tab}" data-rt-tab="${n}">${n?"Топ "+n:"Ҳама"}</button>`).join("")}</div>`}
 function rtRow(e,i){const p=e.pos;
  return `<button class="rt-row${p<=3?" m"+p:""}" data-rt-user="${i}"><span class="rt-pos">${p}</span><span class="rt-av">${avInner(e.avatar)}</span><span class="rt-nm"><b>${escH(e.name)}</b><small>${fmtDur(e.sec)}</small></span><span class="rt-ch">${P(I.chev,2.2)}</span></button>`}
 /* карточкаи «Ҷои шумо» дар поёни саҳифа */
@@ -3961,7 +3970,7 @@ async function loadMyRank(c){try{if(!S.uid||!navigator.onLine)return;c=c||await 
  const{data,error}=await c.rpc("my_rank");if(error||!data)return;S.myRank=data;save();paintBadge()}catch(_){}}
 async function loadRating(force){const T=S.rt=S.rt||{};if(!S.uid||(T.busy&&Date.now()-(T.busyAt||0)<15000))return;if(!force&&T.at&&Date.now()-T.at<30000)return;
  T.busy=true;T.busyAt=Date.now();if(S.view==="rating"&&!ratingList().length)render();
- try{const c=await sbLoad();if(!c||!navigator.onLine)throw 0;const{data,error}=await c.rpc("leaderboard",{p_limit:RT_TOP});if(error||!Array.isArray(data))throw 0;
+ try{const c=await sbLoad();if(!c||!navigator.onLine)throw 0;const{data,error}=await c.rpc("leaderboard",{p_limit:RT_ALL});if(error||!Array.isArray(data))throw 0;
   T.list=data.map(x=>({pos:+x.pos,name:String(x.name||""),avatar:x.avatar||"",bio:x.bio||"",sec:+x.sec||0}));T.at=Date.now();T.err=false;S.rtCache=T.list;save()}
  catch(_){T.err=true}finally{T.busy=false}
  if(S.view==="rating")render();loadMyRank()}
@@ -3973,6 +3982,7 @@ async function toggleRatingVisible(){const show=!!(S.myRank&&S.myRank.hidden);
 function bindRating($$){
  $$("[data-rating]",b=>b.onclick=openRating);
  $$("[data-rt-user]",b=>b.onclick=()=>{const e=ratingList()[+b.dataset.rtUser];if(e){S.ru=e;S.sheet="ruser";render()}});
+ $$("[data-rt-tab]",b=>b.onclick=()=>{S.rtTab=+b.dataset.rtTab;save();render();window.scrollTo(0,0)});
  $$("[data-rt-vis]",b=>b.onclick=toggleRatingVisible);
  $$("[data-rt-retry]",b=>b.onclick=()=>loadRating(true))}
 setInterval(()=>{if(document.visibilityState==="visible"&&S.uid){loadMyRank();if(S.view==="rating"&&!S.sheet)loadRating()}},180000);
@@ -4798,7 +4808,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="7d836a33bd";
+const WEB_H="03670c987a";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

@@ -19,7 +19,7 @@ language sql stable security definer set search_path = public as $$
     from public.rating_pool(p_days) r
    where auth.uid() is not null
    order by pos
-   limit least(greatest(coalesce(p_limit, 10), 1), 50)
+   limit least(greatest(coalesce(p_limit, 10), 1), 100000)
 $$;
 revoke all on function public.leaderboard(int, int) from public, anon;
 grant execute on function public.leaderboard(int, int) to authenticated;

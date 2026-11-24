@@ -4,11 +4,17 @@ set -euo pipefail
 cd "$(dirname "$0")/src"
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
 BT="$SDK/build-tools/$(ls "$SDK/build-tools" | sort -V | tail -1)"
-# targetSdk 35 (Play талаб мекунад) агар платформа бошад; вагарна 34
-if [ -f "$SDK/platforms/android-35/android.jar" ]; then AJ="$SDK/platforms/android-35/android.jar"; TSDK=35
+# targetSdk 36 (Play 2026 талаб мекунад: камаш 36). Платформа набошад — аз sdkmanager мегирем; вагарна 35, баъд 34.
+if [ ! -f "$SDK/platforms/android-36/android.jar" ]; then
+  SM="$SDK/cmdline-tools/latest/bin/sdkmanager"; [ -x "$SM" ] || SM="$(ls "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -1)"
+  [ -x "${SM:-}" ] && yes | "$SM" --install "platforms;android-36" >/dev/null 2>&1 || true
+fi
+if [ -f "$SDK/platforms/android-36/android.jar" ]; then AJ="$SDK/platforms/android-36/android.jar"; TSDK=36
+elif [ -f "$SDK/platforms/android-35/android.jar" ]; then AJ="$SDK/platforms/android-35/android.jar"; TSDK=35
 else AJ="$SDK/platforms/android-34/android.jar"; TSDK=34; fi
 [ -f "$AJ" ] || AJ="$SDK/platforms/$(ls "$SDK/platforms" | sort -V | tail -1)/android.jar"
 echo "targetSdk=$TSDK"
+if [ "${FLAVOR:-direct}" = "play" ] && [ "$TSDK" -lt 36 ]; then echo "ХАТО: Play учун targetSdk камаш 36 лозим, ҳоло $TSDK. Йиғиш қатъ шуд."; exit 1; fi
 FLAVOR="${FLAVOR:-direct}"; case "$FLAVOR" in direct|play) ;; *) echo "ХАТО: FLAVOR=direct ё play"; exit 1;; esac
 VN="${VN:-$(cat ../VERSION)}"   # версия: apk/VERSION (масалан 1.0.0); versionCode = рақами CI (VC)
 echo "flavor=$FLAVOR versionName=$VN versionCode=${VC:-1}"
@@ -23,7 +29,7 @@ rm -rf assets/fonts && cp -r ../../fonts assets/fonts
 rm -rf assets/lib && cp -r ../../lib assets/lib
 mkdir -p assets/avatars && cp ../../avatars/*.webp assets/avatars/
 mkdir -p assets/logos && cp ../../logos/khirad*.webp assets/logos/
-if [ "$TSDK" = "35" ]; then mkdir -p res/values-v35 res/values-night-v35 && cp ../res-v35/styles.xml res/values-v35/styles.xml && cp ../res-v35/styles-night.xml res/values-night-v35/styles.xml; fi
+if [ "$TSDK" -ge 35 ]; then mkdir -p res/values-v35 res/values-night-v35 && cp ../res-v35/styles.xml res/values-v35/styles.xml && cp ../res-v35/styles-night.xml res/values-night-v35/styles.xml; fi
 rm -rf build && mkdir -p build/gen build/obj
 SRC=src; MANIFEST=AndroidManifest.xml
 if [ "$FLAVOR" = "play" ]; then
