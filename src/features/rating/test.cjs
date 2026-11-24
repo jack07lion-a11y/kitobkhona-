@@ -15,22 +15,24 @@ module.exports=async t=>{
  await P.evaluate(list=>{S.uid='u1';S.myRank={pos:27,sec:5400,n:130};window.__rpc=[];
   sbLoad=async()=>({rpc:async(n,a)=>{window.__rpc.push([n,a]);if(n==='leaderboard')return{data:list.slice(0,a.p_limit),error:null};if(n==='my_rank')return{data:{pos:27,sec:5400,n:130},error:null};return{data:null,error:null}}})},mk(12));
  await P.click('.rbadge');await P.waitForSelector('.rt-row');
- t.eq(await P.evaluate(()=>[S.view,document.querySelectorAll('.rt-row').length,window.__rpc.some(x=>x[0]==='leaderboard'&&x[1].p_limit>=100000)]),['rating',12,true],'рейтинг: «Ҳама» — ҳамаи 12 нафар, бе ҳадди 10');
+ t.eq(await P.evaluate(()=>[S.view,document.querySelectorAll('.rt-row').length,window.__rpc.some(x=>x[0]==='leaderboard'&&x[1].p_limit>=100000)]),['rating',9,true],'рейтинг: «Ҳама» — подиум (3) + 9 сатр = ҳамаи 12 нафар, бе ҳадди 10');
  t.eq(await P.evaluate(()=>[...document.querySelectorAll('.rt-tab')].map(b=>b.innerText)),['Ҳама','Топ 10','Топ 100','Топ 1000'],'табҳо: Ҳама, Топ 10, Топ 100, Топ 1000');
  await P.click('[data-rt-tab="10"]');
- t.eq(await P.evaluate(()=>document.querySelectorAll('.rt-row').length),10,'Топ 10: аниқ 10 сатр');
+ t.eq(await P.evaluate(()=>[document.querySelectorAll('.pd-col .pd-who').length,document.querySelectorAll('.rt-row').length]),[3,7],'Топ 10: подиум 3 + 7 сатр = аниқ 10');
  await P.click('[data-rt-tab="100"]');
- t.eq(await P.evaluate(()=>document.querySelectorAll('.rt-row').length),12,'Топ 100: 12 нафар бошад — 12 сатр');
+ t.eq(await P.evaluate(()=>document.querySelectorAll('.rt-row').length),9,'Топ 100: 12 нафар бошад — подиум + 9 сатр');
  await P.click('[data-rt-tab="0"]');
- t.eq(await P.evaluate(()=>[...document.querySelectorAll('.rt-row')].slice(0,4).map(r=>r.className.replace('rt-row','').trim())),['m1','m2','m3',''],'1-2-3: тилло, нуқра, биринҷӣ; боқӣ оддӣ');
- t.eq(await P.evaluate(()=>document.querySelector('.rt-row .rt-nm small').textContent),await P.evaluate(()=>fmtNum(Math.floor((12*3600+90)/60))+' дақ'),'дақиқа дуруст ҳисоб шуд (3600·12+90 сония)');
- t.ok(await P.evaluate(()=>document.querySelector('.rt-row').innerText.includes('Хонанда 1')),'сатр: ном ҳаст');
+ t.eq(await P.evaluate(()=>[...document.querySelectorAll('.pd-col')].map(c=>c.className.replace('pd-col','').trim()+':'+(c.querySelector('.pd-medal')||{}).textContent)),['p2:2','p1:1','p3:3'],'подиум: чап 2, миёна 1, рост 3 — ҳар кадом бо медали худ (тоҷ нест)');
+ t.ok(await P.evaluate(()=>!document.querySelector('.pd-medal.crown,.crown')&&!document.querySelector('.rt-row .pd-medal')),'тоҷ (Премиум) нест; ҷои 4+ медал надорад');
+ t.ok(await P.evaluate(()=>{const w=[...document.querySelectorAll('.pd-who')].every(w=>{const m=w.querySelector('.pd-mn').getBoundingClientRect(),b=w.parentElement.querySelector('.pd-blk').getBoundingClientRect();return m.bottom<=b.top+1});return w}),'дақиқа дар подиум пинҳон намешавад (аз болои блок)');
+ t.eq(await P.evaluate(()=>document.querySelector('.pd-col.p1 .pd-mn').textContent),await P.evaluate(()=>fmtNum(Math.floor((12*3600+90)/60))+' дақ'),'дақиқа дуруст ҳисоб шуд (3600·12+90 сония)');
+ t.ok(await P.evaluate(()=>document.querySelector('.pd-col.p1').innerText.includes('Хонанда 1')&&document.querySelector('.rt-row').innerText.includes('Хонанда 4')),'подиум: ном ҳаст; рӯйхат аз ҷои 4');
  t.ok(await P.evaluate(()=>/Ҷои шумо/.test(document.querySelector('.rt-me').innerText)&&/27/.test(document.querySelector('.rt-me').innerText)),'«Ҷои шумо» дар поён: 27');
  t.ok(await P.evaluate(()=>document.getElementById('app').innerText.length>50&&!document.querySelector('.tb:not([hidden])')),'саҳифаи рейтинг: менюи поён пинҳон');
  // 0 дақиқа ҳам рейтингда: «0 дақ» (на «кам аз 1»)
  t.eq(await P.evaluate(()=>[fmtDur(0),fmtDur(59),fmtDur(60),fmtDur(5400),fmtDurLong(0)]),['0 дақ','0 дақ','1 дақ','90 дақ','0 дақиқа'],'дақиқа: 0 → «0 дақ», 59 сония → «0 дақ», 60 → «1 дақ»');
  // ===== 3) профили китобхон (варақа) =====
- await P.click('.rt-row');await P.waitForSelector('.ru');
+ await P.click('[data-rt-user="0"]');await P.waitForSelector('.ru');
  const ru=await P.evaluate(()=>({n:document.querySelector('.ru h2').textContent,b:document.querySelector('.ru-bio').innerText,pos:document.querySelector('.ru-pos').innerText,html:document.querySelector('.ru-bio').innerHTML,st:document.querySelector('.ru-st').innerText}));
  t.ok(ru.n==='Хонанда 1'&&ru.pos.includes('Ҷои 1')&&ru.b.includes('<b>китоб</b>')&&!/<b>/.test(ru.html.replace(/&lt;b&gt;/g,'')),'варақа: ном, ҷой, маълумот; HTML-и ёзилган матн иҷро намешавад (XSS нест)');
  t.ok(/дақиқа/.test(ru.st)&&/соат/.test(ru.st),'варақа: дақиқа ва соат');
@@ -45,7 +47,7 @@ module.exports=async t=>{
  await P.evaluate(()=>{S.uid='u1';sbLoad=async()=>({rpc:async()=>({data:null,error:{message:'x'}})});S.rt=null;S.rtCache=null;loadRating(true)});await P.waitForTimeout(300);
  t.ok(await P.evaluate(()=>!!document.querySelector('[data-rt-retry]')),'хато: тугмаи «Аз нав»');
  await P.evaluate(()=>{S.rtCache=[{pos:1,name:'Кэш',avatar:'',bio:'',sec:120}];S.rt=null;loadRating(true)});await P.waitForTimeout(300);
- t.ok(await P.evaluate(()=>/Кэш/.test(document.querySelector('.rt-list').innerText)&&/Интернет нест/.test(document.getElementById('app').innerText)),'офлайн: рӯйхати охирин ва ёддошт');
+ t.ok(await P.evaluate(()=>/Кэш/.test(document.querySelector('.pd').innerText)&&/Интернет нест/.test(document.getElementById('app').innerText)),'офлайн: рӯйхати охирин ва ёддошт');
  // бозгашт
  await P.click('[data-back]');await P.waitForTimeout(400);
  t.eq(await P.evaluate(()=>S.view),'home','тугмаи бозгашт: ба саҳифаи пештара');

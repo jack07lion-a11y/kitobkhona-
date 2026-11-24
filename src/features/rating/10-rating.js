@@ -20,19 +20,25 @@ function paintBadge(){const e=document.querySelector(".rbadge");if(!e)return;
 
 function ratingView(){
  const T=S.rt||{},L=ratingList(),tab=RT_TABS.includes(+S.rtTab)?+S.rtTab:0;
- let body="";
+ let body="",pod="";
  if(!S.uid)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Барои дидани рейтинг ворид шавед</b><span>Бо почтаи худ ворид шавед: рамз ба почта меояд, парол лозим нест</span><button class="pill" data-go="login" style="margin-top:10px">Ворид шудан</button></div></div>`;
  else{
   if(!ratingAll().length&&T.busy)body=skel();
   else if(!ratingAll().length&&T.err)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг боргирӣ нашуд</b><span>Интернетро санҷед ва аз нав кӯшиш кунед</span><button class="pill" data-rt-retry style="margin-top:10px">Аз нав</button></div></div>`;
   else if(!ratingAll().length)body=`<div class="empty-card"><span class="round">${P(RT_TROPHY,2)}</span><div><b>Рейтинг ҳоло холӣ аст</b><span>Ҳисобҳо ба қайд гирифта шавад, рӯйхат пайдо мешавад</span></div></div>`;
-  else body=rtTabs(tab)+`<div class="rt-list">${L.map(rtRow).join("")}</div>${T.err?`<p class="hint">Интернет нест. Рӯйхати охирин нишон дода шуд.</p>`:""}`;
+  else{pod=rtPodium(L);body=rtTabs(tab)+(L.length>3?`<div class="rt-list">${L.slice(3).map((e,i)=>rtRow(e,i+3)).join("")}</div>`:"")+`${T.err?`<p class="hint">Интернет нест. Рӯйхати охирин нишон дода шуд.</p>`:""}`}
   body+=rtMe()}
- return `<section class="screen pad rt"><div class="rt-top"><button class="round" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><h1>Рейтинг</h1></div>
-  <p class="rt-sub">Дақиқаҳои хондан дар ҳамаи вақт. Баробар бошад, аввал рӯйхат гузашта баландтар аст.</p>${body}</section>`}
+ return `<section class="screen rt"><div class="rt-hero"><div class="rt-top"><button class="round" data-back aria-label="Бозгашт">${P('<path d="M15 5l-7 7 7 7"/>',2.2)}</button><h1>Рейтинг</h1></div>
+  <p class="rt-sub">Дақиқаҳои хондан дар ҳамаи вақт. Баробар бошад, аввал рӯйхат гузашта баландтар аст.</p>${pod}</div><div class="rt-body pad">${body}</div></section>`}
+/* подиум: ҷои 1 дар миёна, 2 дар чап, 3 дар рост; ном пурра (хурд, бо ҷудокунӣ ба сатрҳо); ба ҷои тоҷ — медал (тоҷ = Премиум, ҳоло хомӯш) */
+function rtMedal(p){return `<span class="pd-medal m${p}" aria-hidden="true">${p}</span>`}
+function rtPodium(L){const t=L.slice(0,3);if(!t.length)return "";
+ const col=i=>{const e=t[i];if(!e)return `<div class="pd-col"></div>`;const p=i+1;
+  return `<div class="pd-col p${p}"><button class="pd-who" data-rt-user="${i}"><span class="pd-av"><span class="pd-face">${avInner(e.avatar)}</span>${rtMedal(p)}</span><span class="pd-nm">${escH(e.name)}</span><span class="pd-mn">${fmtDur(e.sec)}</span></button><div class="pd-blk"><span>${p}</span></div></div>`};
+ return `<div class="pd">${col(1)}${col(0)}${col(2)}</div>`}
 function rtTabs(tab){return `<div class="rt-tabs" role="tablist">${RT_TABS.map(n=>`<button class="rt-tab${n===tab?" on":""}" role="tab" aria-selected="${n===tab}" data-rt-tab="${n}">${n?"Топ "+n:"Ҳама"}</button>`).join("")}</div>`}
 function rtRow(e,i){const p=e.pos;
- return `<button class="rt-row${p<=3?" m"+p:""}" data-rt-user="${i}"><span class="rt-pos">${p}</span><span class="rt-av">${avInner(e.avatar)}</span><span class="rt-nm"><b>${escH(e.name)}</b><small>${fmtDur(e.sec)}</small></span><span class="rt-ch">${P(I.chev,2.2)}</span></button>`}
+ return `<button class="rt-row" data-rt-user="${i}"><span class="rt-pos">${p}</span><span class="rt-av">${avInner(e.avatar)}</span><span class="rt-nm"><b>${escH(e.name)}</b><small>${fmtDur(e.sec)}</small></span><span class="rt-ch">${P(I.chev,2.2)}</span></button>`}
 /* карточкаи «Ҷои шумо» дар поёни саҳифа */
 function rtMe(){const r=S.myRank||{},p=+r.pos||0;
  if(r.hidden)return `<div class="rt-me mut"><div><b>Шумо дар рейтинг нишон дода намешавед</b><span>${fmtDurLong(r.sec||0)} хондаед</span></div><button class="pill" data-rt-vis>Нишон додан</button></div>`;
