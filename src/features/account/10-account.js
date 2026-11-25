@@ -18,7 +18,7 @@ const BGS=["linear-gradient(135deg,#4a52b4,#8a8fe0)","linear-gradient(135deg,#0b
 const AVN=20; // avatars/1.webp … 20.webp (духтарон)
 const AV_DEF='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/></svg>';
 const isImg=a=>typeof a==="string"&&(a.startsWith("data:")||/^https?:/.test(a));
-function avInner(a){if(isImg(a))return `<img src="${escH(a)}" alt="">`;const m=/^av:(\d+)$/.exec(a||"");if(m&&+m[1]>=1&&+m[1]<=AVN)return `<img class="avc" src="avatars/${m[1]}.webp" alt="">`;return AV_DEF}
+function avInner(a){if(isImg(a))return `<img src="${escH(a)}" alt="" loading="lazy" decoding="async">`;const m=/^av:(\d+)$/.exec(a||"");if(m&&+m[1]>=1&&+m[1]<=AVN)return `<img class="avc" src="avatars/${m[1]}.webp" alt="" loading="lazy" decoding="async">`;return AV_DEF}
 function bnStyle(b){if(isImg(b))return `background:url('${b.replace(/'/g,"%27")}') center/cover`;const m=/^g:(\d)$/.exec(b||"");return m&&BGS[m[1]]?`background:${BGS[m[1]]}`:""}
 let PET="av";
 function readImg(file,w,hh){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{try{const cv=document.createElement("canvas");cv.width=w;cv.height=hh;const x=cv.getContext("2d"),s=Math.max(w/im.width,hh/im.height),dw=im.width*s,dh=im.height*s;x.drawImage(im,(w-dw)/2,(hh-dh)/2,dw,dh);URL.revokeObjectURL(u);ok(cv)}catch(e){no(e)}};im.onerror=()=>{URL.revokeObjectURL(u);no(new Error("img"))};im.src=u})}

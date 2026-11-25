@@ -1,0 +1,25 @@
+/* ---- Суръат: намоиши сабук барои телефонҳои суст (data-perf на <html>) ----
+   mid  — шишаи нимшаффоф ва ҳаракатҳои беохир хомӯш, гузариши саҳифа бе View Transition.
+   low  — илова: соя ва филтрҳои вазнин, ҳаракатҳои кӯтоҳ, рӯйхатҳои дароз бо content-visibility. */
+.pf-b{min-height:44px;flex-direction:row;justify-content:center;padding:10px 4px;font-size:13px}
+/* ҳамаи рӯйхатҳои дароз: сатрҳои берун аз экран ҳисоб карда намешаванд (ҳама дараҷа) */
+.rt-row{content-visibility:auto;contain-intrinsic-size:auto 72px}
+
+html[data-perf="mid"] *,html[data-perf="low"] *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html[data-perf="mid"] .tb,html[data-perf="low"] .tb{background:var(--bg)}
+html[data-perf="mid"] .nb,html[data-perf="low"] .nb{background:color-mix(in srgb,var(--bg) 97%,transparent)}
+html[data-perf="mid"] .rd-gl,html[data-perf="mid"] .rd-gc,html[data-perf="mid"] .rd-gp,html[data-perf="low"] .rd-gl,html[data-perf="low"] .rd-gc,html[data-perf="low"] .rd-gp{background:rgba(255,255,255,.9)}
+html[data-perf="mid"] .rd.dark .rd-gl,html[data-perf="mid"] .rd.dark .rd-gc,html[data-perf="mid"] .rd.dark .rd-gp,html[data-perf="low"] .rd.dark .rd-gl,html[data-perf="low"] .rd.dark .rd-gc,html[data-perf="low"] .rd.dark .rd-gp,
+html[data-perf="mid"] .dk .rd-gl,html[data-perf="mid"] .dk .rd-gc,html[data-perf="mid"] .dk .rd-gp,html[data-perf="low"] .dk .rd-gl,html[data-perf="low"] .dk .rd-gc,html[data-perf="low"] .dk .rd-gp{background:rgba(40,40,44,.92)}
+/* ҳаракатҳои беохири ороишӣ (спиннер ва скелет мемонад) */
+html[data-perf="mid"] .witem.focus .readbtn,html[data-perf="low"] .witem.focus .readbtn,
+html[data-perf="mid"] .c3-t,html[data-perf="low"] .c3-t,
+html[data-perf="mid"] .rel-dot,html[data-perf="low"] .rel-dot,
+html[data-perf="mid"] .fab,html[data-perf="low"] .fab,html[data-perf="mid"] .fab::after,html[data-perf="low"] .fab::after{animation:none!important}
+
+html[data-perf="low"] .enter>*,html[data-perf="low"] .enter .pad>*,html[data-perf="low"] .login.enter .lg{animation-duration:.12s!important;animation-delay:0s!important}
+html[data-perf="low"] .pd-blk{animation:none}
+html[data-perf="low"] .cover.b3d{filter:none}
+html[data-perf="low"] .c3-sh{filter:none}
+html[data-perf="low"] .rt-row,html[data-perf="low"] .row,html[data-perf="low"] .card{box-shadow:none}
+html[data-perf="low"] .rt-hero::before{display:none}

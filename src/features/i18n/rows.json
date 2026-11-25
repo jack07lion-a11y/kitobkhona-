@@ -891,5 +891,13 @@
 ["Ҳоло китоб нест","Пока книг нет","Hozircha kitob yoʻq","No books yet"],
 ["Топ 10", "Топ 10", "Top 10", "Top 10"],
 ["Топ 100", "Топ 100", "Top 100", "Top 100"],
-["Топ 1000", "Топ 1000", "Top 1000", "Top 1000"]
+["Топ 1000", "Топ 1000", "Top 1000", "Top 1000"],
+["Суръати барнома", "Скорость приложения", "Ilova tezligi", "App speed"],
+["Сабук", "Лёгкий", "Yengil", "Light"],
+["Миёна", "Средний", "Oʻrtacha", "Medium"],
+["Пурра", "Полный", "Toʻliq", "Full"],
+["Худкор: барнома телефонро ҳуди худ месанҷад ва ба он мувофиқ мешавад.", "Авто: приложение само проверяет телефон и подстраивается под него.", "Avto: ilova telefonni oʻzi tekshiradi va unga moslashadi.", "Auto: the app checks your phone by itself and adapts to it."],
+["Сабук: ҳаракатҳо ва шишаи нимшаффоф хомӯш, барои телефонҳои суст.", "Лёгкий: анимации и полупрозрачное стекло отключены, для слабых телефонов.", "Yengil: harakatlar va yarim shaffof shisha oʻchirilgan, zaif telefonlar uchun.", "Light: animations and frosted glass are off, for slower phones."],
+["Миёна: шишаи нимшаффоф хомӯш, ҳаракатҳои асосӣ мемонанд.", "Средний: полупрозрачное стекло отключено, основные анимации остаются.", "Oʻrtacha: yarim shaffof shisha oʻchirilgan, asosiy harakatlar qoladi.", "Medium: frosted glass is off, main animations stay."],
+["Пурра: ҳамаи ҳаракатҳо ва зебоӣ, барои телефонҳои қавӣ.", "Полный: все анимации и красота, для мощных телефонов.", "Toʻliq: barcha harakatlar va goʻzallik, kuchli telefonlar uchun.", "Full: all animations and visual effects, for powerful phones."]
 ]
