@@ -15,7 +15,7 @@ module.exports=async t=>{
  await P.evaluate(list=>{S.uid='u1';S.myRank={pos:27,sec:5400,n:130};window.__rpc=[];
   sbLoad=async()=>({rpc:async(n,a)=>{window.__rpc.push([n,a]);if(n==='leaderboard')return{data:list.slice(0,a.p_limit),error:null};if(n==='my_rank')return{data:{pos:27,sec:5400,n:130},error:null};return{data:null,error:null}}})},mk(12));
  await P.click('.rbadge');await P.waitForSelector('.rt-row');
- t.eq(await P.evaluate(()=>[S.view,document.querySelectorAll('.rt-row').length,window.__rpc.some(x=>x[0]==='leaderboard'&&x[1].p_limit>=100000)]),['rating',9,true],'рейтинг: «Ҳама» — подиум (3) + 9 сатр = ҳамаи 12 нафар, бе ҳадди 10');
+ t.eq(await P.evaluate(()=>[S.view,document.querySelectorAll('.rt-row').length,window.__rpc.some(x=>x[0]==='leaderboard'&&x[1].p_limit===300)]),['rating',9,true],'рейтинг: «Ҳама» — подиум (3) + 9 сатр = ҳамаи 12 нафар, бе ҳадди 10');
  t.eq(await P.evaluate(()=>[...document.querySelectorAll('.rt-tab')].map(b=>b.innerText)),['Ҳама','Топ 10','Топ 100','Топ 1000'],'табҳо: Ҳама, Топ 10, Топ 100, Топ 1000');
  await P.click('[data-rt-tab="10"]');
  t.eq(await P.evaluate(()=>[document.querySelectorAll('.pd-col .pd-who').length,document.querySelectorAll('.rt-row').length]),[3,7],'Топ 10: подиум 3 + 7 сатр = аниқ 10');
@@ -26,7 +26,7 @@ module.exports=async t=>{
  t.ok(await P.evaluate(()=>!document.querySelector('.pd-medal.crown,.crown')&&!document.querySelector('.rt-row .pd-medal')),'тоҷ (Премиум) нест; ҷои 4+ медал надорад');
  t.ok(await P.evaluate(()=>{const w=[...document.querySelectorAll('.pd-who')].every(w=>{const m=w.querySelector('.pd-mn').getBoundingClientRect(),b=w.parentElement.querySelector('.pd-blk').getBoundingClientRect();return m.bottom<=b.top+1});return w}),'дақиқа дар подиум пинҳон намешавад (аз болои блок)');
  t.eq(await P.evaluate(()=>document.querySelector('.pd-col.p1 .pd-mn').textContent),await P.evaluate(()=>fmtNum(Math.floor((12*3600+90)/60))+' дақ'),'дақиқа дуруст ҳисоб шуд (3600·12+90 сония)');
- t.ok(await P.evaluate(()=>document.querySelector('.pd-col.p1').innerText.includes('Хонанда 1')&&document.querySelector('.rt-row').innerText.includes('Хонанда 4')),'подиум: ном ҳаст; рӯйхат аз ҷои 4');
+ t.ok(await P.evaluate(()=>document.querySelector('.pd-col.p1').textContent.includes('Хонанда 1')&&document.querySelector('.rt-row').textContent.includes('Хонанда 4')),'подиум: ном ҳаст; рӯйхат аз ҷои 4');
  t.ok(await P.evaluate(()=>/Ҷои шумо/.test(document.querySelector('.rt-me').innerText)&&/27/.test(document.querySelector('.rt-me').innerText)),'«Ҷои шумо» дар поён: 27');
  t.ok(await P.evaluate(()=>document.getElementById('app').innerText.length>50&&!document.querySelector('.tb:not([hidden])')),'саҳифаи рейтинг: менюи поён пинҳон');
  // 0 дақиқа ҳам рейтингда: «0 дақ» (на «кам аз 1»)
@@ -98,4 +98,15 @@ module.exports=async t=>{
   sbLoad=async()=>({rpc:async(n)=>{if(n==='leaderboard'){window.__lb++;return{data:[{pos:1,name:'Нав А',avatar:'',bio:'',sec:300},{pos:2,name:'Нав Б',avatar:'',bio:'',sec:120}],error:null}}return{data:{pos:2,sec:120,n:2},error:null}}});loadRating(true)});
  await P.waitForTimeout(400);
  t.eq(await P.evaluate(()=>[window.__lb,(S.rt.list||[]).map(x=>x.name)]),[1,['Нав А','Нав Б']],'рейтинг: «busy» кӯҳна (хаста) рӯйхатро манъ намекунад, рӯйхати нав меояд');
+ // ===== 7) рӯйхати бузург: 60-тогӣ дар DOM, сервер 300 → 1200; localStorage-ро пур намекунад =====
+ await P.evaluate(()=>{const big=Array.from({length:2000},(_,i)=>({pos:i+1,name:'Хонандаи '+(i+1),avatar:'',bio:'',sec:(2000-i)*60}));window.__lim=[];S.uid='u1';S.rt=null;S.rtCache=null;S.rtTab=0;
+  sbLoad=async()=>({rpc:async(n,a)=>{if(n==='leaderboard'){window.__lim.push(a.p_limit);return{data:big.slice(0,a.p_limit),error:null}}return{data:{pos:5,sec:60,n:2000},error:null}}});openRating()});
+ await P.waitForSelector('.rt-row');
+ t.eq(await P.evaluate(()=>[window.__lim[0],document.querySelectorAll('.rt-row').length,!!document.querySelector('[data-rt-more]')]),[300,60,true],'бузург: аз сервер 300, дар DOM танҳо 60 сатр + «Бештар»');
+ await P.evaluate(()=>rtMore());
+ t.eq(await P.evaluate(()=>document.querySelectorAll('.rt-row').length),120,'«Бештар»: ба 120 сатр (бе render-и тамом)');
+ t.ok(await P.evaluate(()=>{const b=document.querySelector('.rt-list [data-rt-user]:last-child');b.click();return S.sheet==='ruser'&&S.ru&&S.ru.pos===123}),'сатри нави иловашуда ҳам пахш мешавад (профил кушода шуд)');
+ await P.evaluate(()=>{S.sheet=null;render();for(let i=0;i<6;i++)rtMore()});await P.waitForTimeout(500);
+ t.ok(await P.evaluate(()=>window.__lim.some(x=>x===1200)),'охири 300 расид — сервер 4 баробар (1200) дод');
+ t.ok(await P.evaluate(()=>{saveNow();const j=localStorage.getItem('kitob10')||'';return j.length<200000&&!/"rt":\{/.test(j)}),'localStorage: рӯйхати рейтинг ҳамроҳ нест (ҳаҷми хурд)');
 };

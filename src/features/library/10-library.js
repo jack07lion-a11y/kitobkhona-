@@ -36,7 +36,7 @@ function cover(b){
  const au=b.audio?`<span class="au">${FILL('<path d="M6 4v16l14-8z"/>')}</span>`:"";
  const cu=(b.cp&&CVU[b.cp])||b.cover;
  // зери расм ҳамеша муқоваи рангии худи китоб меистад (сиёҳ нест); расм баъди боршавӣ оҳиста пайдо мешавад
- const face=cu?coverFallback(b)+`<img src="${escH(cu)}" alt="" data-cb="${b.id}" data-cp="${escH(b.cp||"")}" onload="this.classList.add('ld')" onerror="coverErr(this)">`:coverFallback(b);
+ const face=cu?coverFallback(b)+`<img src="${escH(cu)}" alt="" loading="lazy" decoding="async" data-cb="${b.id}" data-cp="${escH(b.cp||"")}" onload="this.classList.add('ld')" onerror="coverErr(this)">`:coverFallback(b);
  return `<div class="cover art img b3d" style="--cvc:${escH((b.col&&b.col[1])||"#3a2f24")}"><div class="b3d-in"><div class="f f-front">${face}${au}</div><i class="f f-right"></i><i class="f f-back"></i><i class="f f-left"></i></div></div>`;
 }
 

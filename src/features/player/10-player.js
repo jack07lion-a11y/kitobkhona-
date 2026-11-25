@@ -37,7 +37,7 @@ function mini(){const a=S.au;if(!a)return "";const b=bk(a.id),t=tracks(b)[a.ch];
 
 function nav(fn,dir){
  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
- if(!document.startViewTransition||reduce||dir==="none"){fn();return}
+ if(!document.startViewTransition||reduce||dir==="none"||(typeof perfLite==="function"&&perfLite())){fn();return}
  document.documentElement.dataset.vt=dir;
  try{const t=document.startViewTransition(fn);t.finished.finally(()=>{delete document.documentElement.dataset.vt})}catch(e){delete document.documentElement.dataset.vt;fn()}
 }
