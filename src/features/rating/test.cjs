@@ -26,7 +26,7 @@ module.exports=async t=>{
  t.ok(await P.evaluate(()=>!document.querySelector('.pd-medal.crown,.crown')&&!document.querySelector('.rt-row .pd-medal')),'тоҷ (Премиум) нест; ҷои 4+ медал надорад');
  t.ok(await P.evaluate(()=>{const w=[...document.querySelectorAll('.pd-who')].every(w=>{const m=w.querySelector('.pd-mn').getBoundingClientRect(),b=w.parentElement.querySelector('.pd-blk').getBoundingClientRect();return m.bottom<=b.top+1});return w}),'дақиқа дар подиум пинҳон намешавад (аз болои блок)');
  t.eq(await P.evaluate(()=>document.querySelector('.pd-col.p1 .pd-mn').textContent),await P.evaluate(()=>fmtNum(Math.floor((12*3600+90)/60))+' дақ'),'дақиқа дуруст ҳисоб шуд (3600·12+90 сония)');
- t.ok(await P.evaluate(()=>document.querySelector('.pd-col.p1').innerText.includes('Хонанда 1')&&document.querySelector('.rt-row').innerText.includes('Хонанда 4')),'подиум: ном ҳаст; рӯйхат аз ҷои 4');
+ t.ok(await P.evaluate(()=>document.querySelector('.pd-col.p1').textContent.includes('Хонанда 1')&&document.querySelector('.rt-row').textContent.includes('Хонанда 4')),'подиум: ном ҳаст; рӯйхат аз ҷои 4');
  t.ok(await P.evaluate(()=>/Ҷои шумо/.test(document.querySelector('.rt-me').innerText)&&/27/.test(document.querySelector('.rt-me').innerText)),'«Ҷои шумо» дар поён: 27');
  t.ok(await P.evaluate(()=>document.getElementById('app').innerText.length>50&&!document.querySelector('.tb:not([hidden])')),'саҳифаи рейтинг: менюи поён пинҳон');
  // 0 дақиқа ҳам рейтингда: «0 дақ» (на «кам аз 1»)
