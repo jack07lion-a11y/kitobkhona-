@@ -34,3 +34,22 @@ module.exports=(prev=>async t=>{
      if(window.__a>before){mark.push(Math.round((now-last)/60000));last=now;rcTouchAt(now)}}
    return mark.slice(0,5)}),[3,7,15,25,25],'назоратҳо: 3, 7, 15, баъд ҳар 25 дақиқа');
 })(module.exports);
+
+// «Ҳоло ҳам хонда истодаед?»: ойна, хониши худкор меистад, бо тугма давом мекунад
+module.exports=(prev=>async t=>{
+ await prev(t);
+ const P=t.page;
+ await t.open({view:'home',uname:'Ҷасур'});
+ await P.evaluate(()=>{window.__as=0;window.asStart=()=>{window.__as++;AS.on=true};window.asStop=()=>{AS.on=false};S.view='read';window.__rd=RD;RD={vert:true,b:null};AS.on=true;RC.k=0;RC.warned=true;rcAsk()});
+ await P.waitForSelector('#rcask');
+ t.eq(await P.evaluate(()=>[AS.on,AS.chk,document.querySelector('#rcask h2').textContent]),[false,true,'Ҳоло ҳам хонда истодаед, Ҷасур?'],'ойна: хониши худкор қатъ шуд ва номи профил навишта шудааст');
+ t.eq(await P.evaluate(()=>{const e={read:true,vis:true,as:AS.on||AS.chk};return RC.warned&&e.as}),true,'ойна кушода: назорат (ҷадвал 3-7-15) аз нав оғоз намешавад');
+ t.eq(await P.evaluate(()=>document.querySelectorAll('#rcask').length),1,'ойна такрор намешавад');
+ await P.evaluate(()=>rcAsk());
+ t.eq(await P.evaluate(()=>document.querySelectorAll('#rcask').length),1,'ойнаи дуюм кушода намешавад');
+ await P.click('#rcask-ok');
+ t.eq(await P.evaluate(()=>[!!document.querySelector('#rcask'),AS.chk,AS.on,window.__as,RC.warned,RC.k]),[false,false,true,1,false,1],'«Ҳа, мехонам»: ойна пӯшид, хониши худкор давом кард, санҷиши навбатӣ дертар (k=1)');
+ await P.evaluate(()=>{RD=window.__rd;AS.on=false;rcAsk()});
+ await P.evaluate(()=>{S.view='home'});await P.waitForTimeout(1300);
+ t.eq(await P.evaluate(()=>[!!document.querySelector('#rcask'),AS.chk]),[false,false],'аз китоб баромад — ойна ҳам пӯшида мешавад');
+})(module.exports);

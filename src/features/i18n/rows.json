@@ -899,5 +899,7 @@
 ["Худкор: барнома телефонро ҳуди худ месанҷад ва ба он мувофиқ мешавад.", "Авто: приложение само проверяет телефон и подстраивается под него.", "Avto: ilova telefonni oʻzi tekshiradi va unga moslashadi.", "Auto: the app checks your phone by itself and adapts to it."],
 ["Сабук: ҳаракатҳо ва шишаи нимшаффоф хомӯш, барои телефонҳои суст.", "Лёгкий: анимации и полупрозрачное стекло отключены, для слабых телефонов.", "Yengil: harakatlar va yarim shaffof shisha oʻchirilgan, zaif telefonlar uchun.", "Light: animations and frosted glass are off, for slower phones."],
 ["Миёна: шишаи нимшаффоф хомӯш, ҳаракатҳои асосӣ мемонанд.", "Средний: полупрозрачное стекло отключено, основные анимации остаются.", "Oʻrtacha: yarim shaffof shisha oʻchirilgan, asosiy harakatlar qoladi.", "Medium: frosted glass is off, main animations stay."],
-["Пурра: ҳамаи ҳаракатҳо ва зебоӣ, барои телефонҳои қавӣ.", "Полный: все анимации и красота, для мощных телефонов.", "Toʻliq: barcha harakatlar va goʻzallik, kuchli telefonlar uchun.", "Full: all animations and visual effects, for powerful phones."]
+["Пурра: ҳамаи ҳаракатҳо ва зебоӣ, барои телефонҳои қавӣ.", "Полный: все анимации и красота, для мощных телефонов.", "Toʻliq: barcha harakatlar va goʻzallik, kuchli telefonlar uchun.", "Full: all animations and visual effects, for powerful phones."],
+["Хониши худкор истод. Барои давом додан тугмаро пахш кунед.", "Автопрокрутка остановлена. Нажмите кнопку, чтобы продолжить.", "Avtomatik oʻqish toʻxtadi. Davom etish uchun tugmani bosing.", "Auto-scroll has stopped. Tap the button to continue."],
+["Ҳа, мехонам", "Да, читаю", "Ha, oʻqiyapman", "Yes, I'm reading"]
 ]

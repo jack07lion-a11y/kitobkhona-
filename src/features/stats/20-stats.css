@@ -1,0 +1,7 @@
+/* Ойнаи «Ҳоло ҳам хонда истодаед?» (хониши худкор) */
+.rcask{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:rgba(12,18,14,.62)}
+.rcask-c{width:100%;max-width:340px;text-align:center;background:var(--bg);color:var(--ink);border-radius:26px;padding:26px 22px 22px;box-shadow:0 24px 60px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;gap:12px}
+.rcask-i{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#0b7d57,#13a56d)}.rcask-i .ico{width:28px;height:28px}
+.rcask-c h2{margin:4px 0 0;font:700 22px/1.25 Lora,Georgia,serif;overflow-wrap:anywhere}
+.rcask-c p{margin:0;color:var(--muted);font-size:15px;line-height:1.4}
+.rcask-b{margin-top:8px;width:100%;min-height:52px;font-size:17px}
