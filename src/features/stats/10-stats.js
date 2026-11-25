@@ -27,7 +27,15 @@ const RC_IDLE=65000,RC_FAST=900,RC_WIN=60000,RC_STEP=20;
 /* Хониши худкор: назорат «ҳанӯз мехонед?» — 3 дақиқа, баъд 7, баъд 15, баъд ҳар 25 дақиқа (экранро ламс накунад). Ҳисоб то ламс меистад. */
 const RC_CHK=[180000,420000,900000],RC_CHK_N=1500000,rcChk=()=>RC.k<RC_CHK.length?RC_CHK[RC.k]:RC_CHK_N;
 let RC_AC=null;
-function rcAlert(){try{const nm=String(S.uname||"").trim();toast(nm?I18N.tr("Ҳоло ҳам хонда истодаед, {ном}?").replace("{ном}",nm):I18N.tr("Ҳоло ҳам хонда истодаед?"))}catch(_){}
+/* Назорат: экран меистад (хониши худкор қатъ мешавад) ва ойнаи «{ном}, ҳоло ҳам хонда истодаед?» мебарояд. То тугмаи «Ҳа, мехонам» пахш нашавад, давом намекунад ва вақти хондан ҳисоб намешавад. */
+function rcAsk(){if(document.getElementById("rcask"))return;
+ const wasAS=typeof AS!=="undefined"&&AS.on;try{if(typeof AS!=="undefined"){AS.chk=true;if(wasAS)asStop()}}catch(_){}
+ const nm=String(S.uname||"").trim(),T=I18N.tr,el=document.createElement("div");el.id="rcask";el.className="rcask";el.setAttribute("role","alertdialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-labelledby","rcask-t");
+ el.innerHTML=`<div class="rcask-c"><div class="rcask-i">${P('<path d="M12 7c-1.5-1.5-4-2-7-2v13c3 0 5.5.5 7 2 1.5-1.5 4-2 7-2V5c-3 0-5.5.5-7 2zM12 7v13"/>',2)}</div><h2 id="rcask-t">${escH(nm?T("Ҳоло ҳам хонда истодаед, {ном}?").replace("{ном}",nm):T("Ҳоло ҳам хонда истодаед?"))}</h2><p>${escH(T("Хониши худкор истод. Барои давом додан тугмаро пахш кунед."))}</p><button class="btn rcask-b" id="rcask-ok">${escH(T("Ҳа, мехонам"))}</button></div>`;
+ document.body.appendChild(el);
+ const ok=document.getElementById("rcask-ok");ok.onclick=()=>{rcAskClose();rcTouch();if(wasAS&&S.view==="read"&&RD&&RD.vert)asStart()};try{ok.focus()}catch(_){}}
+function rcAskClose(){const el=document.getElementById("rcask");if(el)el.remove();try{if(typeof AS!=="undefined")AS.chk=false}catch(_){}}
+function rcAlert(){try{rcAsk()}catch(_){}
  try{if(navigator.vibrate)navigator.vibrate([250,120,250,120,400])}catch(_){}
  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;RC_AC=RC_AC||new AC();if(RC_AC.resume)RC_AC.resume();const t0=RC_AC.currentTime;
   [[880,0],[660,.28]].forEach(([f,d])=>{const o=RC_AC.createOscillator(),g=RC_AC.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,t0+d);g.gain.exponentialRampToValueAtTime(.35,t0+d+.03);g.gain.exponentialRampToValueAtTime(.0001,t0+d+.25);o.connect(g);g.connect(RC_AC.destination);o.start(t0+d);o.stop(t0+d+.27)})}catch(_){}}
@@ -50,7 +58,7 @@ function rcStep(now,g,e){
  if(now-RC.wt>=RC_WIN)rcCommit(now,g)}
 const rcG=()=>{try{if(!RD||!RD.b||RD.gf==null)return null;return RD.gf*rdInfo(RD.b).tot}catch(_){return null}};
 ["pointerdown","touchstart","touchmove","wheel","keydown"].forEach(ev=>addEventListener(ev,rcTouch,{passive:true,capture:true}));
-setInterval(()=>{const vis=document.visibilityState==="visible",rd=S.view==="read"&&vis&&!!RD&&!!RD.b;rcStep(Date.now(),rd?rcG():null,{read:rd,vis,as:typeof AS!=="undefined"&&!!AS.on})},1000);
+setInterval(()=>{const vis=document.visibilityState==="visible",rd=S.view==="read"&&vis&&!!RD&&!!RD.b;if(S.view!=="read")rcAskClose();rcStep(Date.now(),rd?rcG():null,{read:rd,vis,as:typeof AS!=="undefined"&&(!!AS.on||!!AS.chk)})},1000);
 function rdLeave(){try{rcStep(Date.now(),null,{read:false,vis:false})}catch(_){}flushRead();if(Date.now()-RDG.lt<3000)return;RDG.lt=Date.now();save();const A=window.KitobAndroid;if(A&&A.leave){try{A.leave(readMin(),RDG.sess)}catch(_){}}RDG.sess=0}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")rdLeave();else{RDG.sess=0;RDG.act=Date.now()}});
 addEventListener("pagehide",rdLeave);window.__leave=rdLeave;
