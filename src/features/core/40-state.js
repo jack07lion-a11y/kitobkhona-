@@ -5,12 +5,18 @@ let S={view:"login",step:"email",email:"",uname:"",uid:"",chip:"all",q:"",ptab:0
 const FEAT=k=>!!(S.flags&&S.flags.feat&&S.flags.feat[k]===true);
 const FEATS=[["audio","Аудиокитоб","Плеер (ҳоло намуна аст)"],["buy","Харид / обуна","Тугмаи обуна ва нарх"],["contest","Озмун: ИФМ, Фурӯғ, Баҳс","Саҳифаҳои озмун"],["coin","Тавозуни хирад","Нишондиҳандаи танга"],["rank","Рейтинг ва мақом","Ҷойи шумо дар Озмун"],["social","Баҳо ва фикри корбарон","Рейтинг ва шарҳ дар китоб"],["ai","Ёрдамчии китоб (АИ)","Савол додан аз рӯи китоб"],["quiz","Санҷиши донишҳо","Озмуни санҷишӣ"],["teacher","Кабинети муаллим","Гурӯҳ ва топшириқ"]];
 const app=document.getElementById("app");
-try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.upd=null;S.updSt="";S.updP=0;S.staff=null;S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
+try{const o=JSON.parse(localStorage.getItem("kitob10")||"null");if(o){Object.assign(S,o);S.upd=null;S.rt=null;S.updSt="";S.updP=0;S.staff=null;S.sheet=null;S.loading=false;if(S.au)S.au.playing=false}}catch(e){}
 if(["read","audio","book"].includes(S.view))S.view="home";S.au=null;if(!S.rdCh)S.rdCh={};if(!S.rdFr)S.rdFr={};if(!S.lib)S.lib={q:[],d:[],c:[]};if(!S.flags)S.flags={premium:false};if(!S.pref.v2){S.pref.fs=16;S.pref.v2=1}S.pref.fs=Math.max(13,Math.min(28,Math.round((S.pref.fs-13)/3)*3+13));S.rdUI=false;if(Array.isArray(S.bkCache))S.bkCache.forEach(b=>{if(b&&b.id&&!BOOKS.some(x=>x.id===b.id))BOOKS.push(b)});BOOKS.forEach(mkAud);S.premium=!!(S.pu&&S.pu>Date.now());if(!S.pref.lh)S.pref.lh=1.6;
 /* Вақти тағйири токчаҳо ва хатчӯбҳо (барои ҳалли ихтилоф дар синхронизатсия, docs/sql-holat.sql) */
 const hasAny=o=>{try{const j=JSON.stringify(o);return !!j&&!/^(\{\}|\[\]|null|\{"q":\[\],"d":\[\],"c":\[\]\})$/.test(j)}catch(_){return false}};
 function stamp(){const a=JSON.stringify(S.lib),b=JSON.stringify(S.marks);
  if(S._lh===undefined||S._mh===undefined){S._lh=a;S._mh=b;if(S.libT===undefined)S.libT=hasAny(S.lib)?Date.now():0;if(S.marksT===undefined)S.marksT=hasAny(S.marks)?Date.now():0;return}
  if(a!==S._lh){S._lh=a;S.libT=Date.now()}if(b!==S._mh){S._mh=b;S.marksT=Date.now()}}
-function save(){stamp();try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false}))}catch(e){}}
+/* save(): ҳар render() онро мехонад; ҳар дафъа тамоми S-ро ба JSON табдил додан дар телефони суст кадрҳоро мебурид.
+   Ҳоло: як маротиба дар 300 мс (ҳамаи тағйирот якҷоя) ва фавран ҳангоми баромадан/пинҳон шудан. Рӯйхати рейтинг ва профили кушодашуда дар хотира мемонад, на дар localStorage. */
+let _svT=0;
+function saveNow(){clearTimeout(_svT);_svT=0;stamp();try{localStorage.setItem("kitob10",JSON.stringify({...S,sheet:null,loading:false,rt:undefined,ru:undefined}))}catch(e){}}
+function save(){if(!_svT)_svT=setTimeout(saveNow,300)}
+addEventListener("pagehide",()=>{if(_svT)saveNow()});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&_svT)saveNow()});
 const esc=s=>escH(s==null?"":s); // & < > " — ҳам барои аттрибут, ҳам барои матн бехатар

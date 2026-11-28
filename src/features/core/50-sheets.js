@@ -75,6 +75,7 @@ SHEETS.app=X=>{let h="";{const t=S.theme||"paper";
   <p class="set-cap">Намуди барнома</p>
   <div class="thg" role="radiogroup" aria-label="Намуди барнома">${THEMES.map(([k,n])=>`<button class="thb ${t===k?"on":""}" data-theme-set="${k}" role="radio" aria-checked="${t===k}"><span class="thp thp-${k}"><i></i><i></i><i></i></span>${n}</button>`).join("")}</div>
   <p class="set-note">${t==="auto"?"Мисли телефон: рӯз рӯшан, шаб торик.":t==="paper"?"Ранги коғази кӯҳна, чашм камтар хаста мешавад.":t==="dark"?"Барои шаб ва батареяро сарфа мекунад.":"Ҳамеша рӯшан."}</p>
+  ${typeof perfCtl==="function"?perfCtl():""}
   <div class="sh-list">
    <button class="sh-row" data-sheet="report"><span>${P('<path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/>')}Хато фиристодан</span><em>›</em></button>
    ${S.uid?`<button class="sh-row" data-rt-vis><span>${P('<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M9 20h6"/>')}Дар рейтинг нишон дода шавам</span><em>${S.myRank&&S.myRank.hidden?"Не":"Ҳа"}</em></button>`:""}

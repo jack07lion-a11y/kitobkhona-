@@ -3,7 +3,7 @@ applyTheme();matchMedia("(prefers-color-scheme: dark)").addEventListener?.("chan
 render();
 I18N.start();
 /* ---- Сплэш: бори аввал рендер, баъд ҳаракат; корҳои вазнин баъди сплэш ---- */
-(function(){const el=document.getElementById("spl");if(!el)return;let ended=false;
+(function(){const el=document.getElementById("spl");if(!el)return;let ended=false;if(typeof perfLow==="function"&&perfLow())el.classList.add("lite");
  function finish(){if(ended)return;ended=true;try{el.remove()}catch(_){}try{window.KitobAndroid&&KitobAndroid.splashDone&&KitobAndroid.splashDone()}catch(_){}
   window.__splDone=true;setTimeout(()=>{while(window.__after.length){try{window.__after.shift()()}catch(_){}}},60)}
  function start(){if(ended)return;const fly=el.querySelector(".sx-fly"),fr=fly.getBoundingClientRect(),
@@ -12,7 +12,7 @@ I18N.start();
   else{el.style.setProperty("--dx","0px");el.style.setProperty("--dy","0px");el.style.setProperty("--ds",".86")}
   el.classList.add("go");
   // секин телефон: агар кадрҳо бурида шаванд, ҳаракатро кӯтоҳ мекунем
-  let last=performance.now(),slow=0,t0=last;(function m(now){const d=now-last;last=now;if(d>70)slow++;if(slow>=3&&!el.classList.contains("lite")){el.classList.add("lite")}if(now-t0<1300&&!ended)requestAnimationFrame(m)})(last);
+  let last=performance.now(),slow=0,t0=last;(function m(now){const d=now-last;last=now;if(d>70)slow++;if(slow>=3&&!el.classList.contains("lite")){el.classList.add("lite");typeof perfStrike==="function"&&perfStrike()}if(now-t0<1300&&!ended)requestAnimationFrame(m)})(last);
   el.addEventListener("animationend",e=>{if(e.target===el&&e.animationName==="sxOut")finish()});setTimeout(finish,3600)}
  requestAnimationFrame(()=>requestAnimationFrame(start))})();
 
