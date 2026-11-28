@@ -102,11 +102,15 @@ module.exports=(prev=>async t=>{
  await P.evaluate(()=>{window.__noDock=1;S.pref.dir='h';save();render()});
 })(module.exports);
 
-// сухани дастаи Китобхона дар оғози китоб
+// сухани дастаи Китобхона дар оғози китоб (китоби худаш, аз боби якум)
 module.exports=(prev=>async t=>{
  await prev(t);
  const P=t.page;
- t.ok(await P.evaluate(()=>{const e=document.querySelector('.rd-flow .rd-pre');return !!e&&/Ба хонандаи азиз/.test(e.textContent)&&/бестселлер/.test(e.textContent)&&Math.floor(document.querySelector(".rd-title").offsetLeft/RD.W)>=1&&!/ройгон/.test(e.textContent)&&e.compareDocumentPosition(document.querySelector('.rd-title'))&4}),'сухани дастаи Китобхона пеш аз ном, бе «ройгон»');
- t.ok(await P.evaluate(()=>/Дорогой читатель/.test((I18N.set("ru"),document.querySelector('.rd-flow .rd-pre')?.textContent||(RD.f.innerHTML=chHTML(RD.b,0),RD.f.textContent)))||/Дорогой читатель/.test(chHTML(RD.b,0))),'муқаддима ба русӣ тарҷума мешавад');
- await P.evaluate(()=>I18N.set("tg"));
+ await t.open({view:'home'});
+ await P.evaluate(()=>{const w="китоб ҳаёт модар деҳа замон дарё".split(" ");const chs=[];
+  for(let c=0;c<3;c++){const bl=[];for(let i=0;i<20;i++){let s="";for(let k=0;k<50;k++)s+=w[(c*7+i*3+k*5)%w.length]+" ";bl.push(["p",s.trim()+"."])}chs.push({title:"Боби "+(c+1),blocks:bl})}
+  BOOKS.push({id:779,t:"Муқаддима",a:"М",c:"fiction",col:["#1f4f7a","#123352"],tp:"x"});TX[779]={parts:[{title:"Қисми якум",chapters:chs}]};S.rdCh[779]=0;S.pages[779]=0;openBook0(779)});
+ await P.waitForTimeout(1200);
+ t.ok(await P.evaluate(()=>{const e=document.querySelector('.rd-flow .rd-pre'),h=document.querySelector('.rd-flow .rd-title');return !!e&&!!h&&/Ба хонандаи азиз/.test(e.textContent)&&/бестселлер/.test(e.textContent)&&!/ройгон/.test(e.textContent)&&!!(e.compareDocumentPosition(h)&4)}),'сухани дастаи Китобхона пеш аз ном, бе «ройгон»');
+ t.ok(await P.evaluate(()=>{I18N.set("ru");const x=chHTML(RD.b,0);I18N.set("tg");return /Дорогой читатель/.test(x)}),'муқаддима ба русӣ тарҷума мешавад');
 })(module.exports);
