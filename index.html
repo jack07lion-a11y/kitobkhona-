@@ -936,7 +936,7 @@ html[data-perf="low"] .rt-hero::before{display:none}
 .rd-zb{position:absolute;bottom:100%;transform:translateX(-50%);margin-bottom:4px;padding:8px 16px;border-radius:14px;background:var(--orange,#0b7d57);color:#fff;font-weight:800;font-size:22px;letter-spacing:.3px;box-shadow:0 6px 18px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
 .rd-scr.zoom::-webkit-slider-thumb{transform:scale(1.35)}
 /* сухани дастаи Китобхона дар оғози китоб: саҳифаи алоҳида, баъд ном */
-.rd-flow .rd-pre{break-after:column;-webkit-column-break-after:always;padding-bottom:.4em;font-size:.9em;line-height:1.5}
+.rd-flow .rd-pre{break-after:column;-webkit-column-break-after:always;padding-bottom:.4em;font-size:.86em;line-height:1.48}
 .rd-flow .rd-pre h3{font-family:var(--ff);font-size:1.15em;text-align:center;margin:.2em 0 .7em}
 .rd-flow .rd-pre .rd-sig{text-align:right;text-indent:0;font-style:italic;color:var(--pgmut)}
 .rd-flow.vm .rd-pre,.vm .rd-flow .rd-pre{break-after:auto;margin-bottom:1.6em;padding-bottom:1em;border-bottom:1px solid rgba(128,128,128,.3)}
@@ -4973,7 +4973,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="8ea9bc03e8";
+const WEB_H="ae11ccbda2";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
