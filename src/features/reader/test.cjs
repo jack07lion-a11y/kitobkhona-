@@ -106,7 +106,7 @@ module.exports=(prev=>async t=>{
 module.exports=(prev=>async t=>{
  await prev(t);
  const P=t.page;
- t.ok(await P.evaluate(()=>{const e=document.querySelector('.rd-flow .rd-pre');return !!e&&/Ба хонандаи азиз/.test(e.textContent)&&/бестселлер/.test(e.textContent)&&!/ройгон/.test(e.textContent)&&e.compareDocumentPosition(document.querySelector('.rd-title'))&4}),'сухани дастаи Китобхона пеш аз ном, бе «ройгон»');
+ t.ok(await P.evaluate(()=>{const e=document.querySelector('.rd-flow .rd-pre');return !!e&&/Ба хонандаи азиз/.test(e.textContent)&&/бестселлер/.test(e.textContent)&&Math.floor(document.querySelector('.rd-title').offsetLeft/RD.W)===1&&!/ройгон/.test(e.textContent)&&e.compareDocumentPosition(document.querySelector('.rd-title'))&4}),'сухани дастаи Китобхона пеш аз ном, бе «ройгон»');
  t.ok(await P.evaluate(()=>/Дорогой читатель/.test((I18N.set("ru"),document.querySelector('.rd-flow .rd-pre')?.textContent||(RD.f.innerHTML=chHTML(RD.b,0),RD.f.textContent)))||/Дорогой читатель/.test(chHTML(RD.b,0))),'муқаддима ба русӣ тарҷума мешавад');
  await P.evaluate(()=>I18N.set("tg"));
 })(module.exports);
