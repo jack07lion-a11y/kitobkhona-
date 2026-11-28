@@ -335,6 +335,30 @@ public class MainActivity extends Activity {
                 });
             }
 
+            /** Тасвир (PNG, base64) — масалан корти иқтибос. Ба барномаи дигар тавассути ShareProvider дода мешавад. */
+            @JavascriptInterface
+            public void shareImage(final String b64, final String text) {
+                if (b64 == null || b64.length() < 100 || b64.length() > 14000000) return;
+                final byte[] png;
+                try { png = Base64.decode(b64, Base64.DEFAULT); } catch (Exception e) { return; }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            File f = new File(ShareProvider.dir(MainActivity.this), "iqtibos.png");
+                            FileOutputStream o = new FileOutputStream(f);
+                            try { o.write(png); } finally { o.close(); }
+                            Uri u = Uri.parse("content://" + ShareProvider.authority(MainActivity.this) + "/iqtibos.png");
+                            Intent i = new Intent(Intent.ACTION_SEND).setType("image/png").putExtra(Intent.EXTRA_STREAM, u);
+                            if (text != null && text.length() > 0) i.putExtra(Intent.EXTRA_TEXT, text);
+                            i.setClipData(ClipData.newRawUri("", u));
+                            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            startActivity(Intent.createChooser(i, "Мубодила"));
+                        } catch (Exception ignored) { }
+                    }
+                });
+            }
+
             @JavascriptInterface
             public void openUrl(final String url) {
                 if (url == null || !(url.startsWith("https://") || url.startsWith("http://"))) return;

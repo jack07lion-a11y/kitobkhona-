@@ -3595,7 +3595,9 @@ async function qtShare(b){const cv=QT.cv;if(!cv)return;
  if(!blob){toast("Иқтибос тайёр нашуд");return}
  const f=new File([blob],"iqtibos.png",{type:"image/png"});
  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==="AbortError")return}
- if(window.KitobAndroid){NATIVE.share("«"+QT.txt+"»\n— "+b.a+", "+b.t,SITE_URL);return} // WebView-и Android: тасвир намефиристад, матн мефиристад
+ const A=window.KitobAndroid;
+ if(A&&typeof A.shareImage==="function"){try{A.shareImage(cv.toDataURL("image/png").split(",")[1],SITE_URL);return}catch(_){}} // Android (APK-и нав): худи тасвир
+ if(A){NATIVE.share("«"+QT.txt+"»\n— "+b.a+", "+b.t,SITE_URL);return} // APK-и кӯҳна: тасвирро намефиристад, матн мефиристад
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="iqtibos.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast("Тасвир захира шуд")}
 const PLAY=FILL('<path d="M7 4.5v15l12.5-7.5z"/>'),PAUSE=FILL('<rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/>');
 const B10=P('<path d="M4.5 12a7.5 7.5 0 107.5-7.5H8.5"/><path d="M11 1.5L8 4.5l3 3"/><text x="12.2" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
@@ -5050,7 +5052,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="745110063f";
+const WEB_H="ccbdb42f94";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

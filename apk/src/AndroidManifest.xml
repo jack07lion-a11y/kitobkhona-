@@ -42,6 +42,7 @@
     </activity>
     <service android:name=".AudioService" android:exported="false" android:foregroundServiceType="mediaPlayback"/>
     <service android:name=".NewsJob" android:exported="false" android:permission="android.permission.BIND_JOB_SERVICE"/>
+    <provider android:name=".ShareProvider" android:authorities="tj.kitobkhona.app.share" android:exported="false" android:grantUriPermissions="true"/>
     <receiver android:name=".NotifyReceiver" android:exported="false"/>
     <receiver android:name=".InstallReceiver" android:exported="false"/>
     <receiver android:name=".BootReceiver" android:exported="true">
