@@ -1,4 +1,4 @@
-.qt-menu{position:fixed;z-index:40;display:flex;background:#1f1d1b;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);overflow:hidden;animation:qtin .16s ease-out}
+.qt-menu{position:fixed;z-index:40;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(112px + env(safe-area-inset-bottom,0px));display:flex;background:#1f1d1b;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);overflow:hidden;animation:qtin .16s ease-out}
 .qt-menu button{border:0;background:none;color:#fff;font-weight:600;font-size:15px;padding:12px 18px;-webkit-tap-highlight-color:transparent}
 .qt-menu button+button{border-left:1px solid rgba(255,255,255,.18)}
 .qt-menu button:active{background:rgba(255,255,255,.14)}

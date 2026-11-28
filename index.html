@@ -986,7 +986,7 @@ html[data-perf="low"] .rt-hero::before{display:none}
 .rd.dock .rd-as{transform:translate(124px,calc(-50% - 64px)) scale(.7,1)}
 .rd.dock .rd-gl,.rd.dock .rd-as{transform-origin:100% 50%}
 @media (prefers-reduced-motion:reduce){.rd .rd-gl,.rd .rd-as{transition:opacity .2s}}
-.qt-menu{position:fixed;z-index:40;display:flex;background:#1f1d1b;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);overflow:hidden;animation:qtin .16s ease-out}
+.qt-menu{position:fixed;z-index:40;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(112px + env(safe-area-inset-bottom,0px));display:flex;background:#1f1d1b;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);overflow:hidden;animation:qtin .16s ease-out}
 .qt-menu button{border:0;background:none;color:#fff;font-weight:600;font-size:15px;padding:12px 18px;-webkit-tap-highlight-color:transparent}
 .qt-menu button+button{border-left:1px solid rgba(255,255,255,.18)}
 .qt-menu button:active{background:rgba(255,255,255,.14)}
@@ -3540,20 +3540,17 @@ function qtSel(){const sel=window.getSelection&&window.getSelection();if(!sel||!
  if(!v.contains(r.commonAncestorContainer))return null;
  const t=qtClean(sel.toString());if(t.length<3)return null;
  const rs=r.getClientRects(),last=rs.length?rs[rs.length-1]:r.getBoundingClientRect();return{t,rect:last}}
-function qtMenuHide(){if(QT.menu){QT.menu.remove();QT.menu=null}}
+function qtMenuHide(){clearInterval(QT.iv);if(QT.menu){QT.menu.remove();QT.menu=null}}
+function qtAct(f){let lk=0;return e=>{e.preventDefault();e.stopPropagation();if(lk)return;lk=1;setTimeout(()=>lk=0,500);f()}} // iPhone: touchstart-ро манъ намекунем, амал дар touchend (дар click не: preventDefault дар touchstart click-ро мекушад)
 function qtMenuShow(s){
- if(!QT.menu){const m=document.createElement("div");m.className="qt-menu";m.innerHTML=`<button data-qtcopy>Нусха</button><button data-qtgo>Иқтибос</button>`;
-  m.addEventListener("pointerdown",e=>e.preventDefault()); // интихоб нашавад
-  m.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
-  m.querySelector("[data-qtcopy]").onclick=()=>{NATIVE.copy(QT.txt);toast("Нусха шуд");qtClear()};
-  m.querySelector("[data-qtgo]").onclick=()=>qtOpen(QT.txt);
-  document.body.appendChild(m);QT.menu=m}
- QT.txt=s.t;const m=QT.menu,w=m.offsetWidth||190,vw=innerWidth;
- // зери интихоб (болояш менюи худи iPhone меояд)
- m.style.left=Math.max(8,Math.min(vw-w-8,s.rect.left+s.rect.width/2-w/2))+"px";
- m.style.top=Math.min(innerHeight-70,s.rect.bottom+34)+"px"}
+ QT.txt=s.t;if(QT.menu)return; // меню дар поёни экран устувор меистад: ҷаҳида намегардад ва бо менюи худи iPhone (болову поён аз интихоб) бархӯрд надорад
+ const m=document.createElement("div");m.className="qt-menu";m.innerHTML=`<button data-qtcopy>Нусха</button><button data-qtgo>Иқтибос</button>`;
+ m.addEventListener("pointerdown",e=>e.preventDefault()); // интихоб нашавад
+ m.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+ for(const [q,f] of [["[data-qtcopy]",()=>{NATIVE.copy(QT.txt);toast("Нусха шуд");qtClear()}],["[data-qtgo]",()=>qtOpen(QT.txt)]]){const bt=m.querySelector(q),h=qtAct(f);bt.addEventListener("touchend",h,{passive:false});bt.addEventListener("click",h)}
+ document.body.appendChild(m);QT.menu=m;QT.iv=setInterval(()=>{if(S.view!=="read"||!qtSel())qtMenuHide()},700)} // агар аз хонанда баромада бошед, меню намемонад
 function qtClear(){try{window.getSelection().removeAllRanges()}catch(_){}qtMenuHide()}
-function qtWatch(){clearTimeout(QT.t);QT.t=setTimeout(()=>{if(QT.el)return;if(S.view!=="read"){qtMenuHide();return}const s=qtSel();if(s)qtMenuShow(s);else qtMenuHide()},180)}
+function qtWatch(){if(QT.el)return;if(S.view!=="read"){qtMenuHide();return}const s=qtSel();clearTimeout(QT.t);if(s)qtMenuShow(s);else QT.t=setTimeout(()=>{if(!qtSel())qtMenuHide()},120)} // пайдо шудан — фавран; нопадид шудан — бо таъхири хурд (дар вақти кашидани дастакҳо)
 document.addEventListener("selectionchange",qtWatch);
 /* ---- сурат ---- */
 function qtCover(b){return new Promise(ok=>{const u=(b.cp&&typeof CVU!=="undefined"&&CVU[b.cp])||b.cover;if(!u)return ok(null);
@@ -3580,7 +3577,7 @@ function qtDraw(cv,fmt,txt,b,im){
  x.fillStyle="#13a56d";x.font=`700 32px ${F}`;x.textAlign="right";x.fillText("Китобхона",W-PAD,H-PAD+6);x.textAlign="left"}
 async function qtRender(){const cv=QT.cv;if(!cv)return;try{await (document.fonts&&document.fonts.ready)}catch(_){}
  qtDraw(cv,QT.fmt,QT.txt,bk(S.rdId),QT.img)}
-async function qtOpen(txt){qtMenuHide();if(QT.el)return;const b=bk(S.rdId);if(!b)return;QT.txt=txt;
+async function qtOpen(txt){qtClear();if(QT.el)return;const b=bk(S.rdId);if(!b)return;QT.txt=txt;
  const el=document.createElement("div");el.className="qt-bg";QT.el=el;
  el.innerHTML=`<div class="qt-sh" role="dialog" aria-label="Иқтибос гирифтан"><div class="qt-hd"><b>Иқтибос гирифтан</b><button class="sh-x" data-qtx aria-label="Пӯшидан">${P(IC_X,2)}</button></div>
   <div class="qt-pv"><canvas id="qtcv"></canvas></div>
@@ -5053,7 +5050,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="13b3b36f38";
+const WEB_H="745110063f";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
