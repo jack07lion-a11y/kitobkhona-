@@ -986,6 +986,25 @@ html[data-perf="low"] .rt-hero::before{display:none}
 .rd.dock .rd-as{transform:translate(124px,calc(-50% - 64px)) scale(.7,1)}
 .rd.dock .rd-gl,.rd.dock .rd-as{transform-origin:100% 50%}
 @media (prefers-reduced-motion:reduce){.rd .rd-gl,.rd .rd-as{transition:opacity .2s}}
+.qt-menu{position:fixed;z-index:40;display:flex;background:#1f1d1b;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);overflow:hidden;animation:qtin .16s ease-out}
+.qt-menu button{border:0;background:none;color:#fff;font-weight:600;font-size:15px;padding:12px 18px;-webkit-tap-highlight-color:transparent}
+.qt-menu button+button{border-left:1px solid rgba(255,255,255,.18)}
+.qt-menu button:active{background:rgba(255,255,255,.14)}
+@keyframes qtin{from{opacity:0;transform:translateY(-4px)}}
+.qt-bg{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.qt-sh{width:100%;max-width:460px;max-height:94vh;overflow:auto;background:var(--bg);color:var(--ink);border-radius:26px 26px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;animation:sheetup .4s cubic-bezier(.32,.72,0,1)}
+.qt-hd{display:flex;align-items:center;justify-content:center;position:relative;min-height:36px}
+.qt-hd b{font-size:19px;font-weight:800}
+.qt-hd .sh-x{position:absolute;right:0}
+.qt-pv{display:flex;justify-content:center}
+.qt-pv canvas{max-width:100%;max-height:52vh;width:auto;height:auto;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.14)}
+.qt-fm{display:flex;justify-content:center;gap:18px}
+.qt-fm button{width:56px;height:56px;border:0;background:none;display:grid;place-items:center;border-radius:12px}
+.qt-fm i{display:block;border:2px solid var(--muted);border-radius:4px}
+.qt-fm .sq{width:28px;height:28px}.qt-fm .tl{width:28px;height:44px}
+.qt-fm .on i{background:#13a56d;border-color:#13a56d}
+.qt-go{display:flex;align-items:center;justify-content:center;gap:10px}
+.qt-go .ico{width:22px;height:22px}
 /* Асосӣ: тугмаҳои жанр, корти «Нав», нишони НАВ дар муқова */
 .hchips{margin-top:2px}
 .chip .cnt{margin-left:8px;background:#f4b73c;color:#3a2700;border-radius:999px;font-size:11px;font-weight:800;padding:2px 7px;vertical-align:middle}
@@ -2395,7 +2414,15 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Миёна: шишаи нимшаффоф хомӯш, ҳаракатҳои асосӣ мемонанд.", "Средний: полупрозрачное стекло отключено, основные анимации остаются.", "Oʻrtacha: yarim shaffof shisha oʻchirilgan, asosiy harakatlar qoladi.", "Medium: frosted glass is off, main animations stay."],
 ["Пурра: ҳамаи ҳаракатҳо ва зебоӣ, барои телефонҳои қавӣ.", "Полный: все анимации и красота, для мощных телефонов.", "Toʻliq: barcha harakatlar va goʻzallik, kuchli telefonlar uchun.", "Full: all animations and visual effects, for powerful phones."],
 ["Хониши худкор истод. Барои давом додан тугмаро пахш кунед.", "Автопрокрутка остановлена. Нажмите кнопку, чтобы продолжить.", "Avtomatik oʻqish toʻxtadi. Davom etish uchun tugmani bosing.", "Auto-scroll has stopped. Tap the button to continue."],
-["Ҳа, мехонам", "Да, читаю", "Ha, oʻqiyapman", "Yes, I'm reading"]
+["Ҳа, мехонам", "Да, читаю", "Ha, oʻqiyapman", "Yes, I'm reading"],
+["Нусха", "Копировать", "Nusxa", "Copy"],
+["Иқтибос", "Цитата", "Iqtibos", "Quote"],
+["Иқтибос гирифтан", "Создать цитату", "Iqtibos olish", "Create a quote"],
+["Нусха шуд", "Скопировано", "Nusxalandi", "Copied"],
+["Мураббаъ", "Квадрат", "Kvadrat", "Square"],
+["Амудӣ", "Вертикальный", "Vertikal", "Vertical"],
+["Тасвир захира шуд", "Изображение сохранено", "Rasm saqlandi", "Image saved"],
+["Иқтибос тайёр нашуд", "Не удалось создать цитату", "Iqtibos tayyorlanmadi", "Could not create the quote"]
 ]
 </script>
 <script>
@@ -3504,6 +3531,75 @@ function rdExtra(){if(S.view!=="read"){asStop();clearTimeout(UIT);return}
  if(!r.__ui){r.__ui=1;r.addEventListener("pointerdown",e=>{uiKeep();if(e.target.closest&&e.target.closest(".rd-gl,.rd-gc,.rd-as,.rd-asp"))dockKeep()},true)}
  if(!S.rdUI)r.classList.add("dock");
  rdAS(r,v);uiKeep();dockKeep()}
+/* ===== Иқтибос: матнро дар хонанда (ҳолати «Аз боло ба поён») ишора кунед → «Нусха» / «Иқтибос» → корти зебо (матн + муқова + номи китоб ва муаллиф) → «Мубодила» ===== */
+const QT={txt:"",fmt:"t",el:null,menu:null,t:0,cv:null,img:null};
+const QT_MAX=600,QT_SZ={t:[1080,1920],q:[1080,1080]};
+function qtClean(s){s=String(s||"").replace(/\s+/g," ").trim();if(s.length>QT_MAX){s=s.slice(0,QT_MAX);const k=s.lastIndexOf(" ");s=s.slice(0,k>QT_MAX*.6?k:QT_MAX)+"…"}return s}
+function qtSel(){const sel=window.getSelection&&window.getSelection();if(!sel||!sel.rangeCount||sel.isCollapsed)return null;
+ const v=document.getElementById("rdview");if(!v)return null;const r=sel.getRangeAt(0);
+ if(!v.contains(r.commonAncestorContainer))return null;
+ const t=qtClean(sel.toString());if(t.length<3)return null;
+ const rs=r.getClientRects(),last=rs.length?rs[rs.length-1]:r.getBoundingClientRect();return{t,rect:last}}
+function qtMenuHide(){if(QT.menu){QT.menu.remove();QT.menu=null}}
+function qtMenuShow(s){
+ if(!QT.menu){const m=document.createElement("div");m.className="qt-menu";m.innerHTML=`<button data-qtcopy>Нусха</button><button data-qtgo>Иқтибос</button>`;
+  m.addEventListener("pointerdown",e=>e.preventDefault()); // интихоб нашавад
+  m.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+  m.querySelector("[data-qtcopy]").onclick=()=>{NATIVE.copy(QT.txt);toast("Нусха шуд");qtClear()};
+  m.querySelector("[data-qtgo]").onclick=()=>qtOpen(QT.txt);
+  document.body.appendChild(m);QT.menu=m}
+ QT.txt=s.t;const m=QT.menu,w=m.offsetWidth||190,vw=innerWidth;
+ // зери интихоб (болояш менюи худи iPhone меояд)
+ m.style.left=Math.max(8,Math.min(vw-w-8,s.rect.left+s.rect.width/2-w/2))+"px";
+ m.style.top=Math.min(innerHeight-70,s.rect.bottom+34)+"px"}
+function qtClear(){try{window.getSelection().removeAllRanges()}catch(_){}qtMenuHide()}
+function qtWatch(){clearTimeout(QT.t);QT.t=setTimeout(()=>{if(QT.el)return;if(S.view!=="read"){qtMenuHide();return}const s=qtSel();if(s)qtMenuShow(s);else qtMenuHide()},180)}
+document.addEventListener("selectionchange",qtWatch);
+/* ---- сурат ---- */
+function qtCover(b){return new Promise(ok=>{const u=(b.cp&&typeof CVU!=="undefined"&&CVU[b.cp])||b.cover;if(!u)return ok(null);
+ const im=new Image();im.crossOrigin="anonymous";im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=u;setTimeout(()=>ok(null),4000)})}
+function qtRR(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+function qtWrap(x,t,w){const ws=t.split(" "),L=[];let c="";for(const s of ws){const n=c?c+" "+s:s;if(c&&x.measureText(n).width>w){L.push(c);c=s}else c=n}if(c)L.push(c);return L}
+function qtDraw(cv,fmt,txt,b,im){
+ const [W,H]=QT_SZ[fmt];cv.width=W;cv.height=H;const x=cv.getContext("2d"),F="Lora,Georgia,'Times New Roman',serif",PAD=96;
+ x.fillStyle="#f1f3ee";x.fillRect(0,0,W,H);
+ x.fillStyle="#13a56d";x.font=`700 260px ${F}`;x.textBaseline="alphabetic";x.fillText("“",PAD-8,PAD+210);
+ const top=PAD+250,fh=fmt==="t"?230:200,bot=H-PAD-fh-40,aw=W-2*PAD;
+ let fs=fmt==="t"?72:64,L,lh;
+ for(;;){x.font=`500 ${fs}px ${F}`;L=qtWrap(x,txt,aw);lh=Math.round(fs*1.42);if(L.length*lh<=bot-top||fs<=30)break;fs-=2}
+ x.fillStyle="#1c1b19";L.forEach((s,i)=>x.fillText(s,PAD,top+fs+i*lh));
+ // поён: муқова + ном + муаллиф
+ const ch=fh-20,cw=Math.round(ch*.68),cy=H-PAD-ch;
+ x.save();qtRR(x,PAD,cy,cw,ch,12);x.clip();
+ if(im){const s=Math.max(cw/im.width,ch/im.height),dw=im.width*s,dh=im.height*s;x.drawImage(im,PAD+(cw-dw)/2,cy+(ch-dh)/2,dw,dh)}
+ else{const g=x.createLinearGradient(PAD,cy,PAD+cw,cy+ch),c=b.col||["#0b7d57","#063"];g.addColorStop(0,c[0]);g.addColorStop(1,c[1]);x.fillStyle=g;x.fillRect(PAD,cy,cw,ch)}
+ x.restore();x.strokeStyle="rgba(0,0,0,.12)";x.lineWidth=2;qtRR(x,PAD,cy,cw,ch,12);x.stroke();
+ const tx=PAD+cw+36,tw=W-PAD-tx;x.fillStyle="#1c1b19";x.font=`700 44px ${F}`;
+ const tl=qtWrap(x,String(b.t||""),tw).slice(0,2);tl.forEach((s,i)=>x.fillText(s+(i===1&&qtWrap(x,String(b.t||""),tw).length>2?"…":""),tx,cy+54+i*54));
+ x.fillStyle="#7d7a74";x.font=`500 38px ${F}`;x.fillText(qtWrap(x,String(b.a||""),tw)[0]||"",tx,cy+54+tl.length*54+10);
+ x.fillStyle="#13a56d";x.font=`700 32px ${F}`;x.textAlign="right";x.fillText("Китобхона",W-PAD,H-PAD+6);x.textAlign="left"}
+async function qtRender(){const cv=QT.cv;if(!cv)return;try{await (document.fonts&&document.fonts.ready)}catch(_){}
+ qtDraw(cv,QT.fmt,QT.txt,bk(S.rdId),QT.img)}
+async function qtOpen(txt){qtMenuHide();if(QT.el)return;const b=bk(S.rdId);if(!b)return;QT.txt=txt;
+ const el=document.createElement("div");el.className="qt-bg";QT.el=el;
+ el.innerHTML=`<div class="qt-sh" role="dialog" aria-label="Иқтибос гирифтан"><div class="qt-hd"><b>Иқтибос гирифтан</b><button class="sh-x" data-qtx aria-label="Пӯшидан">${P(IC_X,2)}</button></div>
+  <div class="qt-pv"><canvas id="qtcv"></canvas></div>
+  <div class="qt-fm"><button data-qtf="q" aria-label="Мураббаъ"><i class="sq"></i></button><button data-qtf="t" aria-label="Амудӣ"><i class="tl"></i></button></div>
+  <button class="pay-btn qt-go" data-qtshare>${P('<path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/>',2)}<span>Мубодила</span></button></div>`;
+ document.body.appendChild(el);QT.cv=el.querySelector("#qtcv");
+ const fmk=()=>el.querySelectorAll("[data-qtf]").forEach(x=>x.classList.toggle("on",x.dataset.qtf===QT.fmt));fmk();
+ const close=()=>{el.remove();QT.el=null;QT.cv=null;QT.img=null;qtClear()};
+ el.onclick=e=>{if(e.target===el||e.target.closest("[data-qtx]"))close()};
+ el.querySelectorAll("[data-qtf]").forEach(x=>x.onclick=()=>{QT.fmt=x.dataset.qtf;fmk();qtRender()});
+ el.querySelector("[data-qtshare]").onclick=()=>qtShare(b);
+ await qtRender();QT.img=await qtCover(b);if(QT.el===el)qtRender()}
+async function qtShare(b){const cv=QT.cv;if(!cv)return;
+ const blob=await new Promise(r=>{try{cv.toBlob(r,"image/png")}catch(_){r(null)}});
+ if(!blob){toast("Иқтибос тайёр нашуд");return}
+ const f=new File([blob],"iqtibos.png",{type:"image/png"});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==="AbortError")return}
+ if(window.KitobAndroid){NATIVE.share("«"+QT.txt+"»\n— "+b.a+", "+b.t,SITE_URL);return} // WebView-и Android: тасвир намефиристад, матн мефиристад
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="iqtibos.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast("Тасвир захира шуд")}
 const PLAY=FILL('<path d="M7 4.5v15l12.5-7.5z"/>'),PAUSE=FILL('<rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/>');
 const B10=P('<path d="M4.5 12a7.5 7.5 0 107.5-7.5H8.5"/><path d="M11 1.5L8 4.5l3 3"/><text x="12.2" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
 const F10=P('<path d="M19.5 12A7.5 7.5 0 1112 4.5h3.5"/><path d="M13 1.5l3 3-3 3"/><text x="11.8" y="15.4" font-size="7" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none" font-family="Inter">10</text>',1.7);
@@ -4957,7 +5053,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="d16a37f047";
+const WEB_H="13b3b36f38";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};
