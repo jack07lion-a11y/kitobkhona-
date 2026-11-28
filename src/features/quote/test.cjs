@@ -15,6 +15,8 @@ module.exports=async t=>{
  await P.evaluate(()=>document.querySelector('[data-qtf="q"]').click());await P.waitForTimeout(400);
  t.eq(await P.evaluate(()=>document.getElementById('qtcv').height),1080,'корти мураббаъ 1080×1080');
  t.ok(await P.evaluate(()=>{const c=document.getElementById('qtcv'),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let dark=0;for(let i=0;i<d.length;i+=400)if(d[i]<80)dark++;return dark>20}),'дар корт матн кашида шуд');
+ // Android: KitobAndroid.shareImage(base64 PNG) даъват мешавад
+ t.ok(await P.evaluate(async()=>{let got=null;window.KitobAndroid={shareImage:(b,u)=>{got=[b,u]}};try{navigator.canShare=()=>false}catch(_){}await qtShare(bk(S.rdId));delete window.KitobAndroid;return !!got&&got[0].length>1000&&/^iVBOR/.test(got[0])}),'Android: тасвири PNG ба shareImage дода шуд');
  await P.evaluate(()=>document.querySelector('[data-qtx]').click());await P.waitForTimeout(200);
  t.ok(await P.evaluate(()=>!document.querySelector('.qt-bg')),'пӯшидан кор мекунад');
 };

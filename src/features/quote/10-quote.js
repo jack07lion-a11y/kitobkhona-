@@ -62,5 +62,7 @@ async function qtShare(b){const cv=QT.cv;if(!cv)return;
  if(!blob){toast("Иқтибос тайёр нашуд");return}
  const f=new File([blob],"iqtibos.png",{type:"image/png"});
  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==="AbortError")return}
- if(window.KitobAndroid){NATIVE.share("«"+QT.txt+"»\n— "+b.a+", "+b.t,SITE_URL);return} // WebView-и Android: тасвир намефиристад, матн мефиристад
+ const A=window.KitobAndroid;
+ if(A&&typeof A.shareImage==="function"){try{A.shareImage(cv.toDataURL("image/png").split(",")[1],SITE_URL);return}catch(_){}} // Android (APK-и нав): худи тасвир
+ if(A){NATIVE.share("«"+QT.txt+"»\n— "+b.a+", "+b.t,SITE_URL);return} // APK-и кӯҳна: тасвирро намефиристад, матн мефиристад
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="iqtibos.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast("Тасвир захира шуд")}
