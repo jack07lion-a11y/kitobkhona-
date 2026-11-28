@@ -2,3 +2,9 @@
 .rd-scr.big{touch-action:none;-webkit-tap-highlight-color:transparent}
 .rd-zb{position:absolute;bottom:100%;transform:translateX(-50%);margin-bottom:4px;padding:8px 16px;border-radius:14px;background:var(--orange,#0b7d57);color:#fff;font-weight:800;font-size:22px;letter-spacing:.3px;box-shadow:0 6px 18px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
 .rd-scr.zoom::-webkit-slider-thumb{transform:scale(1.35)}
+/* сухани дастаи Китобхона дар оғози китоб: саҳифаи алоҳида, баъд ном */
+.rd-flow .rd-pre{break-after:column;-webkit-column-break-after:always;padding-bottom:.4em;font-size:.9em;line-height:1.5}
+.rd-flow .rd-pre h3{font-family:var(--ff);font-size:1.15em;text-align:center;margin:.2em 0 .7em}
+.rd-flow .rd-pre .rd-sig{text-align:right;text-indent:0;font-style:italic;color:var(--pgmut)}
+.rd-flow.vm .rd-pre,.vm .rd-flow .rd-pre{break-after:auto;margin-bottom:1.6em;padding-bottom:1em;border-bottom:1px solid rgba(128,128,128,.3)}
+@media (max-height:700px){.rd-flow .rd-pre{font-size:.76em;line-height:1.42}.rd-flow .rd-pre p{margin-bottom:.5em}}

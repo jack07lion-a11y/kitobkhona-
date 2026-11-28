@@ -935,6 +935,12 @@ html[data-perf="low"] .rt-hero::before{display:none}
 .rd-scr.big{touch-action:none;-webkit-tap-highlight-color:transparent}
 .rd-zb{position:absolute;bottom:100%;transform:translateX(-50%);margin-bottom:4px;padding:8px 16px;border-radius:14px;background:var(--orange,#0b7d57);color:#fff;font-weight:800;font-size:22px;letter-spacing:.3px;box-shadow:0 6px 18px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
 .rd-scr.zoom::-webkit-slider-thumb{transform:scale(1.35)}
+/* сухани дастаи Китобхона дар оғози китоб: саҳифаи алоҳида, баъд ном */
+.rd-flow .rd-pre{break-after:column;-webkit-column-break-after:always;padding-bottom:.4em;font-size:.9em;line-height:1.5}
+.rd-flow .rd-pre h3{font-family:var(--ff);font-size:1.15em;text-align:center;margin:.2em 0 .7em}
+.rd-flow .rd-pre .rd-sig{text-align:right;text-indent:0;font-style:italic;color:var(--pgmut)}
+.rd-flow.vm .rd-pre,.vm .rd-flow .rd-pre{break-after:auto;margin-bottom:1.6em;padding-bottom:1em;border-bottom:1px solid rgba(128,128,128,.3)}
+@media (max-height:700px){.rd-flow .rd-pre{font-size:.76em;line-height:1.42}.rd-flow .rd-pre p{margin-bottom:.5em}}
 /* ---------- слайдери саҳифа: қабати ламс (range-и ҷойи худ ламсро намегирад) ---------- */
 .rd-sw{position:relative;flex:1;min-width:0;display:flex;align-items:center}
 .rd-sw .rd-scr{pointer-events:none;flex:1;margin:0 4px}
@@ -2386,6 +2392,12 @@ function bindMake(){if(S.sheet!=="admmake")return;const d=MKS,$=id=>document.get
 ["Топ 10", "Топ 10", "Top 10", "Top 10"],
 ["Топ 100", "Топ 100", "Top 100", "Top 100"],
 ["Топ 1000", "Топ 1000", "Top 1000", "Top 1000"],
+["Ба хонандаи азиз!", "Дорогой читатель!", "Aziz oʻquvchi!", "Dear reader,", "x"],
+["Салом ва хуш омадед ба Китобхона! Мо дастаи Китобхонаем ва орзу дорем, ки китобҳои классикӣ, умумӣ ва бестселлерҳои тоҷикӣ дар телефони ҳар хонанда дастрас бошанд.", "Здравствуйте и добро пожаловать в Китобхона! Мы — команда Китобхона и мечтаем, чтобы классические, общие и бестселлеры таджикской книги были доступны каждому читателю в его телефоне.", "Assalomu alaykum, Kitobxonaga xush kelibsiz! Biz Kitobxona jamoasimiz va tojik klassik, umumiy kitoblari hamda bestsellerlari har bir oʻquvchining telefonida qoʻl ostida boʻlishini orzu qilamiz.", "Hello, and welcome to Kitobkhona! We are the Kitobkhona team, and we dream of every reader having classic, general-interest and bestselling Tajik books on their phone.", "x"],
+["Матни китобҳо бо ёрии зеҳни сунъӣ омода шудааст. Баъзе китобҳо аз файлҳои PDF гирифта шудаанд, баъзеи дигар нусхаҳои куҳани аксбардоришудаанд, ки саҳифаҳояшон бо гузашти замон осеб дидаанд: ҳарфҳо каҷ ё норавшан, сатрҳо нохонда ё аз об вайрон шудаанд. Аз ин рӯ дар матн хато ё сатри афтода вомехӯрад.", "Тексты книг подготовлены с помощью искусственного интеллекта. Часть книг получена из PDF-файлов, другие — старые сфотографированные издания, страницы которых со временем пострадали: буквы искривлены или нечётки, строки не читаются или испорчены водой. Поэтому в тексте встречаются ошибки или пропущенные строки.", "Kitoblar matni sunʼiy intellekt yordamida tayyorlangan. Ba’zi kitoblar PDF fayllardan olingan, boshqalari esa suratga olingan eski nusxalar boʻlib, ularning sahifalari vaqt oʻtishi bilan shikastlangan: harflar qiyshaygan yoki xira, satrlar oʻqilmaydi yoki suvdan buzilgan. Shu sababli matnda xato yoki tushib qolgan satr uchrashi mumkin.", "The books’ text was prepared with the help of artificial intelligence. Some books come from PDF files, others are old photographed copies whose pages have been damaged over time: letters are bent or blurred, lines are unreadable or ruined by water. So you may find a mistake or a missing line.", "x"],
+["Пешакӣ узр мепурсем ва кӯшиш мекунем, ки хатоҳоро ислоҳ кунем. Агар файли аслии китобро (Word ё шакли электронии дуруст) дошта бошед ва бо иҷозати соҳибони ҳуқуқ ба мо диҳед, ин ёрии бузург мешавад.", "Заранее просим прощения и постараемся исправить ошибки. Если у вас есть исходный файл книги (Word или верная электронная версия) и вы передадите его нам с разрешения правообладателей, это будет большой помощью.", "Oldindan uzr soʻraymiz va xatolarni tuzatishga harakat qilamiz. Agar kitobning asl fayli (Word yoki toʻgʻri elektron shakli) sizda boʻlsa va huquq egalarining ruxsati bilan bizga bersangiz, bu katta yordam boʻladi.", "We apologize in advance and will try to correct the mistakes. If you have the original file of a book (Word or a correct electronic version) and pass it to us with the rights holders’ permission, it will be a great help.", "x"],
+["Мутолиаи хуш орзу мекунем. Ташаккур, ки бо мо ҳастед!", "Желаем приятного чтения. Спасибо, что вы с нами!", "Yoqimli mutolaa tilaymiz. Biz bilan boʻlganingiz uchun rahmat!", "We wish you pleasant reading. Thank you for being with us!", "x"],
+["Дастаи Китобхона", "Команда Китобхона", "Kitobxona jamoasi", "The Kitobkhona team", "x"],
 ["Суръати барнома", "Скорость приложения", "Ilova tezligi", "App speed"],
 ["Сабук", "Лёгкий", "Yengil", "Light"],
 ["Миёна", "Средний", "Oʻrtacha", "Medium"],
@@ -3124,8 +3136,12 @@ function nch(b){return isTx(b)?txChapters(b).length:1}
 function rdInfo(b){if(!isTx(b))return{tc:null,cum:[0,1],tot:1};const d=TX[b.id];if(d._inf)return d._inf;const tc=txChapters(b),cum=[0];
  tc.forEach(c=>{if(!c._t){c._t=[];c._o=[];let o=0;c.bl.forEach(x=>{const a=x[0]==="p"||x[0]==="sub"?[x[1]]:x[0]==="v"?(x[1]||[]):[];a.forEach(s=>{s=String(s==null?"":s);c._t.push(s);c._o.push(o);o+=s.length})});c._len=Math.max(1,o)}cum.push(cum[cum.length-1]+c._len)});
  return d._inf={tc,cum,tot:Math.max(1,cum[cum.length-1])}}
+/* Сухани дастаи Китобхона: дар оғози ҳар китоб (боби якум), пеш аз ном. Матн дар i18n/rows.json тарҷума шудааст. */
+const PREF=["Ба хонандаи азиз!", "Салом ва хуш омадед ба Китобхона! Мо дастаи Китобхонаем ва орзу дорем, ки китобҳои классикӣ, умумӣ ва бестселлерҳои тоҷикӣ дар телефони ҳар хонанда дастрас бошанд.", "Матни китобҳо бо ёрии зеҳни сунъӣ омода шудааст. Баъзе китобҳо аз файлҳои PDF гирифта шудаанд, баъзеи дигар нусхаҳои куҳани аксбардоришудаанд, ки саҳифаҳояшон бо гузашти замон осеб дидаанд: ҳарфҳо каҷ ё норавшан, сатрҳо нохонда ё аз об вайрон шудаанд. Аз ин рӯ дар матн хато ё сатри афтода вомехӯрад.", "Пешакӣ узр мепурсем ва кӯшиш мекунем, ки хатоҳоро ислоҳ кунем. Агар файли аслии китобро (Word ё шакли электронии дуруст) дошта бошед ва бо иҷозати соҳибони ҳуқуқ ба мо диҳед, ин ёрии бузург мешавад.", "Мутолиаи хуш орзу мекунем. Ташаккур, ки бо мо ҳастед!", "Дастаи Китобхона"];
+function prefHTML(){const t=s=>escH(I18N.tr(s)),L=PREF.length;
+ return `<div class="rd-pre"><h3>${t(PREF[0])}</h3>${PREF.slice(1,L-1).map(x=>`<p>${t(x)}</p>`).join("")}<p class="rd-sig">${t(PREF[L-1])}</p></div>`}
 function chHTML(b,ci){HC=0;HCI=ci;
- if(isTx(b)){const c=txChapters(b)[ci];return `${c.part?`<p class="rd-part">${escH(c.part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(c.n)}</h2>${blocksHTML(c.bl)}`}
+ if(isTx(b)){const c=txChapters(b)[ci];return `${ci===0?prefHTML():""}${c.part?`<p class="rd-part">${escH(c.part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(c.n)}</h2>${blocksHTML(c.bl)}`}
  const chs=chapters(b);return `<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${escH(c.n)}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`}
 function reader(){
  const b=bk(S.rdId),f=S.pref,ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),vm=f.dir==="v";
@@ -4957,7 +4973,7 @@ function bindUpdate($$){
   try{const{error}=await c.rpc("publish_release",{p_version:0,p_url:null});if(error){toast("Иҷозат дода нашуд");return}await loadRelease();toast("Қатъ шуд");render()}catch(_){toast("Интернет нест")}});
 }
 /* ---- Навсозии саҳифа дар APK: корбари оддӣ — танҳо баъди «Нашр кардан»-и админ; админ/ёрдамчӣ — худкор ---- */
-const WEB_H="d16a37f047";
+const WEB_H="8ea9bc03e8";
 const WU={busy:false,pct:0,ready:false};
 const wuStaff=()=>S.role==="admin"||S.role==="subadmin";
 const wuNative=()=>{const A=window.KitobAndroid;return A&&A.updateShell&&A.setShellAuto?A:null};

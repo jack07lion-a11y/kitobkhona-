@@ -8,8 +8,12 @@ function nch(b){return isTx(b)?txChapters(b).length:1}
 function rdInfo(b){if(!isTx(b))return{tc:null,cum:[0,1],tot:1};const d=TX[b.id];if(d._inf)return d._inf;const tc=txChapters(b),cum=[0];
  tc.forEach(c=>{if(!c._t){c._t=[];c._o=[];let o=0;c.bl.forEach(x=>{const a=x[0]==="p"||x[0]==="sub"?[x[1]]:x[0]==="v"?(x[1]||[]):[];a.forEach(s=>{s=String(s==null?"":s);c._t.push(s);c._o.push(o);o+=s.length})});c._len=Math.max(1,o)}cum.push(cum[cum.length-1]+c._len)});
  return d._inf={tc,cum,tot:Math.max(1,cum[cum.length-1])}}
+/* Сухани дастаи Китобхона: дар оғози ҳар китоб (боби якум), пеш аз ном. Матн дар i18n/rows.json тарҷума шудааст. */
+const PREF=["Ба хонандаи азиз!", "Салом ва хуш омадед ба Китобхона! Мо дастаи Китобхонаем ва орзу дорем, ки китобҳои классикӣ, умумӣ ва бестселлерҳои тоҷикӣ дар телефони ҳар хонанда дастрас бошанд.", "Матни китобҳо бо ёрии зеҳни сунъӣ омода шудааст. Баъзе китобҳо аз файлҳои PDF гирифта шудаанд, баъзеи дигар нусхаҳои куҳани аксбардоришудаанд, ки саҳифаҳояшон бо гузашти замон осеб дидаанд: ҳарфҳо каҷ ё норавшан, сатрҳо нохонда ё аз об вайрон шудаанд. Аз ин рӯ дар матн хато ё сатри афтода вомехӯрад.", "Пешакӣ узр мепурсем ва кӯшиш мекунем, ки хатоҳоро ислоҳ кунем. Агар файли аслии китобро (Word ё шакли электронии дуруст) дошта бошед ва бо иҷозати соҳибони ҳуқуқ ба мо диҳед, ин ёрии бузург мешавад.", "Мутолиаи хуш орзу мекунем. Ташаккур, ки бо мо ҳастед!", "Дастаи Китобхона"];
+function prefHTML(){const t=s=>escH(I18N.tr(s)),L=PREF.length;
+ return `<div class="rd-pre"><h3>${t(PREF[0])}</h3>${PREF.slice(1,L-1).map(x=>`<p>${t(x)}</p>`).join("")}<p class="rd-sig">${t(PREF[L-1])}</p></div>`}
 function chHTML(b,ci){HC=0;HCI=ci;
- if(isTx(b)){const c=txChapters(b)[ci];return `${c.part?`<p class="rd-part">${escH(c.part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(c.n)}</h2>${blocksHTML(c.bl)}`}
+ if(isTx(b)){const c=txChapters(b)[ci];return `${ci===0?prefHTML():""}${c.part?`<p class="rd-part">${escH(c.part)}</p>`:""}${ci===0?`<h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>`:""}<h2 class="rd-h" data-ch="0" style="break-before:auto">${escH(c.n)}</h2>${blocksHTML(c.bl)}`}
  const chs=chapters(b);return `<p class="rd-note">${locked(b)?"Парчаи ройгон · Премиум":"Матни намуна"}</p><h1 class="rd-title">${escH(b.t)}</h1><p class="rd-au">${escH(b.a)}</p>${chs.map((c,i)=>`<h2 class="rd-h" data-ch="${i}">${escH(c.n)}</h2>${c.ps.map(p=>`<p>${p}</p>`).join("")}`).join("")}`}
 function reader(){
  const b=bk(S.rdId),f=S.pref,ci=Math.min(S.rdCh[b.id]||0,nch(b)-1),vm=f.dir==="v";
