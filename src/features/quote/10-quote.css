@@ -1,0 +1,19 @@
+.qt-menu{position:fixed;z-index:40;display:flex;background:#1f1d1b;color:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);overflow:hidden;animation:qtin .16s ease-out}
+.qt-menu button{border:0;background:none;color:#fff;font-weight:600;font-size:15px;padding:12px 18px;-webkit-tap-highlight-color:transparent}
+.qt-menu button+button{border-left:1px solid rgba(255,255,255,.18)}
+.qt-menu button:active{background:rgba(255,255,255,.14)}
+@keyframes qtin{from{opacity:0;transform:translateY(-4px)}}
+.qt-bg{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.qt-sh{width:100%;max-width:460px;max-height:94vh;overflow:auto;background:var(--bg);color:var(--ink);border-radius:26px 26px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;animation:sheetup .4s cubic-bezier(.32,.72,0,1)}
+.qt-hd{display:flex;align-items:center;justify-content:center;position:relative;min-height:36px}
+.qt-hd b{font-size:19px;font-weight:800}
+.qt-hd .sh-x{position:absolute;right:0}
+.qt-pv{display:flex;justify-content:center}
+.qt-pv canvas{max-width:100%;max-height:52vh;width:auto;height:auto;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.14)}
+.qt-fm{display:flex;justify-content:center;gap:18px}
+.qt-fm button{width:56px;height:56px;border:0;background:none;display:grid;place-items:center;border-radius:12px}
+.qt-fm i{display:block;border:2px solid var(--muted);border-radius:4px}
+.qt-fm .sq{width:28px;height:28px}.qt-fm .tl{width:28px;height:44px}
+.qt-fm .on i{background:#13a56d;border-color:#13a56d}
+.qt-go{display:flex;align-items:center;justify-content:center;gap:10px}
+.qt-go .ico{width:22px;height:22px}

@@ -901,5 +901,13 @@
 ["Миёна: шишаи нимшаффоф хомӯш, ҳаракатҳои асосӣ мемонанд.", "Средний: полупрозрачное стекло отключено, основные анимации остаются.", "Oʻrtacha: yarim shaffof shisha oʻchirilgan, asosiy harakatlar qoladi.", "Medium: frosted glass is off, main animations stay."],
 ["Пурра: ҳамаи ҳаракатҳо ва зебоӣ, барои телефонҳои қавӣ.", "Полный: все анимации и красота, для мощных телефонов.", "Toʻliq: barcha harakatlar va goʻzallik, kuchli telefonlar uchun.", "Full: all animations and visual effects, for powerful phones."],
 ["Хониши худкор истод. Барои давом додан тугмаро пахш кунед.", "Автопрокрутка остановлена. Нажмите кнопку, чтобы продолжить.", "Avtomatik oʻqish toʻxtadi. Davom etish uchun tugmani bosing.", "Auto-scroll has stopped. Tap the button to continue."],
-["Ҳа, мехонам", "Да, читаю", "Ha, oʻqiyapman", "Yes, I'm reading"]
+["Ҳа, мехонам", "Да, читаю", "Ha, oʻqiyapman", "Yes, I'm reading"],
+["Нусха", "Копировать", "Nusxa", "Copy"],
+["Иқтибос", "Цитата", "Iqtibos", "Quote"],
+["Иқтибос гирифтан", "Создать цитату", "Iqtibos olish", "Create a quote"],
+["Нусха шуд", "Скопировано", "Nusxalandi", "Copied"],
+["Мураббаъ", "Квадрат", "Kvadrat", "Square"],
+["Амудӣ", "Вертикальный", "Vertikal", "Vertical"],
+["Тасвир захира шуд", "Изображение сохранено", "Rasm saqlandi", "Image saved"],
+["Иқтибос тайёр нашуд", "Не удалось создать цитату", "Iqtibos tayyorlanmadi", "Could not create the quote"]
 ]

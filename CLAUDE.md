@@ -67,7 +67,7 @@ Google Play Console (нашр дар Play): ҳолати ҳозира ва қа�
 
 ## Тузилиш ва файлҳои асосӣ
 - `src/features/<ном>/` (`*.js`, `*.css`, `test.cjs`), тартиб `src/features.json`, `src/shell/`; `index.html` НАТИҶАИ СОХТА (`python3 tools/build.py`; commit шавад ҳамроҳ бо `version.json`).
-- Феатурҳо: core, library, reader, player, contest, home, category, account, rating, privacy, premium, sync, stats, feedback, notifications, backup, maker, admin, update, i18n, boot.
+- Феатурҳо: core, library, reader, quote, player, contest, home, category, account, rating, privacy, premium, sync, stats, feedback, notifications, backup, maker, admin, update, i18n, boot.
 - Тарҷумаи 4 забон (тоҷикӣ, русӣ, ӯзбекӣ лотинӣ, English): `src/features/i18n/rows.json`.
 - APK: `apk/src/src/tj/kitobkhona/app/*.java` (MainActivity, Notify, RemindPlan, InstallReceiver…), `apk/build-ci.sh`; тест `tests/RemindPlanTest.java`. APK дар CI (workflow «APK») сохта мешавад, релиз «Номзад» (prerelease); корбарон баъди «Нашр кардан» дар Идоракунӣ мегиранд.
 - SQL (барои Supabase, корбар ба дасти худ Run мекунад): `docs/sql-*.sql` + синов `docs/sql-*-test.sql`; нусхаи бе шарҳ: `docs/pre-launch/supabase/*.sql`; тартиб: `docs/pre-launch/SQL-TARTIB.md`.
