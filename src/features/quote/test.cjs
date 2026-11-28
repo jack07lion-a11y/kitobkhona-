@@ -9,7 +9,8 @@ module.exports=async t=>{
  await P.evaluate(()=>{const p=document.querySelector('#rdflow p'),r=document.createRange();r.selectNodeContents(p);const s=getSelection();s.removeAllRanges();s.addRange(r)});
  await P.waitForTimeout(500);
  t.ok(await P.evaluate(()=>{const m=document.querySelector('.qt-menu');return !!m&&/Нусха/.test(m.textContent)&&/Иқтибос/.test(m.textContent)}),'ишора кардан: менюи «Нусха» / «Иқтибос» пайдо шуд');
- await P.evaluate(()=>document.querySelector('[data-qtgo]').click());await P.waitForTimeout(700);
+ await P.tap('[data-qtgo]');await P.waitForTimeout(700); // ламси ҳақиқӣ (touch), на click-и барномавӣ
+ t.ok(await P.evaluate(()=>!!document.querySelector('.qt-bg')&&!document.querySelector('.qt-menu')),'ламс ба «Иқтибос»: варақ кушода шуд');
  t.eq(await P.evaluate(()=>[QT_SZ.t.join('x'),document.getElementById('qtcv').width+'x'+document.getElementById('qtcv').height]),['1080x1920','1080x1920'],'корти амудӣ 1080×1920');
  await P.evaluate(()=>document.querySelector('[data-qtf="q"]').click());await P.waitForTimeout(400);
  t.eq(await P.evaluate(()=>document.getElementById('qtcv').height),1080,'корти мураббаъ 1080×1080');
